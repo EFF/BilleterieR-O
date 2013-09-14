@@ -1,14 +1,13 @@
 package controllers;
 
-import play.*;
 import play.mvc.*;
+import play.libs.Json;
+import models.HelloWorld;
 
-import views.html.*;
-
-public class Application extends Controller {
-  
+public class Application extends Controller {  
     public static Result index() {
-        return ok(index.render("Your new application is ready."));
+    	HelloWorld helloWorld = new HelloWorld();
+    	helloWorld.message = "Hello World";
+        return ok(Json.toJson(helloWorld));
     }
-  
 }
