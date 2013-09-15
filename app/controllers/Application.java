@@ -16,6 +16,6 @@ public class Application extends Controller {
     	if(name == null || name.isEmpty()){
     		name = "world";
     	}
-        return ok(Json.toJson(helloWorldFactory.createHelloWorld(name)));
+		return ok(Json.toJson(helloWorldFactory.createHelloWorld(name)));
     }
 }
