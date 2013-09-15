@@ -8,18 +8,25 @@ import static org.fest.assertions.Assertions.*;
 
 public class IntegrationTest {
 
-    /**
-     * add your integration test here
-     * in this example we just check if the welcome page is being shown
-     */   
     @Test
-    public void test() {
+    public void testHelloWorld() {
         running(testServer(3333, fakeApplication(inMemoryDatabase())), HTMLUNIT, new Callback<TestBrowser>() {
-            public void invoke(TestBrowser browser) {
+            @Override
+			public void invoke(TestBrowser browser) {
                 browser.goTo("http://localhost:3333");
-                assertThat(browser.pageSource()).contains("Hello World!");
+                assertThat(browser.pageSource()).contains("Hello world!");
             }
         });
     }
-  
+    
+    @Test
+    public void testHelloUncleBob() {
+        running(testServer(3333, fakeApplication(inMemoryDatabase())), HTMLUNIT, new Callback<TestBrowser>() {
+            @Override
+			public void invoke(TestBrowser browser) {
+                browser.goTo("http://localhost:3333?name=Uncle%20Bob");
+                assertThat(browser.pageSource()).contains("Hello Uncle Bob!");
+            }
+        });
+    }
 }

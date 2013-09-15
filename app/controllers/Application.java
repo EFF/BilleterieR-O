@@ -1,13 +1,18 @@
 package controllers;
 
+import com.google.inject.Inject;
+
+import factories.HelloWorldFactoryInterface;
 import play.mvc.*;
 import play.libs.Json;
-import models.HelloWorld;
 
 public class Application extends Controller {  
-    public static Result index() {
-    	HelloWorld helloWorld = new HelloWorld();
-    	helloWorld.message = "Hello World";
-        return ok(Json.toJson(helloWorld));
+	@Inject HelloWorldFactoryInterface helloWorldFactory;
+	
+    public Result index() {
+    	String name = request().getQueryString("name");
+    	if(name == null || name.isEmpty())
+    		name = "world";
+        return ok(Json.toJson(helloWorldFactory.createHelloWorld(name)));
     }
 }
