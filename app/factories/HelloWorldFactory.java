@@ -2,7 +2,7 @@ package factories;
 
 import models.HelloWorld;
 
-public class HelloWorldFactory implements HelloWorldFactoryInterface {
+public class HelloWorldFactory implements IHelloWorldFactory {
 
 	@Override
 	public HelloWorld createHelloWorld(String name) {
