@@ -25,9 +25,7 @@ public abstract class BaseTest {
     }
 
     protected JsonNode getFakeJsonResponseFrom(String url, int expectedStatusCode) {
-        FakeRequest fakeRequest = fakeRequest("GET", url);
-        Result result = callAction(
-                routes.ref.Events.index(), fakeRequest);
+        Result result = route(fakeRequest(GET, url));
 
         assertThat(status(result)).isEqualTo(expectedStatusCode);
         assertThat(contentType(result)).isEqualTo("application/json");
