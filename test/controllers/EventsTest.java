@@ -1,5 +1,7 @@
 package controllers;
 
+import helpers.StatusCode;
+
 import org.codehaus.jackson.JsonNode;
 import org.junit.*;
 
@@ -27,7 +29,7 @@ public class EventsTest {
 				Result result = callAction(
 						controllers.routes.ref.Events.index(), fakeRequest);
 
-				assertThat(status(result)).isEqualTo(200);
+				assertThat(status(result)).isEqualTo(StatusCode.OK);
 				assertThat(contentType(result)).isEqualTo("application/json");
 
 				String json = contentAsString(result);
@@ -56,7 +58,7 @@ public class EventsTest {
 				Result result = callAction(
 						controllers.routes.ref.Events.show(1), fakeRequest);
 
-				assertThat(status(result)).isEqualTo(200);
+				assertThat(status(result)).isEqualTo(StatusCode.OK);
 				assertThat(contentType(result)).isEqualTo("application/json");
 
 				String json = contentAsString(result);
