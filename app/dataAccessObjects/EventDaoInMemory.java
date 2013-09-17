@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import org.apache.commons.lang.NotImplementedException;
+
 import models.Event;
 
 public class EventDaoInMemory implements EventDao {
@@ -32,11 +34,13 @@ public class EventDaoInMemory implements EventDao {
 	}
 
 	public void update(Event event) {
-
+		//TODO
+		throw new NotImplementedException();
 	}
 
 	public void delete(long id) {
-
+		//TODO
+		throw new NotImplementedException();
 	}
 
 	public List<Event> list() {
