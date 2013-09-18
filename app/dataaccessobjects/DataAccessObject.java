@@ -1,4 +1,4 @@
-package dataAccessObjects;
+package dataaccessobjects;
 
 import java.util.List;
 
