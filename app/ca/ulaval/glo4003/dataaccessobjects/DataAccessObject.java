@@ -1,4 +1,4 @@
-package dataaccessobjects;
+package ca.ulaval.glo4003.dataaccessobjects;
 
 import java.util.List;
 

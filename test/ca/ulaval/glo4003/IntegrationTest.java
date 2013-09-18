@@ -1,3 +1,5 @@
+package ca.ulaval.glo4003;
+
 import org.junit.*;
 
 import play.test.*;

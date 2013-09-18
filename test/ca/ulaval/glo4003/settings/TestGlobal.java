@@ -1,6 +1,6 @@
-package settings;
+package ca.ulaval.glo4003.settings;
 
-import modules.TestModule;
+import ca.ulaval.glo4003.modules.TestModule;
 import play.GlobalSettings;
 
 import com.google.inject.Guice;

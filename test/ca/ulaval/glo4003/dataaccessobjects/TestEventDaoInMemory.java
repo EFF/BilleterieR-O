@@ -1,8 +1,7 @@
-package dataaccessobjects;
+package ca.ulaval.glo4003.dataaccessobjects;
 
-import dataaccessobjects.EventDaoInMemory;
-import models.Category;
-import models.Event;
+import ca.ulaval.glo4003.models.Category;
+import ca.ulaval.glo4003.models.Event;
 
 public class TestEventDaoInMemory extends EventDaoInMemory {
 	public TestEventDaoInMemory() {

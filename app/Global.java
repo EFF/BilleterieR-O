@@ -1,4 +1,4 @@
-import modules.ApplicationModule;
+import ca.ulaval.glo4003.modules.ApplicationModule;
 import play.GlobalSettings;
 
 import com.google.inject.Guice;

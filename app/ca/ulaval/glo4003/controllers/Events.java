@@ -1,19 +1,19 @@
-package controllers;
+package ca.ulaval.glo4003.controllers;
 
+import ca.ulaval.glo4003.dataaccessobjects.EventDao;
+import ca.ulaval.glo4003.models.Event;
 import com.google.inject.Inject;
-
-import dataaccessobjects.EventDao;
-import models.Event;
 import play.libs.Json;
 import play.mvc.Controller;
 import play.mvc.Result;
 
+
 public class Events extends Controller {
 
-	@Inject
+    @Inject
 	private EventDao eventDao;
 
-	public Result index() {
+    public Result index() {
 		return ok(Json.toJson(eventDao.list()));
 	}
 

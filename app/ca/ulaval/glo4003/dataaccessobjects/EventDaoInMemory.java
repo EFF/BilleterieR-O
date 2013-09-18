@@ -1,10 +1,10 @@
-package dataaccessobjects;
+package ca.ulaval.glo4003.dataaccessobjects;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import models.Event;
+import ca.ulaval.glo4003.models.Event;
 
 public class EventDaoInMemory implements EventDao {
 	protected ArrayList<Event> events;

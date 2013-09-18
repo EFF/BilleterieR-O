@@ -1,4 +1,4 @@
-package models;
+package ca.ulaval.glo4003.models;
 
 import java.util.ArrayList;
 import java.util.Iterator;

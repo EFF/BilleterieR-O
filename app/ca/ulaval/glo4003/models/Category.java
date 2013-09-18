@@ -1,4 +1,4 @@
-package models;
+package ca.ulaval.glo4003.models;
 
 public class Category {
 	public long id;
