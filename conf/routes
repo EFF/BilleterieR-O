@@ -3,7 +3,7 @@
 # ~~~~
 
 # Home page
-GET     /                           @controllers.HelloWorld.index()
+GET     /                           controllers.Assets.at(path="/public", file="index.html")
 GET     /events                     @controllers.Events.index()
 GET     /events/:id                 @controllers.Events.show(id: Long)
 
