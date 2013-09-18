@@ -1,10 +1,12 @@
-import modules.ApplicationModule;
+package settings;
+
+import modules.TestModule;
 import play.GlobalSettings;
 
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 
-public class Global extends GlobalSettings {
+public class TestGlobal extends GlobalSettings {
 
 	private static final Injector INJECTOR = createInjector();
 
@@ -15,6 +17,6 @@ public class Global extends GlobalSettings {
 	}
 
 	private static Injector createInjector() {
-		return Guice.createInjector(new ApplicationModule());
+		return Guice.createInjector(new TestModule());
 	}
 }
