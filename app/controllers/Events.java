@@ -2,7 +2,7 @@ package controllers;
 
 import com.google.inject.Inject;
 
-import dataAccessObjects.EventDao;
+import dataaccessobjects.EventDao;
 import models.Event;
 import play.libs.Json;
 import play.mvc.Controller;

@@ -1,5 +1,6 @@
-package dataAccessObjects;
+package dataaccessobjects;
 
+import dataaccessobjects.EventDaoInMemory;
 import models.Category;
 import models.Event;
 

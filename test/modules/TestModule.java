@@ -2,8 +2,8 @@ package modules;
 
 import com.google.inject.AbstractModule;
 
-import dataAccessObjects.EventDao;
-import dataAccessObjects.TestEventDaoInMemory;
+import dataaccessobjects.EventDao;
+import dataaccessobjects.TestEventDaoInMemory;
 import factories.HelloWorldFactory;
 import factories.IHelloWorldFactory;
 
