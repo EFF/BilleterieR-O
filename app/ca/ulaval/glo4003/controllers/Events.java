@@ -11,18 +11,18 @@ import play.mvc.Result;
 public class Events extends Controller {
 
     @Inject
-	private EventDao eventDao;
+    private EventDao eventDao;
 
     public Result index() {
-		return ok(Json.toJson(eventDao.list()));
-	}
+        return ok(Json.toJson(eventDao.list()));
+    }
 
-	public Result show(long id) {
-		Event event = eventDao.read(id);
-		if (event == null) {
-			return notFound();
-		} else {
-			return ok(Json.toJson(event));
-		}
-	}
+    public Result show(long id) {
+        Event event = eventDao.read(id);
+        if (event == null) {
+            return notFound();
+        } else {
+            return ok(Json.toJson(event));
+        }
+    }
 }
