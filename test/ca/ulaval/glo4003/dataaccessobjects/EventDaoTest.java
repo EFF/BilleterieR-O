@@ -3,28 +3,28 @@ package ca.ulaval.glo4003.dataaccessobjects;
 import org.junit.Test;
 
 public class EventDaoTest {
-	@Test
-	public void list() {
+    @Test
+    public void list() {
 
-	}
+    }
 
-	@Test
-	public void create() {
+    @Test
+    public void create() {
 
-	}
+    }
 
-	@Test
-	public void read() {
+    @Test
+    public void read() {
 
-	}
+    }
 
-	@Test
-	public void update() {
+    @Test
+    public void update() {
 
-	}
+    }
 
-	@Test
-	public void delete() {
+    @Test
+    public void delete() {
 
-	}
+    }
 }

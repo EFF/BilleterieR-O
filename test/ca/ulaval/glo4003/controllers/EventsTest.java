@@ -3,13 +3,9 @@ package ca.ulaval.glo4003.controllers;
 import org.codehaus.jackson.JsonNode;
 import org.junit.Test;
 
-import static org.fest.assertions.Assertions.assertThat;
-import static play.test.Helpers.fakeApplication;
-import static play.test.Helpers.running;
-
 public class EventsTest extends BaseTest {
 
-	@Test
+    @Test
     public void indexReturnsAllEvents() {
         Helpers.running(Helpers.fakeApplication(global), new Runnable() {
             public void run() {
