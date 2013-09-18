@@ -1,4 +1,4 @@
-package dataAccessObjects;
+package dataaccessobjects;
 
 import org.junit.Test;
 

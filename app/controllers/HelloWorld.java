@@ -7,7 +7,7 @@ import play.libs.Json;
 import play.mvc.Controller;
 import play.mvc.Result;
 
-public class Application extends Controller {  
+public class HelloWorld extends Controller {  
 	@Inject
 	private IHelloWorldFactory helloWorldFactory;
 	
