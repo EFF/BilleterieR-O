@@ -10,9 +10,14 @@ import play.mvc.Result;
 
 public class Events extends Controller {
 
-    @Inject
-    private EventDao eventDao;
+    private final EventDao eventDao;
 
+    @Inject
+    public Events(EventDao eventDao) {
+        this.eventDao = eventDao;
+    }
+
+    @Inject
     public Result index() {
         return ok(Json.toJson(eventDao.list()));
     }
