@@ -1,7 +1,9 @@
 package ca.ulaval.glo4003.controllers;
 
 import org.codehaus.jackson.JsonNode;
+import org.fest.assertions.Assertions;
 import org.junit.Test;
+import play.test.Helpers;
 
 public class EventsTest extends BaseTest {
 
