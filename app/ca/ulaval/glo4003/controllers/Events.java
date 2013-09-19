@@ -9,7 +9,7 @@ import play.mvc.Result;
 
 public class Events extends Controller {
 
-    private EventDao eventDao;
+    private final EventDao eventDao;
 
     @Inject
     public Events(EventDao eventDao) {
