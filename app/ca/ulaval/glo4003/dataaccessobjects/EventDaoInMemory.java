@@ -8,6 +8,7 @@ import java.util.List;
 
 public class EventDaoInMemory implements EventDao {
 
+    // TODO: Change to private and rewrite tests
     protected ArrayList<Event> events;
 
     public EventDaoInMemory() {
