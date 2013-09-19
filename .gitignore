@@ -14,5 +14,5 @@ dist
 /.classpath
 /.project
 /RUNNING_PID
-/.settings
+/.ca.ulaval.glo4003.settings
 /.target
