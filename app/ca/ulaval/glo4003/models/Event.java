@@ -2,12 +2,19 @@ package ca.ulaval.glo4003.models;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 public class Event {
-    public long id;
-    public ArrayList<Category> categories;
 
-    public Event() {
+    private long id;
+    private List<Category> categories;
+    private Sport sport;
+    private Gender gender;
+
+    public Event(long id, Sport sport, Gender gender) {
+        this.id = id;
+        this.sport = sport;
+        this.gender = gender;
         categories = new ArrayList<>();
     }
 
@@ -17,9 +24,29 @@ public class Event {
         Iterator<Category> itr = categories.iterator();
         while (itr.hasNext()) {
             Category currentCategory = itr.next();
-            total += currentCategory.numberOfTickets;
+            total += currentCategory.getNumberOfTickets();
         }
 
         return total;
+    }
+
+    public void addCategory(Category category) {
+        categories.add(category);
+    }
+
+    public long getId() {
+        return id;
+    }
+
+    public List<Category> getCategories() {
+        return categories;
+    }
+
+    public Sport getSport() {
+        return sport;
+    }
+
+    public Gender getGender() {
+        return gender;
     }
 }
