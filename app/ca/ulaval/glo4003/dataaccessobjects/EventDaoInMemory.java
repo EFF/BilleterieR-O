@@ -7,6 +7,8 @@ import java.util.Iterator;
 import java.util.List;
 
 public class EventDaoInMemory implements EventDao {
+
+    // TODO: Change to private and rewrite tests
     protected ArrayList<Event> events;
 
     public EventDaoInMemory() {
@@ -23,7 +25,7 @@ public class EventDaoInMemory implements EventDao {
         Iterator<Event> itr = events.iterator();
         while (itr.hasNext() && result == null) {
             Event currentEvent = itr.next();
-            if (currentEvent.id == id) {
+            if (currentEvent.getId() == id) {
                 result = currentEvent;
             }
         }

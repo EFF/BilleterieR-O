@@ -2,14 +2,17 @@ package ca.ulaval.glo4003.controllers;
 
 import ca.ulaval.glo4003.settings.TestGlobal;
 import org.codehaus.jackson.JsonNode;
+import org.fest.assertions.Assertions;
 import org.junit.Before;
 import play.GlobalSettings;
 import play.libs.Json;
 import play.mvc.Result;
+import play.test.Helpers;
 
 import static play.test.Helpers.OK;
 
 public abstract class BaseTest {
+
     protected GlobalSettings global;
 
     @Before

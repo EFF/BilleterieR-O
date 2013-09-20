@@ -10,5 +10,4 @@ public class ApplicationModule extends AbstractModule {
     protected void configure() {
         bind(EventDao.class).to(EventDaoInMemory.class).asEagerSingleton();
     }
-
 }
