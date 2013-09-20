@@ -1,5 +1,5 @@
 .DS_Store
-
+.settings
 logs
 project/project
 project/target
