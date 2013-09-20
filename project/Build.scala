@@ -11,7 +11,8 @@ object ApplicationBuild extends Build {
     "com.google.inject" % "guice" % "3.0",
     javaCore,
     javaJdbc,
-    javaEbean
+    javaEbean,
+    "org.seleniumhq.selenium" % "selenium-java" % "2.35.0" % "test"
   )
 
   val main = play.Project(appName, appVersion, appDependencies).settings(

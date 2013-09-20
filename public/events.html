@@ -1,0 +1,11 @@
+<h1>Événements</h1>
+<div class="col-md-12">
+    <div class="event row" ng-repeat="event in events">
+        <span>{{event.sport.name}}</span>
+        <span ng-switch="event.gender">
+            <span ng-switch-when="MALE">Masculin</span>
+            <span ng-switch-when="FEMALE">Féminin</span>
+        </span>
+        <span class="numberOfTickets/">{{event.totalNumberOfTickets}}</span>
+    </div>
+</div>
