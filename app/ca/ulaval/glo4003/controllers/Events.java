@@ -7,7 +7,6 @@ import play.libs.Json;
 import play.mvc.Controller;
 import play.mvc.Result;
 
-
 public class Events extends Controller {
 
     private final EventDao eventDao;
@@ -17,7 +16,6 @@ public class Events extends Controller {
         this.eventDao = eventDao;
     }
 
-    @Inject
     public Result index() {
         return ok(Json.toJson(eventDao.list()));
     }
