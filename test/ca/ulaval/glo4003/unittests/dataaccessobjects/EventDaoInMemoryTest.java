@@ -4,6 +4,7 @@ import ca.ulaval.glo4003.unittests.helpers.EventsTestHelper;
 import ca.ulaval.glo4003.models.Event;
 import ca.ulaval.glo4003.models.EventSearchCriteria;
 import org.fest.assertions.Assertions;
+import org.joda.time.LocalDate;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -61,5 +62,142 @@ public class EventDaoInMemoryTest {
         Assertions.assertThat(result.get(0).getTeam().getName()).isEqualTo(EventsTestHelper.A_RANDOM_TEAM_NAME);
     }
 
+    @Test
+    public void searchDateStartWhenDateIsBeforeEventThenReturnsFilteredResults() {
+        Event firstEvent = EventsTestHelper.createRandomEventGivenSport(1, EventsTestHelper.FIRST_RANDOM_SPORT);
+        Event secondEvent = EventsTestHelper.createRandomEventGivenSport(2, EventsTestHelper.SECOND_RANDOM_SPORT);
 
+        LocalDate dayOne = new LocalDate();
+        LocalDate dayTwo = dayOne.plusDays(1);
+        LocalDate dayThree = dayOne.plusDays(3);
+
+        firstEvent.setDate(dayOne);
+        secondEvent.setDate(dayThree);
+
+        eventDao.create(firstEvent);
+        eventDao.create(secondEvent);
+
+        EventSearchCriteria eventSearchCriteria = new EventSearchCriteria();
+        eventSearchCriteria.setDateStart(dayTwo);
+
+        List<Event> result = eventDao.search(eventSearchCriteria);
+        Assertions.assertThat(result.size()).isEqualTo(1);
+        Assertions.assertThat(result.get(0).getId()).isEqualTo(secondEvent.getId());
+    }
+
+    @Test
+    public void searchDateStartWhenDateIsSameDayAsEventThenReturnsFilteredResults() {
+        Event firstEvent = EventsTestHelper.createRandomEventGivenSport(1, EventsTestHelper.FIRST_RANDOM_SPORT);
+        Event secondEvent = EventsTestHelper.createRandomEventGivenSport(2, EventsTestHelper.SECOND_RANDOM_SPORT);
+
+        LocalDate dayOne = new LocalDate();
+        LocalDate dayThree = dayOne.plusDays(3);
+
+        firstEvent.setDate(dayOne);
+        secondEvent.setDate(dayThree);
+
+        eventDao.create(firstEvent);
+        eventDao.create(secondEvent);
+
+        EventSearchCriteria eventSearchCriteria = new EventSearchCriteria();
+        eventSearchCriteria.setDateStart(dayThree);
+
+        List<Event> result = eventDao.search(eventSearchCriteria);
+        Assertions.assertThat(result.size()).isEqualTo(1);
+        Assertions.assertThat(result.get(0).getId()).isEqualTo(secondEvent.getId());
+    }
+
+    @Test
+    public void searchDateEndWhenDateIsAfterEventThenReturnsFilteredResults() {
+        Event firstEvent = EventsTestHelper.createRandomEventGivenSport(1, EventsTestHelper.FIRST_RANDOM_SPORT);
+        Event secondEvent = EventsTestHelper.createRandomEventGivenSport(2, EventsTestHelper.SECOND_RANDOM_SPORT);
+
+        LocalDate dayOne = new LocalDate();
+        LocalDate veryFarAway = dayOne.plusDays(90);
+        LocalDate evenMoreFarAway = veryFarAway.plusDays(1);
+
+        firstEvent.setDate(dayOne);
+        secondEvent.setDate(evenMoreFarAway);
+
+        eventDao.create(firstEvent);
+        eventDao.create(secondEvent);
+
+        EventSearchCriteria eventSearchCriteria = new EventSearchCriteria();
+        eventSearchCriteria.setDateEnd(veryFarAway);
+
+        List<Event> result = eventDao.search(eventSearchCriteria);
+        Assertions.assertThat(result.size()).isEqualTo(1);
+        Assertions.assertThat(result.get(0).getId()).isEqualTo(firstEvent.getId());
+    }
+
+    @Test
+    public void searchDateEndWhenDateIsSameDayAsEventThenReturnsFilteredResults() {
+        Event firstEvent = EventsTestHelper.createRandomEventGivenSport(1, EventsTestHelper.FIRST_RANDOM_SPORT);
+        Event secondEvent = EventsTestHelper.createRandomEventGivenSport(2, EventsTestHelper.SECOND_RANDOM_SPORT);
+
+        LocalDate dayOne = new LocalDate();
+        LocalDate dayThree = dayOne.plusDays(3);
+
+        firstEvent.setDate(dayOne);
+        secondEvent.setDate(dayThree);
+
+        eventDao.create(firstEvent);
+        eventDao.create(secondEvent);
+
+        EventSearchCriteria eventSearchCriteria = new EventSearchCriteria();
+        eventSearchCriteria.setDateEnd(dayOne);
+
+        List<Event> result = eventDao.search(eventSearchCriteria);
+        Assertions.assertThat(result.size()).isEqualTo(1);
+        Assertions.assertThat(result.get(0).getId()).isEqualTo(firstEvent.getId());
+    }
+
+    @Test
+    public void searchDatesRangeThenReturnsFilteredResultsWithinDateRange() {
+        Event firstEvent = EventsTestHelper.createRandomEventGivenSport(1, EventsTestHelper.FIRST_RANDOM_SPORT);
+        Event secondEvent = EventsTestHelper.createRandomEventGivenSport(2, EventsTestHelper.SECOND_RANDOM_SPORT);
+        Event thirdEvent = EventsTestHelper.createRandomEventGivenSport(3, EventsTestHelper.SECOND_RANDOM_SPORT);
+
+        LocalDate beforeRange = new LocalDate();
+        LocalDate whithinRange = beforeRange.plusDays(2);
+        LocalDate afterRange = whithinRange.plusDays(2);
+
+        firstEvent.setDate(beforeRange);
+        secondEvent.setDate(whithinRange);
+        thirdEvent.setDate(afterRange);
+
+        eventDao.create(firstEvent);
+        eventDao.create(secondEvent);
+
+        EventSearchCriteria eventSearchCriteria = new EventSearchCriteria();
+        eventSearchCriteria.setDateStart(whithinRange.minusDays(1));
+        eventSearchCriteria.setDateEnd(whithinRange.plusDays(1));
+
+        List<Event> result = eventDao.search(eventSearchCriteria);
+        Assertions.assertThat(result.size()).isEqualTo(1);
+        Assertions.assertThat(result.get(0).getId()).isEqualTo(secondEvent.getId());
+    }
+
+    @Test
+    public void searchDateStartAndEndWhenDateIsSameDayAsEventThenReturnsFilteredResults() {
+        Event firstEvent = EventsTestHelper.createRandomEventGivenSport(1, EventsTestHelper.FIRST_RANDOM_SPORT);
+        Event secondEvent = EventsTestHelper.createRandomEventGivenSport(2, EventsTestHelper.SECOND_RANDOM_SPORT);
+
+        LocalDate dayOne = new LocalDate();
+        LocalDate dayThree = dayOne.plusDays(3);
+
+        firstEvent.setDate(dayOne);
+        secondEvent.setDate(dayThree);
+
+        eventDao.create(firstEvent);
+        eventDao.create(secondEvent);
+
+        EventSearchCriteria eventSearchCriteria = new EventSearchCriteria();
+        eventSearchCriteria.setDateStart(dayThree);
+        eventSearchCriteria.setDateEnd(dayThree);
+
+        List<Event> result = eventDao.search(eventSearchCriteria);
+        Assertions.assertThat(result.size()).isEqualTo(1);
+        Assertions.assertThat(result.get(0).getId()).isEqualTo(secondEvent.getId());
+    }
 }

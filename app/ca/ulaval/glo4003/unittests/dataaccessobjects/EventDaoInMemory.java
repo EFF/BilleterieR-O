@@ -7,6 +7,7 @@ import com.google.common.collect.FluentIterable;
 import org.apache.commons.lang3.StringUtils;
 import org.joda.time.LocalDate;
 
+import javax.annotation.Nullable;
 import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -74,12 +75,22 @@ public class EventDaoInMemory implements EventDao {
         return results.toList();
     }
 
-    private FluentIterable<Event> FilterByDateStart(LocalDate dateStart, FluentIterable<Event> results) {
-        return results; // TODO When we add dates, don't forget to add the date filter
+    private FluentIterable<Event> FilterByDateStart(final LocalDate dateStart, FluentIterable<Event> results) {
+        return results.filter(new Predicate<Event>() {
+            @Override
+            public boolean apply(@Nullable Event event) {
+                return dateStart == null || event.getDate().isAfter(dateStart) || event.getDate().isEqual(dateStart);
+            }
+        });
     }
 
-    private FluentIterable<Event> FilterByDateEnd(LocalDate dateEnd, FluentIterable<Event> results) {
-        return results; // TODO When we add dates, don't forget to add the date filter
+    private FluentIterable<Event> FilterByDateEnd(final LocalDate dateEnd, FluentIterable<Event> results) {
+        return results.filter(new Predicate<Event>() {
+            @Override
+            public boolean apply(@Nullable Event event) {
+                return dateEnd == null || event.getDate().isBefore(dateEnd) || event.getDate().isEqual(dateEnd);
+            }
+        });
     }
 
     private FluentIterable<Event> FilterBySportName(final String sportName, FluentIterable<Event> results) {
