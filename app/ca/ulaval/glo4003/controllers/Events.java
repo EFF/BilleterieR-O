@@ -47,6 +47,12 @@ public class Events extends Controller {
 
         FluentIterable<Event> results = FluentIterable.from(eventDao.list());
 
+        results = FilterBySports(sport, results);
+
+        return ok(Json.toJson(results.toList()));
+    }
+
+    private FluentIterable<Event> FilterBySports(final String sport, FluentIterable<Event> results) {
         if (sport != null) {
             results = results.filter(new Predicate<Event>() {
                 @Override
@@ -55,7 +61,6 @@ public class Events extends Controller {
                 }
             });
         }
-
-        return ok(Json.toJson(results.toList()));
+        return results;
     }
 }
