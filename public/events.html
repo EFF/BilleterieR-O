@@ -1,4 +1,4 @@
-<h1>Événements</h1>
+<h1>Événements à venir</h1>
 <div class="col-md-12">
     <div class="event row" ng-repeat="event in events">
         <span>{{event.sport.name}}</span>
@@ -6,6 +6,7 @@
             <span ng-switch-when="MALE">Masculin</span>
             <span ng-switch-when="FEMALE">Féminin</span>
         </span>
-        <span class="numberOfTickets/">{{event.totalNumberOfTickets}}</span>
+        <span class="numberOfTickets/">{{event.totalNumberOfTickets}} billets disponibles</span>
+        <a class="btn btn-info btn-xs" href="/#!/events/{{event.id}}"> voir</a>
     </div>
 </div>
