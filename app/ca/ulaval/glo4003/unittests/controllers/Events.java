@@ -1,18 +1,13 @@
 package ca.ulaval.glo4003.unittests.controllers;
 
-import ca.ulaval.glo4003.unittests.dataaccessobjects.EventDao;
 import ca.ulaval.glo4003.models.Event;
 import ca.ulaval.glo4003.models.EventSearchCriteria;
-import com.google.common.base.Predicate;
-import com.google.common.collect.FluentIterable;
+import ca.ulaval.glo4003.unittests.dataaccessobjects.EventDao;
 import com.google.inject.Inject;
 import org.joda.time.LocalDate;
 import play.libs.Json;
 import play.mvc.Controller;
 import play.mvc.Result;
-
-import javax.annotation.Nullable;
-import java.util.List;
 
 public class Events extends Controller {
 
@@ -52,25 +47,10 @@ public class Events extends Controller {
         eventSearchCriteria.setDateEnd(start);
         eventSearchCriteria.setDateStart(end);
 
-        List<Event> searchResults = null;
         try {
-            searchResults = eventDao.search(eventSearchCriteria);
+            return ok(Json.toJson(eventDao.search(eventSearchCriteria)));
         } catch (Exception e) {
-            internalServerError(e.getMessage());
+            return internalServerError(e.getMessage());
         }
-
-        return ok(Json.toJson(searchResults));
-    }
-
-    private FluentIterable<Event> FilterBySports(final String sport, FluentIterable<Event> results) {
-        if (sport != null) {
-            results = results.filter(new Predicate<Event>() {
-                @Override
-                public boolean apply(@Nullable Event event) {
-                    return event.getSport().getName().toLowerCase() == sport.toLowerCase();
-                }
-            });
-        }
-        return results;
     }
 }
