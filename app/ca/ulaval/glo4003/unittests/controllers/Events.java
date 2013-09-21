@@ -1,24 +1,17 @@
-package ca.ulaval.glo4003.controllers;
+package ca.ulaval.glo4003.unittests.controllers;
 
-import ca.ulaval.glo4003.dataaccessobjects.EventDao;
+import ca.ulaval.glo4003.unittests.dataaccessobjects.EventDao;
 import ca.ulaval.glo4003.models.Event;
-import ca.ulaval.glo4003.models.SearchCriteria;
-import com.google.common.base.Function;
-import com.google.common.base.Joiner;
+import ca.ulaval.glo4003.models.EventSearchCriteria;
 import com.google.common.base.Predicate;
 import com.google.common.collect.FluentIterable;
 import com.google.inject.Inject;
-
 import org.joda.time.LocalDate;
-import org.joda.time.format.DateTimeFormatter;
-import play.data.format.Formats;
 import play.libs.Json;
 import play.mvc.Controller;
 import play.mvc.Result;
 
 import javax.annotation.Nullable;
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 public class Events extends Controller {
@@ -50,16 +43,21 @@ public class Events extends Controller {
         final String dateEnd = request().getQueryString("dateEnd");
         final String team = request().getQueryString("team");
 
-        LocalDate start = LocalDate.parse(dateStart);
-        LocalDate end = LocalDate.parse(dateEnd);
+        LocalDate start = dateStart == null ? null : LocalDate.parse(dateStart);
+        LocalDate end = dateEnd == null ? null : LocalDate.parse(dateEnd);
 
-        SearchCriteria searchCriteria = new SearchCriteria();
-        searchCriteria.setSport(sport);
-        searchCriteria.setTeam(team);
-        searchCriteria.setDateEnd(start);
-        searchCriteria.setDateStart(end);
+        EventSearchCriteria eventSearchCriteria = new EventSearchCriteria();
+        eventSearchCriteria.setSportName(sport);
+        eventSearchCriteria.setTeamName(team);
+        eventSearchCriteria.setDateEnd(start);
+        eventSearchCriteria.setDateStart(end);
 
-        List<Event> searchResults = eventDao.search(searchCriteria);
+        List<Event> searchResults = null;
+        try {
+            searchResults = eventDao.search(eventSearchCriteria);
+        } catch (Exception e) {
+            internalServerError(e.getMessage());
+        }
 
         return ok(Json.toJson(searchResults));
     }

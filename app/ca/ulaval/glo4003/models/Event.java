@@ -4,12 +4,13 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-public class Event implements HasSport {
+public class Event {
 
     private long id;
     private List<Category> categories;
     private Sport sport;
     private Gender gender;
+    private Team team;
 
     public Event(long id, Sport sport, Gender gender) {
         this.id = id;
@@ -48,5 +49,13 @@ public class Event implements HasSport {
 
     public Gender getGender() {
         return gender;
+    }
+
+    public void setTeam(Team team) {
+        this.team = team;
+    }
+
+    public Team getTeam() {
+        return team;
     }
 }

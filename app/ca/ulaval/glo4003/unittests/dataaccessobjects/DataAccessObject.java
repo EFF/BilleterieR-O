@@ -1,4 +1,4 @@
-package ca.ulaval.glo4003.dataaccessobjects;
+package ca.ulaval.glo4003.unittests.dataaccessobjects;
 
 import java.util.List;
 

@@ -1,14 +1,12 @@
-package ca.ulaval.glo4003.dataaccessobjects;
+package ca.ulaval.glo4003.unittests.dataaccessobjects;
 
 import ca.ulaval.glo4003.models.Event;
-import ca.ulaval.glo4003.models.SearchCriteria;
+import ca.ulaval.glo4003.models.EventSearchCriteria;
 import com.google.common.base.Predicate;
 import com.google.common.collect.FluentIterable;
 import org.apache.commons.lang3.StringUtils;
 import org.joda.time.LocalDate;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
-import javax.annotation.Nullable;
 import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -54,7 +52,7 @@ public class EventDaoInMemory implements EventDao {
     }
 
     @Override
-    public List<Event> search(final SearchCriteria criteria) throws InvalidParameterException {
+    public List<Event> search(final EventSearchCriteria criteria) throws InvalidParameterException {
 
         FluentIterable<Event> results = FluentIterable.from(this.list());
 
@@ -67,8 +65,8 @@ public class EventDaoInMemory implements EventDao {
             }
         }
 
-        results = FilterBySport(criteria.getSport(), results);
-        results = FilterByTeam(criteria, results); // TODO Implement that
+        results = FilterBySportName(criteria.getSportName(), results);
+        results = FilterByTeamName(criteria.getTeamName(), results);
 
         results = FilterByDateStart(criteria.getDateStart(), results);
         results = FilterByDateEnd(criteria.getDateEnd(), results);
@@ -84,16 +82,21 @@ public class EventDaoInMemory implements EventDao {
         return results; // TODO When we add dates, don't forget to add the date filter
     }
 
-    private FluentIterable<Event> FilterBySport(final String sport, FluentIterable<Event> results) {
+    private FluentIterable<Event> FilterBySportName(final String sportName, FluentIterable<Event> results) {
         return results.filter(new Predicate<Event>() {
             @Override
             public boolean apply(Event input) {
-                return StringUtils.isBlank(sport) || input.getSport().getName().toLowerCase().equals(sport.toLowerCase());
+                return StringUtils.isBlank(sportName) || input.getSport().getName().toLowerCase().equals(sportName.toLowerCase());
             }
         });
     }
 
-    private FluentIterable<Event> FilterByTeam(final SearchCriteria criteria, FluentIterable<Event> results) {
-        return results; // TODO When we add teams, don't forget to add the team filter
+    private FluentIterable<Event> FilterByTeamName(final String teamName, FluentIterable<Event> results) {
+        return results.filter(new Predicate<Event>() {
+            @Override
+            public boolean apply(Event input) {
+                return StringUtils.isBlank(teamName) || input.getTeam().getName().toLowerCase().equals(teamName.toLowerCase());
+            }
+        });
     }
 }

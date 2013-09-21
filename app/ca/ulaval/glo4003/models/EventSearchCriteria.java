@@ -2,13 +2,13 @@ package ca.ulaval.glo4003.models;
 
 import org.joda.time.LocalDate;
 
-public class SearchCriteria {
-    String team;
-    String sport;
+public class EventSearchCriteria {
+    String teamName;
+    String sportName;
     LocalDate dateStart;
     LocalDate dateEnd;
 
-    public SearchCriteria() {
+    public EventSearchCriteria() {
     }
 
     public LocalDate getDateEnd() {
@@ -27,20 +27,20 @@ public class SearchCriteria {
         this.dateStart = dateStart;
     }
 
-    public String getSport() {
-        return sport;
+    public String getSportName() {
+        return sportName;
     }
 
-    public void setSport(String sport) {
-        this.sport = sport;
+    public void setSportName(String sportName) {
+        this.sportName = sportName;
     }
 
-    public String getTeam() {
-        return team;
+    public String getTeamName() {
+        return teamName;
     }
 
-    public void setTeam(String team) {
-        this.team = team;
+    public void setTeamName(String teamName) {
+        this.teamName = teamName;
     }
 
 

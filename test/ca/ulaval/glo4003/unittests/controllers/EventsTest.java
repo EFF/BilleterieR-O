@@ -1,11 +1,9 @@
-package ca.ulaval.glo4003.controllers;
+package ca.ulaval.glo4003.unittests.controllers;
 
-import ca.ulaval.glo4003.dataaccessobjects.EventDao;
-import ca.ulaval.glo4003.dataaccessobjects.EventDaoInMemory;
-import ca.ulaval.glo4003.models.Category;
+import ca.ulaval.glo4003.unittests.dataaccessobjects.EventDao;
+import ca.ulaval.glo4003.unittests.dataaccessobjects.EventDaoInMemory;
+import ca.ulaval.glo4003.unittests.helpers.EventsTestHelper;
 import ca.ulaval.glo4003.models.Event;
-import ca.ulaval.glo4003.models.Gender;
-import ca.ulaval.glo4003.models.Sport;
 import org.codehaus.jackson.JsonNode;
 import org.fest.assertions.Assertions;
 import org.junit.Before;
@@ -18,8 +16,6 @@ public class EventsTest {
 
     private EventDao eventDao;
     private Events events;
-    private static final String FIRST_RANDOM_SPORT = "Football";
-    private static final String SECOND_RANDOM_SPORT = "Rugby";
 
     @Before
     public void setup() {
@@ -30,8 +26,8 @@ public class EventsTest {
     @Test
     public void indexReturnsAllEvents() {
         // Arrange
-        Event firstEvent = EventsTestHelper.createRandomEventGivenSport(1, FIRST_RANDOM_SPORT);
-        Event secondEvent = EventsTestHelper.createRandomEventGivenSport(2, SECOND_RANDOM_SPORT);
+        Event firstEvent = EventsTestHelper.createRandomEventGivenSport(1, EventsTestHelper.FIRST_RANDOM_SPORT);
+        Event secondEvent = EventsTestHelper.createRandomEventGivenSport(2, EventsTestHelper.SECOND_RANDOM_SPORT);
 
         eventDao.create(firstEvent);
         eventDao.create(secondEvent);
@@ -59,8 +55,8 @@ public class EventsTest {
     @Test
     public void showReturnsEvent() {
         // Arrange
-        Event firstEvent = EventsTestHelper.createRandomEventGivenSport(1, FIRST_RANDOM_SPORT);
-        Event secondEvent = EventsTestHelper.createRandomEventGivenSport(2, SECOND_RANDOM_SPORT);
+        Event firstEvent = EventsTestHelper.createRandomEventGivenSport(1, EventsTestHelper.FIRST_RANDOM_SPORT);
+        Event secondEvent = EventsTestHelper.createRandomEventGivenSport(2, EventsTestHelper.SECOND_RANDOM_SPORT);
 
         eventDao.create(firstEvent);
         eventDao.create(secondEvent);
