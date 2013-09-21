@@ -1,7 +1,8 @@
 package ca.ulaval.glo4003.unittests.controllers;
 
-import ca.ulaval.glo4003.unittests.dataaccessobjects.EventDao;
-import ca.ulaval.glo4003.unittests.dataaccessobjects.EventDaoInMemory;
+import ca.ulaval.glo4003.controllers.Events;
+import ca.ulaval.glo4003.dataaccessobjects.EventDao;
+import ca.ulaval.glo4003.dataaccessobjects.EventDaoInMemory;
 import ca.ulaval.glo4003.unittests.helpers.EventsTestHelper;
 import ca.ulaval.glo4003.models.Event;
 import org.codehaus.jackson.JsonNode;

@@ -1,8 +1,8 @@
-package ca.ulaval.glo4003.unittests.controllers;
+package ca.ulaval.glo4003.controllers;
 
 import ca.ulaval.glo4003.models.Event;
 import ca.ulaval.glo4003.models.EventSearchCriteria;
-import ca.ulaval.glo4003.unittests.dataaccessobjects.EventDao;
+import ca.ulaval.glo4003.dataaccessobjects.EventDao;
 import com.google.inject.Inject;
 import org.joda.time.LocalDate;
 import play.libs.Json;

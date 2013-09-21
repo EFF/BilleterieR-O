@@ -1,4 +1,4 @@
-package ca.ulaval.glo4003.unittests.dataaccessobjects;
+package ca.ulaval.glo4003.dataaccessobjects;
 
 import ca.ulaval.glo4003.models.Event;
 import ca.ulaval.glo4003.models.EventSearchCriteria;
