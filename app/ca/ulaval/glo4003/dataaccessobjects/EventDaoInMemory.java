@@ -1,7 +1,15 @@
 package ca.ulaval.glo4003.dataaccessobjects;
 
 import ca.ulaval.glo4003.models.Event;
+import ca.ulaval.glo4003.models.SearchCriteria;
+import com.google.common.base.Predicate;
+import com.google.common.collect.FluentIterable;
+import org.apache.commons.lang3.StringUtils;
+import org.joda.time.LocalDate;
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
+import javax.annotation.Nullable;
+import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -12,7 +20,7 @@ public class EventDaoInMemory implements EventDao {
     protected ArrayList<Event> events;
 
     public EventDaoInMemory() {
-        events = new ArrayList<Event>();
+        events = new ArrayList<>();
     }
 
     public void create(Event event) {
@@ -43,5 +51,49 @@ public class EventDaoInMemory implements EventDao {
 
     public List<Event> list() {
         return events;
+    }
+
+    @Override
+    public List<Event> search(final SearchCriteria criteria) throws InvalidParameterException {
+
+        FluentIterable<Event> results = FluentIterable.from(this.list());
+
+        // TODO Write unit test to ensure that equal dates don't throw
+        if (criteria.getDateStart() != null && criteria.getDateEnd() != null) {
+            if (criteria.getDateEnd().isBefore(criteria.getDateStart())) {
+                String errorFormat = "End Date %s can't be before Start Date %s";
+                String error = String.format(errorFormat, criteria.getDateEnd().toString(), criteria.getDateStart().toString());
+                throw new InvalidParameterException(error);
+            }
+        }
+
+        results = FilterBySport(criteria.getSport(), results);
+        results = FilterByTeam(criteria, results); // TODO Implement that
+
+        results = FilterByDateStart(criteria.getDateStart(), results);
+        results = FilterByDateEnd(criteria.getDateEnd(), results);
+
+        return results.toList();
+    }
+
+    private FluentIterable<Event> FilterByDateStart(LocalDate dateStart, FluentIterable<Event> results) {
+        return results; // TODO When we add dates, don't forget to add the date filter
+    }
+
+    private FluentIterable<Event> FilterByDateEnd(LocalDate dateEnd, FluentIterable<Event> results) {
+        return results; // TODO When we add dates, don't forget to add the date filter
+    }
+
+    private FluentIterable<Event> FilterBySport(final String sport, FluentIterable<Event> results) {
+        return results.filter(new Predicate<Event>() {
+            @Override
+            public boolean apply(Event input) {
+                return StringUtils.isBlank(sport) || input.getSport().getName().toLowerCase().equals(sport.toLowerCase());
+            }
+        });
+    }
+
+    private FluentIterable<Event> FilterByTeam(final SearchCriteria criteria, FluentIterable<Event> results) {
+        return results; // TODO When we add teams, don't forget to add the team filter
     }
 }

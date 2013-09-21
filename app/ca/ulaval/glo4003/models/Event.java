@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-public class Event {
+public class Event implements HasSport {
 
     private long id;
     private List<Category> categories;

@@ -2,18 +2,23 @@ package ca.ulaval.glo4003.controllers;
 
 import ca.ulaval.glo4003.dataaccessobjects.EventDao;
 import ca.ulaval.glo4003.models.Event;
+import ca.ulaval.glo4003.models.SearchCriteria;
 import com.google.common.base.Function;
 import com.google.common.base.Joiner;
 import com.google.common.base.Predicate;
 import com.google.common.collect.FluentIterable;
 import com.google.inject.Inject;
 
+import org.joda.time.LocalDate;
+import org.joda.time.format.DateTimeFormatter;
+import play.data.format.Formats;
 import play.libs.Json;
 import play.mvc.Controller;
 import play.mvc.Result;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class Events extends Controller {
@@ -45,11 +50,18 @@ public class Events extends Controller {
         final String dateEnd = request().getQueryString("dateEnd");
         final String team = request().getQueryString("team");
 
-        FluentIterable<Event> results = FluentIterable.from(eventDao.list());
+        LocalDate start = LocalDate.parse(dateStart);
+        LocalDate end = LocalDate.parse(dateEnd);
 
-        results = FilterBySports(sport, results);
+        SearchCriteria searchCriteria = new SearchCriteria();
+        searchCriteria.setSport(sport);
+        searchCriteria.setTeam(team);
+        searchCriteria.setDateEnd(start);
+        searchCriteria.setDateStart(end);
 
-        return ok(Json.toJson(results.toList()));
+        List<Event> searchResults = eventDao.search(searchCriteria);
+
+        return ok(Json.toJson(searchResults));
     }
 
     private FluentIterable<Event> FilterBySports(final String sport, FluentIterable<Event> results) {
