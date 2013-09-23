@@ -16,29 +16,34 @@ public class Bootstrap {
     }
 
     public void initData() {
-        Sport soccer = new Sport(1, "Soccer");
-        Event event1 = new Event(1, soccer, Gender.MALE);
-        Category category1 = new Category(1, 12.0, 120);
-        Category category2 = new Category(2, 8.0, 1200);
+        if (play.Play.isDev() || play.Play.isTest()) {
+            //TODO use the helper
+            Sport soccer = new Sport(1, "Soccer");
+            Event event1 = new Event(1, soccer, Gender.MALE);
+            Category category1 = new Category(1, 12.0, 120);
+            Category category2 = new Category(2, 8.0, 1200);
 
-        event1.addCategory(category1);
-        event1.addCategory(category2);
-        eventDao.create(event1);
+            event1.addCategory(category1);
+            event1.addCategory(category2);
+            eventDao.create(event1);
 
-        Event event2 = new Event(2, soccer, Gender.FEMALE);
-        Category category3 = new Category(3, 12.0, 120);
-        Category category4 = new Category(4, 8.0, 1200);
+            Event event2 = new Event(2, soccer, Gender.FEMALE);
+            Category category3 = new Category(3, 12.0, 120);
+            Category category4 = new Category(4, 8.0, 1200);
 
-        event2.addCategory(category3);
-        event2.addCategory(category4);
+            event2.addCategory(category3);
+            event2.addCategory(category4);
 
-        eventDao.create(event2);
+            eventDao.create(event2);
+        }
     }
 
-    public void deleteAll(){
-        while(eventDao.list().size() > 0){
-            Event currentEvent = eventDao.read(eventDao.list().size() - 1);
-            eventDao.delete(currentEvent.getId());
+    public void deleteAll() {
+        if (play.Play.isDev() || play.Play.isTest()) {
+            while (eventDao.list().size() > 0) {
+                Event currentEvent = eventDao.read(eventDao.list().size() - 1);
+                eventDao.delete(currentEvent.getId());
+            }
         }
     }
 }

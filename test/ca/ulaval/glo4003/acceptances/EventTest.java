@@ -12,8 +12,9 @@ import static play.test.Helpers.*;
 
 
 public class EventTest {
+
     @Test
-    public void showCategoriesAndItsAvailableTickets() {
+    public void returnAEventWithPricesAndNumberOfTicketsPerCategorie() {
         running(testServer(3333, fakeApplication(new TestGlobal())), FIREFOX, new F.Callback<TestBrowser>() {
             public void invoke(TestBrowser browser) {
                 browser.goTo("http://localhost:3333/#!/events/1");
@@ -21,6 +22,8 @@ public class EventTest {
                 FluentList<FluentWebElement> categories = browser.find(".category");
 
                 assertThat(categories.size()).isEqualTo(2);
+
+                //TODO use some classes instead of contains on the whole element
                 assertThat(categories.get(0).getText()).contains("1");
                 assertThat(categories.get(0).getText()).contains("12$");
                 assertThat(categories.get(0).getText()).contains("120");

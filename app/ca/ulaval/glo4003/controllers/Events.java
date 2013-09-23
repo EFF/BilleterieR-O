@@ -19,19 +19,6 @@ public class Events extends Controller {
     }
 
     public Result index() {
-        return ok(Json.toJson(eventDao.list()));
-    }
-
-    public Result show(long id) {
-        Event event = eventDao.read(id);
-        if (event == null) {
-            return notFound();
-        } else {
-            return ok(Json.toJson(event));
-        }
-    }
-
-    public Result search() {
         final String sport = request().getQueryString("sport");
         final String dateStart = request().getQueryString("dateStart");
         final String dateEnd = request().getQueryString("dateEnd");
@@ -50,6 +37,15 @@ public class Events extends Controller {
             return ok(Json.toJson(eventDao.search(eventSearchCriteria)));
         } catch (Exception e) {
             return internalServerError(e.getMessage());
+        }
+    }
+
+    public Result show(long id) {
+        Event event = eventDao.read(id);
+        if (event == null) {
+            return notFound();
+        } else {
+            return ok(Json.toJson(event));
         }
     }
 }

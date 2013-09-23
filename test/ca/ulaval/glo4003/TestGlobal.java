@@ -1,6 +1,5 @@
 package ca.ulaval.glo4003;
 
-import ca.ulaval.glo4003.Bootstrap;
 import ca.ulaval.glo4003.modules.ApplicationModule;
 import com.google.inject.Guice;
 import com.google.inject.Injector;

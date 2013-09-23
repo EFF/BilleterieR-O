@@ -11,14 +11,16 @@ import static org.fest.assertions.Assertions.assertThat;
 import static play.test.Helpers.*;
 
 public class EventListTest {
+
     @Test
-    public void displayEventListWithPricesAndCategories() {
+    public void displayEventListWithPricesCategoriesAndNumberOfTickets() {
         running(testServer(3333, fakeApplication(new TestGlobal())), FIREFOX, new F.Callback<TestBrowser>() {
             public void invoke(TestBrowser browser) {
                 browser.goTo("http://localhost:3333/#!/events");
                 browser.await().atMost(5000).until(".event").isPresent();
                 FluentList<FluentWebElement> events = browser.find(".event");
 
+                //TODO use some classes instead of contains on the whole element
                 assertThat(events.size()).isEqualTo(2);
                 assertThat(events.get(0).getText()).contains("Soccer");
                 assertThat(events.get(0).getText()).contains("Masculin");
