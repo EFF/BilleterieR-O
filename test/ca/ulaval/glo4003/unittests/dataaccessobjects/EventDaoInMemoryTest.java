@@ -1,11 +1,11 @@
 package ca.ulaval.glo4003.unittests.dataaccessobjects;
 
 import ca.ulaval.glo4003.dataaccessobjects.EventDaoInMemory;
-import ca.ulaval.glo4003.unittests.helpers.EventsTestHelper;
 import ca.ulaval.glo4003.models.Event;
 import ca.ulaval.glo4003.models.EventSearchCriteria;
+import ca.ulaval.glo4003.unittests.helpers.EventsTestHelper;
 import org.fest.assertions.Assertions;
-import org.joda.time.LocalDate;
+import org.joda.time.LocalDateTime;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -20,7 +20,7 @@ public class EventDaoInMemoryTest {
     }
 
     @Test
-    public void testShow() {
+    public void showReturnsAnEvent() {
         // Arrange
         Event event = EventsTestHelper.createRandomEventGivenSport(1, EventsTestHelper.FIRST_RANDOM_SPORT);
 
@@ -35,7 +35,7 @@ public class EventDaoInMemoryTest {
     }
 
     @Test
-    public void testList() {
+    public void listReturnsAllEvents() {
         // Arrange
         Event firstEvent = EventsTestHelper.createRandomEventGivenSport(1, EventsTestHelper.FIRST_RANDOM_SPORT);
         Event secondEvent = EventsTestHelper.createRandomEventGivenSport(2, EventsTestHelper.SECOND_RANDOM_SPORT);
@@ -112,9 +112,9 @@ public class EventDaoInMemoryTest {
         Event firstEvent = EventsTestHelper.createRandomEventGivenSport(1, EventsTestHelper.FIRST_RANDOM_SPORT);
         Event secondEvent = EventsTestHelper.createRandomEventGivenSport(2, EventsTestHelper.SECOND_RANDOM_SPORT);
 
-        LocalDate dayOne = new LocalDate();
-        LocalDate dayTwo = dayOne.plusDays(1);
-        LocalDate dayThree = dayOne.plusDays(3);
+        LocalDateTime dayOne = new LocalDateTime();
+        LocalDateTime dayTwo = dayOne.plusDays(1);
+        LocalDateTime dayThree = dayOne.plusDays(3);
 
         firstEvent.setDate(dayOne);
         secondEvent.setDate(dayThree);
@@ -139,8 +139,8 @@ public class EventDaoInMemoryTest {
         Event firstEvent = EventsTestHelper.createRandomEventGivenSport(1, EventsTestHelper.FIRST_RANDOM_SPORT);
         Event secondEvent = EventsTestHelper.createRandomEventGivenSport(2, EventsTestHelper.SECOND_RANDOM_SPORT);
 
-        LocalDate dayOne = new LocalDate();
-        LocalDate dayThree = dayOne.plusDays(3);
+        LocalDateTime dayOne = new LocalDateTime();
+        LocalDateTime dayThree = dayOne.plusDays(3);
 
         firstEvent.setDate(dayOne);
         secondEvent.setDate(dayThree);
@@ -165,9 +165,9 @@ public class EventDaoInMemoryTest {
         Event firstEvent = EventsTestHelper.createRandomEventGivenSport(1, EventsTestHelper.FIRST_RANDOM_SPORT);
         Event secondEvent = EventsTestHelper.createRandomEventGivenSport(2, EventsTestHelper.SECOND_RANDOM_SPORT);
 
-        LocalDate dayOne = new LocalDate();
-        LocalDate veryFarAway = dayOne.plusDays(90);
-        LocalDate evenMoreFarAway = veryFarAway.plusDays(1);
+        LocalDateTime dayOne = new LocalDateTime();
+        LocalDateTime veryFarAway = dayOne.plusDays(90);
+        LocalDateTime evenMoreFarAway = veryFarAway.plusDays(1);
 
         firstEvent.setDate(dayOne);
         secondEvent.setDate(evenMoreFarAway);
@@ -192,8 +192,8 @@ public class EventDaoInMemoryTest {
         Event firstEvent = EventsTestHelper.createRandomEventGivenSport(1, EventsTestHelper.FIRST_RANDOM_SPORT);
         Event secondEvent = EventsTestHelper.createRandomEventGivenSport(2, EventsTestHelper.SECOND_RANDOM_SPORT);
 
-        LocalDate dayOne = new LocalDate();
-        LocalDate dayThree = dayOne.plusDays(3);
+        LocalDateTime dayOne = new LocalDateTime();
+        LocalDateTime dayThree = dayOne.plusDays(3);
 
         firstEvent.setDate(dayOne);
         secondEvent.setDate(dayThree);
@@ -219,9 +219,9 @@ public class EventDaoInMemoryTest {
         Event secondEvent = EventsTestHelper.createRandomEventGivenSport(2, EventsTestHelper.SECOND_RANDOM_SPORT);
         Event thirdEvent = EventsTestHelper.createRandomEventGivenSport(3, EventsTestHelper.SECOND_RANDOM_SPORT);
 
-        LocalDate beforeRange = new LocalDate();
-        LocalDate whithinRange = beforeRange.plusDays(2);
-        LocalDate afterRange = whithinRange.plusDays(2);
+        LocalDateTime beforeRange = new LocalDateTime();
+        LocalDateTime whithinRange = beforeRange.plusDays(2);
+        LocalDateTime afterRange = whithinRange.plusDays(2);
 
         firstEvent.setDate(beforeRange);
         secondEvent.setDate(whithinRange);
@@ -248,8 +248,8 @@ public class EventDaoInMemoryTest {
         Event firstEvent = EventsTestHelper.createRandomEventGivenSport(1, EventsTestHelper.FIRST_RANDOM_SPORT);
         Event secondEvent = EventsTestHelper.createRandomEventGivenSport(2, EventsTestHelper.SECOND_RANDOM_SPORT);
 
-        LocalDate dayOne = new LocalDate();
-        LocalDate dayThree = dayOne.plusDays(3);
+        LocalDateTime dayOne = new LocalDateTime();
+        LocalDateTime dayThree = dayOne.plusDays(3);
 
         firstEvent.setDate(dayOne);
         secondEvent.setDate(dayThree);

@@ -6,6 +6,7 @@ import ca.ulaval.glo4003.models.Event;
 import ca.ulaval.glo4003.models.Gender;
 import ca.ulaval.glo4003.models.Sport;
 import com.google.inject.Inject;
+import org.joda.time.LocalDateTime;
 
 public class Bootstrap {
     private final EventDao eventDao;
@@ -20,6 +21,7 @@ public class Bootstrap {
             //TODO use the helper
             Sport soccer = new Sport(1, "Soccer");
             Event event1 = new Event(1, soccer, Gender.MALE);
+            event1.setDate(new LocalDateTime());
             Category category1 = new Category(1, 12.0, 120);
             Category category2 = new Category(2, 8.0, 1200);
 
@@ -28,6 +30,7 @@ public class Bootstrap {
             eventDao.create(event1);
 
             Event event2 = new Event(2, soccer, Gender.FEMALE);
+            event2.setDate(new LocalDateTime());
             Category category3 = new Category(3, 12.0, 120);
             Category category4 = new Category(4, 8.0, 1200);
 

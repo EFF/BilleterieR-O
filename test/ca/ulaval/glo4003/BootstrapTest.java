@@ -18,9 +18,15 @@ public class BootstrapTest {
     }
 
     @Test
-    public void testInitData(){
+    public void initDataShouldAddItems(){
         bootstrap.initData();
 
         assertThat(eventDao.list().size()).isEqualTo(2);
+    }
+
+    @Test
+    public void deleteDataShouldRemoveAllItems(){
+        bootstrap.deleteAll();
+        assertThat(eventDao.list().size()).isEqualTo(0);
     }
 }

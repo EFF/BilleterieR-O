@@ -2,6 +2,7 @@ package ca.ulaval.glo4003.models;
 
 
 public class Team {
+
     private int id = 0;
     private String name = "";
 

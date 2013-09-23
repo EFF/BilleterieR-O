@@ -17,7 +17,7 @@ import play.test.Helpers;
 
 import java.util.HashMap;
 
-import static org.powermock.api.mockito.PowerMockito.mock;
+import static org.mockito.Mockito.mock;
 
 public class EventsTest {
 
@@ -36,7 +36,7 @@ public class EventsTest {
     }
 
     @Test
-    public void indexReturnsAllEvents() throws Exception {
+    public void indexReturnsAllEventsWhenNoParameters() throws Exception {
         //TODO in order to test with querystring we need to mock play.api.mvc.RequestHeader.queryString() to return Map<String, Seq<String>>
         Http.Context.current.set(new Http.Context((long) 1, mock(play.api.mvc.RequestHeader.class), mock(Http.Request.class), new HashMap<String, String>(), new HashMap<String, String>(), new HashMap<String, Object>()));
         // Arrange
@@ -67,7 +67,7 @@ public class EventsTest {
     }
 
     @Test
-    public void showReturnsEvent() {
+    public void showReturnsAnEvent() {
         Http.Context.current.set(new Http.Context((long) 1, mock(play.api.mvc.RequestHeader.class), mock(Http.Request.class), new HashMap<String, String>(), new HashMap<String, String>(), new HashMap<String, Object>()));
         // Arrange
         Event firstEvent = EventsTestHelper.createRandomEventGivenSport(1, EventsTestHelper.FIRST_RANDOM_SPORT);

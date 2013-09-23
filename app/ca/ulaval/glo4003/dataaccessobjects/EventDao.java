@@ -6,6 +6,6 @@ import ca.ulaval.glo4003.models.EventSearchCriteria;
 import java.util.List;
 
 public interface EventDao extends DataAccessObject<Event> {
-    public List<Event> search(EventSearchCriteria criteria) throws Exception;
 
+    public List<Event> search(EventSearchCriteria criteria) throws Exception;
 }

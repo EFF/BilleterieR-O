@@ -5,6 +5,7 @@ import ca.ulaval.glo4003.models.EventSearchCriteria;
 import ca.ulaval.glo4003.dataaccessobjects.EventDao;
 import com.google.inject.Inject;
 import org.joda.time.LocalDate;
+import org.joda.time.LocalDateTime;
 import play.libs.Json;
 import play.mvc.Controller;
 import play.mvc.Result;
@@ -24,8 +25,8 @@ public class Events extends Controller {
         final String dateEnd = request().getQueryString("dateEnd");
         final String team = request().getQueryString("team");
 
-        LocalDate start = dateStart == null ? null : LocalDate.parse(dateStart);
-        LocalDate end = dateEnd == null ? null : LocalDate.parse(dateEnd);
+        LocalDateTime start = dateStart == null ? null : LocalDateTime.parse(dateStart);
+        LocalDateTime end = dateEnd == null ? null : LocalDateTime.parse(dateEnd);
 
         EventSearchCriteria eventSearchCriteria = new EventSearchCriteria();
         eventSearchCriteria.setSportName(sport);

@@ -5,7 +5,7 @@ import ca.ulaval.glo4003.models.EventSearchCriteria;
 import com.google.common.base.Predicate;
 import com.google.common.collect.FluentIterable;
 import org.apache.commons.lang3.StringUtils;
-import org.joda.time.LocalDate;
+import org.joda.time.LocalDateTime;
 
 import javax.annotation.Nullable;
 import java.security.InvalidParameterException;
@@ -74,7 +74,7 @@ public class EventDaoInMemory implements EventDao {
         return results.toList();
     }
 
-    private FluentIterable<Event> FilterByDateStart(final LocalDate dateStart, FluentIterable<Event> results) {
+    private FluentIterable<Event> FilterByDateStart(final LocalDateTime dateStart, FluentIterable<Event> results) {
         return results.filter(new Predicate<Event>() {
             @Override
             public boolean apply(@Nullable Event event) {
@@ -83,7 +83,7 @@ public class EventDaoInMemory implements EventDao {
         });
     }
 
-    private FluentIterable<Event> FilterByDateEnd(final LocalDate dateEnd, FluentIterable<Event> results) {
+    private FluentIterable<Event> FilterByDateEnd(final LocalDateTime dateEnd, FluentIterable<Event> results) {
         return results.filter(new Predicate<Event>() {
             @Override
             public boolean apply(@Nullable Event event) {
