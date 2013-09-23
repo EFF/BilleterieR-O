@@ -11,7 +11,9 @@ object ApplicationBuild extends Build {
     "com.google.inject" % "guice" % "3.0",
     javaCore,
     javaJdbc,
-    javaEbean
+    javaEbean,
+    "com.google.guava" % "guava" % "15.0",
+    "joda-time" % "joda-time" % "2.3"
   )
 
   val main = play.Project(appName, appVersion, appDependencies).settings(
