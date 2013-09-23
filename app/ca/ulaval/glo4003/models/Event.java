@@ -1,5 +1,8 @@
 package ca.ulaval.glo4003.models;
 
+import org.joda.time.LocalDate;
+import org.joda.time.LocalTime;
+
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -10,6 +13,8 @@ public class Event {
     private List<Category> categories;
     private Sport sport;
     private Gender gender;
+    private Team team;
+    private LocalDate date;
 
     public Event(long id, Sport sport, Gender gender) {
         this.id = id;
@@ -48,5 +53,21 @@ public class Event {
 
     public Gender getGender() {
         return gender;
+    }
+
+    public void setTeam(Team team) {
+        this.team = team;
+    }
+
+    public Team getTeam() {
+        return team;
+    }
+
+    public LocalDate getDate() {
+        return date;
+    }
+
+    public void setDate(LocalDate date) {
+        this.date = date;
     }
 }

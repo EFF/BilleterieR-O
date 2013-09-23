@@ -2,9 +2,10 @@
 # This file defines all application routes (Higher priority routes first)
 # ~~~~
 
-GET     /                              controllers.Assets.at(path="/public", file="index.html")
+GET     /								controllers.Assets.at(path="/public", file="index.html")
 GET     /api/events                     @ca.ulaval.glo4003.controllers.Events.index()
 GET     /api/events/:id                 @ca.ulaval.glo4003.controllers.Events.show(id: Long)
+GET     /api/events/search              @ca.ulaval.glo4003.controllers.Events.search()
 
 # Map static resources from the /public folder to the /assets URL path
-GET     /assets/*file               controllers.Assets.at(path="/public", file)
+GET     /assets/*file					controllers.Assets.at(path="/public", file)

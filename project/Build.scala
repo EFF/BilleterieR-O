@@ -12,6 +12,9 @@ object ApplicationBuild extends Build {
     javaCore,
     javaJdbc,
     javaEbean,
+    "com.google.guava" % "guava" % "15.0",
+    "joda-time" % "joda-time" % "2.3",
+
     "org.seleniumhq.selenium" % "selenium-java" % "2.35.0" % "test"
   )
 
