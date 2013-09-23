@@ -34,4 +34,11 @@ public class Bootstrap {
 
         eventDao.create(event2);
     }
+
+    public void deleteAll(){
+        while(eventDao.list().size() > 0){
+            Event currentEvent = eventDao.read(eventDao.list().size() - 1);
+            eventDao.delete(currentEvent.getId());
+        }
+    }
 }

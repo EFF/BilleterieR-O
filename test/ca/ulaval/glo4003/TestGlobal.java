@@ -25,6 +25,14 @@ public class TestGlobal extends GlobalSettings {
         bootstrap.initData();
     }
 
+    @Override
+    public void onStop(Application application) {
+        super.onStop(application);
+
+        Bootstrap bootstrap = INJECTOR.getInstance(Bootstrap.class);
+        bootstrap.deleteAll();
+    }
+
     private static Injector createInjector() {
         return Guice.createInjector(new ApplicationModule());
     }
