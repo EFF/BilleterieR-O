@@ -7,6 +7,7 @@ app.config(['$routeProvider', '$locationProvider', function(routeProvider, locat
 
     routeProvider.when('/events', {controller: 'EventsController', templateUrl: '/assets/events.html'});
     routeProvider.when('/events/:eventId', {controller: 'EventController', templateUrl: '/assets/event.html'});
+    routeProvider.otherwise({redirectTo: '/events'});
 }]);
 
 app.controller('EventsController', ['$scope', '$http', controllers.events]);
