@@ -10,6 +10,5 @@ public class ApplicationModule extends AbstractModule {
     @Override
     protected void configure() {
         bind(EventDao.class).to(EventDaoInMemory.class).asEagerSingleton();
-        bind(Bootstrap.class);
     }
 }

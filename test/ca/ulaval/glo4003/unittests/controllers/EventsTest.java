@@ -5,7 +5,6 @@ import ca.ulaval.glo4003.dataaccessobjects.EventDao;
 import ca.ulaval.glo4003.dataaccessobjects.EventDaoInMemory;
 import ca.ulaval.glo4003.models.Event;
 import ca.ulaval.glo4003.unittests.helpers.EventsTestHelper;
-import junit.framework.TestSuite;
 import org.codehaus.jackson.JsonNode;
 import org.fest.assertions.Assertions;
 import org.junit.After;

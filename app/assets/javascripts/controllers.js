@@ -6,7 +6,7 @@ var events = function($scope, $http) {
     };
 
     var apiCallErrorCallback = function(err){
-        console.error(err);
+        //TODO emit error event and handle it in a directive
         $scope.events = null;
     };
 
@@ -28,7 +28,7 @@ var event = function($scope, $http, $routeParams) {
     };
 
     var apiCallErrorCallback = function(err){
-        console.error(err);
+        //TODO emit error event and handle it in a directive
         $scope.event = null;
     };
     
