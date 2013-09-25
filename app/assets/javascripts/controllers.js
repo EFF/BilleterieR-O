@@ -13,10 +13,6 @@ var events = function ($scope, $http) {
     $http.get('/api/events')
         .success(apiCallSuccessCallback)
         .error(apiCallErrorCallback);
-
-    $http.get('/api/events').success(function (result) {
-        $scope.events = result;
-    });
 }
 
 var event = function ($scope, $http, $routeParams) {
