@@ -27,8 +27,8 @@ public class EventListTest {
                 assertThat(events.get(1).getText()).contains("Soccer");
                 assertThat(events.get(1).getText()).contains("Féminin");
 
-                assertThat(events.get(0).findFirst(".numberOfTickets").getText()).isEqualTo("1320");
-                assertThat(events.get(1).findFirst(".numberOfTickets").getText()).isEqualTo("1320");
+                assertThat(events.get(0).findFirst(".numberOfTickets").getText()).contains("1320");
+                assertThat(events.get(1).findFirst(".numberOfTickets").getText()).contains("1320");
             }
         });
     }
