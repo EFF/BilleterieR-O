@@ -28,16 +28,16 @@ public class EventDaoInMemory extends DaoInMemory<Event> implements EventDao {
             }
         }
 
-        results = FilterBySportName(criteria.getSportName(), results);
-        results = FilterByTeamName(criteria.getTeamName(), results);
+        results = filterBySportName(criteria.getSportName(), results);
+        results = filterByTeamName(criteria.getTeamName(), results);
 
-        results = FilterByDateStart(criteria.getDateStart(), results);
-        results = FilterByDateEnd(criteria.getDateEnd(), results);
+        results = filterByDateStart(criteria.getDateStart(), results);
+        results = filterByDateEnd(criteria.getDateEnd(), results);
 
         return results.toList();
     }
 
-    private FluentIterable<Event> FilterByDateStart(final LocalDateTime dateStart, FluentIterable<Event> results) {
+    private FluentIterable<Event> filterByDateStart(final LocalDateTime dateStart, FluentIterable<Event> results) {
         return results.filter(new Predicate<Event>() {
             @Override
             public boolean apply(@Nullable Event event) {
@@ -46,7 +46,7 @@ public class EventDaoInMemory extends DaoInMemory<Event> implements EventDao {
         });
     }
 
-    private FluentIterable<Event> FilterByDateEnd(final LocalDateTime dateEnd, FluentIterable<Event> results) {
+    private FluentIterable<Event> filterByDateEnd(final LocalDateTime dateEnd, FluentIterable<Event> results) {
         return results.filter(new Predicate<Event>() {
             @Override
             public boolean apply(@Nullable Event event) {
@@ -55,7 +55,7 @@ public class EventDaoInMemory extends DaoInMemory<Event> implements EventDao {
         });
     }
 
-    private FluentIterable<Event> FilterBySportName(final String sportName, FluentIterable<Event> results) {
+    private FluentIterable<Event> filterBySportName(final String sportName, FluentIterable<Event> results) {
         return results.filter(new Predicate<Event>() {
             @Override
             public boolean apply(Event input) {
@@ -65,7 +65,7 @@ public class EventDaoInMemory extends DaoInMemory<Event> implements EventDao {
         });
     }
 
-    private FluentIterable<Event> FilterByTeamName(final String teamName, FluentIterable<Event> results) {
+    private FluentIterable<Event> filterByTeamName(final String teamName, FluentIterable<Event> results) {
         return results.filter(new Predicate<Event>() {
             @Override
             public boolean apply(Event input) {
