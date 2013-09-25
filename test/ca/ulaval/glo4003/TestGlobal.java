@@ -1,11 +1,12 @@
-import ca.ulaval.glo4003.Bootstrap;
+package ca.ulaval.glo4003;
+
 import ca.ulaval.glo4003.modules.ApplicationModule;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import play.Application;
 import play.GlobalSettings;
 
-public class Global extends GlobalSettings {
+public class TestGlobal extends GlobalSettings {
 
     private static final Injector INJECTOR = createInjector();
 
@@ -19,10 +20,16 @@ public class Global extends GlobalSettings {
     public void onStart(Application application) {
         super.onStart(application);
 
-        if (play.Play.isDev()) {
-            Bootstrap bootstrap = INJECTOR.getInstance(Bootstrap.class);
-            bootstrap.initData();
-        }
+        Bootstrap bootstrap = INJECTOR.getInstance(Bootstrap.class);
+        bootstrap.initData();
+    }
+
+    @Override
+    public void onStop(Application application) {
+        super.onStop(application);
+
+        Bootstrap bootstrap = INJECTOR.getInstance(Bootstrap.class);
+        bootstrap.deleteAll();
     }
 
     private static Injector createInjector() {
