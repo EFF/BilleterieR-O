@@ -1,13 +1,40 @@
-<h1>Événements à venir</h1>
-<div class="col-md-12">
-    <div class="event row" ng-repeat="event in events">
-        <span>{{event.dateAsString | date:'dd-MM-yyyy HH:mm'}}</span>
-        <span>{{event.sport.name}}</span>
-        <span ng-switch="event.gender">
-            <span ng-switch-when="MALE">Masculin</span>
-            <span ng-switch-when="FEMALE">Féminin</span>
-        </span>
-        <span class="numberOfTickets">{{event.totalNumberOfTickets}} billets disponibles</span>
-        <a class="btn btn-info btn-xs" href="/#!/events/{{event.id}}"> voir</a>
+<h1>Événements</h1>
+<div class="row">
+    <div class="col-md-3 well">
+        <select ng-model="filters.sport" ng-options="s for s in sports">
+            <option value="">Filtrer par sport...</option>
+        </select>
+    </div>
+    <div class="col-md-8 col-md-offset-1">
+        <div class="alert alert-warning" ng-hide="events">Aucune partie</div>
+        <table class="table" ng-show="events">
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Sport</th>
+                    <th>Genre</th>
+                    <th>Billets disponibles</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="event" ng-repeat="event in events">
+                    <td>{{event.dateAsString | date:'dd-MM-yyyy HH:mm'}}</td>
+                    <td>{{event.sport.name}}</td>
+                    <td>
+                        <span ng-switch="event.gender">
+                            <span ng-switch-when="MALE">Masculin</span>
+                            <span ng-switch-when="FEMALE">Féminin</span>
+                        </span>
+                    </td>
+                    <td class="numberOfTickets">
+                        {{event.totalNumberOfTickets}} billets disponibles
+                    </td>
+                    <td>
+                        <a class="btn btn-info btn-xs" href="/#!/events/{{event.id}}">Voir</a>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
     </div>
 </div>
