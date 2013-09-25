@@ -15,7 +15,6 @@ public class EventDaoInMemory extends DaoInMemory<Event> implements EventDao {
 
     @Override
     public List<Event> search(final EventSearchCriteria criteria) throws InvalidParameterException {
-
         FluentIterable<Event> results = FluentIterable.from(this.list());
 
         // TODO Write unit test to ensure that equal dates don't throw
@@ -30,7 +29,6 @@ public class EventDaoInMemory extends DaoInMemory<Event> implements EventDao {
 
         results = filterBySportName(criteria.getSportName(), results);
         results = filterByTeamName(criteria.getTeamName(), results);
-
         results = filterByDateStart(criteria.getDateStart(), results);
         results = filterByDateEnd(criteria.getDateEnd(), results);
 

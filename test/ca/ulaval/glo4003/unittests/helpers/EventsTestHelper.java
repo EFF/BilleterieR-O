@@ -23,7 +23,7 @@ public class EventsTestHelper {
 
     public static Event createRandomEventGivenTeam(String teamName) {
         Event event1 = new Event(null, Gender.MALE);
-        Team team = new Team(1, teamName);
+        Team team = new Team(teamName);
         event1.setTeam(team);
 
         return event1;

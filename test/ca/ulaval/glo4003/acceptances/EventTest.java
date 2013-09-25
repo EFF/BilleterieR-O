@@ -18,7 +18,7 @@ public class EventTest {
         running(testServer(3333, fakeApplication(new TestGlobal())), FIREFOX, new F.Callback<TestBrowser>() {
             public void invoke(TestBrowser browser) {
                 browser.goTo("http://localhost:3333/#!/events/1");
-                browser.await().atMost(10000).until(".category").isPresent();
+                browser.await().atMost(5000).until(".category").isPresent();
                 FluentList<FluentWebElement> categories = browser.find(".category");
 
                 assertThat(categories.size()).isEqualTo(2);

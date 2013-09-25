@@ -38,6 +38,7 @@ public abstract class DaoInMemory<T extends Record> implements DataAccessObject<
 
     public void deleteAll() {
         list.clear();
+        lastId = 1;
     }
 
     public List<T> list() {
