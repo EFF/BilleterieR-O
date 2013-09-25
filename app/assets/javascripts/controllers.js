@@ -1,11 +1,11 @@
-var events = function($scope, $http) {
+var events = function ($scope, $http) {
     $scope.events = null;
 
-    var apiCallSuccessCallback = function(result){
+    var apiCallSuccessCallback = function (result) {
         $scope.events = result
     };
 
-    var apiCallErrorCallback = function(err){
+    var apiCallErrorCallback = function (err) {
         //TODO emit error event and handle it in a directive
         $scope.events = null;
     };
@@ -14,24 +14,24 @@ var events = function($scope, $http) {
         .success(apiCallSuccessCallback)
         .error(apiCallErrorCallback);
 
-    $http.get('/api/events').success(function(result){
+    $http.get('/api/events').success(function (result) {
         $scope.events = result;
     });
 }
 
-var event = function($scope, $http, $routeParams) {
+var event = function ($scope, $http, $routeParams) {
     var eventId = $routeParams.eventId;
     $scope.event = null;
 
-    var apiCallSuccessCallback = function(result){
+    var apiCallSuccessCallback = function (result) {
         $scope.event = result
     };
 
-    var apiCallErrorCallback = function(err){
+    var apiCallErrorCallback = function (err) {
         //TODO emit error event and handle it in a directive
         $scope.event = null;
     };
-    
+
     $http.get('/api/events/' + eventId)
         .success(apiCallSuccessCallback)
         .error(apiCallErrorCallback);

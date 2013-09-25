@@ -9,6 +9,7 @@ import com.google.inject.Inject;
 import org.joda.time.LocalDateTime;
 
 public class Bootstrap {
+
     private final EventDao eventDao;
 
     @Inject
@@ -19,20 +20,20 @@ public class Bootstrap {
     public void initData() {
         if (play.Play.isDev() || play.Play.isTest()) {
             //TODO use the helper
-            Sport soccer = new Sport(1, "Soccer");
-            Event event1 = new Event(1, soccer, Gender.MALE);
+            Sport soccer = new Sport("Soccer");
+            Event event1 = new Event(soccer, Gender.MALE);
             event1.setDate(new LocalDateTime());
-            Category category1 = new Category(1, 12.0, 120);
-            Category category2 = new Category(2, 8.0, 1200);
+            Category category1 = new Category(12.0, 120);
+            Category category2 = new Category(8.0, 1200);
 
             event1.addCategory(category1);
             event1.addCategory(category2);
             eventDao.create(event1);
 
-            Event event2 = new Event(2, soccer, Gender.FEMALE);
+            Event event2 = new Event(soccer, Gender.FEMALE);
             event2.setDate(new LocalDateTime());
-            Category category3 = new Category(3, 12.0, 120);
-            Category category4 = new Category(4, 8.0, 1200);
+            Category category3 = new Category(12.0, 120);
+            Category category4 = new Category(8.0, 1200);
 
             event2.addCategory(category3);
             event2.addCategory(category4);
@@ -43,10 +44,7 @@ public class Bootstrap {
 
     public void deleteAll() {
         if (play.Play.isDev() || play.Play.isTest()) {
-            while (eventDao.list().size() > 0) {
-                Event currentEvent = eventDao.read(eventDao.list().size() - 1);
-                eventDao.delete(currentEvent.getId());
-            }
+            eventDao.deleteAll();
         }
     }
 }

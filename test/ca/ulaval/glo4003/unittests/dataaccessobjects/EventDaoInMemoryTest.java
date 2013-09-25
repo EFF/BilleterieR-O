@@ -12,7 +12,8 @@ import org.junit.Test;
 import java.util.List;
 
 public class EventDaoInMemoryTest {
-    EventDaoInMemory eventDao;
+
+    private EventDaoInMemory eventDao;
 
     @Before
     public void setup() {
@@ -20,25 +21,10 @@ public class EventDaoInMemoryTest {
     }
 
     @Test
-    public void showReturnsAnEvent() {
-        // Arrange
-        Event event = EventsTestHelper.createRandomEventGivenSport(1, EventsTestHelper.FIRST_RANDOM_SPORT);
-
-        eventDao.create(event);
-
-        // Act
-        Event result = eventDao.read(1);
-
-        // Assert
-        Assertions.assertThat(result.getId()).isEqualTo(event.getId());
-        Assertions.assertThat(result.getSport().getName()).isEqualTo(event.getSport().getName());
-    }
-
-    @Test
     public void listReturnsAllEvents() {
         // Arrange
-        Event firstEvent = EventsTestHelper.createRandomEventGivenSport(1, EventsTestHelper.FIRST_RANDOM_SPORT);
-        Event secondEvent = EventsTestHelper.createRandomEventGivenSport(2, EventsTestHelper.SECOND_RANDOM_SPORT);
+        Event firstEvent = EventsTestHelper.createRandomEventGivenSport(EventsTestHelper.FIRST_RANDOM_SPORT);
+        Event secondEvent = EventsTestHelper.createRandomEventGivenSport(EventsTestHelper.SECOND_RANDOM_SPORT);
 
         eventDao.create(firstEvent);
         eventDao.create(secondEvent);
@@ -53,8 +39,8 @@ public class EventDaoInMemoryTest {
     @Test
     public void searchAllThenReturnsAllEvents() {
         // Arrange
-        Event firstEvent = EventsTestHelper.createRandomEventGivenSport(1, EventsTestHelper.FIRST_RANDOM_SPORT);
-        Event secondEvent = EventsTestHelper.createRandomEventGivenSport(2, EventsTestHelper.SECOND_RANDOM_SPORT);
+        Event firstEvent = EventsTestHelper.createRandomEventGivenSport(EventsTestHelper.FIRST_RANDOM_SPORT);
+        Event secondEvent = EventsTestHelper.createRandomEventGivenSport(EventsTestHelper.SECOND_RANDOM_SPORT);
 
         eventDao.create(firstEvent);
         eventDao.create(secondEvent);
@@ -69,8 +55,8 @@ public class EventDaoInMemoryTest {
     @Test
     public void searchSportThenReturnsFilteredResults() {
         // Arrange
-        Event firstEvent = EventsTestHelper.createRandomEventGivenSport(1, EventsTestHelper.FIRST_RANDOM_SPORT);
-        Event secondEvent = EventsTestHelper.createRandomEventGivenSport(2, EventsTestHelper.SECOND_RANDOM_SPORT);
+        Event firstEvent = EventsTestHelper.createRandomEventGivenSport(EventsTestHelper.FIRST_RANDOM_SPORT);
+        Event secondEvent = EventsTestHelper.createRandomEventGivenSport(EventsTestHelper.SECOND_RANDOM_SPORT);
 
         eventDao.create(firstEvent);
         eventDao.create(secondEvent);
@@ -89,8 +75,8 @@ public class EventDaoInMemoryTest {
     @Test
     public void searchTeamThenReturnsFilteredResults() {
         // Arrange
-        Event firstEvent = EventsTestHelper.createRandomEventGivenTeam(1, EventsTestHelper.A_RANDOM_TEAM_NAME);
-        Event secondEvent = EventsTestHelper.createRandomEventGivenTeam(2, EventsTestHelper.A_SECOND_RANDOM_TEAM_NAME);
+        Event firstEvent = EventsTestHelper.createRandomEventGivenTeam(EventsTestHelper.A_RANDOM_TEAM_NAME);
+        Event secondEvent = EventsTestHelper.createRandomEventGivenTeam(EventsTestHelper.A_SECOND_RANDOM_TEAM_NAME);
 
         eventDao.create(firstEvent);
         eventDao.create(secondEvent);
@@ -109,8 +95,8 @@ public class EventDaoInMemoryTest {
     @Test
     public void searchDateStartWhenDateIsBeforeEventThenReturnsFilteredResults() {
         // Arrange
-        Event firstEvent = EventsTestHelper.createRandomEventGivenSport(1, EventsTestHelper.FIRST_RANDOM_SPORT);
-        Event secondEvent = EventsTestHelper.createRandomEventGivenSport(2, EventsTestHelper.SECOND_RANDOM_SPORT);
+        Event firstEvent = EventsTestHelper.createRandomEventGivenSport(EventsTestHelper.FIRST_RANDOM_SPORT);
+        Event secondEvent = EventsTestHelper.createRandomEventGivenSport(EventsTestHelper.SECOND_RANDOM_SPORT);
 
         LocalDateTime dayOne = new LocalDateTime();
         LocalDateTime dayTwo = dayOne.plusDays(1);
@@ -136,8 +122,8 @@ public class EventDaoInMemoryTest {
     @Test
     public void searchDateStartWhenDateIsSameDayAsEventThenReturnsFilteredResults() {
         // Arrange
-        Event firstEvent = EventsTestHelper.createRandomEventGivenSport(1, EventsTestHelper.FIRST_RANDOM_SPORT);
-        Event secondEvent = EventsTestHelper.createRandomEventGivenSport(2, EventsTestHelper.SECOND_RANDOM_SPORT);
+        Event firstEvent = EventsTestHelper.createRandomEventGivenSport(EventsTestHelper.FIRST_RANDOM_SPORT);
+        Event secondEvent = EventsTestHelper.createRandomEventGivenSport(EventsTestHelper.SECOND_RANDOM_SPORT);
 
         LocalDateTime dayOne = new LocalDateTime();
         LocalDateTime dayThree = dayOne.plusDays(3);
@@ -162,8 +148,8 @@ public class EventDaoInMemoryTest {
     @Test
     public void searchDateEndWhenDateIsAfterEventThenReturnsFilteredResults() {
         // Arrange
-        Event firstEvent = EventsTestHelper.createRandomEventGivenSport(1, EventsTestHelper.FIRST_RANDOM_SPORT);
-        Event secondEvent = EventsTestHelper.createRandomEventGivenSport(2, EventsTestHelper.SECOND_RANDOM_SPORT);
+        Event firstEvent = EventsTestHelper.createRandomEventGivenSport(EventsTestHelper.FIRST_RANDOM_SPORT);
+        Event secondEvent = EventsTestHelper.createRandomEventGivenSport(EventsTestHelper.SECOND_RANDOM_SPORT);
 
         LocalDateTime dayOne = new LocalDateTime();
         LocalDateTime veryFarAway = dayOne.plusDays(90);
@@ -189,8 +175,8 @@ public class EventDaoInMemoryTest {
     @Test
     public void searchDateEndWhenDateIsSameDayAsEventThenReturnsFilteredResults() {
         // Arrange
-        Event firstEvent = EventsTestHelper.createRandomEventGivenSport(1, EventsTestHelper.FIRST_RANDOM_SPORT);
-        Event secondEvent = EventsTestHelper.createRandomEventGivenSport(2, EventsTestHelper.SECOND_RANDOM_SPORT);
+        Event firstEvent = EventsTestHelper.createRandomEventGivenSport(EventsTestHelper.FIRST_RANDOM_SPORT);
+        Event secondEvent = EventsTestHelper.createRandomEventGivenSport(EventsTestHelper.SECOND_RANDOM_SPORT);
 
         LocalDateTime dayOne = new LocalDateTime();
         LocalDateTime dayThree = dayOne.plusDays(3);
@@ -215,9 +201,9 @@ public class EventDaoInMemoryTest {
     @Test
     public void searchDatesRangeThenReturnsFilteredResultsWithinDateRange() {
         // Arrange
-        Event firstEvent = EventsTestHelper.createRandomEventGivenSport(1, EventsTestHelper.FIRST_RANDOM_SPORT);
-        Event secondEvent = EventsTestHelper.createRandomEventGivenSport(2, EventsTestHelper.SECOND_RANDOM_SPORT);
-        Event thirdEvent = EventsTestHelper.createRandomEventGivenSport(3, EventsTestHelper.SECOND_RANDOM_SPORT);
+        Event firstEvent = EventsTestHelper.createRandomEventGivenSport(EventsTestHelper.FIRST_RANDOM_SPORT);
+        Event secondEvent = EventsTestHelper.createRandomEventGivenSport(EventsTestHelper.SECOND_RANDOM_SPORT);
+        Event thirdEvent = EventsTestHelper.createRandomEventGivenSport(EventsTestHelper.SECOND_RANDOM_SPORT);
 
         LocalDateTime beforeRange = new LocalDateTime();
         LocalDateTime whithinRange = beforeRange.plusDays(2);
@@ -245,8 +231,8 @@ public class EventDaoInMemoryTest {
     @Test
     public void searchDateStartAndEndWhenDateIsSameDayAsEventThenReturnsFilteredResults() {
         // Arrange
-        Event firstEvent = EventsTestHelper.createRandomEventGivenSport(1, EventsTestHelper.FIRST_RANDOM_SPORT);
-        Event secondEvent = EventsTestHelper.createRandomEventGivenSport(2, EventsTestHelper.SECOND_RANDOM_SPORT);
+        Event firstEvent = EventsTestHelper.createRandomEventGivenSport(EventsTestHelper.FIRST_RANDOM_SPORT);
+        Event secondEvent = EventsTestHelper.createRandomEventGivenSport(EventsTestHelper.SECOND_RANDOM_SPORT);
 
         LocalDateTime dayOne = new LocalDateTime();
         LocalDateTime dayThree = dayOne.plusDays(3);

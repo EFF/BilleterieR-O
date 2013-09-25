@@ -9,9 +9,10 @@ import org.junit.Test;
 import play.test.FakeApplication;
 import play.test.Helpers;
 
-import static org.fest.assertions.Assertions.assertThat;
+import static org.junit.Assert.assertEquals;
 
 public class BootstrapTest {
+
     private EventDao eventDao;
     private Bootstrap bootstrap;
     private FakeApplication app;
@@ -38,7 +39,7 @@ public class BootstrapTest {
         bootstrap.initData();
 
         //Assert
-        assertThat(eventDao.list().size()).isEqualTo(2);
+        assertEquals(2, eventDao.count());
     }
 
     @Test
@@ -50,6 +51,6 @@ public class BootstrapTest {
         bootstrap.deleteAll();
 
         //Assert
-        assertThat(eventDao.list().size()).isEqualTo(0);
+        assertEquals(0, eventDao.count());
     }
 }

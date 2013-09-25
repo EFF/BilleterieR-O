@@ -1,21 +1,20 @@
 package ca.ulaval.glo4003.models;
 
 import org.joda.time.LocalDateTime;
+
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-public class Event {
+public class Event extends Record {
 
-    private long id;
     private List<Category> categories;
     private Sport sport;
     private Gender gender;
     private Team team;
     private LocalDateTime date;
 
-    public Event(long id, Sport sport, Gender gender) {
-        this.id = id;
+    public Event(Sport sport, Gender gender) {
         this.sport = sport;
         this.gender = gender;
         categories = new ArrayList<>();
@@ -35,10 +34,6 @@ public class Event {
 
     public void addCategory(Category category) {
         categories.add(category);
-    }
-
-    public long getId() {
-        return id;
     }
 
     public List<Category> getCategories() {
