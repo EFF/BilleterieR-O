@@ -14,7 +14,7 @@ import static play.test.Helpers.*;
 public class EventTest {
 
     @Test
-    public void returnAEventWithPricesAndNumberOfTicketsPerCategorie() {
+    public void returnAnEventWithPricesAndNumberOfTicketsPerCategory() {
         running(testServer(3333, fakeApplication(new TestGlobal())), FIREFOX, new F.Callback<TestBrowser>() {
             public void invoke(TestBrowser browser) {
                 browser.goTo("http://localhost:3333/#!/events/1");
