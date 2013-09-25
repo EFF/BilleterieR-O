@@ -19,7 +19,7 @@ public class Global extends GlobalSettings {
     public void onStart(Application application) {
         super.onStart(application);
 
-        if(play.Play.isDev()){
+        if (play.Play.isDev()) {
             Bootstrap bootstrap = INJECTOR.getInstance(Bootstrap.class);
             bootstrap.initData();
         }

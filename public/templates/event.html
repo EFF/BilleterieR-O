@@ -7,21 +7,20 @@
 <div class="col-md-8 col-md-offset-2">
     <table class="table">
         <thead>
-            <tr>
-                <th>Catégorie</th>
-                <th>Prix</th>
-                <th>Disponibles</th>
-            </tr>
+        <tr>
+            <th>Prix</th>
+            <th>Disponibles</th>
+            <th></th>
+        </tr>
         </thead>
         <tbody>
-            <tr class="category" ng-repeat="category in event.categories">
-                <th>{{category.id}}</th>
-                <th>{{category.price}}$</th>
-                <th>{{category.numberOfTickets}}</th>
-                <th>
-                    <button class="btn btn-success">Acheter</button>
-                </th>
-            </tr>
+        <tr class="category" ng-repeat="category in event.categories">
+            <th>{{category.price}}$</th>
+            <th>{{category.numberOfTickets}}</th>
+            <th>
+                <button class="btn btn-success">Acheter</button>
+            </th>
+        </tr>
         </tbody>
     </table>
 </div>

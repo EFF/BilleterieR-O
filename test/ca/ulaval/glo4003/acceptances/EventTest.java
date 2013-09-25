@@ -24,10 +24,8 @@ public class EventTest {
                 assertThat(categories.size()).isEqualTo(2);
 
                 //TODO use some classes instead of contains on the whole element
-                assertThat(categories.get(0).getText()).contains("1");
                 assertThat(categories.get(0).getText()).contains("12$");
                 assertThat(categories.get(0).getText()).contains("120");
-                assertThat(categories.get(1).getText()).contains("2");
                 assertThat(categories.get(1).getText()).contains("8$");
                 assertThat(categories.get(1).getText()).contains("1200");
             }

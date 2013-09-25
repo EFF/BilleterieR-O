@@ -40,6 +40,4 @@ public class EventSearchCriteria {
     public void setTeamName(String teamName) {
         this.teamName = teamName;
     }
-
-
 }

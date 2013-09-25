@@ -1,10 +1,10 @@
 package ca.ulaval.glo4003.controllers;
 
+import ca.ulaval.glo4003.dataaccessobjects.EventDao;
+import ca.ulaval.glo4003.dataaccessobjects.RecordNotFoundException;
 import ca.ulaval.glo4003.models.Event;
 import ca.ulaval.glo4003.models.EventSearchCriteria;
-import ca.ulaval.glo4003.dataaccessobjects.EventDao;
 import com.google.inject.Inject;
-import org.joda.time.LocalDate;
 import org.joda.time.LocalDateTime;
 import play.libs.Json;
 import play.mvc.Controller;
@@ -42,11 +42,11 @@ public class Events extends Controller {
     }
 
     public Result show(long id) {
-        Event event = eventDao.read(id);
-        if (event == null) {
-            return notFound();
-        } else {
+        try {
+            Event event = eventDao.read(id);
             return ok(Json.toJson(event));
+        } catch (RecordNotFoundException e) {
+            return notFound();
         }
     }
 }

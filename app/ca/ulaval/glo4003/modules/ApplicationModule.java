@@ -1,6 +1,5 @@
 package ca.ulaval.glo4003.modules;
 
-import ca.ulaval.glo4003.Bootstrap;
 import ca.ulaval.glo4003.dataaccessobjects.EventDao;
 import ca.ulaval.glo4003.dataaccessobjects.EventDaoInMemory;
 import com.google.inject.AbstractModule;
