@@ -2,18 +2,12 @@ package ca.ulaval.glo4003.models;
 
 public class Category {
 
-    private long id;
     private double price;
     private int numberOfTickets;
 
-    public Category(long id, double price, int numberOfTickets) {
-        this.id = id;
+    public Category(double price, int numberOfTickets) {
         this.price = price;
         this.numberOfTickets = numberOfTickets;
-    }
-
-    public long getId() {
-        return id;
     }
 
     public double getPrice() {

@@ -1,0 +1,26 @@
+<span ng-switch="event.gender">
+    <h1 ng-switch-when="MALE">{{event.sport.name}} masculin</h1>
+    <h1 ng-switch-when="FEMALE">{{event.sport.name}} féminin</h1>
+</span>
+<span>{{event.dateAsString | date:'dd-MM-yyyy HH:mm'}}</span>
+<h2>Billets</h2>
+<div class="col-md-8 col-md-offset-2">
+    <table class="table">
+        <thead>
+        <tr>
+            <th>Prix</th>
+            <th>Disponibles</th>
+            <th></th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr class="category" ng-repeat="category in event.categories">
+            <th>{{category.price}}$</th>
+            <th>{{category.numberOfTickets}}</th>
+            <th>
+                <button class="btn btn-success">Acheter</button>
+            </th>
+        </tr>
+        </tbody>
+    </table>
+</div>

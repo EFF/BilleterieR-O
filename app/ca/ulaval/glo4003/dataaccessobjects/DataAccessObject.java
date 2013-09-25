@@ -8,9 +8,13 @@ public interface DataAccessObject<T> {
 
     public void create(T event);
 
-    public T read(long id);
+    public T read(long id) throws RecordNotFoundException;
 
     public void update(T event);
 
-    public void delete(long id);
+    public void delete(long id) throws RecordNotFoundException;
+
+    public void deleteAll();
+
+    public int count();
 }
