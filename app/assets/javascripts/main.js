@@ -10,8 +10,5 @@ require.config({
     }
 });
 
-require(['jQuery', 'angular', 'routes'], function($, angular, routes) {
-    $(function () {
-        angular.bootstrap(document, ['billetterieRO']);
-    });
+require(['routes'], function() {
 });

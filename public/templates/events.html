@@ -28,11 +28,9 @@
             <tr class="event" ng-repeat="event in events">
                 <td class="date">{{event.dateAsString | date:'dd-MM-yyyy HH:mm'}}</td>
                 <td class="sport">{{event.sport.name}}</td>
-                <td class="gender">
-                    {{ event.gender | gender }}
-                </td>
+                <td class="gender">{{event.gender | gender}}</td>
                 <td>
-                    <span ng-bind="event.totalNumberOfTickets" class="numberOfTickets"></span> billets disponibles
+                    <span class="numberOfTickets">{{event.totalNumberOfTickets}}</span> billets disponibles
                 </td>
                 <td>
                     <a class="btn btn-info btn-xs" href="/#!/events/{{event.id}}">Voir</a>
