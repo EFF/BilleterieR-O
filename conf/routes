@@ -11,3 +11,4 @@ GET     /assets/*file                   controllers.Assets.at(path="/public", fi
 #API
 GET     /api/events                     @ca.ulaval.glo4003.controllers.Events.index()
 GET     /api/events/:id                 @ca.ulaval.glo4003.controllers.Events.show(id: Long)
+GET     /api/facets                     @ca.ulaval.glo4003.controllers.Facets.index()

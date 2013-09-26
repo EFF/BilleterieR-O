@@ -8,6 +8,7 @@ public class EventSearchCriteria {
     private String sportName;
     private LocalDateTime dateStart;
     private LocalDateTime dateEnd;
+    private Gender gender;
 
     public LocalDateTime getDateEnd() {
         return dateEnd;
@@ -39,5 +40,13 @@ public class EventSearchCriteria {
 
     public void setTeamName(String teamName) {
         this.teamName = teamName;
+    }
+
+    public Gender getGender() {
+        return gender;
+    }
+
+    public void setGender(Gender gender) {
+        this.gender = gender;
     }
 }
