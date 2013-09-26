@@ -13,21 +13,24 @@ import static org.junit.Assert.assertEquals;
 public class DaoInMemoryTest {
 
     private static final int UNEXISTING_ID = 10;
-    private DaoInMemory<Record> dao;
+    private static final int A_VALUE = 50;
+    private static final int ANOTHER_VALUE = 100;
+
+    private DaoInMemory<TestRecord> dao;
 
     @Before
     public void setUp() {
-        dao = new DaoInMemory<Record>() {};
+        dao = new DaoInMemory<TestRecord>() {};
     }
 
     @Test
     public void createOneElement() {
         // Arrange
-        Record record = new TestRecord();
+        TestRecord record = new TestRecord();
         dao.create(record);
 
         // Act
-        List<Record> results = dao.list();
+        List<TestRecord> results = dao.list();
 
         // Assert
         assertEquals(1, dao.count());
@@ -37,9 +40,9 @@ public class DaoInMemoryTest {
     @Test
     public void createManyElements() {
         // Arrange
-        Record record1 = new TestRecord();
-        Record record2 = new TestRecord();
-        Record record3 = new TestRecord();
+        TestRecord record1 = new TestRecord();
+        TestRecord record2 = new TestRecord();
+        TestRecord record3 = new TestRecord();
         dao.create(record1);
         dao.create(record2);
         dao.create(record3);
@@ -55,9 +58,23 @@ public class DaoInMemoryTest {
     }
 
     @Test
+    public void changesToARecordWithoutSavingItDoesntAlterTheDb() throws RecordNotFoundException {
+        // Arrange
+        TestRecord record = new TestRecord();
+        record.setValue(A_VALUE);
+        dao.create(record);
+
+        // Act
+        record.setValue(ANOTHER_VALUE);
+
+        // Assert
+        assertEquals(A_VALUE, dao.read(1).getValue());
+    }
+
+    @Test
     public void readAnExistingRecordReturnThisRecord() throws RecordNotFoundException {
         // Arrange
-        Record record = new TestRecord();
+        TestRecord record = new TestRecord();
         dao.create(record);
 
         // Act
@@ -76,8 +93,8 @@ public class DaoInMemoryTest {
     @Test
     public void deleteAllRecords() {
         // Arrange
-        Record record1 = new TestRecord();
-        Record record2 = new TestRecord();
+        TestRecord record1 = new TestRecord();
+        TestRecord record2 = new TestRecord();
 
         dao.create(record1);
         dao.create(record2);
@@ -92,8 +109,8 @@ public class DaoInMemoryTest {
     @Test
     public void deleteOneRecord() throws RecordNotFoundException {
         // Arrange
-        Record record1 = new TestRecord();
-        Record record2 = new TestRecord();
+        TestRecord record1 = new TestRecord();
+        TestRecord record2 = new TestRecord();
         dao.create(record1);
         dao.create(record2);
 
@@ -108,12 +125,60 @@ public class DaoInMemoryTest {
     @Test(expected = RecordNotFoundException.class)
     public void deleteUnexistingRecord() throws RecordNotFoundException {
         // Arrange
-        Record record = new TestRecord();
+        TestRecord record = new TestRecord();
         dao.create(record);
 
         // Act
         dao.delete(UNEXISTING_ID);
     }
 
-    public static class TestRecord extends Record {}
+    @Test
+    public void updateRecord() throws RecordNotFoundException {
+        // Arrange
+        TestRecord record1 = new TestRecord();
+        record1.setValue(A_VALUE);
+        TestRecord record2 = new TestRecord();
+        dao.create(record1);
+        dao.create(record2);
+
+        // Act
+        record1.setValue(ANOTHER_VALUE);
+        dao.update(record1);
+
+        // Assert
+        assertEquals(2, dao.count());
+        assertEquals(ANOTHER_VALUE, dao.read(record1.getId()).getValue());
+    }
+
+    @Test(expected = RecordNotFoundException.class)
+    public void updateUnsavedRecordThrowAnException() throws RecordNotFoundException {
+        // Arrange
+        TestRecord unsavedRecord = new TestRecord();
+
+        // Act
+        dao.update(unsavedRecord);
+    }
+
+    @Test(expected = RecordNotFoundException.class)
+    public void updatePreviouslyDeletedRecordThrowAnException() throws RecordNotFoundException {
+        // Arrange
+        TestRecord record = new TestRecord();
+        dao.create(record);
+        dao.delete(record.getId());
+
+        // Act
+        dao.update(record);
+    }
+
+    public static class TestRecord extends Record {
+        private int value;
+
+        public int getValue() {
+            return value;
+        }
+
+        public void setValue(int value) {
+            this.value = value;
+        }
+    }
 }

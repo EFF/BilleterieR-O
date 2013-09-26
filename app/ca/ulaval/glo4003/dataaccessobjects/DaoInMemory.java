@@ -1,7 +1,7 @@
 package ca.ulaval.glo4003.dataaccessobjects;
 
 import ca.ulaval.glo4003.models.Record;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
+import org.apache.commons.lang3.SerializationUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,10 +11,11 @@ public abstract class DaoInMemory<T extends Record> implements DataAccessObject<
     private long lastId = 1;
     protected List<T> list = new ArrayList<>();
 
-    public void create(T element) {
+    public T create(T element) {
         element.setId(lastId);
-        list.add(element);
+        persist(element);
         lastId++;
+        return element;
     }
 
     public T read(long id) throws RecordNotFoundException {
@@ -26,9 +27,9 @@ public abstract class DaoInMemory<T extends Record> implements DataAccessObject<
         throw new RecordNotFoundException();
     }
 
-    public void update(T element) {
-        // TODO
-        throw new NotImplementedException();
+    public void update(T element) throws RecordNotFoundException {
+        delete(element.getId());
+        persist(element);
     }
 
     public void delete(long id) throws RecordNotFoundException {
@@ -47,5 +48,14 @@ public abstract class DaoInMemory<T extends Record> implements DataAccessObject<
 
     public int count() {
         return list.size();
+    }
+
+    private void persist(T element) {
+        // We clone the object before saving it in the DB
+        // Otherwise, a change on a record outside this
+        // dao would reflect in the DB without calling
+        // the update method
+        T elementCopy = SerializationUtils.clone(element);
+        list.add(elementCopy);
     }
 }

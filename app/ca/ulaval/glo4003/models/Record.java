@@ -1,6 +1,8 @@
 package ca.ulaval.glo4003.models;
 
-public abstract class Record {
+import java.io.Serializable;
+
+public abstract class Record implements Serializable {
 
     private long id;
 

@@ -1,6 +1,8 @@
 package ca.ulaval.glo4003.models;
 
-public class Category {
+import java.io.Serializable;
+
+public class Category implements Serializable {
 
     private double price;
     private int numberOfTickets;

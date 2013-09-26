@@ -6,11 +6,11 @@ public interface DataAccessObject<T> {
 
     public List<T> list();
 
-    public void create(T event);
+    public T create(T event);
 
     public T read(long id) throws RecordNotFoundException;
 
-    public void update(T event);
+    public void update(T event) throws RecordNotFoundException;
 
     public void delete(long id) throws RecordNotFoundException;
 
