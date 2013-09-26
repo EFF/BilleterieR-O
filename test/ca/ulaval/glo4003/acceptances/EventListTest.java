@@ -1,34 +1,48 @@
 package ca.ulaval.glo4003.acceptances;
 
 import ca.ulaval.glo4003.TestGlobal;
-import org.fluentlenium.core.domain.FluentList;
-import org.fluentlenium.core.domain.FluentWebElement;
+import ca.ulaval.glo4003.acceptances.pages.EventsPage;
 import org.junit.Test;
 import play.libs.F;
 import play.test.TestBrowser;
 
-import static org.fest.assertions.Assertions.assertThat;
+import static org.fest.assertions.fluentlenium.FluentLeniumAssertions.assertThat;
+import static org.junit.Assert.assertTrue;
 import static play.test.Helpers.*;
 
 public class EventListTest {
 
     @Test
-    public void displayEventListWithPricesCategoriesAndNumberOfTickets() {
+    public void filtersEventList() {
         running(testServer(3333, fakeApplication(new TestGlobal())), FIREFOX, new F.Callback<TestBrowser>() {
+            @Override
             public void invoke(TestBrowser browser) {
-                browser.goTo("http://localhost:3333/#!/events");
-                browser.await().atMost(5000).until(".event").isPresent();
-                FluentList<FluentWebElement> events = browser.find(".event");
+                EventsPage eventsPage = new EventsPage(browser.getDriver());
+                eventsPage.go();
+                eventsPage.isAt();
 
-                //TODO use some classes instead of contains on the whole element
-                assertThat(events.size()).isEqualTo(2);
-                assertThat(events.get(0).getText()).contains("Soccer");
-                assertThat(events.get(0).getText()).contains("Masculin");
-                assertThat(events.get(1).getText()).contains("Soccer");
-                assertThat(events.get(1).getText()).contains("Féminin");
+                // No filter => 2 results
+                eventsPage.waitUntilEventsHasSize(2);
+                assertTrue(eventsPage.eventHas(0, "Soccer", "Masculin", 1320));
+                assertTrue(eventsPage.eventHas(1, "Soccer", "Féminin", 1320));
 
-                assertThat(events.get(0).findFirst(".numberOfTickets").getText()).contains("1320");
-                assertThat(events.get(1).findFirst(".numberOfTickets").getText()).contains("1320");
+                // Select Golf => no result
+                eventsPage.selectSport("Golf");
+                eventsPage.waitUntilEventsHasSize(0);
+                assertThat(eventsPage.getEmptyAlert()).isDisplayed();
+
+                // Select Soccer => 2 results
+                eventsPage.selectSport("Soccer");
+                eventsPage.waitUntilEventsHasSize(2);
+                assertThat(eventsPage.getEmptyAlert()).isNotDisplayed();
+                assertTrue(eventsPage.eventHas(0, "Soccer", "Masculin", 1320));
+                assertTrue(eventsPage.eventHas(1, "Soccer", "Féminin", 1320));
+
+                // Select Soccer masculin => 1 result
+                eventsPage.selectGender("MALE");
+                eventsPage.waitUntilEventsHasSize(1);
+                assertThat(eventsPage.getEmptyAlert()).isNotDisplayed();
+                assertTrue(eventsPage.eventHas(0, "Soccer", "Masculin", 1320));
             }
         });
     }

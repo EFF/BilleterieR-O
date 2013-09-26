@@ -2,6 +2,7 @@ package ca.ulaval.glo4003.dataaccessobjects;
 
 import ca.ulaval.glo4003.models.Event;
 import ca.ulaval.glo4003.models.EventSearchCriteria;
+import ca.ulaval.glo4003.models.Gender;
 import com.google.common.base.Predicate;
 import com.google.common.collect.FluentIterable;
 import org.apache.commons.lang3.StringUtils;
@@ -31,6 +32,7 @@ public class EventDaoInMemory extends DaoInMemory<Event> implements EventDao {
         results = filterByTeamName(criteria.getTeamName(), results);
         results = filterByDateStart(criteria.getDateStart(), results);
         results = filterByDateEnd(criteria.getDateEnd(), results);
+        results = filterByGender(criteria.getGender(), results);
 
         return results.toList();
     }
@@ -69,6 +71,15 @@ public class EventDaoInMemory extends DaoInMemory<Event> implements EventDao {
             public boolean apply(Event input) {
                 return StringUtils.isBlank(teamName) || input.getTeam().getName().toLowerCase().equals(teamName
                         .toLowerCase());
+            }
+        });
+    }
+
+    private FluentIterable<Event> filterByGender(final Gender gender, FluentIterable<Event> results) {
+        return results.filter(new Predicate<Event>() {
+            @Override
+            public boolean apply(Event input) {
+                return gender == null || input.getGender().equals(gender);
             }
         });
     }

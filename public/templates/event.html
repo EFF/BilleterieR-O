@@ -4,23 +4,21 @@
 </span>
 <span>{{event.dateAsString | date:'dd-MM-yyyy HH:mm'}}</span>
 <h2>Billets</h2>
-<div class="col-md-8 col-md-offset-2">
-    <table class="table">
-        <thead>
-        <tr>
-            <th>Prix</th>
-            <th>Disponibles</th>
-            <th></th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr class="category" ng-repeat="category in event.categories">
-            <th>{{category.price}}$</th>
-            <th>{{category.numberOfTickets}}</th>
-            <th>
-                <button class="btn btn-success">Acheter</button>
-            </th>
-        </tr>
-        </tbody>
-    </table>
-</div>
+<table class="table">
+    <thead>
+    <tr>
+        <th>Prix</th>
+        <th>Billets disponibles</th>
+        <th></th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr class="category" ng-repeat="category in event.categories">
+        <td class="price">{{category.price}}$</td>
+        <td class="numberOfTickets">{{category.numberOfTickets}}</td>
+        <td>
+            <button class="btn btn-success">Acheter</button>
+        </td>
+    </tr>
+    </tbody>
+</table>

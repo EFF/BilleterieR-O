@@ -1,6 +1,6 @@
 package ca.ulaval.glo4003.models;
 
-public class Sport {
+public class Sport extends Record {
 
     private String name;
 
