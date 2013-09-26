@@ -1,39 +1,43 @@
 <h1>Événements</h1>
 <div class="row">
     <div class="col-md-3 well">
-        <select ng-model="filters.sport" ng-options="s for s in sports">
+        <select ng-model="filters.sport" id="sportFilter">
             <option value="">Filtrer par sport...</option>
+            <option value="{{s.name}}" ng-repeat="s in facets.sport">{{s.name}}</option>
+        </select>
+
+        <select ng-model="filters.gender" id="genderFilter">
+            <option value="">Filtrer par sexe...</option>
+            <option value="{{g}}" ng-repeat="g in facets.gender">{{g | gender}}</option>
         </select>
     </div>
     <div class="col-md-8 col-md-offset-1">
-        <div class="alert alert-warning" ng-hide="events">Aucune partie</div>
-        <table class="table" ng-show="events">
+        <div class="alert alert-warning" ng-hide="events" id="emptyAlert">Aucune partie</div>
+        <div class="alert alert-info" ng-show="isLoading" id="loadingAlert">Chargement en cours...</div>
+        <table class="table" ng-show="events && !isLoading" id="events">
             <thead>
-                <tr>
-                    <th>Date</th>
-                    <th>Sport</th>
-                    <th>Genre</th>
-                    <th>Billets disponibles</th>
-                    <th>Actions</th>
-                </tr>
+            <tr>
+                <th>Date</th>
+                <th>Sport</th>
+                <th>Genre</th>
+                <th>Billets disponibles</th>
+                <th>Actions</th>
+            </tr>
             </thead>
             <tbody>
-                <tr class="event" ng-repeat="event in events">
-                    <td>{{event.dateAsString | date:'dd-MM-yyyy HH:mm'}}</td>
-                    <td>{{event.sport.name}}</td>
-                    <td>
-                        <span ng-switch="event.gender">
-                            <span ng-switch-when="MALE">Masculin</span>
-                            <span ng-switch-when="FEMALE">Féminin</span>
-                        </span>
-                    </td>
-                    <td class="numberOfTickets">
-                        {{event.totalNumberOfTickets}} billets disponibles
-                    </td>
-                    <td>
-                        <a class="btn btn-info btn-xs" href="/#!/events/{{event.id}}">Voir</a>
-                    </td>
-                </tr>
+            <tr class="event" ng-repeat="event in events">
+                <td class="date">{{event.dateAsString | date:'dd-MM-yyyy HH:mm'}}</td>
+                <td class="sport">{{event.sport.name}}</td>
+                <td class="gender">
+                    {{ event.gender | gender }}
+                </td>
+                <td>
+                    <span ng-bind="event.totalNumberOfTickets" class="numberOfTickets"></span> billets disponibles
+                </td>
+                <td>
+                    <a class="btn btn-info btn-xs" href="/#!/events/{{event.id}}">Voir</a>
+                </td>
+            </tr>
             </tbody>
         </table>
     </div>

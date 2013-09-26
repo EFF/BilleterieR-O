@@ -30,7 +30,6 @@ public class Bootstrap {
         sportDao.create(soccer);
         sportDao.create(golf);
 
-        //TODO use the helper
         Event event1 = new Event(soccer, Gender.MALE);
         event1.setDate(new LocalDateTime());
         Category category1 = new Category(12.0, 120);
@@ -52,8 +51,10 @@ public class Bootstrap {
     }
 
     public void deleteAll() {
-        if (play.Play.isDev() || play.Play.isTest()) {
-            eventDao.deleteAll();
+        if (!play.Play.isDev() && !play.Play.isTest()) {
+            return; // You can only bootstrap in dev or test mode
         }
+        eventDao.deleteAll();
+        sportDao.deleteAll();
     }
 }

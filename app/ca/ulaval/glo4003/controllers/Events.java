@@ -4,6 +4,7 @@ import ca.ulaval.glo4003.dataaccessobjects.EventDao;
 import ca.ulaval.glo4003.dataaccessobjects.RecordNotFoundException;
 import ca.ulaval.glo4003.models.Event;
 import ca.ulaval.glo4003.models.EventSearchCriteria;
+import ca.ulaval.glo4003.models.Gender;
 import com.google.inject.Inject;
 import org.joda.time.LocalDateTime;
 import play.libs.Json;
@@ -24,15 +25,18 @@ public class Events extends Controller {
         final String dateStart = request().getQueryString("dateStart");
         final String dateEnd = request().getQueryString("dateEnd");
         final String team = request().getQueryString("team");
+        final String genderString = request().getQueryString("gender");
 
         LocalDateTime start = dateStart == null ? null : LocalDateTime.parse(dateStart);
         LocalDateTime end = dateEnd == null ? null : LocalDateTime.parse(dateEnd);
+        Gender gender = genderString == null ? null : Gender.valueOf(genderString);
 
         EventSearchCriteria eventSearchCriteria = new EventSearchCriteria();
         eventSearchCriteria.setSportName(sport);
         eventSearchCriteria.setTeamName(team);
         eventSearchCriteria.setDateEnd(start);
         eventSearchCriteria.setDateStart(end);
+        eventSearchCriteria.setGender(gender);
 
         try {
             return ok(Json.toJson(eventDao.search(eventSearchCriteria)));

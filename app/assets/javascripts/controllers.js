@@ -1,20 +1,26 @@
 define(['app'], function (app) {
-    var events = function ($scope, $http) {
+    app.controller('EventsController', ['$scope', '$http', function ($scope, $http) {
         $scope.events = null;
         $scope.filters = {};
-        // TODO: Fetch facettes
-        $scope.sports = ['Soccer', 'Golf', 'Football'];
+        $scope.isLoading = false;
+
+        $http.get('api/facets').success(function (facets) {
+            $scope.facets = facets;
+        });
 
         function apiCallSuccessCallback(results) {
             $scope.events = results;
+            $scope.isLoading = false;
         };
 
         function apiCallErrorCallback(err) {
             //TODO emit error event and handle it in a directive
             $scope.events = [];
+            $scope.isLoading = false;
         };
 
         function apiCall() {
+            $scope.isLoading = true;
             var url = '/api/events';
             var nbFilters = 0;
 
@@ -33,16 +39,14 @@ define(['app'], function (app) {
                 .error(apiCallErrorCallback);
         }
 
-        $scope.$watch('filters.sport', function(newValue, oldValue) {
-            if (newValue != oldValue) {
-                apiCall();
-            }
-        });
+        $scope.$watch('filters', function (newValue, oldValue) {
+            apiCall();
+        }, true);
 
         apiCall();
-    }
+    }]);
 
-    var event = function ($scope, $http, $routeParams) {
+    app.controller('EventController', ['$scope', '$http', '$routeParams', function ($scope, $http, $routeParams) {
         var eventId = $routeParams.eventId;
         $scope.event = null;
 
@@ -58,8 +62,5 @@ define(['app'], function (app) {
         $http.get('/api/events/' + eventId)
             .success(apiCallSuccessCallback)
             .error(apiCallErrorCallback);
-    }
-
-    app.controller('EventsController', ['$scope', '$http', events]);
-    app.controller('EventController', ['$scope', '$http', '$routeParams', event]);
-})
+    }]);
+});
