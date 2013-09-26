@@ -1,6 +1,6 @@
 # Billetterie R&O
 
-Projet dévelopé dans le cadre du cours GLO-4003 Architecture logiciellle
+Projet développé dans le cadre du cours GLO-4003 Architecture logiciellle
 
 ## Pré-requis
 * Java 7
