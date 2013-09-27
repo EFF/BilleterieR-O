@@ -34,8 +34,8 @@ public class Events extends Controller {
         EventSearchCriteria eventSearchCriteria = new EventSearchCriteria();
         eventSearchCriteria.setSportName(sport);
         eventSearchCriteria.setTeamName(team);
-        eventSearchCriteria.setDateEnd(start);
-        eventSearchCriteria.setDateStart(end);
+        eventSearchCriteria.setDateEnd(end);
+        eventSearchCriteria.setDateStart(start);
         eventSearchCriteria.setGender(gender);
 
         try {

@@ -1,20 +1,35 @@
 <h1>Événements</h1>
 <div class="row">
     <div class="col-md-3 well">
-        <select ng-model="filters.sport" id="sportFilter">
+        <p>Recherche</p>
+        <select id="sportFilter" class="form-control" ng-model="filters.sport">
             <option value="">Filtrer par sport...</option>
             <option value="{{s.name}}" ng-repeat="s in facets.sport">{{s.name}}</option>
         </select>
-
-        <select ng-model="filters.gender" id="genderFilter">
+        </br>
+        <select id="genderFilter" class= "form-control" ng-model="filters.gender">
             <option value="">Filtrer par sexe...</option>
             <option value="{{g}}" ng-repeat="g in facets.gender">{{g | gender}}</option>
         </select>
+        </br>
+        <div class="row">
+            <div class="col-md-12">
+                <p>Date de début</p>
+                <input id="dateStartFilter" type="date" ng-model="filters.dateStart" ng-minlength=10/>
+            </div>
+        </div>
+        </br>
+        <div class="row">
+            <div class="col-md-12">
+                <p>Date de fin</p>
+                <input id="dateEndFilter" type="date" ng-model="filters.dateEnd" ng-minlength=10/>
+            </div>
+        </div>
     </div>
     <div class="col-md-8 col-md-offset-1">
         <div class="alert alert-warning" ng-hide="events" id="emptyAlert">Aucune partie</div>
         <div class="alert alert-info" ng-show="isLoading" id="loadingAlert">Chargement en cours...</div>
-        <table class="table" ng-show="events && !isLoading" id="events">
+        <table class="table" ng-show="events.length != 0 && !isLoading" id="events">
             <thead>
             <tr>
                 <th>Date</th>
