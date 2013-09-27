@@ -1,5 +1,5 @@
 import ca.ulaval.glo4003.Bootstrap;
-import ca.ulaval.glo4003.modules.ApplicationModule;
+import ca.ulaval.glo4003.modules.StagingModule;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import play.Application;
@@ -26,6 +26,6 @@ public class Global extends GlobalSettings {
     }
 
     private static Injector createInjector() {
-        return Guice.createInjector(new ApplicationModule());
+        return Guice.createInjector(new StagingModule());
     }
 }
