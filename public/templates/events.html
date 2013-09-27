@@ -1,15 +1,30 @@
 <h1>Événements</h1>
 <div class="row">
     <div class="col-md-3 well">
-        <select ng-model="filters.sport" id="sportFilter">
+        <p>Recherche</p>
+        <select class="form-control" ng-model="filters.sport" id="sportFilter">
             <option value="">Filtrer par sport...</option>
             <option value="{{s.name}}" ng-repeat="s in facets.sport">{{s.name}}</option>
         </select>
-
-        <select ng-model="filters.gender" id="genderFilter">
+        </br>
+        <select class= "form-control" ng-model="filters.gender" id="genderFilter">
             <option value="">Filtrer par sexe...</option>
             <option value="{{g}}" ng-repeat="g in facets.gender">{{g | gender}}</option>
         </select>
+        </br>
+        <div class="row">
+            <div class="col-md-12">
+                <p>Date de début</p>
+                <input type="date" ng-model="filters.dateStart"/>
+            </div>
+        </div>
+        </br>
+        <div class="row">
+            <div class="col-md-12">
+                <p>Date de fin</p>
+                <input type="date" ng-model="filters.dateEnd"/>
+            </div>
+        </div>
     </div>
     <div class="col-md-8 col-md-offset-1">
         <div class="alert alert-warning" ng-hide="events" id="emptyAlert">Aucune partie</div>
