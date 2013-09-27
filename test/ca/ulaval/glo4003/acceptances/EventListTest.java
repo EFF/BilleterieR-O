@@ -21,6 +21,8 @@ public class EventListTest {
                 eventsPage.go();
                 eventsPage.isAt();
 
+                assertThat(eventsPage.getEmptyAlert()).isNotDisplayed();
+
                 // No filter => 2 results
                 eventsPage.waitUntilEventsHasSize(2);
                 assertTrue(eventsPage.eventHas(0, "Soccer", "Masculin", 1320));
@@ -29,6 +31,7 @@ public class EventListTest {
                 // Select Golf => no result
                 eventsPage.selectSport("Golf");
                 eventsPage.waitUntilEventsHasSize(0);
+                assertThat(eventsPage.getEventsTable()).isNotDisplayed();
                 assertThat(eventsPage.getEmptyAlert()).isDisplayed();
 
                 // Select Soccer => 2 results

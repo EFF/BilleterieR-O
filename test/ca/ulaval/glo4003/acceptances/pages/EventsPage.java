@@ -48,6 +48,10 @@ public class EventsPage extends BaseFluentPage {
         return findFirst("#emptyAlert");
     }
 
+    public FluentWebElement getEventsTable() {
+        return findFirst("#events");
+    }
+
     public boolean eventHas(int i, String expectedSport, String expectedGender, Integer expectedNumberOfTickets) {
         FluentWebElement event = getEvents().get(i);
         String sport = event.findFirst(".sport").getText();
@@ -56,5 +60,9 @@ public class EventsPage extends BaseFluentPage {
 
         return (expectedSport.equals(sport) && expectedGender.equals(gender) && expectedNumberOfTickets.equals
                 (numberOfTickets));
+    }
+
+    public FluentWebElement getLoadingAlert() {
+        return findFirst("#loadingAlert");
     }
 }
