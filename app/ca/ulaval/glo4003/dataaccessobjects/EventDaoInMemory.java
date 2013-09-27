@@ -34,7 +34,7 @@ public class EventDaoInMemory extends DaoInMemory<Event> implements EventDao {
         results = filterByDateEnd(criteria.getDateEnd(), results);
         results = filterByGender(criteria.getGender(), results);
 
-        return results.toImmutableList();
+        return results.toList();
     }
 
     private FluentIterable<Event> filterByDateStart(final LocalDateTime dateStart, FluentIterable<Event> results) {

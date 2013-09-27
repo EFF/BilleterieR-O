@@ -16,7 +16,6 @@ import play.test.Helpers;
 import java.util.HashMap;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 
 public class FacetsTest {
@@ -36,7 +35,7 @@ public class FacetsTest {
     }
 
     @Test
-    public void indexReturnsAllEventsWhenNoParameters() throws Exception {
+    public void indexReturnsAllFacets() throws Exception {
         Http.Context.current.set(new Http.Context((long) 1, mock(play.api.mvc.RequestHeader.class),
                 mock(Http.Request.class), new HashMap<String, String>(), new HashMap<String, String>(),
                 new HashMap<String, Object>()));
