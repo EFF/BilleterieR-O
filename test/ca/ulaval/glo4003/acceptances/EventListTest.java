@@ -64,6 +64,22 @@ public class EventListTest {
                 // Late date start => 0 results
                 eventsPage.selectDateStart("2015-09-09");
                 assertThat(eventsPage.getEmptyAlert()).isDisplayed();
+
+                // Early date start => 2 results
+                eventsPage.selectDateStart("2011-09-09");
+                assertTrue(eventsPage.eventHas(0, "Soccer", "Masculin", 1320));
+                assertTrue(eventsPage.eventHas(1, "Soccer", "Féminin", 1320));
+
+                // Early date start, Early date end => 0 results
+                eventsPage.selectDateStart("2011-09-09");
+                eventsPage.selectDateEnd("2012-09-09");
+                assertThat(eventsPage.getEmptyAlert()).isDisplayed();
+
+                // Early date start, Late date end => 2 results
+                eventsPage.selectDateStart("2011-09-09");
+                eventsPage.selectDateEnd("2015-09-09");
+                assertTrue(eventsPage.eventHas(0, "Soccer", "Masculin", 1320));
+                assertTrue(eventsPage.eventHas(1, "Soccer", "Féminin", 1320));
             }
         });
     }
