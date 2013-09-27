@@ -1,6 +1,6 @@
 package ca.ulaval.glo4003;
 
-import ca.ulaval.glo4003.modules.ApplicationModule;
+import ca.ulaval.glo4003.modules.TestModule;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import play.Application;
@@ -33,6 +33,6 @@ public class TestGlobal extends GlobalSettings {
     }
 
     private static Injector createInjector() {
-        return Guice.createInjector(new ApplicationModule());
+        return Guice.createInjector(new TestModule());
     }
 }
