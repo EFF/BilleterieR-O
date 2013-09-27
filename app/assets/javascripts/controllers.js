@@ -19,6 +19,19 @@ define(['app'], function (app) {
             $scope.isLoading = false;
         };
 
+        function applyValidation(filters) {
+
+            if(typeof filters.dateStart === "String" && filters.dateStart.length != 10) {
+                return false;
+            }
+
+            if(typeof filters.dateStart === "String" && filters.dateEnd.length != 10) {
+                return false;
+            }
+
+            return true;
+        }
+
         function apiCall() {
             $scope.isLoading = true;
             var url = '/api/events';
@@ -40,7 +53,9 @@ define(['app'], function (app) {
         }
 
         $scope.$watch('filters', function (newValue, oldValue) {
-            apiCall();
+            if(applyValidation(newValue)) {
+                apiCall();
+            }
         }, true);
 
         apiCall();
