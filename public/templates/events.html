@@ -2,12 +2,12 @@
 <div class="row">
     <div class="col-md-3 well">
         <p>Recherche</p>
-        <select class="form-control" ng-model="filters.sport" id="sportFilter">
+        <select id="sportFilter" class="form-control" ng-model="filters.sport">
             <option value="">Filtrer par sport...</option>
             <option value="{{s.name}}" ng-repeat="s in facets.sport">{{s.name}}</option>
         </select>
         </br>
-        <select class= "form-control" ng-model="filters.gender" id="genderFilter">
+        <select id="genderFilter" class= "form-control" ng-model="filters.gender">
             <option value="">Filtrer par sexe...</option>
             <option value="{{g}}" ng-repeat="g in facets.gender">{{g | gender}}</option>
         </select>
@@ -15,14 +15,14 @@
         <div class="row">
             <div class="col-md-12">
                 <p>Date de début</p>
-                <input type="date" ng-model="filters.dateStart"/>
+                <input id="dateStartFilter" type="date" ng-model="filters.dateStart"/>
             </div>
         </div>
         </br>
         <div class="row">
             <div class="col-md-12">
                 <p>Date de fin</p>
-                <input type="date" ng-model="filters.dateEnd"/>
+                <input id="dateEndFilter" type="date" ng-model="filters.dateEnd"/>
             </div>
         </div>
     </div>

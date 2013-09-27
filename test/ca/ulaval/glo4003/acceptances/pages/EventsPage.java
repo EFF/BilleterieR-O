@@ -28,6 +28,14 @@ public class EventsPage extends BaseFluentPage {
         findFirst("#genderFilter").find("option[value='" + value + "']").click();
     }
 
+    public void selectDateStart(String value) {
+        fill("#dateStartFilter").with(value);
+    }
+
+    public void selectDateEnd(String value) {
+        fill("#dateEndFilter").with(value);
+    }
+
     public void waitUntilEventsHasSize(int count) {
         await().atMost(TIMEOUT).until(".event").hasSize(count);
     }

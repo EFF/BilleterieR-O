@@ -46,4 +46,25 @@ public class EventListTest {
             }
         });
     }
+
+    @Test
+    public void dateFiltersEventList() {
+        running(testServer(3333, fakeApplication(new TestGlobal())), FIREFOX, new F.Callback<TestBrowser>() {
+            @Override
+            public void invoke(TestBrowser browser) {
+                EventsPage eventsPage = new EventsPage(browser.getDriver());
+                eventsPage.go();
+                eventsPage.isAt();
+
+                // No filter => 2 results
+                eventsPage.waitUntilEventsHasSize(2);
+                assertTrue(eventsPage.eventHas(0, "Soccer", "Masculin", 1320));
+                assertTrue(eventsPage.eventHas(1, "Soccer", "Féminin", 1320));
+
+                // Late date start => 0 results
+                eventsPage.selectDateStart("2015-09-09");
+                assertThat(eventsPage.getEmptyAlert()).isDisplayed();
+            }
+        });
+    }
 }
