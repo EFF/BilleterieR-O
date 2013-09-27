@@ -45,7 +45,6 @@ public class StagingBootstrap implements Bootstrap {
                 eventDate = eventDate.plusDays(i).withSecondOfMinute(0).withMinuteOfHour(0);
                 eventDate = eventDate.withHourOfDay(18 + new Random().nextInt(4));
 
-
                 event.setDate(eventDate);
 
                 for (int j = 0; j < 3; j++) {
