@@ -7,6 +7,7 @@ import org.junit.Test;
 import play.libs.F;
 import play.test.TestBrowser;
 
+import static org.fest.assertions.Assertions.assertThat;
 import static play.test.Helpers.*;
 
 public class CartTest {
@@ -24,17 +25,19 @@ public class CartTest {
                 eventPage1.isAt();
                 eventPage1.waitUntilCategoriesHasSize(2);
                 // TODO: Add a visual feedback when you add an item in the cart
-                // TODO: Validate # of items in cart menu
                 // TODO: Prevent negative or zero quantity
                 // Buy two tickets from events/1, category 0
                 eventPage1.buyTicketsForCategory(0, 2);
+                assertThat(eventPage1.getCartSize()).isEqualTo(1);
                 // Buy five tickets from events/1, category 1
                 eventPage1.buyTicketsForCategory(1, 5);
+                assertThat(eventPage1.getCartSize()).isEqualTo(2);
                 // Buy one ticket from event #2, category 0
                 eventPage2.go();
                 eventPage2.isAt();
                 eventPage2.waitUntilCategoriesHasSize(2);
                 eventPage2.buyTicketsForCategory(0, 1);
+                assertThat(eventPage1.getCartSize()).isEqualTo(3);
                 // Check cart
                 cartPage.go();
                 cartPage.isAt();
@@ -42,4 +45,6 @@ public class CartTest {
             }
         });
     }
+
+    // TODO: Add remove item from cart test
 }
