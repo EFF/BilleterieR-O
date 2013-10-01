@@ -38,4 +38,9 @@ public class EventPage extends BaseFluentPage {
     public FluentList<FluentWebElement> getCategories() {
         return find(".category");
     }
+
+    public void buyTicketsForCategory(Integer categoryIndex, Integer quantity) {
+        fill(".category-quantity:nth-child(" + categoryIndex + ")").with(quantity.toString());
+        find(".category", categoryIndex).find(".category-add").click();
+    }
 }

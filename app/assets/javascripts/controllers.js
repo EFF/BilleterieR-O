@@ -1,4 +1,4 @@
-define(['app'], function (app) {
+define(['app'], function(app) {
     app.controller('EventsController', ['$scope', '$http', function ($scope, $http) {
         $scope.events = null;
         $scope.filters = {};
@@ -46,9 +46,13 @@ define(['app'], function (app) {
         apiCall();
     }]);
 
-    app.controller('EventController', ['$scope', '$http', '$routeParams', function ($scope, $http, $routeParams) {
+    app.controller('EventController', ['$scope', '$http', '$routeParams', 'Cart', function ($scope, $http, $routeParams, Cart) {
         var eventId = $routeParams.eventId;
         $scope.event = null;
+
+        $scope.addToCart = function (quantity, category) {
+            Cart.addItem(quantity, category, $scope.event);
+        }
 
         function apiCallSuccessCallback(result) {
             $scope.event = result
@@ -63,4 +67,27 @@ define(['app'], function (app) {
             .success(apiCallSuccessCallback)
             .error(apiCallErrorCallback);
     }]);
+
+    app.controller('CartController', ['$scope', 'Cart', function ($scope, Cart) {
+        $scope.totalItemsPrice = 0;
+        $scope.cart = Cart.getItems();
+
+        function computeTotalItemsPrice() {
+            var total = 0;
+            for (var x in $scope.cart) {
+                var item = $scope.cart[x];
+                total += item.quantity * item.category.price;
+            }
+            return total;
+        }
+
+        $scope.removeItem = Cart.removeItem;
+        $scope.removeAllItem = Cart.removeAllItem;
+
+        $scope.$watch('cart', function() {
+            $scope.totalItemsPrice = computeTotalItemsPrice();
+        }, true)
+    }]);
+
+
 });
