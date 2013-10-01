@@ -6,11 +6,11 @@ require.config({
         angularCookies: '//ajax.googleapis.com/ajax/libs/angularjs/1.0.8/angular-cookies.min'
     },
     shim: {
-        jQuery: {exports : 'jQuery'},
-        angular : {exports : 'angular'},
+        jQuery: {exports: 'jQuery'},
+        angular: {exports: 'angular'},
         angularCookies: {deps: ['angular']}
     }
 });
 
-require(['routes'], function() {
+require(['routes'], function () {
 });

@@ -1,4 +1,4 @@
-define(['app'], function(app) {
+define(['app'], function (app) {
     app.controller('EventsController', ['$scope', '$http', function ($scope, $http) {
         $scope.events = null;
         $scope.filters = {};
@@ -85,10 +85,8 @@ define(['app'], function(app) {
         $scope.removeItem = Cart.removeItem;
         $scope.removeAllItem = Cart.removeAllItem;
 
-        $scope.$watch('cart', function() {
+        $scope.$watch('cart', function () {
             $scope.totalItemsPrice = computeTotalItemsPrice();
         }, true)
     }]);
-
-
 });

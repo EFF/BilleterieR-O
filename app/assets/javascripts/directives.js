@@ -4,12 +4,12 @@ define(['app'], function (app) {
             replace: true,
             templateUrl: 'assets/templates/directives/menu.html',
             restrict: 'E',
-            controller: function($scope) {
+            controller: function ($scope) {
                 $scope.cart = Cart.getItems();
             }
         };
     }]);
-    app.directive('flashMessages', function() {
+    app.directive('flashMessages', function () {
         return {
             templateUrl: 'assets/templates/directives/flash_message.html',
             restrict: 'E',

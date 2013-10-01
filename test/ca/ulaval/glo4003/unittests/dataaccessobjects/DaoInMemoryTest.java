@@ -171,6 +171,7 @@ public class DaoInMemoryTest {
     }
 
     public static class TestRecord extends Record {
+
         private int value;
 
         public int getValue() {

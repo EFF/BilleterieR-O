@@ -54,10 +54,10 @@ public class FacetsTest {
         assertEquals(Helpers.OK, Helpers.status(result));
         assertEquals("application/json", Helpers.contentType(result));
 
-        assert(jsonNode.get("gender").isArray());
+        assert (jsonNode.get("gender").isArray());
         assertEquals(2, jsonNode.get("gender").size());
 
-        assert(jsonNode.get("sport").isArray());
+        assert (jsonNode.get("sport").isArray());
         assertEquals(sportDao.list().size(), jsonNode.get("sport").size());
     }
 }

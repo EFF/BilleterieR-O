@@ -1,5 +1,6 @@
 <h1>
-    Panier d'achats <button class="btn btn-danger remove-all" ng-click="removeAllItem()">Vider le panier</button>
+    Panier d'achats
+    <button class="btn btn-danger remove-all" ng-click="removeAllItem()">Vider le panier</button>
 </h1>
 <table class="table" ng-show="cart.length > 0">
     <thead>
@@ -14,7 +15,8 @@
     <tbody>
     <tr class="item" ng-repeat="item in cart">
         <td>
-            <a href="/#!/events/{{item.event.id}}">{{item.event.sport.name}} {{item.event.gender | gender}} {{item.event.dateAsString | date:'dd-MM-yyyy HH:mm'}}</a>
+            <a href="/#!/events/{{item.event.id}}">{{item.event.sport.name}} {{item.event.gender | gender}}
+                {{item.event.dateAsString | date:'dd-MM-yyyy HH:mm'}}</a>
         </td>
         <td>{{item.category.price}}$</td>
         <td>{{item.quantity}}</td>
