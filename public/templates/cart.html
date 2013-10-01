@@ -1,5 +1,5 @@
 <h1>
-    Panier d'achats <button class="btn btn-danger" ng-click="removeAllItem()">Vider le panier</button>
+    Panier d'achats <button class="btn btn-danger remove-all" ng-click="removeAllItem()">Vider le panier</button>
 </h1>
 <table class="table" ng-show="cart.length > 0">
     <thead>
@@ -20,7 +20,7 @@
         <td>{{item.quantity}}</td>
         <td>{{item.quantity * item.category.price}}$</td>
         <td>
-            <button class="btn btn-danger" ng-click="removeItem($index)">Retirer</button>
+            <button class="btn btn-danger item-remove" ng-click="removeItem($index)">Retirer</button>
         </td>
     </tr>
     <tr class="active">
