@@ -19,7 +19,7 @@ public class CartPage extends BaseFluentPage {
     }
 
     public void waitUntilItemsHasSize(int count) {
-        await().atMost(TIMEOUT).until("item").hasSize(count);
+        await().atMost(TIMEOUT).until(".item").hasSize(count);
     }
 
 
