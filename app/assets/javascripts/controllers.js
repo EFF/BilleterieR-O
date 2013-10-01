@@ -46,12 +46,13 @@ define(['app'], function(app) {
         apiCall();
     }]);
 
-    app.controller('EventController', ['$scope', '$http', '$routeParams', 'Cart', function ($scope, $http, $routeParams, Cart) {
+    app.controller('EventController', ['$scope', '$http', '$routeParams', 'Cart', 'FlashMessage', function ($scope, $http, $routeParams, Cart, FlashMessage) {
         var eventId = $routeParams.eventId;
         $scope.event = null;
 
         $scope.addToCart = function (quantity, category) {
             Cart.addItem(quantity, category, $scope.event);
+            FlashMessage.send("success", "L'item a été ajouté au panier");
         }
 
         function apiCallSuccessCallback(result) {
