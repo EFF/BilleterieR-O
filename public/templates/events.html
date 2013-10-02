@@ -7,7 +7,7 @@
             <option value="{{s.name}}" ng-repeat="s in facets.sport">{{s.name}}</option>
         </select>
         </br>
-        <select id="genderFilter" class= "form-control" ng-model="filters.gender">
+        <select id="genderFilter" class="form-control" ng-model="filters.gender">
             <option value="">Filtrer par sexe...</option>
             <option value="{{g}}" ng-repeat="g in facets.gender">{{g | gender}}</option>
         </select>

@@ -1,3 +1,3 @@
-define(['angular'], function(angular) {
-    return angular.module('billetterieRO', []);
+define(['angular', 'angularCookies'], function (angular) {
+    return angular.module('billetterieRO', ['ngCookies']);
 });

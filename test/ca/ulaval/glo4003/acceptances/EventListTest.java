@@ -22,7 +22,6 @@ public class EventListTest {
                 eventsPage.isAt();
 
                 assertThat(eventsPage.getEmptyAlert()).isNotDisplayed();
-                assertThat(eventsPage.getLoadingAlert()).isDisplayed();
 
                 // No filter => 2 results
                 eventsPage.waitUntilEventsHasSize(2);
