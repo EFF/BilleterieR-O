@@ -12,8 +12,10 @@ import static play.test.Helpers.*;
 
 public class CartTest {
 
+    private static final int FIRST_ITEM_INDEX = 0;
+
     @Test
-    public void putManyItemsFromManyEventsIntoTheCart() {
+    public void putManyItemsFromManyEventsIntoTheCartAndRemoveThem() {
         running(testServer(3333, fakeApplication(new TestGlobal())), FIREFOX, new F.Callback<TestBrowser>() {
             @Override
             public void invoke(TestBrowser browser) {
@@ -24,8 +26,6 @@ public class CartTest {
                 eventPage1.go();
                 eventPage1.isAt();
                 eventPage1.waitUntilCategoriesHasSize(2);
-                // TODO: Add a visual feedback when you add an item in the cart
-                // TODO: Prevent negative or zero quantity
                 // Buy two tickets from events/1, category 0
                 eventPage1.buyTicketsForCategory(0, 2);
                 assertThat(eventPage1.getCartSize()).isEqualTo(1);
@@ -38,13 +38,19 @@ public class CartTest {
                 eventPage2.waitUntilCategoriesHasSize(2);
                 eventPage2.buyTicketsForCategory(0, 1);
                 assertThat(eventPage1.getCartSize()).isEqualTo(3);
-                // Check cart
+                // Check cart (3 items)
                 cartPage.go();
                 cartPage.isAt();
                 cartPage.waitUntilItemsHasSize(3);
+
+                // Remove one item
+                cartPage.removeItem(FIRST_ITEM_INDEX);
+                cartPage.waitUntilItemsHasSize(2);
+
+                // Remove all items
+                cartPage.removeAllItems();
+                cartPage.waitUntilItemsHasSize(0);
             }
         });
     }
-
-    // TODO: Add remove item from cart test
 }

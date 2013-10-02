@@ -1,4 +1,4 @@
-define(['app'], function(app) {
+define(['app'], function (app) {
     app.controller('EventsController', ['$scope', '$http', function ($scope, $http) {
         $scope.events = null;
         $scope.filters = {};
@@ -46,12 +46,13 @@ define(['app'], function(app) {
         apiCall();
     }]);
 
-    app.controller('EventController', ['$scope', '$http', '$routeParams', 'Cart', function ($scope, $http, $routeParams, Cart) {
+    app.controller('EventController', ['$scope', '$http', '$routeParams', 'Cart', 'FlashMessage', function ($scope, $http, $routeParams, Cart, FlashMessage) {
         var eventId = $routeParams.eventId;
         $scope.event = null;
 
         $scope.addToCart = function (quantity, category) {
             Cart.addItem(quantity, category, $scope.event);
+            FlashMessage.send("success", "L'item a été ajouté au panier");
         }
 
         function apiCallSuccessCallback(result) {
@@ -84,10 +85,8 @@ define(['app'], function(app) {
         $scope.removeItem = Cart.removeItem;
         $scope.removeAllItem = Cart.removeAllItem;
 
-        $scope.$watch('cart', function() {
+        $scope.$watch('cart', function () {
             $scope.totalItemsPrice = computeTotalItemsPrice();
         }, true)
     }]);
-
-
 });

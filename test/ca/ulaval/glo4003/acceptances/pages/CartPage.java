@@ -22,5 +22,11 @@ public class CartPage extends BaseFluentPage {
         await().atMost(TIMEOUT).until(".item").hasSize(count);
     }
 
+    public void removeItem(int itemIndex) {
+        find(".item-remove", itemIndex).click();
+    }
 
+    public void removeAllItems() {
+        find(".remove-all").click();
+    }
 }

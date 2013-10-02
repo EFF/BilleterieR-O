@@ -23,11 +23,13 @@
             <div class="row">
                 <div class="col-md-2">
                     <input type="number" step="1" ng-model="quantity" ng-init="quantity=1"
-                           class="form-control category-quantity">
+                           class="form-control category-quantity" min="1">
                 </div>
                 <div class="col-md-1">x</div>
                 <div class="col-md-9">
-                    <button class="btn btn-success category-add" ng-click="addToCart(quantity, category)" ng-hide="category.numberOfTickets == 0">Ajouter au panier</button>
+                    <button class="btn btn-success category-add" ng-click="addToCart(quantity, category)"
+                            ng-hide="category.numberOfTickets == 0">Ajouter au panier
+                    </button>
                 </div>
             </div>
         </td>
