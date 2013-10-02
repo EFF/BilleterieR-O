@@ -26,6 +26,13 @@ define(['app'], function (app) {
                     $scope.messages.splice(index, 1);
                 }
 
+                $scope.getCssClass = function (message) {
+                    if (message.type == "error") {
+                        return "danger";
+                    }
+                    return message.type;
+                }
+
                 $scope.$on('messageEvent', handleMessageEvent);
             }
         }

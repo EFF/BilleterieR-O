@@ -1,5 +1,5 @@
 <div class="alertContainer">
-    <div ng-repeat="message in messages" class="alert alert-{{message.type}}">
+    <div ng-repeat="message in messages" class="alert alert-{{getCssClass(message)}}">
         <button class="close" ng-click="remove(message)">x</button>
         <strong>{{message.title}}!</strong>
         <span>{{message.content}}</span>
