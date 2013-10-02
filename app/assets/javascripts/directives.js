@@ -26,7 +26,7 @@ define(['app'], function (app) {
                     $scope.messages.splice(index, 1);
                 }
 
-                $scope.getCssClass = function (message) {
+                $scope.getCssSuffix = function (message) {
                     if (message.type == "error") {
                         return "danger";
                     }
