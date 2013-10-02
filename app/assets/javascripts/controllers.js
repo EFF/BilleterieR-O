@@ -69,13 +69,11 @@ define(['app'], function (app) {
             .error(apiCallErrorCallback);
     }]);
 
-    app.controller('CartController', ['$scope','$http', 'Cart', function ($scope, $http, Cart) {
+    app.controller('CartController', ['$scope','$http', 'FlashMessage', 'Cart', function ($scope, $http, FlashMessage, Cart) {
         $scope.totalItemsPrice = 0;
         $scope.cart = Cart.getItems();
         $scope.removeItem = Cart.removeItem;
         $scope.removeAllItem = Cart.removeAllItem;
-
-        console.log($scope.cart);
 
         $scope.$watch('cart', function () {
             $scope.totalItemsPrice = computeTotalItemsPrice();
@@ -88,12 +86,15 @@ define(['app'], function (app) {
         }
 
         $scope.checkout = function(){
-            for(var i=0; i<$scope.cart.length; i++){
-                if($scope.cart[i].selected){
-                    checkoutItem();
+            if(noItemSelected()){
+                FlashMessage.send('error', 'Le panir d\'achat est vide');
+            }else{
+                for(var i=0; i<$scope.cart.length; i++){
+                    if($scope.cart[i].selected){
+                        checkoutItem($scope.cart[i]);
+                    }
                 }
             }
-            //TODO: http.post(/api/checkout) for each selected items in the cart
         }
 
         var computeTotalItemsPrice = function() {
@@ -113,17 +114,24 @@ define(['app'], function (app) {
                 data: {
                     eventId : item.event.id,
                     categoryId: item.category.id,
-                    numberOfTickets: itemp.numberOfTickets
+                    numberOfTickets: item.numberOfTickets
                 }
             };
 
-            $http.request(requestOptions)
-                .success(function(){
-
+            $http(requestOptions)
+                .success(function(result){
+                    console.log(result);
                 })
-                .error(function(){
-
+                .error(function(error, message){
+                    console.log(error, message);
                 });
+        }
+
+        var noItemSelected = function(){
+            for(var i =0; i<$scope.cart.length; i++){
+                if($scope.cart[i].selected) return false;
+            }
+            return true;
         }
     }]);
 });

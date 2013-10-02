@@ -13,4 +13,4 @@ GET     /api/events                     @ca.ulaval.glo4003.controllers.Events.in
 GET     /api/events/:id                 @ca.ulaval.glo4003.controllers.Events.show(id: Long)
 GET     /api/facets                     @ca.ulaval.glo4003.controllers.Facets.index()
 
-POST    /api/checkoutCart               @ca.ulaval.glo4003.controllers.Events.decrementCategoryCounter()
+POST    /api/checkout               @ca.ulaval.glo4003.controllers.Events.decrementCategoryCounter()
