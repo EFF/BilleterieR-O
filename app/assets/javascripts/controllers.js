@@ -69,22 +69,13 @@ define(['app'], function (app) {
             .error(apiCallErrorCallback);
     }]);
 
-    app.controller('CartController', ['$scope', 'Cart', function ($scope, Cart) {
+    app.controller('CartController', ['$scope','$http', 'Cart', function ($scope, $http, Cart) {
         $scope.totalItemsPrice = 0;
         $scope.cart = Cart.getItems();
-
-        function computeTotalItemsPrice() {
-            //TODO: update total with selected items only
-            var total = 0;
-            for (var x in $scope.cart) {
-                var item = $scope.cart[x];
-                total += item.quantity * item.category.price;
-            }
-            return total;
-        }
-
         $scope.removeItem = Cart.removeItem;
         $scope.removeAllItem = Cart.removeAllItem;
+
+        console.log($scope.cart);
 
         $scope.$watch('cart', function () {
             $scope.totalItemsPrice = computeTotalItemsPrice();
@@ -97,7 +88,42 @@ define(['app'], function (app) {
         }
 
         $scope.checkout = function(){
+            for(var i=0; i<$scope.cart.length; i++){
+                if($scope.cart[i].selected){
+                    checkoutItem();
+                }
+            }
             //TODO: http.post(/api/checkout) for each selected items in the cart
+        }
+
+        var computeTotalItemsPrice = function() {
+            //TODO: update total with selected items only
+            var total = 0;
+            for (var x in $scope.cart) {
+                var item = $scope.cart[x];
+                total += item.quantity * item.category.price;
+            }
+            return total;
+        }
+
+        var checkoutItem = function(item){
+            var requestOptions = {
+                method: 'POST',
+                url: '/api/checkout',
+                data: {
+                    eventId : item.event.id,
+                    categoryId: item.category.id,
+                    numberOfTickets: itemp.numberOfTickets
+                }
+            };
+
+            $http.request(requestOptions)
+                .success(function(){
+
+                })
+                .error(function(){
+
+                });
         }
     }]);
 });
