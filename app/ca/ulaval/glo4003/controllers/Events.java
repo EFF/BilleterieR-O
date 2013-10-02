@@ -59,12 +59,12 @@ public class Events extends Controller {
         JsonNode jsonNode = request().body().asJson();
         Long eventId = jsonNode.get("eventId").asLong();
         Long categoryId = jsonNode.get("categoryId").asLong();
-        int numberOfTickets = jsonNode.get("numberOdTickets").asInt();
+        int numberOfTickets = jsonNode.get("numberOfTickets").asInt();
 
         try {
             eventDao.decrementEventCategoryNumberOfTickets(eventId, categoryId, numberOfTickets);
         } catch (RecordNotFoundException e) {
-           return notFound(e.getMessage());
+           return notFound();
         }
         return ok();
     }

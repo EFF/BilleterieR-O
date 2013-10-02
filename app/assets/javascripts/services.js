@@ -34,6 +34,13 @@ define(['app'], function (app) {
             return cart;
         }
 
+        exports.noItemSelected = function() {
+            for(key in cart){
+                if(cart[key].selected) return false;
+            }
+            return true;
+        }
+
         return exports;
     }]);
 

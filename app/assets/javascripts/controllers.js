@@ -69,14 +69,14 @@ define(['app'], function (app) {
             .error(apiCallErrorCallback);
     }]);
 
-    app.controller('CartController', ['$scope','$http', 'FlashMessage', 'Cart', function ($scope, $http, FlashMessage, Cart) {
-        $scope.totalItemsPrice = 0;
+    app.controller('CartController', ['$scope','$http', 'FlashMessage', 'Cart', '$location', function ($scope, $http, FlashMessage, Cart, $location) {
         $scope.cart = Cart.getItems();
         $scope.removeItem = Cart.removeItem;
         $scope.removeAllItem = Cart.removeAllItem;
+        var noItemSelected = Cart.noItemSelected;
 
         $scope.$watch('cart', function () {
-            $scope.totalItemsPrice = computeTotalItemsPrice();
+            updateTotals();
         }, true)
 
         $scope.toggleAll = function(value){
@@ -87,24 +87,27 @@ define(['app'], function (app) {
 
         $scope.checkout = function(){
             if(noItemSelected()){
-                FlashMessage.send('error', 'Le panir d\'achat est vide');
+                FlashMessage.send('error', 'Le panier d\'achat est vide');
             }else{
-                for(var i=0; i<$scope.cart.length; i++){
-                    if($scope.cart[i].selected){
-                        checkoutItem($scope.cart[i]);
+                for(key in $scope.cart){
+                    if($scope.cart[key].selected){
+                        checkoutItem($scope.cart[key]);
                     }
                 }
             }
         }
 
-        var computeTotalItemsPrice = function() {
-            //TODO: update total with selected items only
-            var total = 0;
-            for (var x in $scope.cart) {
-                var item = $scope.cart[x];
-                total += item.quantity * item.category.price;
+        var updateTotals = function(){
+            $scope.totalPrice = 0;
+            $scope.totalSelectedPrice = 0;
+            for(var key in $scope.cart) {
+                var item = $scope.cart[key];
+                var itemPrice = item.quantity * item.category.price;
+                $scope.totalPrice += itemPrice;
+                if(item.selected){
+                    $scope.totalSelectedPrice += itemPrice;
+                }
             }
-            return total;
         }
 
         var checkoutItem = function(item){
@@ -114,24 +117,19 @@ define(['app'], function (app) {
                 data: {
                     eventId : item.event.id,
                     categoryId: item.category.id,
-                    numberOfTickets: item.numberOfTickets
+                    numberOfTickets: item.quantity
                 }
             };
 
             $http(requestOptions)
-                .success(function(result){
-                    console.log(result);
+                .success(function(result, status){
+                    Cart.removeItem($scope.cart.indexOf(item));
+                    FlashMessage.send("success", "La transaction a été complétée");
+                    $location.path("/thanks");
                 })
-                .error(function(error, message){
-                    console.log(error, message);
+                .error(function(error, status){
+                    FlashMessage.send("error", error);
                 });
-        }
-
-        var noItemSelected = function(){
-            for(var i =0; i<$scope.cart.length; i++){
-                if($scope.cart[i].selected) return false;
-            }
-            return true;
         }
     }]);
 });
