@@ -34,6 +34,18 @@ define(['app'], function (app) {
             return cart;
         }
 
+        exports.getTotalQuantity = function () {
+            return cart.reduce(function (a, item) {
+                return a + item.quantity;
+            }, 0);
+        }
+
+        exports.getTotalValue = function () {
+            return cart.reduce(function (a, item) {
+                return a + item.quantity * item.category.price;
+            }, 0);
+        }
+
         return exports;
     }]);
 

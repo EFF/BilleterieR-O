@@ -70,23 +70,10 @@ define(['app'], function (app) {
     }]);
 
     app.controller('CartController', ['$scope', 'Cart', function ($scope, Cart) {
-        $scope.totalItemsPrice = 0;
         $scope.cart = Cart.getItems();
-
-        function computeTotalItemsPrice() {
-            var total = 0;
-            for (var x in $scope.cart) {
-                var item = $scope.cart[x];
-                total += item.quantity * item.category.price;
-            }
-            return total;
-        }
-
+        $scope.getTotalQuantity = Cart.getTotalQuantity;
+        $scope.getTotalValue = Cart.getTotalValue;
         $scope.removeItem = Cart.removeItem;
         $scope.removeAllItem = Cart.removeAllItem;
-
-        $scope.$watch('cart', function () {
-            $scope.totalItemsPrice = computeTotalItemsPrice();
-        }, true)
     }]);
 });

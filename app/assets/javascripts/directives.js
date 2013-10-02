@@ -5,7 +5,7 @@ define(['app'], function (app) {
             templateUrl: 'assets/templates/directives/menu.html',
             restrict: 'E',
             controller: function ($scope) {
-                $scope.cart = Cart.getItems();
+                $scope.getTotalQuantity = Cart.getTotalQuantity;
             }
         };
     }]);
