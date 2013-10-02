@@ -45,11 +45,12 @@
 
 <div ng-hide="cart.length == 0">
     <h1>Paiement</h1>
-    <form class="form-horizontal" role="form">
+    <form class="form-horizontal" role="form" name="checkout_form" novalidate ng-submit="checkout()">
         <div class="form-group">
             <label class="col-lg-2 control-label">Type de carte</label>
             <div class="col-lg-5">
-                <select class="form-control">
+                <select class="form-control" ng-model="creditCard.type">
+                    <option value="" default selected>Type de carte</option>
                     <option value="Vasi">Vasi</option>
                     <option value="Mistercard">Mistercard</option>
                     <option value="AmericanEspresso">AmericanEspresso</option>
@@ -59,20 +60,20 @@
         <div class="form-group">
             <label class="col-lg-2 control-label">No. Carte de crédit</label>
             <div class="col-lg-5">
-                <input type="text" class="form-control" id="inputEmail1" placeholder="xxxx-xxxx-xxxx-xxxx">
+                <input type="text" class="form-control" required ng-pattern="/[0-9]{12}/"  placeholder="xxxxxxxxxxxxxxxx" ng-model="creditCard.number">
             </div>
         </div>
         <div class="form-group">
             <label class="col-lg-2 control-label">CVV</label>
             <div class="col-lg-5">
-                <input type="text" class="form-control" id="inputEmail1" placeholder="xxx">
+                <input type="text" class="form-control" required ng-pattern="/[0-9]{3}/" placeholder="xxx" ng-model="creditCard.cvv">
             </div>
         </div>
         <div class="form-group">
             <label class="col-lg-2 control-label">Date d'expiration</label>
-            <div class="col-lg-2">
-                <select class="form-control input-inline">
-                    <option>Mois</option>
+            <div class="col-lg-2" >
+                <select class="form-control input-inline" required ng-pattern="/[09]{2}/" ng-model="creditCard.date.month">
+                    <option value="" default selected>Mois</option>
                     <option value="01">01</option>
                     <option value="02">02</option>
                     <option value="03">03</option>
@@ -87,8 +88,8 @@
                     <option value="12">12</option>
                 </select>
                 <br/>
-                <select class="form-control input-inline">
-                    <option>Année</option>
+                <select class="form-control input-inline" required ng-pattern="/[09]{4}/" ng-model="creditCard.date.year">
+                    <option value="" default selected>Année</option>
                     <option value="01">2014</option>
                     <option value="02">2015</option>
                     <option value="03">2016</option>
@@ -101,7 +102,7 @@
         </div>
         <div class="form-group">
             <div class="col-lg-offset-2 col-lg-2">
-                <button ng-click="checkout()" class="btn btn-success">Acheter la sélection</button>
+                <button type="submit" ng-disabled="checkout_form.$invalid" class="btn btn-success">Acheter la sélection</button>
             </div>
         </div>
     </form>
