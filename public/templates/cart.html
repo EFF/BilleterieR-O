@@ -5,6 +5,10 @@
 <table class="table" ng-show="cart.length > 0">
     <thead>
     <tr>
+        <th>
+            <input ng-change="toggleAll(allSelected)" ng-model="allSelected" type="checkbox">
+            Sélection
+        </th>
         <th>Billets</th>
         <th>Prix unitaire</th>
         <th>Quantité</th>
@@ -15,6 +19,9 @@
     <tbody>
     <tr class="item" ng-repeat="item in cart">
         <td>
+            <input type="checkbox" ng-model="item.selected">
+        </td>
+        <td>
             <a href="/#!/events/{{item.event.id}}">{{item.event.sport.name}} {{item.event.gender | gender}}
                 {{item.event.dateAsString | date:'dd-MM-yyyy HH:mm'}}</a>
         </td>
@@ -22,17 +29,75 @@
         <td>{{item.quantity}}</td>
         <td>{{item.quantity * item.category.price}}$</td>
         <td>
-            <button class="btn btn-danger item-remove" ng-click="removeItem($index)">Retirer</button>
+            <button type="button" class="close" ng-click="removeItem($index)">x</button>
         </td>
     </tr>
     <tr class="active">
-        <td colspan="3">Total</td>
+        <td colspan="4">Total</td>
         <td colspan="2">{{ totalItemsPrice }}$</td>
     </tr>
     </tbody>
 </table>
-
-<div class="alert alert-warning" ng-show="cart.length == 0">Votre panier est vide</div>
-
-<h1>Paiement</h1>
-<p>TODO: Afficher le formulaire de paiement</p>
+<div>
+    <h1>Paiement</h1>
+    <form class="form-horizontal" role="form">
+        <div class="form-group">
+            <label class="col-lg-2 control-label">Type de carte</label>
+            <div class="col-lg-5">
+                <select class="form-control">
+                    <option value="Vasi">Vasi</option>
+                    <option value="Mistercard">Mistercard</option>
+                    <option value="AmericanEspresso">AmericanEspresso</option>
+                </select>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-lg-2 control-label">No. Carte de crédit</label>
+            <div class="col-lg-5">
+                <input type="text" class="form-control" id="inputEmail1" placeholder="xxxx-xxxx-xxxx-xxxx">
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-lg-2 control-label">CVV</label>
+            <div class="col-lg-5">
+                <input type="text" class="form-control" id="inputEmail1" placeholder="xxx">
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-lg-2 control-label">Date d'expiration</label>
+            <div class="col-lg-2">
+                <select class="form-control input-inline">
+                    <option>Mois</option>
+                    <option value="01">01</option>
+                    <option value="02">02</option>
+                    <option value="03">03</option>
+                    <option value="04">04</option>
+                    <option value="05">05</option>
+                    <option value="06">06</option>
+                    <option value="07">07</option>
+                    <option value="08">08</option>
+                    <option value="09">09</option>
+                    <option value="10">10</option>
+                    <option value="11">11</option>
+                    <option value="12">12</option>
+                </select>
+                <br/>
+                <select class="form-control input-inline">
+                    <option>Année</option>
+                    <option value="01">2014</option>
+                    <option value="02">2015</option>
+                    <option value="03">2016</option>
+                    <option value="04">2017</option>
+                    <option value="05">2018</option>
+                    <option value="06">2019</option>
+                    <option value="07">2020</option>
+                </select>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-lg-offset-2 col-lg-2">
+                <button ng-click="checkout" class="btn btn-success">Acheter la sélection</button>
+            </div>
+        </div>
+    </form>
+</div>

@@ -74,6 +74,7 @@ define(['app'], function (app) {
         $scope.cart = Cart.getItems();
 
         function computeTotalItemsPrice() {
+            //TODO: update total with selected items only
             var total = 0;
             for (var x in $scope.cart) {
                 var item = $scope.cart[x];
@@ -88,5 +89,15 @@ define(['app'], function (app) {
         $scope.$watch('cart', function () {
             $scope.totalItemsPrice = computeTotalItemsPrice();
         }, true)
+
+        $scope.toggleAll = function(value){
+            for(var key in $scope.cart){
+                $scope.cart[key].selected = value;
+            }
+        }
+
+        $scope.checkout = function(){
+            //TODO: http.post(/api/checkout) for each selected items in the cart
+        }
     }]);
 });
