@@ -41,6 +41,30 @@ define(['app'], function (app) {
             return true;
         }
 
+        exports.getTotalQuantity = function () {
+            return cart.reduce(function (a, item) {
+                return a + item.quantity;
+            }, 0);
+        }
+
+        exports.getTotalSelectedQuantity = function () {
+            return cart.reduce(function (a, item) {
+                if(item.selected){
+                    a += item.quantity;
+                }
+                return a;
+            }, 0);
+        }
+
+        exports.getTotalPrice = function () {
+            return cart.reduce( function (a, item) {
+                if(item.selected){
+                    a += item.quantity * item.category.price;
+                }
+                return a;
+            }, 0);
+        }
+
         return exports;
     }]);
 

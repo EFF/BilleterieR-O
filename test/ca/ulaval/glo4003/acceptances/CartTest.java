@@ -28,16 +28,16 @@ public class CartTest {
                 eventPage1.waitUntilCategoriesHasSize(2);
                 // Buy two tickets from events/1, category 0
                 eventPage1.buyTicketsForCategory(0, 2);
-                assertThat(eventPage1.getCartSize()).isEqualTo(1);
+                assertThat(eventPage1.getCartSize()).isEqualTo(2);
                 // Buy five tickets from events/1, category 1
                 eventPage1.buyTicketsForCategory(1, 5);
-                assertThat(eventPage1.getCartSize()).isEqualTo(2);
+                assertThat(eventPage1.getCartSize()).isEqualTo(7);
                 // Buy one ticket from event #2, category 0
                 eventPage2.go();
                 eventPage2.isAt();
                 eventPage2.waitUntilCategoriesHasSize(2);
                 eventPage2.buyTicketsForCategory(0, 1);
-                assertThat(eventPage1.getCartSize()).isEqualTo(3);
+                assertThat(eventPage2.getCartSize()).isEqualTo(8);
                 // Check cart (3 items)
                 cartPage.go();
                 cartPage.isAt();
@@ -46,10 +46,12 @@ public class CartTest {
                 // Remove one item
                 cartPage.removeItem(FIRST_ITEM_INDEX);
                 cartPage.waitUntilItemsHasSize(2);
+                assertThat(cartPage.getCartSize()).isEqualTo(6);
 
                 // Remove all items
                 cartPage.removeAllItems();
                 cartPage.waitUntilItemsHasSize(0);
+                assertThat(eventPage1.getCartSize()).isEqualTo(0);
             }
         });
     }

@@ -1,6 +1,6 @@
 <ol class="breadcrumb">
-    <li><a href="#/events">Évènements</a></li>
-    <li class="active">Détail de l'évènement</li>
+    <li><a href="#/events">Événements</a></li>
+    <li class="active">Détail de l'événement</li>
 </ol>
 
 <h1>{{ event.sport.name }} {{event.gender | gender}}</h1>
@@ -23,7 +23,7 @@
             <div class="row">
                 <div class="col-md-2">
                     <input type="number" step="1" ng-model="quantity" ng-init="quantity=1"
-                           class="form-control category-quantity" min="1">
+                           class="form-control category-quantity" min="1" max="{{category.numberOfTickets}}">
                 </div>
                 <div class="col-md-1">x</div>
                 <div class="col-md-9">

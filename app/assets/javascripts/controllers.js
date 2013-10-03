@@ -71,19 +71,21 @@ define(['app'], function (app) {
 
     app.controller('CartController', ['$scope','$http', 'FlashMessage', 'Cart', '$location', function ($scope, $http, FlashMessage, Cart, $location) {
         $scope.cart = Cart.getItems();
+        $scope.getTotalSelectedQuantity = Cart.getTotalSelectedQuantity;
+        $scope.getTotalPrice = Cart.getTotalPrice;
         $scope.removeItem = Cart.removeItem;
         $scope.removeAllItem = Cart.removeAllItem;
         var noItemSelected = Cart.noItemSelected;
-
-        $scope.$watch('cart', function () {
-            updateTotals();
-        }, true)
 
         $scope.toggleAll = function(value){
             for(var key in $scope.cart){
                 $scope.cart[key].selected = value;
             }
         }
+
+        $scope.uncheckAllSelected = function() {
+            $scope.allSelected = false;
+        };
 
         $scope.checkout = function(){
             if(noItemSelected()){
@@ -93,19 +95,6 @@ define(['app'], function (app) {
                     if($scope.cart[key].selected){
                         checkoutItem($scope.cart[key]);
                     }
-                }
-            }
-        }
-
-        var updateTotals = function(){
-            $scope.totalPrice = 0;
-            $scope.totalSelectedPrice = 0;
-            for(var key in $scope.cart) {
-                var item = $scope.cart[key];
-                var itemPrice = item.quantity * item.category.price;
-                $scope.totalPrice += itemPrice;
-                if(item.selected){
-                    $scope.totalSelectedPrice += itemPrice;
                 }
             }
         }

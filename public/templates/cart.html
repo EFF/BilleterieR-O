@@ -19,7 +19,7 @@
     <tbody>
     <tr class="item" ng-repeat="item in cart">
         <td>
-            <input type="checkbox" ng-model="item.selected">
+            <input ng-click="uncheckAllSelected()" type="checkbox" ng-model="item.selected">
         </td>
         <td>
             <a href="/#!/events/{{item.event.id}}">{{item.event.sport.name}} {{item.event.gender | gender}}
@@ -33,12 +33,9 @@
         </td>
     </tr>
     <tr class="active">
-        <td colspan="4">Total de la sélection</td>
-        <td colspan="2">{{ totalSelectedPrice }}$</td>
-    </tr>
-    <tr class="active">
-        <td colspan="4">Total</td>
-        <td colspan="2">{{ totalPrice }}$</td>
+        <td colspan="3">Total</td>
+        <td>{{getTotalSelectedQuantity()}}</td>
+        <td colspan="2">{{getTotalPrice()}}$</td>
     </tr>
     </tbody>
 </table>

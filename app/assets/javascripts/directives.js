@@ -5,7 +5,7 @@ define(['app'], function (app) {
             templateUrl: 'assets/templates/directives/menu.html',
             restrict: 'E',
             controller: function ($scope) {
-                $scope.cart = Cart.getItems();
+                $scope.getTotalQuantity = Cart.getTotalQuantity;
             }
         };
     }]);
@@ -24,6 +24,13 @@ define(['app'], function (app) {
                 $scope.remove = function (message) {
                     var index = $scope.messages.indexOf(message);
                     $scope.messages.splice(index, 1);
+                }
+
+                $scope.getCssSuffix = function (message) {
+                    if (message.type == "error") {
+                        return "danger";
+                    }
+                    return message.type;
                 }
 
                 $scope.$on('messageEvent', handleMessageEvent);
