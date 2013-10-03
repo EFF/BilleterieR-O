@@ -11,4 +11,8 @@ public abstract class BaseFluentPage extends FluentPage {
     protected BaseFluentPage(WebDriver driver) {
         super(driver);
     }
+
+    public int getCartSize() {
+        return Integer.parseInt(find(".navbar").find(".cart-size").getText());
+    }
 }
