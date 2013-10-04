@@ -1,7 +1,8 @@
 package ca.ulaval.glo4003.controllers;
 
 import ca.ulaval.glo4003.dataaccessobjects.EventDao;
-import ca.ulaval.glo4003.dataaccessobjects.RecordNotFoundException;
+import ca.ulaval.glo4003.exceptions.NumberTooLargeException;
+import ca.ulaval.glo4003.exceptions.RecordNotFoundException;
 import ca.ulaval.glo4003.models.Event;
 import ca.ulaval.glo4003.models.EventSearchCriteria;
 import ca.ulaval.glo4003.models.Gender;
@@ -65,6 +66,8 @@ public class Events extends Controller {
             eventDao.decrementEventCategoryNumberOfTickets(eventId, categoryId, numberOfTickets);
         } catch (RecordNotFoundException e) {
            return notFound();
+        } catch (NumberTooLargeException e) {
+            return internalServerError();
         }
         return ok();
     }

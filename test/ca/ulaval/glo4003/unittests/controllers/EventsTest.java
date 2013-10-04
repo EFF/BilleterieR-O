@@ -44,8 +44,8 @@ public class EventsTest {
                 mock(Http.Request.class), new HashMap<String, String>(), new HashMap<String, String>(),
                 new HashMap<String, Object>()));
         // Arrange
-        Event firstEvent = EventsTestHelper.createRandomEventGivenSport(EventsTestHelper.FIRST_RANDOM_SPORT);
-        Event secondEvent = EventsTestHelper.createRandomEventGivenSport(EventsTestHelper.SECOND_RANDOM_SPORT);
+        Event firstEvent = EventsTestHelper.createRandomEventtWithCategoryGivenSport(EventsTestHelper.FIRST_RANDOM_SPORT);
+        Event secondEvent = EventsTestHelper.createRandomEventtWithCategoryGivenSport(EventsTestHelper.SECOND_RANDOM_SPORT);
 
         eventDao.create(firstEvent);
         eventDao.create(secondEvent);
@@ -75,8 +75,8 @@ public class EventsTest {
         Http.Context.current.set(new Http.Context((long) 1, mock(play.api.mvc.RequestHeader.class),
                 mock(Http.Request.class), new HashMap<String, String>(), new HashMap<String, String>(),
                 new HashMap<String, Object>()));
-        Event firstEvent = EventsTestHelper.createRandomEventGivenSport(EventsTestHelper.FIRST_RANDOM_SPORT);
-        Event secondEvent = EventsTestHelper.createRandomEventGivenSport(EventsTestHelper.SECOND_RANDOM_SPORT);
+        Event firstEvent = EventsTestHelper.createRandomEventtWithCategoryGivenSport(EventsTestHelper.FIRST_RANDOM_SPORT);
+        Event secondEvent = EventsTestHelper.createRandomEventtWithCategoryGivenSport(EventsTestHelper.SECOND_RANDOM_SPORT);
 
         eventDao.create(firstEvent);
         eventDao.create(secondEvent);
