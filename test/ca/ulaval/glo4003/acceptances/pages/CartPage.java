@@ -62,4 +62,8 @@ public class CartPage extends BaseFluentPage {
     public void sendPaymentForm() {
         find("button", withId().equalTo("pay-button")).click();
     }
+
+    public void selectAllItem() {
+        find("input", withId().equalTo("check-all")).click();
+    }
 }
