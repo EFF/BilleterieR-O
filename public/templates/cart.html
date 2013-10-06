@@ -19,7 +19,7 @@
     <tbody>
     <tr class="item" ng-repeat="item in cart">
         <td>
-            <input ng-click="uncheckAllSelected()" type="checkbox" ng-model="item.selected">
+            <input ng-click="uncheckAllSelected()" id="itemCheck" type="checkbox" ng-model="item.selected">
         </td>
         <td>
             <a href="/#!/events/{{item.event.id}}">{{item.event.sport.name}} {{item.event.gender | gender}}
@@ -29,7 +29,7 @@
         <td>{{item.quantity}}</td>
         <td>{{item.quantity * item.category.price}}$</td>
         <td>
-            <button type="button" class="close" ng-click="removeItem($index)">x</button>
+            <button class="btn btn-danger item-remove" ng-click="removeItem($index)">x</button>
         </td>
     </tr>
     <tr class="active">
@@ -46,7 +46,7 @@
         <div class="form-group">
             <label class="col-lg-2 control-label">Type de carte</label>
             <div class="col-lg-5">
-                <select class="form-control" ng-model="creditCard.type">
+                <select id="credit-combo" class="form-control" ng-model="creditCard.type">
                     <option value="" default selected>Type de carte</option>
                     <option value="Vasi">Vasi</option>
                     <option value="Mistercard">Mistercard</option>
@@ -57,19 +57,19 @@
         <div class="form-group">
             <label class="col-lg-2 control-label">No. Carte de crédit</label>
             <div class="col-lg-5">
-                <input type="text" class="form-control" required ng-pattern="/[0-9]{12}/"  placeholder="xxxxxxxxxxxxxxxx" ng-model="creditCard.number">
+                <input type="text" class="form-control" id="card-number" required ng-pattern="/[0-9]{12}/"  placeholder="xxxxxxxxxxxxxxxx" ng-model="creditCard.number">
             </div>
         </div>
         <div class="form-group">
             <label class="col-lg-2 control-label">CVV</label>
             <div class="col-lg-5">
-                <input type="text" class="form-control" required ng-pattern="/[0-9]{3}/" placeholder="xxx" ng-model="creditCard.cvv">
+                <input type="text" class="form-control" id="card-cvv" required ng-pattern="/[0-9]{3}/" placeholder="xxx" ng-model="creditCard.cvv">
             </div>
         </div>
         <div class="form-group">
             <label class="col-lg-2 control-label">Date d'expiration</label>
             <div class="col-lg-2" >
-                <select class="form-control input-inline" required ng-pattern="/[09]{2}/" ng-model="creditCard.date.month">
+                <select class="form-control input-inline" id="month-combo" required ng-pattern="/[09]{2}/" ng-model="creditCard.date.month">
                     <option value="" default selected>Mois</option>
                     <option value="01">01</option>
                     <option value="02">02</option>
@@ -85,7 +85,7 @@
                     <option value="12">12</option>
                 </select>
                 <br/>
-                <select class="form-control input-inline" required ng-pattern="/[09]{4}/" ng-model="creditCard.date.year">
+                <select class="form-control input-inline" id="year-combo" required ng-pattern="/[09]{4}/" ng-model="creditCard.date.year">
                     <option value="" default selected>Année</option>
                     <option value="01">2014</option>
                     <option value="02">2015</option>
@@ -99,7 +99,7 @@
         </div>
         <div class="form-group">
             <div class="col-lg-offset-2 col-lg-2">
-                <button type="submit" ng-disabled="checkout_form.$invalid" class="btn btn-success">Acheter la sélection</button>
+                <button type="submit" id="pay-button" ng-disabled="checkout_form.$invalid" class="btn btn-success">Acheter la sélection</button>
             </div>
         </div>
     </form>

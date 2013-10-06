@@ -36,6 +36,7 @@ public class EventDaoInMemoryTest {
         Assertions.assertThat(result.size()).isEqualTo(2);
     }
 
+
     @Test
     public void searchAllThenReturnsAllEvents() {
         // Arrange
