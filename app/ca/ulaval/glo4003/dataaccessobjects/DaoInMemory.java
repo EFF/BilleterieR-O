@@ -50,7 +50,7 @@ public abstract class DaoInMemory<T extends Record> implements DataAccessObject<
         return list.size();
     }
 
-    private void persist(T element) {
+    protected void persist(T element) {
         // We clone the object before saving it in the DB
         // Otherwise, a change on a record outside this
         // dao would reflect in the DB without calling

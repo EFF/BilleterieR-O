@@ -2,11 +2,12 @@ package ca.ulaval.glo4003.models;
 
 import org.joda.time.LocalDateTime;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-public class Event extends Record {
+public class Event extends Record  implements Serializable {
 
     private List<Category> categories;
     private Sport sport;

@@ -1,6 +1,6 @@
 package ca.ulaval.glo4003.unittests.dataaccessobjects;
 
-import ca.ulaval.glo4003.dataaccessobjects.EventDaoInMemory;
+import ca.ulaval.glo4003.dataaccessobjects.EventDao;
 import ca.ulaval.glo4003.models.Event;
 import ca.ulaval.glo4003.models.EventSearchCriteria;
 import ca.ulaval.glo4003.unittests.helpers.EventsTestHelper;
@@ -13,11 +13,11 @@ import java.util.List;
 
 public class EventDaoInMemoryTest {
 
-    private EventDaoInMemory eventDao;
+    private EventDao eventDao;
 
     @Before
     public void setup() {
-        eventDao = new EventDaoInMemory();
+        eventDao = new EventDao();
     }
 
     @Test
