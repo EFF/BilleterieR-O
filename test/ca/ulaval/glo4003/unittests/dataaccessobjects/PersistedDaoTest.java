@@ -1,6 +1,6 @@
 package ca.ulaval.glo4003.unittests.dataaccessobjects;
 
-import ca.ulaval.glo4003.dataaccessobjects.DaoInMemory;
+import ca.ulaval.glo4003.dataaccessobjects.PersistedDao;
 import ca.ulaval.glo4003.dataaccessobjects.RecordNotFoundException;
 import ca.ulaval.glo4003.models.Record;
 import org.junit.Before;
@@ -10,17 +10,17 @@ import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 
-public class DaoInMemoryTest {
+public class PersistedDaoTest {
 
     private static final int UNEXISTING_ID = 10;
     private static final int A_VALUE = 50;
     private static final int ANOTHER_VALUE = 100;
 
-    private DaoInMemory<TestRecord> dao;
+    private PersistedDao<TestRecord> dao;
 
     @Before
     public void setUp() {
-        dao = new DaoInMemory<TestRecord>() {};
+        dao = new PersistedDao<TestRecord>() {};
     }
 
     @Test

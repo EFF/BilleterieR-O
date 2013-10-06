@@ -12,7 +12,7 @@ import javax.annotation.Nullable;
 import java.security.InvalidParameterException;
 import java.util.List;
 
-public class EventDao extends DaoInMemory<Event> {
+public class EventDao extends PersistedDao<Event> {
 
     public List<Event> search(final EventSearchCriteria criteria) throws InvalidParameterException {
         FluentIterable<Event> results = FluentIterable.from(this.list());
