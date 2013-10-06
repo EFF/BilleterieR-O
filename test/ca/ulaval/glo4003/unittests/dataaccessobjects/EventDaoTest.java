@@ -11,7 +11,7 @@ import org.junit.Test;
 
 import java.util.List;
 
-public class EventDaoInMemoryTest {
+public class EventDaoTest {
 
     private EventDao eventDao;
 

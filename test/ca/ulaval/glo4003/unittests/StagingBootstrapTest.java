@@ -2,7 +2,7 @@ package ca.ulaval.glo4003.unittests;
 
 import ca.ulaval.glo4003.StagingBootstrap;
 import ca.ulaval.glo4003.dataaccessobjects.EventDao;
-import ca.ulaval.glo4003.dataaccessobjects.SportDaoInMemory;
+import ca.ulaval.glo4003.dataaccessobjects.SportDao;
 import ca.ulaval.glo4003.models.Event;
 import ca.ulaval.glo4003.models.Sport;
 import org.junit.Before;
@@ -17,13 +17,13 @@ import static org.mockito.Mockito.*;
 public class StagingBootstrapTest {
 
     private EventDao eventDao;
-    private SportDaoInMemory sportDao;
+    private SportDao sportDao;
     private StagingBootstrap bootstrap;
 
     @Before
     public void setUp() {
         eventDao = mock(EventDao.class);
-        sportDao = mock(SportDaoInMemory.class);
+        sportDao = mock(SportDao.class);
         bootstrap = new StagingBootstrap(eventDao, sportDao);
     }
 
