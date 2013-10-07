@@ -15,6 +15,8 @@ public class CartTest {
 
     private static final int FIRST_ITEM_INDEX = 0;
     private static final int FIRST_EVENT = 1;
+    private static final String A_CVV = "123";
+    private static final String A_CARD_NUMBER = "12345678901234";
 
     @Test
     public void putManyItemsFromManyEventsIntoTheCartAndRemoveThem() {
@@ -114,8 +116,8 @@ public class CartTest {
 
     private void payCartWithCard(CartPage cartPage, String cardName) {
         cartPage.selectComboLabel(cardName);
-        cartPage.fillCreditCardNumber();
-        cartPage.fillCvv();
+        cartPage.fillCreditCardNumber(A_CARD_NUMBER);
+        cartPage.fillCvv(A_CVV);
         cartPage.selectExpirationMonth("01");
         cartPage.selectExpirationYear("2015");
         cartPage.sendPaymentForm();

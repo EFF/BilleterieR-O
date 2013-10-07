@@ -6,8 +6,6 @@ import static org.fluentlenium.core.filter.FilterConstructor.withId;
 import static org.fluentlenium.core.filter.FilterConstructor.withText;
 
 public class CartPage extends BaseFluentPage {
-    private static final String FALSE_CVV = "123";
-    private static final String FALSE_CARD_NUMBER = "12345678901234";
 
     public CartPage(WebDriver driver) {
         super(driver);
@@ -43,12 +41,12 @@ public class CartPage extends BaseFluentPage {
         find("select", withId().equalTo("credit-combo")).find("option", withText().equalTo(value)).click();
     }
 
-    public void fillCreditCardNumber() {
-        fill("input", withId().equalTo("card-number")).with(FALSE_CARD_NUMBER);
+    public void fillCreditCardNumber(String cardNumber) {
+        fill("input", withId().equalTo("card-number")).with(cardNumber);
     }
 
-    public void fillCvv() {
-        fill("input", withId().equalTo("card-cvv")).with(FALSE_CVV);
+    public void fillCvv(String value) {
+        fill("input", withId().equalTo("card-cvv")).with(value);
     }
 
     public void selectExpirationMonth(String month) {
