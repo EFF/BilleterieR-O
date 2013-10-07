@@ -1,6 +1,9 @@
 package ca.ulaval.glo4003.unittests.dataaccessobjects;
 
 import ca.ulaval.glo4003.dataaccessobjects.EventDaoInMemory;
+import ca.ulaval.glo4003.exceptions.NumberTooLargeException;
+import ca.ulaval.glo4003.exceptions.RecordNotFoundException;
+import ca.ulaval.glo4003.models.Category;
 import ca.ulaval.glo4003.models.Event;
 import ca.ulaval.glo4003.models.EventSearchCriteria;
 import ca.ulaval.glo4003.unittests.helpers.EventsTestHelper;
@@ -23,8 +26,8 @@ public class EventDaoInMemoryTest {
     @Test
     public void listReturnsAllEvents() {
         // Arrange
-        Event firstEvent = EventsTestHelper.createRandomEventGivenSport(EventsTestHelper.FIRST_RANDOM_SPORT);
-        Event secondEvent = EventsTestHelper.createRandomEventGivenSport(EventsTestHelper.SECOND_RANDOM_SPORT);
+        Event firstEvent = EventsTestHelper.createRandomEventtWithCategoryGivenSport(EventsTestHelper.FIRST_RANDOM_SPORT);
+        Event secondEvent = EventsTestHelper.createRandomEventtWithCategoryGivenSport(EventsTestHelper.SECOND_RANDOM_SPORT);
 
         eventDao.create(firstEvent);
         eventDao.create(secondEvent);
@@ -40,8 +43,8 @@ public class EventDaoInMemoryTest {
     @Test
     public void searchAllThenReturnsAllEvents() {
         // Arrange
-        Event firstEvent = EventsTestHelper.createRandomEventGivenSport(EventsTestHelper.FIRST_RANDOM_SPORT);
-        Event secondEvent = EventsTestHelper.createRandomEventGivenSport(EventsTestHelper.SECOND_RANDOM_SPORT);
+        Event firstEvent = EventsTestHelper.createRandomEventtWithCategoryGivenSport(EventsTestHelper.FIRST_RANDOM_SPORT);
+        Event secondEvent = EventsTestHelper.createRandomEventtWithCategoryGivenSport(EventsTestHelper.SECOND_RANDOM_SPORT);
 
         eventDao.create(firstEvent);
         eventDao.create(secondEvent);
@@ -56,8 +59,8 @@ public class EventDaoInMemoryTest {
     @Test
     public void searchSportThenReturnsFilteredResults() {
         // Arrange
-        Event firstEvent = EventsTestHelper.createRandomEventGivenSport(EventsTestHelper.FIRST_RANDOM_SPORT);
-        Event secondEvent = EventsTestHelper.createRandomEventGivenSport(EventsTestHelper.SECOND_RANDOM_SPORT);
+        Event firstEvent = EventsTestHelper.createRandomEventtWithCategoryGivenSport(EventsTestHelper.FIRST_RANDOM_SPORT);
+        Event secondEvent = EventsTestHelper.createRandomEventtWithCategoryGivenSport(EventsTestHelper.SECOND_RANDOM_SPORT);
 
         eventDao.create(firstEvent);
         eventDao.create(secondEvent);
@@ -96,8 +99,8 @@ public class EventDaoInMemoryTest {
     @Test
     public void searchDateStartWhenDateIsBeforeEventThenReturnsFilteredResults() {
         // Arrange
-        Event firstEvent = EventsTestHelper.createRandomEventGivenSport(EventsTestHelper.FIRST_RANDOM_SPORT);
-        Event secondEvent = EventsTestHelper.createRandomEventGivenSport(EventsTestHelper.SECOND_RANDOM_SPORT);
+        Event firstEvent = EventsTestHelper.createRandomEventtWithCategoryGivenSport(EventsTestHelper.FIRST_RANDOM_SPORT);
+        Event secondEvent = EventsTestHelper.createRandomEventtWithCategoryGivenSport(EventsTestHelper.SECOND_RANDOM_SPORT);
 
         LocalDateTime dayOne = new LocalDateTime();
         LocalDateTime dayTwo = dayOne.plusDays(1);
@@ -123,8 +126,8 @@ public class EventDaoInMemoryTest {
     @Test
     public void searchDateStartWhenDateIsSameDayAsEventThenReturnsFilteredResults() {
         // Arrange
-        Event firstEvent = EventsTestHelper.createRandomEventGivenSport(EventsTestHelper.FIRST_RANDOM_SPORT);
-        Event secondEvent = EventsTestHelper.createRandomEventGivenSport(EventsTestHelper.SECOND_RANDOM_SPORT);
+        Event firstEvent = EventsTestHelper.createRandomEventtWithCategoryGivenSport(EventsTestHelper.FIRST_RANDOM_SPORT);
+        Event secondEvent = EventsTestHelper.createRandomEventtWithCategoryGivenSport(EventsTestHelper.SECOND_RANDOM_SPORT);
 
         LocalDateTime dayOne = new LocalDateTime();
         LocalDateTime dayThree = dayOne.plusDays(3);
@@ -149,8 +152,8 @@ public class EventDaoInMemoryTest {
     @Test
     public void searchDateEndWhenDateIsAfterEventThenReturnsFilteredResults() {
         // Arrange
-        Event firstEvent = EventsTestHelper.createRandomEventGivenSport(EventsTestHelper.FIRST_RANDOM_SPORT);
-        Event secondEvent = EventsTestHelper.createRandomEventGivenSport(EventsTestHelper.SECOND_RANDOM_SPORT);
+        Event firstEvent = EventsTestHelper.createRandomEventtWithCategoryGivenSport(EventsTestHelper.FIRST_RANDOM_SPORT);
+        Event secondEvent = EventsTestHelper.createRandomEventtWithCategoryGivenSport(EventsTestHelper.SECOND_RANDOM_SPORT);
 
         LocalDateTime dayOne = new LocalDateTime();
         LocalDateTime veryFarAway = dayOne.plusDays(90);
@@ -176,8 +179,8 @@ public class EventDaoInMemoryTest {
     @Test
     public void searchDateEndWhenDateIsSameDayAsEventThenReturnsFilteredResults() {
         // Arrange
-        Event firstEvent = EventsTestHelper.createRandomEventGivenSport(EventsTestHelper.FIRST_RANDOM_SPORT);
-        Event secondEvent = EventsTestHelper.createRandomEventGivenSport(EventsTestHelper.SECOND_RANDOM_SPORT);
+        Event firstEvent = EventsTestHelper.createRandomEventtWithCategoryGivenSport(EventsTestHelper.FIRST_RANDOM_SPORT);
+        Event secondEvent = EventsTestHelper.createRandomEventtWithCategoryGivenSport(EventsTestHelper.SECOND_RANDOM_SPORT);
 
         LocalDateTime dayOne = new LocalDateTime();
         LocalDateTime dayThree = dayOne.plusDays(3);
@@ -202,9 +205,9 @@ public class EventDaoInMemoryTest {
     @Test
     public void searchDatesRangeThenReturnsFilteredResultsWithinDateRange() {
         // Arrange
-        Event firstEvent = EventsTestHelper.createRandomEventGivenSport(EventsTestHelper.FIRST_RANDOM_SPORT);
-        Event secondEvent = EventsTestHelper.createRandomEventGivenSport(EventsTestHelper.SECOND_RANDOM_SPORT);
-        Event thirdEvent = EventsTestHelper.createRandomEventGivenSport(EventsTestHelper.SECOND_RANDOM_SPORT);
+        Event firstEvent = EventsTestHelper.createRandomEventtWithCategoryGivenSport(EventsTestHelper.FIRST_RANDOM_SPORT);
+        Event secondEvent = EventsTestHelper.createRandomEventtWithCategoryGivenSport(EventsTestHelper.SECOND_RANDOM_SPORT);
+        Event thirdEvent = EventsTestHelper.createRandomEventtWithCategoryGivenSport(EventsTestHelper.SECOND_RANDOM_SPORT);
 
         LocalDateTime beforeRange = new LocalDateTime();
         LocalDateTime whithinRange = beforeRange.plusDays(2);
@@ -232,8 +235,8 @@ public class EventDaoInMemoryTest {
     @Test
     public void searchDateStartAndEndWhenDateIsSameDayAsEventThenReturnsFilteredResults() {
         // Arrange
-        Event firstEvent = EventsTestHelper.createRandomEventGivenSport(EventsTestHelper.FIRST_RANDOM_SPORT);
-        Event secondEvent = EventsTestHelper.createRandomEventGivenSport(EventsTestHelper.SECOND_RANDOM_SPORT);
+        Event firstEvent = EventsTestHelper.createRandomEventtWithCategoryGivenSport(EventsTestHelper.FIRST_RANDOM_SPORT);
+        Event secondEvent = EventsTestHelper.createRandomEventtWithCategoryGivenSport(EventsTestHelper.SECOND_RANDOM_SPORT);
 
         LocalDateTime dayOne = new LocalDateTime();
         LocalDateTime dayThree = dayOne.plusDays(3);
@@ -254,5 +257,52 @@ public class EventDaoInMemoryTest {
         // Assert
         Assertions.assertThat(result.size()).isEqualTo(1);
         Assertions.assertThat(result.get(0).getId()).isEqualTo(secondEvent.getId());
+    }
+
+    @Test(expected = RecordNotFoundException.class)
+    public void findCategoryThrowsExceptionWhenCategoryDoesntExist() throws RecordNotFoundException {
+        //Arrange
+        Event event = EventsTestHelper.createRandomEventGivenTeam(EventsTestHelper.A_RANDOM_TEAM_NAME);
+        eventDao.create(event);
+
+        //Act
+        Category category = eventDao.findCategory(event.getId(), EventsTestHelper.A_CATEGORY_ID);
+    }
+
+    @Test
+    public void findCategoryRetursTheCategoryWhenExists() throws RecordNotFoundException {
+        //Arrange
+        Event event = EventsTestHelper.createRandomEventtWithCategoryGivenSport((EventsTestHelper.FIRST_RANDOM_SPORT));
+        eventDao.create(event);
+        //Act
+        Category category = eventDao.findCategory(event.getId(), EventsTestHelper.A_CATEGORY_ID);
+
+        //Assert
+        Assertions.assertThat(category.getId()).isEqualTo(EventsTestHelper.A_CATEGORY_ID);
+    }
+
+    @Test(expected = NumberTooLargeException.class)
+    public void decrementEventCategoryNumberOfTicketsThrowsExceptionWhenNoneAvailable() throws RecordNotFoundException, NumberTooLargeException {
+        //Arrange
+        Category category = new Category(EventsTestHelper.A_DOUBLE, EventsTestHelper.AN_INT, EventsTestHelper.A_CATEGORY_ID);
+        Event event = EventsTestHelper.createRandomEventGivenACategory(category);
+        eventDao.create(event);
+
+        //Act
+        eventDao.decrementEventCategoryNumberOfTickets(event.getId(), category.getId(), Integer.MAX_VALUE);
+    }
+
+    @Test
+    public void decrementEventCategoryNumberOfTicketsDecrements() throws NumberTooLargeException, RecordNotFoundException {
+        //Arrange
+        Category category = new Category(EventsTestHelper.A_DOUBLE, EventsTestHelper.AN_INT, EventsTestHelper.A_CATEGORY_ID);
+        Event event = EventsTestHelper.createRandomEventGivenACategory(category);
+        eventDao.create(event);
+
+        //Act
+        eventDao.decrementEventCategoryNumberOfTickets(event.getId(), category.getId(), EventsTestHelper.AN_INT);
+
+        //Assert
+        Assertions.assertThat(eventDao.findCategory(event.getId(), category.getId()).getNumberOfTickets()).isEqualTo(0);
     }
 }

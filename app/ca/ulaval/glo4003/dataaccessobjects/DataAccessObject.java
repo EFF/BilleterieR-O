@@ -1,5 +1,7 @@
 package ca.ulaval.glo4003.dataaccessobjects;
 
+import ca.ulaval.glo4003.exceptions.RecordNotFoundException;
+
 import java.util.List;
 
 public interface DataAccessObject<T> {
