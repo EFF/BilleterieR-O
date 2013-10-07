@@ -4,8 +4,6 @@ import org.fluentlenium.core.domain.FluentList;
 import org.fluentlenium.core.domain.FluentWebElement;
 import org.openqa.selenium.WebDriver;
 
-import static org.fluentlenium.core.filter.FilterConstructor.withId;
-
 public class EventPage extends BaseFluentPage {
 
     private final int id;
@@ -48,7 +46,7 @@ public class EventPage extends BaseFluentPage {
     }
 
     public int getTicketNumberForCategory(int categoryIndex) {
-        String text = find(".numberOfTickets",categoryIndex).getText();
+        String text = find(".numberOfTickets", categoryIndex).getText();
         return Integer.parseInt(text);
     }
 }

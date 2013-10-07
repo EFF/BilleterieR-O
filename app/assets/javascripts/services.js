@@ -34,9 +34,9 @@ define(['app'], function (app) {
             return cart;
         }
 
-        exports.noItemSelected = function() {
-            for(key in cart){
-                if(cart[key].selected) return false;
+        exports.noItemSelected = function () {
+            for (key in cart) {
+                if (cart[key].selected) return false;
             }
             return true;
         }
@@ -49,7 +49,7 @@ define(['app'], function (app) {
 
         exports.getTotalSelectedQuantity = function () {
             return cart.reduce(function (a, item) {
-                if(item.selected){
+                if (item.selected) {
                     a += item.quantity;
                 }
                 return a;
@@ -57,8 +57,8 @@ define(['app'], function (app) {
         }
 
         exports.getTotalPrice = function () {
-            return cart.reduce( function (a, item) {
-                if(item.selected){
+            return cart.reduce(function (a, item) {
+                if (item.selected) {
                     a += item.quantity * item.category.price;
                 }
                 return a;

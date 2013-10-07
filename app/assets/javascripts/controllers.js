@@ -69,7 +69,7 @@ define(['app'], function (app) {
             .error(apiCallErrorCallback);
     }]);
 
-    app.controller('CartController', ['$scope','$http', 'FlashMessage', 'Cart', '$location', function ($scope, $http, FlashMessage, Cart, $location) {
+    app.controller('CartController', ['$scope', '$http', 'FlashMessage', 'Cart', '$location', function ($scope, $http, FlashMessage, Cart, $location) {
         $scope.cart = Cart.getItems();
         $scope.getTotalSelectedQuantity = Cart.getTotalSelectedQuantity;
         $scope.getTotalPrice = Cart.getTotalPrice;
@@ -77,46 +77,46 @@ define(['app'], function (app) {
         $scope.removeAllItem = Cart.removeAllItem;
         var noItemSelected = Cart.noItemSelected;
 
-        $scope.toggleAll = function(value){
-            for(var key in $scope.cart){
+        $scope.toggleAll = function (value) {
+            for (var key in $scope.cart) {
                 $scope.cart[key].selected = value;
             }
         }
 
-        $scope.uncheckSelectAll = function() {
+        $scope.uncheckSelectAll = function () {
             $scope.allSelected = false;
         };
 
-        $scope.checkout = function(){
-            if(noItemSelected()){
+        $scope.checkout = function () {
+            if (noItemSelected()) {
                 FlashMessage.send('error', 'La sélection est vide d\'achat est vide');
-            }else if(window.confirm("Voulez-vous vraiment procéder à la transaction ?"))    {
-                for(key in $scope.cart){
-                    if($scope.cart[key].selected){
+            } else if (window.confirm("Voulez-vous vraiment procéder à la transaction ?")) {
+                for (key in $scope.cart) {
+                    if ($scope.cart[key].selected) {
                         checkoutItem($scope.cart[key]);
                     }
                 }
             }
         }
 
-        var checkoutItem = function(item){
+        var checkoutItem = function (item) {
             var requestOptions = {
                 method: 'POST',
                 url: '/api/checkout',
                 data: {
-                    eventId : item.event.id,
+                    eventId: item.event.id,
                     categoryId: item.category.id,
                     numberOfTickets: item.quantity
                 }
             };
 
             $http(requestOptions)
-                .success(function(result, status){
+                .success(function (result, status) {
                     Cart.removeItem($scope.cart.indexOf(item));
                     FlashMessage.send("success", "La transaction a été complétée");
                     $location.path("/thanks");
                 })
-                .error(function(error, status){
+                .error(function (error, status) {
                     FlashMessage.send("error", error);
                 });
         }
