@@ -5,6 +5,7 @@ import ca.ulaval.glo4003.acceptances.pages.CartPage;
 import ca.ulaval.glo4003.acceptances.pages.EventPage;
 import ca.ulaval.glo4003.acceptances.pages.PaymentResultPage;
 import org.junit.Test;
+import org.openqa.selenium.WebDriver;
 import play.libs.F;
 import play.test.TestBrowser;
 
@@ -17,6 +18,9 @@ public class CartTest {
     private static final int FIRST_EVENT = 1;
     private static final String A_CVV = "123";
     private static final String A_CARD_NUMBER = "12345678901234";
+    private static final String A_MONTH = "01";
+    private static final String A_YEAR = "2015";
+    private static final String A_CARD_TYPE = "Vasi";
 
     @Test
     public void putManyItemsFromManyEventsIntoTheCartAndRemoveThem() {
@@ -65,7 +69,7 @@ public class CartTest {
 
                 goToEventPage(eventPage1);
 
-                int cat1TicketNumber = eventPage1.getTicketNumberForCategory(0);
+                int firstCategoryTicketCount = eventPage1.getTicketNumberForCategory(0);
 
                 eventPage1.buyTicketsForCategory(0, 1);
                 eventPage1.buyTicketsForCategory(1, 1);
@@ -74,11 +78,11 @@ public class CartTest {
                 goToCartPage(cartPage, 2);
 
                 cartPage.selectItem(0);
-                payCartWithCard(cartPage, "Vasi");
+                payCartWithCard(cartPage, A_CARD_TYPE, browser.getDriver());
                 resultPage.isAt();
 
                 goToEventPage(eventPage1);
-                assertThat(eventPage1.getTicketNumberForCategory(0)).isEqualTo(cat1TicketNumber - 1);
+                assertThat(eventPage1.getTicketNumberForCategory(0)).isEqualTo(firstCategoryTicketCount - 1);
             }
         });
     }
@@ -104,7 +108,7 @@ public class CartTest {
                 goToCartPage(cartPage, 2);
 
                 cartPage.selectAllItem();
-                payCartWithCard(cartPage, "Vasi");
+                payCartWithCard(cartPage, A_CARD_TYPE, browser.getDriver());
                 resultPage.isAt();
 
                 goToEventPage(eventPage1);
@@ -114,13 +118,13 @@ public class CartTest {
         });
     }
 
-    private void payCartWithCard(CartPage cartPage, String cardName) {
+    private void payCartWithCard(CartPage cartPage, String cardName, WebDriver driver) {
         cartPage.selectComboLabel(cardName);
         cartPage.fillCreditCardNumber(A_CARD_NUMBER);
         cartPage.fillCvv(A_CVV);
-        cartPage.selectExpirationMonth("01");
-        cartPage.selectExpirationYear("2015");
-        cartPage.sendPaymentForm();
+        cartPage.selectExpirationMonth(A_MONTH);
+        cartPage.selectExpirationYear(A_YEAR);
+        cartPage.sendPaymentForm(driver);
     }
 
     private void goToCartPage(CartPage cartPage, int itemSize) {

@@ -1,6 +1,6 @@
 package ca.ulaval.glo4003.models;
 
-import ca.ulaval.glo4003.exceptions.NumberTooLargeException;
+import ca.ulaval.glo4003.exceptions.MaximumExceededException;
 
 import java.io.Serializable;
 
@@ -24,8 +24,8 @@ public class Category implements Serializable {
         return numberOfTickets;
     }
 
-    public void decrementNumberOfTickets(int decrementNumber) throws NumberTooLargeException {
-        if(numberOfTickets < decrementNumber) throw new NumberTooLargeException();
+    public void decrementNumberOfTickets(int decrementNumber) throws MaximumExceededException {
+        if(numberOfTickets < decrementNumber) throw new MaximumExceededException();
         numberOfTickets -= decrementNumber;
     }
 

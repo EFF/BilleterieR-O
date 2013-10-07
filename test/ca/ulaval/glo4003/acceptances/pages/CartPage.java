@@ -57,8 +57,9 @@ public class CartPage extends BaseFluentPage {
         find("select", withId().equalTo("year-combo")).find("option", withText().equalTo(year)).click();
     }
 
-    public void sendPaymentForm() {
+    public void sendPaymentForm(WebDriver driver) {
         find("button", withId().equalTo("pay-button")).click();
+        driver.switchTo().alert().accept();
     }
 
     public void selectAllItem() {

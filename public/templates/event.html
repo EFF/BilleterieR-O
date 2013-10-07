@@ -1,5 +1,5 @@
 <ol class="breadcrumb">
-    <li><a href="#/events">Événements</a></li>
+    <li><a href="/#!/events">Événements</a></li>
     <li class="active">Détail de l'événement</li>
 </ol>
 
@@ -25,7 +25,6 @@
                     <input type="number" step="1" ng-model="quantity" ng-init="quantity=1"
                            class="form-control category-quantity" min="1" max="{{category.numberOfTickets}}">
                 </div>
-                <div class="col-md-1">x</div>
                 <div class="col-md-9">
                     <button class="btn btn-success category-add" ng-click="addToCart(quantity, category)"
                             ng-hide="category.numberOfTickets == 0">Ajouter au panier

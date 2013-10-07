@@ -83,14 +83,14 @@ define(['app'], function (app) {
             }
         }
 
-        $scope.uncheckAllSelected = function() {
+        $scope.uncheckSelectAll = function() {
             $scope.allSelected = false;
         };
 
         $scope.checkout = function(){
             if(noItemSelected()){
-                FlashMessage.send('error', 'Le panier d\'achat est vide');
-            }else{
+                FlashMessage.send('error', 'La sélection est vide d\'achat est vide');
+            }else if(window.confirm("Voulez-vous vraiment procéder à la transaction ?"))    {
                 for(key in $scope.cart){
                     if($scope.cart[key].selected){
                         checkoutItem($scope.cart[key]);

@@ -1,7 +1,7 @@
 package ca.ulaval.glo4003.unittests.dataaccessobjects;
 
 import ca.ulaval.glo4003.dataaccessobjects.EventDaoInMemory;
-import ca.ulaval.glo4003.exceptions.NumberTooLargeException;
+import ca.ulaval.glo4003.exceptions.MaximumExceededException;
 import ca.ulaval.glo4003.exceptions.RecordNotFoundException;
 import ca.ulaval.glo4003.models.Category;
 import ca.ulaval.glo4003.models.Event;
@@ -281,8 +281,8 @@ public class EventDaoInMemoryTest {
         Assertions.assertThat(category.getId()).isEqualTo(EventsTestHelper.A_CATEGORY_ID);
     }
 
-    @Test(expected = NumberTooLargeException.class)
-    public void decrementEventCategoryNumberOfTicketsThrowsExceptionWhenNoneAvailable() throws RecordNotFoundException, NumberTooLargeException {
+    @Test(expected = MaximumExceededException.class)
+    public void decrementEventCategoryNumberOfTicketsThrowsExceptionWhenNoneAvailable() throws RecordNotFoundException, MaximumExceededException {
         //Arrange
         Category category = new Category(EventsTestHelper.A_DOUBLE, EventsTestHelper.AN_INT, EventsTestHelper.A_CATEGORY_ID);
         Event event = EventsTestHelper.createRandomEventGivenACategory(category);
@@ -293,7 +293,7 @@ public class EventDaoInMemoryTest {
     }
 
     @Test
-    public void decrementEventCategoryNumberOfTicketsDecrements() throws NumberTooLargeException, RecordNotFoundException {
+    public void decrementEventCategoryNumberOfTicketsDecrements() throws MaximumExceededException, RecordNotFoundException {
         //Arrange
         Category category = new Category(EventsTestHelper.A_DOUBLE, EventsTestHelper.AN_INT, EventsTestHelper.A_CATEGORY_ID);
         Event event = EventsTestHelper.createRandomEventGivenACategory(category);

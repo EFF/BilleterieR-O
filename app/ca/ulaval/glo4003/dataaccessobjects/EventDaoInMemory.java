@@ -1,6 +1,6 @@
 package ca.ulaval.glo4003.dataaccessobjects;
 
-import ca.ulaval.glo4003.exceptions.NumberTooLargeException;
+import ca.ulaval.glo4003.exceptions.MaximumExceededException;
 import ca.ulaval.glo4003.exceptions.RecordNotFoundException;
 import ca.ulaval.glo4003.models.Category;
 import ca.ulaval.glo4003.models.Event;
@@ -53,7 +53,7 @@ public class EventDaoInMemory extends DaoInMemory<Event> implements EventDao {
     }
 
     @Override
-    public void decrementEventCategoryNumberOfTickets(long eventId, long categoryId, int numberOfTickets) throws RecordNotFoundException, NumberTooLargeException {
+    public void decrementEventCategoryNumberOfTickets(long eventId, long categoryId, int numberOfTickets) throws RecordNotFoundException, MaximumExceededException {
         Category category = findCategory(eventId, categoryId);
         category.decrementNumberOfTickets(numberOfTickets);
     }

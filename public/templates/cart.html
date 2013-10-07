@@ -1,12 +1,13 @@
 <h1>
     Panier d'achats
-    <button class="btn btn-danger remove-all" ng-click="removeAllItem()">Vider le panier</button>
+    <button class="btn btn-danger remove-all" ng-show="cart.length > 0"  ng-click="removeAllItem()">Vider le panier</button>
 </h1>
+<div class="alert alert-warning" ng-hide="cart.length" id="emptyAlert">Aucun billet dans le panier</div>
 <table class="table" ng-show="cart.length > 0">
     <thead>
     <tr>
         <th>
-            <input id="check-all" ng-change="toggleAll(allSelected)" ng-model="allSelected" type="checkbox">
+            <input id="check-all" ng-change="toggleAll(allSelected)" ng-model="allSelected" type="checkbox" checked>
             Sélection
         </th>
         <th>Billets</th>
@@ -19,7 +20,7 @@
     <tbody>
     <tr class="item" ng-repeat="item in cart">
         <td>
-            <input ng-click="uncheckAllSelected()" id="itemCheck" type="checkbox" ng-model="item.selected">
+            <input ng-click="uncheckSelectAll()" id="itemCheck" type="checkbox" ng-model="item.selected">
         </td>
         <td>
             <a href="/#!/events/{{item.event.id}}">{{item.event.sport.name}} {{item.event.gender | gender}}
