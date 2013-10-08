@@ -1,7 +1,7 @@
 package ca.ulaval.glo4003.modules;
 
-import ca.ulaval.glo4003.Bootstrap;
-import ca.ulaval.glo4003.TestBootstrap;
+import ca.ulaval.glo4003.Bootstrapper;
+import ca.ulaval.glo4003.TestBootstrapper;
 import com.google.inject.AbstractModule;
 
 public class TestModule extends AbstractModule {
@@ -10,6 +10,6 @@ public class TestModule extends AbstractModule {
     protected void configure() {
         install(new ApplicationModule());
 
-        bind(Bootstrap.class).to(TestBootstrap.class);
+        bind(Bootstrapper.class).to(TestBootstrapper.class);
     }
 }

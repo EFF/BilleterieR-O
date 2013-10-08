@@ -1,6 +1,6 @@
 package ca.ulaval.glo4003.unittests;
 
-import ca.ulaval.glo4003.StagingBootstrap;
+import ca.ulaval.glo4003.StagingBootstrapper;
 import ca.ulaval.glo4003.dataaccessobjects.EventDao;
 import ca.ulaval.glo4003.dataaccessobjects.SportDao;
 import ca.ulaval.glo4003.models.Event;
@@ -18,13 +18,13 @@ public class StagingBootstrapTest {
 
     private EventDao eventDao;
     private SportDao sportDao;
-    private StagingBootstrap bootstrap;
+    private StagingBootstrapper bootstrap;
 
     @Before
     public void setUp() {
         eventDao = mock(EventDao.class);
         sportDao = mock(SportDao.class);
-        bootstrap = new StagingBootstrap(eventDao, sportDao);
+        bootstrap = new StagingBootstrapper(eventDao, sportDao);
     }
 
     @Test

@@ -11,13 +11,13 @@ import org.joda.time.LocalDateTime;
 
 import java.util.Random;
 
-public class StagingBootstrap implements Bootstrap {
+public class StagingBootstrapper implements Bootstrapper {
 
     private final EventDao eventDao;
     private final SportDao sportDao;
 
     @Inject
-    public StagingBootstrap(EventDao eventDao, SportDao sportDao) {
+    public StagingBootstrapper(EventDao eventDao, SportDao sportDao) {
         this.eventDao = eventDao;
         this.sportDao = sportDao;
     }

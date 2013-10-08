@@ -1,4 +1,4 @@
-import ca.ulaval.glo4003.Bootstrap;
+import ca.ulaval.glo4003.Bootstrapper;
 import ca.ulaval.glo4003.modules.StagingModule;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
@@ -18,11 +18,6 @@ public class Global extends GlobalSettings {
     @Override
     public void onStart(Application application) {
         super.onStart(application);
-
-        if (play.Play.isDev()) {
-            Bootstrap bootstrap = INJECTOR.getInstance(Bootstrap.class);
-            bootstrap.initData();
-        }
     }
 
     private static Injector createInjector() {
