@@ -1,5 +1,8 @@
 package ca.ulaval.glo4003.dataaccessobjects;
 
+import ca.ulaval.glo4003.exceptions.MaximumExceededException;
+import ca.ulaval.glo4003.exceptions.RecordNotFoundException;
+import ca.ulaval.glo4003.models.Category;
 import ca.ulaval.glo4003.models.Event;
 import ca.ulaval.glo4003.models.EventSearchCriteria;
 import ca.ulaval.glo4003.models.Gender;
@@ -35,6 +38,24 @@ public class EventDaoInMemory extends DaoInMemory<Event> implements EventDao {
         results = filterByGender(criteria.getGender(), results);
 
         return results.toList();
+    }
+
+    @Override
+    public Category findCategory(long eventId, long categoryId) throws RecordNotFoundException {
+        Event event = read(eventId);
+        List<Category> categories = event.getCategories();
+        for (Category category : categories) {
+            if (category.getId() == categoryId) {
+                return category;
+            }
+        }
+        throw new RecordNotFoundException();
+    }
+
+    @Override
+    public void decrementEventCategoryNumberOfTickets(long eventId, long categoryId, int numberOfTickets) throws RecordNotFoundException, MaximumExceededException {
+        Category category = findCategory(eventId, categoryId);
+        category.decrementNumberOfTickets(numberOfTickets);
     }
 
     private FluentIterable<Event> filterByDateStart(final LocalDateTime dateStart, FluentIterable<Event> results) {

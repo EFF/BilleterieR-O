@@ -9,6 +9,8 @@ import ca.ulaval.glo4003.models.Sport;
 import com.google.inject.Inject;
 import org.joda.time.LocalDateTime;
 
+import java.util.Random;
+
 public class TestBootstrap implements Bootstrap {
 
     private final EventDao eventDao;
@@ -29,8 +31,8 @@ public class TestBootstrap implements Bootstrap {
 
         Event event1 = new Event(soccer, Gender.MALE);
         event1.setDate(new LocalDateTime());
-        Category category1 = new Category(12.0, 120);
-        Category category2 = new Category(8.0, 1200);
+        Category category1 = new Category(12.0, 120, 1);
+        Category category2 = new Category(8.0, 1200, 2);
 
         event1.addCategory(category1);
         event1.addCategory(category2);
@@ -38,8 +40,8 @@ public class TestBootstrap implements Bootstrap {
 
         Event event2 = new Event(soccer, Gender.FEMALE);
         event2.setDate(new LocalDateTime());
-        Category category3 = new Category(12.0, 120);
-        Category category4 = new Category(8.0, 1200);
+        Category category3 = new Category(12.0, 120, 3);
+        Category category4 = new Category(8.0, 1200, 4);
 
         event2.addCategory(category3);
         event2.addCategory(category4);
