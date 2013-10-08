@@ -17,4 +17,5 @@ public class PaymentResultPage extends BaseFluentPage{
     public void isAt(){
         await().atMost(TIMEOUT).until("div").withId().equalTo("result").isPresent();
     }
+
 }

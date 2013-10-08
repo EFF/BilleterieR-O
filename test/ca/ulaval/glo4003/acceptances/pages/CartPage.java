@@ -34,6 +34,7 @@ public class CartPage extends BaseFluentPage {
     }
 
     public void selectItem(int itemIndex) {
+        find("input", withId("check-all")).click();
         find("input", itemIndex, withId().equalTo("itemCheck")).click();
     }
 
@@ -57,12 +58,15 @@ public class CartPage extends BaseFluentPage {
         find("select", withId().equalTo("year-combo")).find("option", withText().equalTo(year)).click();
     }
 
-    public void sendPaymentForm(WebDriver driver) {
-        find("button", withId().equalTo("pay-button")).click();
+    public void confirm(WebDriver driver) {
         driver.switchTo().alert().accept();
     }
 
-    public void selectAllItem() {
-        find("input", withId().equalTo("check-all")).click();
+    public void checkout() {
+        find("button", withId().equalTo("pay-button")).click();
+    }
+
+    public void dismiss(WebDriver driver) {
+        driver.switchTo().alert().dismiss();
     }
 }

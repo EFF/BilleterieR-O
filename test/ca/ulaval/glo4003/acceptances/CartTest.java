@@ -79,6 +79,7 @@ public class CartTest {
 
                 cartPage.selectItem(0);
                 payCartWithCard(cartPage, A_CARD_TYPE, browser.getDriver());
+                cartPage.confirm(browser.getDriver());
                 resultPage.isAt();
 
                 goToEventPage(eventPage1);
@@ -98,8 +99,8 @@ public class CartTest {
 
                 goToEventPage(eventPage1);
 
-                int cat1TicketNumber = eventPage1.getTicketNumberForCategory(0);
-                int cat2TicketNumber = eventPage1.getTicketNumberForCategory(1);
+                int cart1TicketNumber = eventPage1.getTicketNumberForCategory(0);
+                int cart2TicketNumber = eventPage1.getTicketNumberForCategory(1);
 
                 eventPage1.buyTicketsForCategory(0, 1);
                 eventPage1.buyTicketsForCategory(1, 1);
@@ -107,15 +108,57 @@ public class CartTest {
 
                 goToCartPage(cartPage, 2);
 
-                cartPage.selectAllItem();
                 payCartWithCard(cartPage, A_CARD_TYPE, browser.getDriver());
+                cartPage.confirm(browser.getDriver());
                 resultPage.isAt();
 
                 goToEventPage(eventPage1);
-                assertThat(eventPage1.getTicketNumberForCategory(0)).isEqualTo(cat1TicketNumber - 1);
-                assertThat(eventPage1.getTicketNumberForCategory(1)).isEqualTo(cat2TicketNumber - 1);
+                assertThat(eventPage1.getTicketNumberForCategory(0)).isEqualTo(cart1TicketNumber - 1);
+                assertThat(eventPage1.getTicketNumberForCategory(1)).isEqualTo(cart2TicketNumber - 1);
             }
         });
+    }
+
+    @Test
+    public void confirmPerformsTheTransaction() {
+        running(testServer(3333, fakeApplication(new TestGlobal())), FIREFOX, new F.Callback<TestBrowser>() {
+            @Override
+            public void invoke(TestBrowser browser) {
+                EventPage eventPage1 = new EventPage(browser.getDriver(), FIRST_EVENT);
+                CartPage cartPage = new CartPage(browser.getDriver());
+                PaymentResultPage resultPage = new PaymentResultPage(browser.getDriver());
+
+                goToEventPage(eventPage1);
+                eventPage1.buyTicketsForCategory(0, 1);
+
+                goToCartPage(cartPage, 1);
+                payCartWithCard(cartPage, A_CARD_TYPE, browser.getDriver());
+                cartPage.confirm(browser.getDriver());
+                assertThat(resultPage.getCartSize()).isEqualTo(0);
+            }
+        });
+
+    }
+
+    @Test
+    public void declineDoesntPerformTheTransaction() {
+        running(testServer(3333, fakeApplication(new TestGlobal())), FIREFOX, new F.Callback<TestBrowser>() {
+            @Override
+            public void invoke(TestBrowser browser) {
+                EventPage eventPage1 = new EventPage(browser.getDriver(), FIRST_EVENT);
+                CartPage cartPage = new CartPage(browser.getDriver());
+                PaymentResultPage resultPage = new PaymentResultPage(browser.getDriver());
+
+                goToEventPage(eventPage1);
+                eventPage1.buyTicketsForCategory(0, 1);
+
+                goToCartPage(cartPage, 1);
+                payCartWithCard(cartPage, A_CARD_TYPE, browser.getDriver());
+                cartPage.dismiss(browser.getDriver());
+                assertThat(resultPage.getCartSize()).isEqualTo(1);
+            }
+        });
+
     }
 
     private void payCartWithCard(CartPage cartPage, String cardName, WebDriver driver) {
@@ -124,7 +167,7 @@ public class CartTest {
         cartPage.fillCvv(A_CVV);
         cartPage.selectExpirationMonth(A_MONTH);
         cartPage.selectExpirationYear(A_YEAR);
-        cartPage.sendPaymentForm(driver);
+        cartPage.checkout();
     }
 
     private void goToCartPage(CartPage cartPage, int itemSize) {
