@@ -3,6 +3,7 @@ package ca.ulaval.glo4003.unittests.controllers;
 import ca.ulaval.glo4003.controllers.Events;
 import ca.ulaval.glo4003.dataaccessobjects.EventDao;
 import ca.ulaval.glo4003.models.Event;
+import ca.ulaval.glo4003.services.InMemoryDaoPersistenceService;
 import ca.ulaval.glo4003.unittests.helpers.EventsTestHelper;
 import org.codehaus.jackson.JsonNode;
 import org.junit.After;
@@ -26,7 +27,7 @@ public class EventsTest {
 
     @Before
     public void setup() {
-        eventDao = new EventDao();
+        eventDao = new EventDao(new InMemoryDaoPersistenceService());
         events = new Events(eventDao);
     }
 

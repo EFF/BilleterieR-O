@@ -3,6 +3,7 @@ package ca.ulaval.glo4003.unittests.dataaccessobjects;
 import ca.ulaval.glo4003.dataaccessobjects.EventDao;
 import ca.ulaval.glo4003.models.Event;
 import ca.ulaval.glo4003.models.EventSearchCriteria;
+import ca.ulaval.glo4003.services.InMemoryDaoPersistenceService;
 import ca.ulaval.glo4003.unittests.helpers.EventsTestHelper;
 import org.fest.assertions.Assertions;
 import org.joda.time.LocalDateTime;
@@ -17,7 +18,7 @@ public class EventDaoTest {
 
     @Before
     public void setup() {
-        eventDao = new EventDao();
+        eventDao = new EventDao(new InMemoryDaoPersistenceService());
     }
 
     @Test

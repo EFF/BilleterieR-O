@@ -3,6 +3,7 @@ package ca.ulaval.glo4003.unittests.controllers;
 import ca.ulaval.glo4003.controllers.Facets;
 import ca.ulaval.glo4003.dataaccessobjects.SportDao;
 import ca.ulaval.glo4003.models.Sport;
+import ca.ulaval.glo4003.services.InMemoryDaoPersistenceService;
 import org.codehaus.jackson.JsonNode;
 import org.junit.After;
 import org.junit.Before;
@@ -24,7 +25,7 @@ public class FacetsTest {
 
     @Before
     public void setup() {
-        sportDao = new SportDao();
+        sportDao = new SportDao(new InMemoryDaoPersistenceService());
         facets = new Facets(sportDao);
     }
 

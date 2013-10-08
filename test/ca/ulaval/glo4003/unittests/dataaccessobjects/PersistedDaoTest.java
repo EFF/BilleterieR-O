@@ -3,6 +3,7 @@ package ca.ulaval.glo4003.unittests.dataaccessobjects;
 import ca.ulaval.glo4003.dataaccessobjects.PersistedDao;
 import ca.ulaval.glo4003.dataaccessobjects.RecordNotFoundException;
 import ca.ulaval.glo4003.models.Record;
+import ca.ulaval.glo4003.services.InMemoryDaoPersistenceService;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -20,7 +21,7 @@ public class PersistedDaoTest {
 
     @Before
     public void setUp() {
-        dao = new PersistedDao<TestRecord>() {};
+        dao = new PersistedDao<TestRecord>(new InMemoryDaoPersistenceService()) {};
     }
 
     @Test
