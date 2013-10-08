@@ -72,29 +72,12 @@
             <div class="col-lg-2" >
                 <select class="form-control input-inline" id="month-combo" required ng-pattern="/[09]{2}/" ng-model="creditCard.date.month">
                     <option value="" default selected>Mois</option>
-                    <option value="01">01</option>
-                    <option value="02">02</option>
-                    <option value="03">03</option>
-                    <option value="04">04</option>
-                    <option value="05">05</option>
-                    <option value="06">06</option>
-                    <option value="07">07</option>
-                    <option value="08">08</option>
-                    <option value="09">09</option>
-                    <option value="10">10</option>
-                    <option value="11">11</option>
-                    <option value="12">12</option>
+                    <option value="{{month}}" ng-repeat='month in monthOfYear'>{{month}}</option>
                 </select>
                 <br/>
                 <select class="form-control input-inline" id="year-combo" required ng-pattern="/[09]{4}/" ng-model="creditCard.date.year">
                     <option value="" default selected>Année</option>
-                    <option value="01">2014</option>
-                    <option value="02">2015</option>
-                    <option value="03">2016</option>
-                    <option value="04">2017</option>
-                    <option value="05">2018</option>
-                    <option value="06">2019</option>
-                    <option value="07">2020</option>
+                    <option value="{{year}}" ng-repeat="year in expirationYears">{{year}}</option>
                 </select>
             </div>
         </div>

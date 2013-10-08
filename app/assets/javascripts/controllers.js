@@ -69,13 +69,22 @@ define(['app'], function (app) {
             .error(apiCallErrorCallback);
     }]);
 
-    app.controller('CartController', ['$scope', '$http', 'FlashMessage', 'Cart', '$location', function ($scope, $http, FlashMessage, Cart, $location) {
-        $scope.cart = Cart.getItems();
+    app.controller('CartController', ['$scope', '$http', 'FlashMessage', 'Cart', '$location',
+        function ($scope, $http, FlashMessage, Cart, $location) {
+
+            $scope.cart = Cart.getItems();
         $scope.getTotalSelectedQuantity = Cart.getTotalSelectedQuantity;
         $scope.getTotalPrice = Cart.getTotalPrice;
         $scope.removeItem = Cart.removeItem;
         $scope.removeAllItem = Cart.removeAllItem;
         var noItemSelected = Cart.noItemSelected;
+        $scope.monthOfYear = ['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12'];
+        $scope.expirationYears = [];
+
+        var currentDate = new Date();
+        for (var i = 0; i < 5 ; i++) {
+            $scope.expirationYears.push(currentDate.getFullYear() + i);
+        }
 
         $scope.toggleAll = function (value) {
             for (var key in $scope.cart) {
