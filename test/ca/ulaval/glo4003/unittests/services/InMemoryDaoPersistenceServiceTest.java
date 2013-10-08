@@ -14,7 +14,7 @@ public class InMemoryDaoPersistenceServiceTest {
     private PersistedDao<PersistedDaoTest.TestRecord> dao;
 
     @Before
-    public void setup() {
+    public void setUp() {
 
         this.persistenceService = new InMemoryDaoPersistenceService();
         this.dao = new PersistedDao<PersistedDaoTest.TestRecord>(persistenceService) {};
