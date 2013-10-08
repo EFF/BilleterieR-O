@@ -24,8 +24,8 @@ public class Category implements Serializable {
         return numberOfTickets;
     }
 
-    public void decrementNumberOfTickets(int decrementNumber) throws MaximumExceededException {
-        if(numberOfTickets < decrementNumber) throw new MaximumExceededException();
+    public synchronized void decrementNumberOfTickets(int decrementNumber) throws MaximumExceededException {
+        if (numberOfTickets < decrementNumber) throw new MaximumExceededException();
         numberOfTickets -= decrementNumber;
     }
 
