@@ -179,7 +179,7 @@ public class PersistedDaoTest {
     }
 
     @Test
-    public void persistsOnAdd() {
+    public void persistsOnAdd() throws IOException {
         // Arrange
         DaoPersistenceService persistenceSvc = mock(InMemoryDaoPersistenceService.class);
         dao = new PersistedDao<TestRecord>(persistenceSvc) {};
@@ -188,12 +188,7 @@ public class PersistedDaoTest {
         dao.create(new TestRecord());
 
         // Assert
-        try {
-            verify(persistenceSvc, times(1)).persist(dao);
-        }
-        catch(Exception ex) {
-            fail("Expected no error in persistence.");
-        }
+        verify(persistenceSvc, times(1)).persist(dao);
     }
 
     @Test
@@ -218,7 +213,7 @@ public class PersistedDaoTest {
     }
 
     @Test
-    public void persistsOnEveryUpdates() {
+    public void persistsOnEveryUpdates() throws IOException {
         // Arrange
         DaoPersistenceService persistenceSvc = mock(InMemoryDaoPersistenceService.class);
         dao = new PersistedDao<TestRecord>(persistenceSvc) {};
@@ -241,16 +236,11 @@ public class PersistedDaoTest {
         }
 
         // Assert
-        try {
-            verify(persistenceSvc, times(4)).persist(dao);
-        }
-        catch(Exception ex) {
-            fail("Expected no error in persistence.");
-        }
+        verify(persistenceSvc, times(4)).persist(dao);
     }
 
     @Test
-    public void restoreOnDaoCreation() {
+    public void restoreOnDaoCreation() throws IOException, ClassNotFoundException {
         // Arrange
         DaoPersistenceService persistenceSvc = mock(InMemoryDaoPersistenceService.class);
 
@@ -258,12 +248,7 @@ public class PersistedDaoTest {
         dao = new PersistedDao<TestRecord>(persistenceSvc) {};
 
         // Assert
-        try {
-            verify(persistenceSvc, times(1)).restore(dao);
-        }
-        catch(Exception ex) {
-            fail("Expected no error in DAO creation.");
-        }
+        verify(persistenceSvc, times(1)).restore(dao);
     }
 
     public static class TestRecord extends Record {
