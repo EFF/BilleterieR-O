@@ -18,10 +18,9 @@ public class FileBasedDaoPersistenceService implements DaoPersistenceService {
     public <T extends DataAccessObject> void persist(T dao) throws IOException {
         File objectPath = getOutputPathForObject(dao);
 
-        System.out.println(objectPath.toPath());
-
         FileOutputStream fileStream = new FileOutputStream(objectPath);
         ObjectOutputStream oos = new ObjectOutputStream(fileStream);
+
         oos.writeObject(dao.list());
     }
 
@@ -31,20 +30,30 @@ public class FileBasedDaoPersistenceService implements DaoPersistenceService {
 
         FileInputStream saveFile = new FileInputStream(objectPath);
         ObjectInputStream restore = new ObjectInputStream(saveFile);
+
         return (List<T>) restore.readObject();
     }
 
     private <T> File getOutputPathForObject(T dao) {
-        File baseDir = getOrCreateDir(new File(new File("").getAbsolutePath()), "data");
-        File profileDir = getOrCreateDir(baseDir, this.profile);
-        return getOrCreateDir(profileDir, dao.getClass().getSimpleName() + ".ser");
+        try {
+            File baseDir = getOrCreateDir(new File(new File("").getAbsolutePath()), "data");
+            File profileDir = getOrCreateDir(baseDir, this.profile);
+            return new File(profileDir, dao.getClass().getSimpleName() + ".ser");
+        } catch (Exception e) {
+            System.err.println(String.format("ERROR: Output path for DAO %s doesn't exist and could not be created." +
+                    " Inner exception: %s", dao.getClass().getName(), e.getMessage()));
+
+            return null;
+        }
     }
 
-    private File getOrCreateDir(File parent, String path) {
+    private File getOrCreateDir(File parent, String path) throws Exception {
         File baseDir = new File(parent, path);
 
-        if (baseDir.exists()) {
-            baseDir.mkdir();
+        if (!baseDir.exists()) {
+            if(!baseDir.mkdirs()) {
+                throw new Exception("Directory " + baseDir.getPath() + " could not be created.");
+            }
         }
 
         return baseDir;
