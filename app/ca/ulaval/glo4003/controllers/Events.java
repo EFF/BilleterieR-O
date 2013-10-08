@@ -8,10 +8,14 @@ import ca.ulaval.glo4003.models.EventSearchCriteria;
 import ca.ulaval.glo4003.models.Gender;
 import com.google.inject.Inject;
 import org.codehaus.jackson.JsonNode;
+import org.codehaus.jackson.map.ObjectMapper;
+import org.codehaus.jackson.node.ArrayNode;
 import org.joda.time.LocalDateTime;
 import play.libs.Json;
 import play.mvc.Controller;
 import play.mvc.Result;
+
+import java.util.Iterator;
 
 public class Events extends Controller {
 
@@ -57,18 +61,25 @@ public class Events extends Controller {
     }
 
     public Result decrementCategoryCounter(){
-        JsonNode jsonNode = request().body().asJson();
-        Long eventId = jsonNode.get("eventId").asLong();
-        Long categoryId = jsonNode.get("categoryId").asLong();
-        int numberOfTickets = jsonNode.get("numberOfTickets").asInt();
+        JsonNode items = request().body().asJson();
+        Iterator<JsonNode> jsonNodeIterator = items.iterator();
 
-        try {
-            eventDao.decrementEventCategoryNumberOfTickets(eventId, categoryId, numberOfTickets);
-        } catch (RecordNotFoundException e) {
-           return notFound();
-        } catch (MaximumExceededException e) {
-            return internalServerError();
+        while(jsonNodeIterator.hasNext()){
+            JsonNode item = jsonNodeIterator.next();
+
+            Long eventId = item.get("eventId").asLong();
+            Long categoryId = item.get("categoryId").asLong();
+            int quantity = item.get("quantity").asInt();
+
+            try {
+                eventDao.decrementEventCategoryNumberOfTickets(eventId, categoryId, quantity);
+            } catch (RecordNotFoundException e) {
+               return notFound();
+            } catch (MaximumExceededException e) {
+                return internalServerError("Il n'y a pas assez de billets disponibles dans la catégorie" + categoryId.toString());
+            }
         }
+
         return ok();
     }
 }

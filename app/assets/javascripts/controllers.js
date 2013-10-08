@@ -69,8 +69,9 @@ define(['app'], function (app) {
             .error(apiCallErrorCallback);
     }]);
 
-    app.controller('CartController', ['$scope', '$http', 'FlashMessage', 'Cart', '$location',
-        function ($scope, $http, FlashMessage, Cart, $location) {
+    app.controller('CartController', ['$scope', 'FlashMessage', 'Cart', '$location',
+        function ($scope, FlashMessage, Cart, $location) {
+            $scope.selectAll = true;
             $scope.cart = Cart.getItems();
             $scope.getTotalSelectedQuantity = Cart.getTotalSelectedQuantity;
             $scope.getTotalPrice = Cart.getTotalPrice;
@@ -86,7 +87,7 @@ define(['app'], function (app) {
             }
 
             $scope.unCheckSelectAll = function () {
-                $scope.allSelected = false;
+                $scope.selectAll = false;
             };
 
             $scope.toggleAll = function (value) {
@@ -97,36 +98,19 @@ define(['app'], function (app) {
 
             $scope.checkout = function () {
                 if (Cart.isSelectionEmpty()) {
-                    FlashMessage.send('warning', 'La sélection d\'achat est vide est vide');
+                    FlashMessage.send('warning', 'La sélection d\'achat est vide');
                 } else if (window.confirm("Confirmez-vous le paiment de " + $scope.getTotalPrice() + "$ ?")) {
-                    for (key in $scope.cart) {
-                        if ($scope.cart[key].selected) {
-                            checkoutItem($scope.cart[key]);
-                        }
-                    }
+                    Cart.checkout(checkoutSuccess, checkoutError);
                 }
             }
 
-            var checkoutItem = function (item) {
-                var requestOptions = {
-                    method: 'POST',
-                    url: '/api/checkout',
-                    data: {
-                        eventId: item.event.id,
-                        categoryId: item.category.id,
-                        numberOfTickets: item.quantity
-                    }
-                };
+            var checkoutSuccess = function () {
+                FlashMessage.send("success", "La transaction a été complétée");
+                $location.path("/thanks");
+            }
 
-                $http(requestOptions)
-                    .success(function () {
-                        Cart.removeItem($scope.cart.indexOf(item));
-                        FlashMessage.send("success", "La transaction a été complétée");
-                        $location.path("/thanks");
-                    })
-                    .error(function (error) {
-                        FlashMessage.send("error", error);
-                    });
+            var checkoutError = function (error) {
+                FlashMessage.send("error", error);
             }
         }]);
 });

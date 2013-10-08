@@ -7,7 +7,7 @@
     <thead>
     <tr>
         <th>
-            <input id="check-all" ng-change="toggleAll(allSelected)" ng-model="allSelected" type="checkbox" checked>
+            <input id="check-all" ng-change="toggleAll(selectAll)" ng-model="selectAll" type="checkbox" checked>
             Sélection
         </th>
         <th>Billets</th>
@@ -45,41 +45,41 @@
     <h1>Paiement</h1>
     <form class="form-horizontal" role="form" name="checkout_form" novalidate ng-submit="checkout()">
         <div class="form-group">
-            <label class="col-lg-2 control-label">Type de carte</label>
-            <div class="col-lg-5">
-                <select id="credit-combo" class="form-control" ng-model="creditCard.type">
-                    <option value="" default selected>Type de carte</option>
-                    <option value="{{card}}" ng-repeat="card in validCards">{{card}}</option>
-                </select>
+<!--            <div class="form-group">
+                <label class="col-lg-2 control-label">Type de carte</label>
+                <div class="col-lg-5">
+                    <select id="credit-combo" class="form-control" ng-model="creditCard.type">
+                        <option value="" default selected>Type de carte</option>
+                        <option value="{{card}}" ng-repeat="card in validCards">{{card}}</option>
+                    </select>
+                </div>
             </div>
-        </div>
-        <div class="form-group">
-            <label class="col-lg-2 control-label">No. Carte de crédit</label>
-            <div class="col-lg-5">
-                <input type="text" class="form-control" id="card-number" required ng-pattern="/[0-9]{12}/"  placeholder="xxxxxxxxxxxxxxxx" ng-model="creditCard.number">
+            <div class="form-group">
+                <label class="col-lg-2 control-label">No. Carte de crédit</label>
+                <div class="col-lg-5">
+                    <input type="text" class="form-control" id="card-number" required ng-pattern="/[0-9]{12}/"  placeholder="xxxxxxxxxxxxxxxx" ng-model="creditCard.number">
+                </div>
             </div>
-        </div>
-        <div class="form-group">
-            <label class="col-lg-2 control-label">CVV</label>
-            <div class="col-lg-5">
-                <input type="text" class="form-control" id="card-cvv" required ng-pattern="/[0-9]{3}/" placeholder="xxx" ng-model="creditCard.cvv">
+            <div class="form-group">
+                <label class="col-lg-2 control-label">CVV</label>
+                <div class="col-lg-5">
+                    <input type="text" class="form-control" id="card-cvv" required ng-pattern="/[0-9]{3}/" placeholder="xxx" ng-model="creditCard.cvv">
+                </div>
             </div>
-        </div>
-        <div class="form-group">
-            <label class="col-lg-2 control-label">Date d'expiration</label>
-            <div class="col-lg-2" >
-                <select class="form-control input-inline" id="month-combo" required ng-pattern="/[09]{2}/" ng-model="creditCard.date.month">
-                    <option value="" default selected>Mois</option>
-                    <option value="{{month}}" ng-repeat='month in monthOfYear'>{{month}}</option>
-                </select>
-                <br/>
-                <select class="form-control input-inline" id="year-combo" required ng-pattern="/[09]{4}/" ng-model="creditCard.date.year">
-                    <option value="" default selected>Année</option>
-                    <option value="{{year}}" ng-repeat="year in expirationYears">{{year}}</option>
-                </select>
-            </div>
-        </div>
-        <div class="form-group">
+            <div class="form-group">
+                <label class="col-lg-2 control-label">Date d'expiration</label>
+                <div class="col-lg-2" >
+                    <select class="form-control input-inline" id="month-combo" required ng-pattern="/[09]{2}/" ng-model="creditCard.date.month">
+                        <option value="" default selected>Mois</option>
+                        <option value="{{month}}" ng-repeat='month in monthOfYear'>{{month}}</option>
+                    </select>
+                    <br/>
+                    <select class="form-control input-inline" id="year-combo" required ng-pattern="/[09]{4}/" ng-model="creditCard.date.year">
+                        <option value="" default selected>Année</option>
+                        <option value="{{year}}" ng-repeat="year in expirationYears">{{year}}</option>
+                    </select>
+                </div>
+            </div>-->
             <div class="col-lg-offset-2 col-lg-2">
                 <button type="submit" id="pay-button" ng-disabled="checkout_form.$invalid" class="btn btn-success">Acheter la sélection</button>
             </div>
