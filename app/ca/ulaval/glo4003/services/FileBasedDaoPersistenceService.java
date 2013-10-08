@@ -16,28 +16,39 @@ public class FileBasedDaoPersistenceService implements DaoPersistenceService {
 
     @Override
     public <T extends DataAccessObject> void persist(T dao) throws IOException {
-        File objectPath = getOutputPathForObject(dao);
+        File objectPath = getDaoPersistencePath(dao);
 
         FileOutputStream fileStream = new FileOutputStream(objectPath);
         ObjectOutputStream oos = new ObjectOutputStream(fileStream);
 
-        oos.writeObject(dao.list());
+        try {
+            oos.writeObject(dao.list());
+        }
+        finally {
+            oos.close();
+        }
     }
 
     @Override
     public <T extends Record, Y extends DataAccessObject> List<T> restore(Y dao) throws IOException, ClassNotFoundException {
-        File objectPath = getOutputPathForObject(dao);
+        File objectPath = getDaoPersistencePath(dao);
 
         FileInputStream saveFile = new FileInputStream(objectPath);
         ObjectInputStream restore = new ObjectInputStream(saveFile);
 
-        return (List<T>) restore.readObject();
+        try {
+            return (List<T>) restore.readObject();
+        }
+        finally {
+            restore.close();
+        }
     }
 
-    private <T> File getOutputPathForObject(T dao) {
+    public <T extends DataAccessObject> File getDaoPersistencePath(T dao) {
         try {
             File baseDir = getOrCreateDir(new File(new File("").getAbsolutePath()), "data");
             File profileDir = getOrCreateDir(baseDir, this.profile);
+
             return new File(profileDir, dao.getClass().getSimpleName() + ".ser");
         } catch (Exception e) {
             System.err.println(String.format("ERROR: Output path for DAO %s doesn't exist and could not be created." +
