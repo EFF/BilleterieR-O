@@ -3,6 +3,7 @@ package ca.ulaval.glo4003.dataaccessobjects;
 import ca.ulaval.glo4003.models.Event;
 import ca.ulaval.glo4003.models.EventSearchCriteria;
 import ca.ulaval.glo4003.models.Gender;
+import ca.ulaval.glo4003.services.DaoPersistenceService;
 import com.google.common.base.Predicate;
 import com.google.common.collect.FluentIterable;
 import org.apache.commons.lang3.StringUtils;
@@ -13,6 +14,10 @@ import java.security.InvalidParameterException;
 import java.util.List;
 
 public class EventDao extends PersistedDao<Event> {
+
+    public EventDao(DaoPersistenceService persistenceService) {
+        super(persistenceService);
+    }
 
     public List<Event> search(final EventSearchCriteria criteria) throws InvalidParameterException {
         FluentIterable<Event> results = FluentIterable.from(this.list());

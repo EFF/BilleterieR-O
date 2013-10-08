@@ -1,15 +1,30 @@
 package ca.ulaval.glo4003.dataaccessobjects;
 
 import ca.ulaval.glo4003.models.Record;
+import ca.ulaval.glo4003.services.DaoPersistenceService;
 import org.apache.commons.lang3.SerializationUtils;
 
+import java.io.IOException;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class PersistedDao<T extends Record> implements DataAccessObject<T> {
+public abstract class PersistedDao<T extends Record> implements DataAccessObject<T>, Serializable {
 
     private long lastId = 1;
     protected List<T> list = new ArrayList<>();
+    protected DaoPersistenceService persistenceService;
+
+    public PersistedDao(DaoPersistenceService persistenceService) {
+        this.persistenceService = persistenceService;
+
+        try {
+            this.list = this.persistenceService.restore(this);
+
+            System.out.println("Restored the list with " + this.list.size() + " items.");
+        } catch (Exception e) {
+        }
+    }
 
     public T create(T element) {
         element.setId(lastId);
@@ -57,5 +72,12 @@ public abstract class PersistedDao<T extends Record> implements DataAccessObject
         // the update method
         T elementCopy = SerializationUtils.clone(element);
         list.add(elementCopy);
+        try {
+            this.persistenceService.persist(this);
+        }
+        catch(Exception e) {
+
+        }
+
     }
 }
