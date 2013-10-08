@@ -21,7 +21,7 @@
     <tbody>
     <tr class="item" ng-repeat="item in cart">
         <td>
-            <input ng-click="unCheckSelectAll()" id="itemCheck" type="checkbox" ng-model="item.selected">
+            <input ng-click="unCheckSelectAllCheckbox()" id="itemCheck" type="checkbox" ng-model="item.selected">
         </td>
         <td>
             <a href="/#!/events/{{item.event.id}}">{{item.event.sport.name}} {{item.event.gender | gender}}

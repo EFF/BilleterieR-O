@@ -86,7 +86,7 @@ define(['app'], function (app) {
                 $scope.expirationYears.push(currentDate.getFullYear() + i);
             }
 
-            $scope.unCheckSelectAll = function () {
+            $scope.unCheckSelectAllCheckbox = function () {
                 $scope.selectAll = false;
             };
 
