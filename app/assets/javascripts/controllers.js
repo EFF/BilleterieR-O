@@ -77,6 +77,7 @@ define(['app'], function (app) {
             $scope.getTotalPrice = Cart.getTotalPrice;
             $scope.removeItem = Cart.removeItem;
             $scope.removeAllItem = Cart.removeAllItem;
+            $scope.toggleAll = Cart.toggleAll;
             $scope.validCards = ['Vasi', 'Mistercard', 'AmericanExpresso'];
             $scope.monthOfYear = ['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12'];
             $scope.expirationYears = [];
@@ -84,12 +85,6 @@ define(['app'], function (app) {
             var currentDate = new Date();
             for (var i = 0; i < 5; i++) {
                 $scope.expirationYears.push(currentDate.getFullYear() + i);
-            }
-
-            $scope.toggleAll = function (value) {
-                for (var key in $scope.cart) {
-                    $scope.cart[key].selected = value;
-                }
             }
 
             $scope.uncheckSelectAll = function () {
