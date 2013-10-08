@@ -49,9 +49,7 @@
             <div class="col-lg-5">
                 <select id="credit-combo" class="form-control" ng-model="creditCard.type">
                     <option value="" default selected>Type de carte</option>
-                    <option value="Vasi">Vasi</option>
-                    <option value="Mistercard">Mistercard</option>
-                    <option value="AmericanEspresso">AmericanEspresso</option>
+                    <option value="{{card}}" ng-repeat="card in validCards">{{card}}</option>
                 </select>
             </div>
         </div>
