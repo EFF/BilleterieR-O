@@ -65,10 +65,8 @@ define(['app'], function (app) {
             }, 0);
         }
 
-        exports.toggleAll = function (value) {
-            for (var key in cart) {
-                cart[key].selected = value;
-            }
+        exports.setItemSelected = function (key, value) {
+            cart[key].selected = value;
         }
 
         return exports;

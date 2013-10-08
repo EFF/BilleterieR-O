@@ -71,13 +71,11 @@ define(['app'], function (app) {
 
     app.controller('CartController', ['$scope', '$http', 'FlashMessage', 'Cart', '$location',
         function ($scope, $http, FlashMessage, Cart, $location) {
-
             $scope.cart = Cart.getItems();
             $scope.getTotalSelectedQuantity = Cart.getTotalSelectedQuantity;
             $scope.getTotalPrice = Cart.getTotalPrice;
             $scope.removeItem = Cart.removeItem;
             $scope.removeAllItem = Cart.removeAllItem;
-            $scope.toggleAll = Cart.toggleAll;
             $scope.validCards = ['Vasi', 'Mistercard', 'AmericanExpresso'];
             $scope.monthOfYear = ['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12'];
             $scope.expirationYears = [];
@@ -87,13 +85,19 @@ define(['app'], function (app) {
                 $scope.expirationYears.push(currentDate.getFullYear() + i);
             }
 
-            $scope.uncheckSelectAll = function () {
+            $scope.unCheckSelectAll = function () {
                 $scope.allSelected = false;
+            };
+
+            $scope.toggleAll = function (value) {
+                for (var key in $scope.cart) {
+                    Cart.setItemSelected(key, value);
+                }
             };
 
             $scope.checkout = function () {
                 if (Cart.isSelectionEmpty()) {
-                    FlashMessage.send('error', 'La sélection d\'achat est vide est vide');
+                    FlashMessage.send('warning', 'La sélection d\'achat est vide est vide');
                 } else if (window.confirm("Confirmez-vous le paiment de " + $scope.getTotalPrice() + "$ ?")) {
                     for (key in $scope.cart) {
                         if ($scope.cart[key].selected) {
@@ -115,12 +119,12 @@ define(['app'], function (app) {
                 };
 
                 $http(requestOptions)
-                    .success(function (result, status) {
+                    .success(function () {
                         Cart.removeItem($scope.cart.indexOf(item));
                         FlashMessage.send("success", "La transaction a été complétée");
                         $location.path("/thanks");
                     })
-                    .error(function (error, status) {
+                    .error(function (error) {
                         FlashMessage.send("error", error);
                     });
             }
