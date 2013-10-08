@@ -222,6 +222,38 @@ public class PersistedDaoTest {
     }
 
     @Test
+    public void persistsOnEveryUpdates() {
+        // Arrange
+        DaoPersistenceService persistenceSvc = mock(InMemoryDaoPersistenceService.class);
+        dao = new PersistedDao<TestRecord>(persistenceSvc) {};
+
+        // Act
+        TestRecord record = new TestRecord();
+        dao.create(record);
+        try {
+            record.setValue(2);
+            dao.update(record);
+
+            record.setValue(3);
+            dao.update(record);
+
+            record.setValue(5);
+            dao.update(record);
+        }
+        catch(Exception e) {
+            fail("Expected no error while updating record.");
+        }
+
+        // Assert
+        try {
+            verify(persistenceSvc, times(4)).persist(dao);
+        }
+        catch(Exception ex) {
+            fail("Expected no error in persistence.");
+        }
+    }
+
+    @Test
     public void restoreOnDaoCreation() {
         // Arrange
         DaoPersistenceService persistenceSvc = mock(InMemoryDaoPersistenceService.class);
