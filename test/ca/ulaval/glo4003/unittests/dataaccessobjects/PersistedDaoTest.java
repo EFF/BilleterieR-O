@@ -8,6 +8,7 @@ import ca.ulaval.glo4003.services.InMemoryDaoPersistenceService;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.io.IOException;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
@@ -196,7 +197,7 @@ public class PersistedDaoTest {
     }
 
     @Test
-    public void persistsOnUpdate() {
+    public void persistsOnUpdate() throws IOException {
         // Arrange
         DaoPersistenceService persistenceSvc = mock(InMemoryDaoPersistenceService.class);
         dao = new PersistedDao<TestRecord>(persistenceSvc) {};
@@ -213,12 +214,7 @@ public class PersistedDaoTest {
         }
 
         // Assert
-        try {
-            verify(persistenceSvc, times(2)).persist(dao);
-        }
-        catch(Exception ex) {
-            fail("Expected no error in persistence.");
-        }
+        verify(persistenceSvc, times(2)).persist(dao);
     }
 
     @Test

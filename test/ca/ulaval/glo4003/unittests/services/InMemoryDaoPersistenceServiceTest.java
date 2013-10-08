@@ -10,7 +10,7 @@ import static org.fest.assertions.Assertions.assertThat;
 
 public class InMemoryDaoPersistenceServiceTest {
 
-    InMemoryDaoPersistenceService persistenceService;
+    private InMemoryDaoPersistenceService persistenceService;
     private PersistedDao<PersistedDaoTest.TestRecord> dao;
 
     @Before

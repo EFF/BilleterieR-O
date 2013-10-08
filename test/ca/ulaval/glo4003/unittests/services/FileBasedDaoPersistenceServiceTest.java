@@ -16,7 +16,7 @@ import static org.fest.assertions.Assertions.assertThat;
 
 public class FileBasedDaoPersistenceServiceTest {
 
-    FileBasedDaoPersistenceService persistenceService;
+    private FileBasedDaoPersistenceService persistenceService;
     private PersistedDao<PersistedDaoTest.TestRecord> dao;
 
     private static final String PROFILE = "UTests";

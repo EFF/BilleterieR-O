@@ -19,13 +19,13 @@ public class FileBasedDaoPersistenceService implements DaoPersistenceService {
         File objectPath = getDaoPersistencePath(dao);
 
         FileOutputStream fileStream = new FileOutputStream(objectPath);
-        ObjectOutputStream oos = new ObjectOutputStream(fileStream);
+        ObjectOutputStream serializer = new ObjectOutputStream(fileStream);
 
         try {
-            oos.writeObject(dao.list());
+            serializer.writeObject(dao.list());
         }
         finally {
-            oos.close();
+            serializer.close();
         }
     }
 
@@ -34,13 +34,13 @@ public class FileBasedDaoPersistenceService implements DaoPersistenceService {
         File objectPath = getDaoPersistencePath(dao);
 
         FileInputStream saveFile = new FileInputStream(objectPath);
-        ObjectInputStream restore = new ObjectInputStream(saveFile);
+        ObjectInputStream serializer = new ObjectInputStream(saveFile);
 
         try {
-            return (List<T>) restore.readObject();
+            return (List<T>) serializer.readObject();
         }
         finally {
-            restore.close();
+            serializer.close();
         }
     }
 
