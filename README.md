@@ -14,7 +14,7 @@ Projet développé dans le cadre du cours GLO-4003 Architecture logiciellle
 ## Lancer l'app
     play run
 
-## Boostrap fresh data
+## Bootstrap fresh data
     curl localhost:9000/bootstrap
 
 ## Lancer les tests
