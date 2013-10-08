@@ -15,7 +15,8 @@ Projet développé dans le cadre du cours GLO-4003 Architecture logiciellle
     play run
 
 ## Bootstrap fresh data
-    curl localhost:9000/bootstrap
+1. Lancer l'application en mode dev
+2. curl ```localhost:9000/bootstrap```
 
 ## Lancer les tests
     play test
