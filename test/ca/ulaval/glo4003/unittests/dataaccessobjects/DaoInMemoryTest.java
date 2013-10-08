@@ -1,7 +1,7 @@
 package ca.ulaval.glo4003.unittests.dataaccessobjects;
 
 import ca.ulaval.glo4003.dataaccessobjects.DaoInMemory;
-import ca.ulaval.glo4003.dataaccessobjects.RecordNotFoundException;
+import ca.ulaval.glo4003.exceptions.RecordNotFoundException;
 import ca.ulaval.glo4003.models.Record;
 import org.junit.Before;
 import org.junit.Test;

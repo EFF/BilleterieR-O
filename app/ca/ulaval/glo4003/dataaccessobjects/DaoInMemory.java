@@ -1,5 +1,6 @@
 package ca.ulaval.glo4003.dataaccessobjects;
 
+import ca.ulaval.glo4003.exceptions.RecordNotFoundException;
 import ca.ulaval.glo4003.models.Record;
 import org.apache.commons.lang3.SerializationUtils;
 

@@ -44,4 +44,9 @@ public class EventPage extends BaseFluentPage {
         categoryLine.find(".category-quantity").text(quantity.toString());
         categoryLine.find(".category-add").click();
     }
+
+    public int getTicketNumberForCategory(int categoryIndex) {
+        String text = find(".numberOfTickets", categoryIndex).getText();
+        return Integer.parseInt(text);
+    }
 }
