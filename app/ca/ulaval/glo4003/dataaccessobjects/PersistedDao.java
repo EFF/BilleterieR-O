@@ -2,15 +2,31 @@ package ca.ulaval.glo4003.dataaccessobjects;
 
 import ca.ulaval.glo4003.exceptions.RecordNotFoundException;
 import ca.ulaval.glo4003.models.Record;
+import ca.ulaval.glo4003.services.DaoPersistenceService;
 import org.apache.commons.lang3.SerializationUtils;
 
+import java.io.IOException;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class DaoInMemory<T extends Record> implements DataAccessObject<T> {
+public abstract class PersistedDao<T extends Record> implements DataAccessObject<T>, Serializable {
 
     private long lastId = 1;
     protected List<T> list = new ArrayList<>();
+    protected DaoPersistenceService persistenceService;
+
+    public PersistedDao(DaoPersistenceService persistenceService) {
+        this.persistenceService = persistenceService;
+
+        try {
+            this.list = this.persistenceService.restore(this);
+            System.out.println("Successfully restored DAO [" + this.getClass().getSimpleName() + "] with a total of " +
+                    this.list.size() + " items.");
+        } catch (Exception e) {
+            System.out.println("Warning: Could not restore DAO [" + this.getClass().getSimpleName() + "]: " + e.getMessage());
+        }
+    }
 
     public T create(T element) {
         element.setId(lastId);
@@ -51,12 +67,18 @@ public abstract class DaoInMemory<T extends Record> implements DataAccessObject<
         return list.size();
     }
 
-    private void persist(T element) {
+    protected void persist(T element) {
         // We clone the object before saving it in the DB
         // Otherwise, a change on a record outside this
         // dao would reflect in the DB without calling
         // the update method
         T elementCopy = SerializationUtils.clone(element);
         list.add(elementCopy);
+        try {
+            this.persistenceService.persist(this);
+        }
+        catch(Exception e) {
+            System.err.println("Error persisting DAO [" + this.getClass().getSimpleName() + "] : " + e.getMessage());
+        }
     }
 }

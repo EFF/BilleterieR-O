@@ -20,16 +20,16 @@ public class TestGlobal extends GlobalSettings {
     public void onStart(Application application) {
         super.onStart(application);
 
-        Bootstrap bootstrap = INJECTOR.getInstance(Bootstrap.class);
-        bootstrap.initData();
+        Bootstrapper bootstrapper = INJECTOR.getInstance(Bootstrapper.class);
+        bootstrapper.initData();
     }
 
     @Override
     public void onStop(Application application) {
         super.onStop(application);
 
-        Bootstrap bootstrap = INJECTOR.getInstance(Bootstrap.class);
-        bootstrap.deleteAll();
+        Bootstrapper bootstrapper = INJECTOR.getInstance(Bootstrapper.class);
+        bootstrapper.deleteAll();
     }
 
     private static Injector createInjector() {
