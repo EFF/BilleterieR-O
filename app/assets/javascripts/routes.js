@@ -5,6 +5,7 @@ define(['app', 'controllers', 'filters', 'services', 'directives'], function (ap
         routeProvider.when('/events', {controller: 'EventsController', templateUrl: '/assets/templates/events.html'});
         routeProvider.when('/events/:eventId', {controller: 'EventController', templateUrl: '/assets/templates/event.html'});
         routeProvider.when('/cart', {controller: 'CartController', templateUrl: 'assets/templates/cart.html'});
+        routeProvider.when('/thanks', {templateUrl: 'assets/templates/thanks.html'});
         routeProvider.otherwise({redirectTo: '/events'});
     }]);
 });

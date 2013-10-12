@@ -1,7 +1,7 @@
 package ca.ulaval.glo4003.unittests.dataaccessobjects;
 
 import ca.ulaval.glo4003.dataaccessobjects.PersistedDao;
-import ca.ulaval.glo4003.dataaccessobjects.RecordNotFoundException;
+import ca.ulaval.glo4003.exceptions.RecordNotFoundException;
 import ca.ulaval.glo4003.models.Record;
 import ca.ulaval.glo4003.services.DaoPersistenceService;
 import ca.ulaval.glo4003.services.InMemoryDaoPersistenceService;

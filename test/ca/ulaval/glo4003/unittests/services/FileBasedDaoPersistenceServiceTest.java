@@ -1,7 +1,7 @@
 package ca.ulaval.glo4003.unittests.services;
 
 import ca.ulaval.glo4003.dataaccessobjects.PersistedDao;
-import ca.ulaval.glo4003.dataaccessobjects.RecordNotFoundException;
+import ca.ulaval.glo4003.exceptions.RecordNotFoundException;
 import ca.ulaval.glo4003.services.FileBasedDaoPersistenceService;
 import ca.ulaval.glo4003.unittests.dataaccessobjects.PersistedDaoTest;
 import org.apache.commons.io.FileUtils;

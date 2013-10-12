@@ -50,7 +50,7 @@ public class StagingBootstrapper implements Bootstrapper {
                 for (int j = 0; j < 3; j++) {
                     double price = new Random().nextInt(20);
                     int numberOfTickets = (new Random().nextInt(10) + 1) * 100;
-                    Category category = new Category(price, numberOfTickets);
+                    Category category = new Category(price, numberOfTickets, j);
                     event.addCategory(category);
                 }
                 eventDao.create(event);
