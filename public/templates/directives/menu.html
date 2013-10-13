@@ -7,7 +7,7 @@
 
             <ul class="nav navbar-nav pull-right" ng-switch on="isLoggedIn">
                 <li ng-switch-when="false"><a ng-href="#!/login">Log in</a></li>
-                <li ng-switch-when="true"><a ng-href="#!/login" ng-click="logout()">Log out</a></li>
+                <li ng-switch-when="true"><a ng-href="#!/login" ng-click="logout()">Log out ({{username}})</a></li>
                 <li>
                     <a ng-href="#!/cart">
                         Panier (<span class="cart-size">{{getTotalQuantity()}}</span>)

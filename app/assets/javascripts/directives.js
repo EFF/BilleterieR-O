@@ -6,7 +6,19 @@ define(['app'], function (app) {
             restrict: 'E',
             controller: function ($scope) {
                 $scope.getTotalQuantity = Cart.getTotalQuantity;
-                $scope.isLoggedIn = Login.isLoggedIn;
+
+                $scope.$watch(function(){
+                    return Login.isLoggedIn;
+                  }, function(isLoggedIn){
+                    $scope.isLoggedIn = isLoggedIn;
+                  }, true);
+
+                  $scope.$watch(function(){
+                      return Login.username;
+                    }, function(username){
+                      $scope.username = username;
+                    }, true);
+
                 $scope.logout = Login.logout;
             }
         };

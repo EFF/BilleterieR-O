@@ -125,12 +125,16 @@ define(['app'], function (app) {
             var data = {username: username, password: password};
 
             $http.post('/login', data, {})
-                .success(successCallback)
+                .success(function() {
+                    exports.isLoggedIn = true;
+                    exports.username = username;
+                    successCallback();
+                })
                 .error(errorCallback);
         };
 
         exports.logout = function() {
-            $http.post('/logout', data, {})
+            $http.post('/logout', {}, {})
                 .success(function() {
                     exports.isLoggedIn = false;
                 });
