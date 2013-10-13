@@ -27,10 +27,10 @@ public class Authentication extends Controller {
             session().clear();
             session().put("email", username);
 
-            return ok("SUCCESS");
+            return ok("Authenticated");
 
         } else {
-            return internalServerError("Bad email / password." + username + "/" + password);
+            return internalServerError("Bad email / password.");
         }
 
     }
