@@ -1,0 +1,23 @@
+<h1>Login</h1>
+<form class="form-horizontal" role="form" name="login_form" novalidate ng-submit="login()">
+    <div class="form-group">
+
+        <div class="input-group">
+            <span class="input-group-addon">@</span>
+            <input id="username-input" type="text" class="form-control" placeholder="Username" ng-model="username">
+        </div>
+
+        <br/>
+
+
+        <input id="password-input" type="password" class="form-control" placeholder="Password" ng-model="password">
+
+
+        <br/>
+
+        <button type="submit" id="login-button" ng-disabled="login_form.$invalid" class="btn btn-success">
+            Login
+        </button>
+
+    </div>
+</form>

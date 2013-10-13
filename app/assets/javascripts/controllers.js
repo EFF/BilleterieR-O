@@ -113,4 +113,23 @@ define(['app'], function (app) {
                 FlashMessage.send("error", error);
             }
         }]);
+
+    app.controller('LoginController', ['$scope', '$location', 'Login', 'FlashMessage',
+        function($scope, $location, Login, FlashMessage) {
+
+            var loginSuccess = function() {
+                FlashMessage.send("success", "Connection à votre compte réussie!");
+                $location.path("/events");
+            };
+
+            var loginFailed = function() {
+                FlashMessage.send("error", "Connection échouée.");
+            };
+
+            $scope.login = function() {
+                Login.login($scope.username, $scope.password, loginSuccess, loginFailed);
+            };
+
+    }]);
+
 });
