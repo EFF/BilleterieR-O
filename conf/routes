@@ -14,3 +14,6 @@ GET     /api/events/:id                 @ca.ulaval.glo4003.controllers.Events.sh
 GET     /api/facets                     @ca.ulaval.glo4003.controllers.Facets.index()
 GET     /bootstrap                      @ca.ulaval.glo4003.controllers.Bootstrap.index()
 POST    /api/checkout                   @ca.ulaval.glo4003.controllers.Events.decrementCategoryCounter()
+GET     /login                          @ca.ulaval.glo4003.controllers.Authentication.index()
+POST    /login                          @ca.ulaval.glo4003.controllers.Authentication.login()
+POST    /logout                         @ca.ulaval.glo4003.controllers.Authentication.logout()

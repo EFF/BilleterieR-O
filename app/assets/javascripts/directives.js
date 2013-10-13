@@ -1,11 +1,13 @@
 define(['app'], function (app) {
-    app.directive('menu', ['Cart', function (Cart) {
+    app.directive('menu', ['Cart', 'Login', function (Cart, Login) {
         return {
             replace: true,
             templateUrl: 'assets/templates/directives/menu.html',
             restrict: 'E',
             controller: function ($scope) {
                 $scope.getTotalQuantity = Cart.getTotalQuantity;
+                $scope.isLoggedIn = Login.isLoggedIn;
+                $scope.logout = Login.logout;
             }
         };
     }]);

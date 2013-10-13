@@ -115,6 +115,40 @@ define(['app'], function (app) {
         return exports;
     }]);
 
+    app.factory('Login', ['$http', function($http) {
+        var exports = {};
+
+        exports.isLoggedIn = false;
+        exports.username;
+
+        exports.login = function (username, password, successCallback, errorCallback){
+            var data = {username: username, password: password};
+
+            $http.post('/login', data, {})
+                .success(successCallback)
+                .error(errorCallback);
+        };
+
+        exports.logout = function() {
+            $http.post('/logout', data, {})
+                .success(function() {
+                    exports.isLoggedIn = false;
+                });
+        };
+
+        var check = function() {
+            $http.get('/login')
+            .success(function(data) {
+                exports.isLoggedIn = data.authenticated;
+                exports.username = data.username;
+            })
+        };
+
+        check();
+
+        return exports;
+    }]);
+
     app.factory('FlashMessage', ['$rootScope', function ($rootScope) {
         var exports = {};
 
