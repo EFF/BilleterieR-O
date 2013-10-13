@@ -1,10 +1,13 @@
 package ca.ulaval.glo4003.controllers;
 
+import ca.ulaval.glo4003.exceptions.InvalidJsonException;
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.node.ObjectNode;
 import play.libs.Json;
 import play.mvc.Controller;
 import play.mvc.Result;
+
+import static ca.ulaval.glo4003.helpers.JsonExpectationsHelper.expectFilledString;
 
 public class Authentication extends Controller {
 
@@ -20,6 +23,12 @@ public class Authentication extends Controller {
     public Result login() {
         JsonNode json = request().body().asJson();
 
+        try {
+            expectFilledString(json, "username", "password");
+        } catch (InvalidJsonException e) {
+            return badRequest("Expected username and password in Json.");
+        }
+
         String username = json.findPath("username").getTextValue();
         String password = json.findPath("password").getTextValue();
 
@@ -30,7 +39,7 @@ public class Authentication extends Controller {
             return ok("Authenticated");
 
         } else {
-            return internalServerError("Bad email / password.");
+            return unauthorized("Bad username/password.");
         }
 
     }

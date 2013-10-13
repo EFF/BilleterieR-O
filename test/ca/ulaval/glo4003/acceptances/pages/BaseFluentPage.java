@@ -28,4 +28,12 @@ public abstract class BaseFluentPage extends FluentPage {
     public void clickLoginButon() {
         find(".navbar").find(".login-status").click();
     }
+
+    public void waitForErrorMessageToDisplay() {
+        await().atMost(TIMEOUT).until(".alertContainer .alert-danger").isPresent();
+    }
+
+    public void waitForSuccessMessageToDisplay() {
+        await().atMost(TIMEOUT).until(".alertContainer .alert-success").isPresent();
+    }
 }

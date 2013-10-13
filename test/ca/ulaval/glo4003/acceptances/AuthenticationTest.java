@@ -73,6 +73,7 @@ public class AuthenticationTest {
 
                 // Assert
                 eventsPage.isAt();
+                eventsPage.waitForSuccessMessageToDisplay();
                 assertThat(loginPage.isLogInDisplayed()).isFalse();
                 assertThat(loginPage.isLogOutDisplayed()).isTrue();
             }
@@ -99,6 +100,7 @@ public class AuthenticationTest {
                 loginPage.login();
 
                 eventsPage.isAt();
+                eventsPage.waitForSuccessMessageToDisplay();
                 assertThat(loginPage.isLogInDisplayed()).isFalse();
                 assertThat(loginPage.isLogOutDisplayed()).isTrue();
 
@@ -134,6 +136,7 @@ public class AuthenticationTest {
                 // Assert
                 eventsPage.go();
                 eventsPage.isAt();
+                eventsPage.waitForErrorMessageToDisplay();
                 assertThat(loginPage.isLogInDisplayed()).isTrue();
             }
         });

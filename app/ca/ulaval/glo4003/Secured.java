@@ -13,7 +13,7 @@ public class Secured extends Security.Authenticator {
 
     @Override
     public Result onUnauthorized(Http.Context ctx) {
-       return internalServerError("Unauthorized");
+       return unauthorized();
     }
 
 }
