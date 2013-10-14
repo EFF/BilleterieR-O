@@ -1,26 +1,34 @@
 package ca.ulaval.glo4003.unittests.dataaccessobjects;
 
-import ca.ulaval.glo4003.dataaccessobjects.DaoInMemory;
+import ca.ulaval.glo4003.dataaccessobjects.PersistedDao;
 import ca.ulaval.glo4003.exceptions.RecordNotFoundException;
 import ca.ulaval.glo4003.models.Record;
+import ca.ulaval.glo4003.services.DaoPersistenceService;
+import ca.ulaval.glo4003.services.InMemoryDaoPersistenceService;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.io.IOException;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import static org.mockito.internal.verification.VerificationModeFactory.times;
 
-public class DaoInMemoryTest {
+public class PersistedDaoTest {
 
     private static final int UNEXISTING_ID = 10;
     private static final int A_VALUE = 50;
     private static final int ANOTHER_VALUE = 100;
 
-    private DaoInMemory<TestRecord> dao;
+    private PersistedDao<TestRecord> dao;
 
     @Before
     public void setUp() {
-        dao = new DaoInMemory<TestRecord>() {};
+        dao = new PersistedDao<TestRecord>(new InMemoryDaoPersistenceService()) {};
     }
 
     @Test
@@ -168,6 +176,79 @@ public class DaoInMemoryTest {
 
         // Act
         dao.update(record);
+    }
+
+    @Test
+    public void persistsOnAdd() throws IOException {
+        // Arrange
+        DaoPersistenceService persistenceSvc = mock(InMemoryDaoPersistenceService.class);
+        dao = new PersistedDao<TestRecord>(persistenceSvc) {};
+
+        // Act
+        dao.create(new TestRecord());
+
+        // Assert
+        verify(persistenceSvc, times(1)).persist(dao);
+    }
+
+    @Test
+    public void persistsOnUpdate() throws IOException {
+        // Arrange
+        DaoPersistenceService persistenceSvc = mock(InMemoryDaoPersistenceService.class);
+        dao = new PersistedDao<TestRecord>(persistenceSvc) {};
+
+        // Act
+        TestRecord record = new TestRecord();
+        dao.create(record);
+        try {
+            record.setValue(2);
+            dao.update(record);
+        }
+        catch(Exception e) {
+            fail("Expected no error while updating record.");
+        }
+
+        // Assert
+        verify(persistenceSvc, times(2)).persist(dao);
+    }
+
+    @Test
+    public void persistsOnEveryUpdates() throws IOException {
+        // Arrange
+        DaoPersistenceService persistenceSvc = mock(InMemoryDaoPersistenceService.class);
+        dao = new PersistedDao<TestRecord>(persistenceSvc) {};
+
+        // Act
+        TestRecord record = new TestRecord();
+        dao.create(record);
+        try {
+            record.setValue(2);
+            dao.update(record);
+
+            record.setValue(3);
+            dao.update(record);
+
+            record.setValue(5);
+            dao.update(record);
+        }
+        catch(Exception e) {
+            fail("Expected no error while updating record.");
+        }
+
+        // Assert
+        verify(persistenceSvc, times(4)).persist(dao);
+    }
+
+    @Test
+    public void restoreOnDaoCreation() throws IOException, ClassNotFoundException {
+        // Arrange
+        DaoPersistenceService persistenceSvc = mock(InMemoryDaoPersistenceService.class);
+
+        // Act
+        dao = new PersistedDao<TestRecord>(persistenceSvc) {};
+
+        // Assert
+        verify(persistenceSvc, times(1)).restore(dao);
     }
 
     public static class TestRecord extends Record {

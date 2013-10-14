@@ -1,6 +1,6 @@
 package ca.ulaval.glo4003;
 
-public interface Bootstrap {
+public interface Bootstrapper {
 
     void initData();
 

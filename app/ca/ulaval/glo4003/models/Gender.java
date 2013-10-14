@@ -1,5 +1,7 @@
 package ca.ulaval.glo4003.models;
 
-public enum Gender {
+import java.io.Serializable;
+
+public enum Gender implements Serializable {
     MALE, FEMALE
 }

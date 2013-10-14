@@ -9,15 +9,13 @@ import ca.ulaval.glo4003.models.Sport;
 import com.google.inject.Inject;
 import org.joda.time.LocalDateTime;
 
-import java.util.Random;
-
-public class TestBootstrap implements Bootstrap {
+public class TestBootstrapper implements Bootstrapper {
 
     private final EventDao eventDao;
     private final SportDao sportDao;
 
     @Inject
-    public TestBootstrap(EventDao eventDao, SportDao sportDao) {
+    public TestBootstrapper(EventDao eventDao, SportDao sportDao) {
         this.eventDao = eventDao;
         this.sportDao = sportDao;
     }

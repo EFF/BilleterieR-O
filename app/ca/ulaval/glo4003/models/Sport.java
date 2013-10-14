@@ -1,6 +1,8 @@
 package ca.ulaval.glo4003.models;
 
-public class Sport extends Record {
+import java.io.Serializable;
+
+public class Sport extends Record implements Serializable {
 
     private String name;
 

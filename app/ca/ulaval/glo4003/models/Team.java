@@ -1,6 +1,5 @@
 package ca.ulaval.glo4003.models;
 
-
 import java.io.Serializable;
 
 public class Team implements Serializable {

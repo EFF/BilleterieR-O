@@ -1,11 +1,12 @@
 package ca.ulaval.glo4003.unittests.dataaccessobjects;
 
-import ca.ulaval.glo4003.dataaccessobjects.EventDaoInMemory;
+import ca.ulaval.glo4003.dataaccessobjects.EventDao;
 import ca.ulaval.glo4003.exceptions.MaximumExceededException;
 import ca.ulaval.glo4003.exceptions.RecordNotFoundException;
 import ca.ulaval.glo4003.models.Category;
 import ca.ulaval.glo4003.models.Event;
 import ca.ulaval.glo4003.models.EventSearchCriteria;
+import ca.ulaval.glo4003.services.InMemoryDaoPersistenceService;
 import ca.ulaval.glo4003.unittests.helpers.EventsTestHelper;
 import org.fest.assertions.Assertions;
 import org.joda.time.LocalDateTime;
@@ -14,13 +15,13 @@ import org.junit.Test;
 
 import java.util.List;
 
-public class EventDaoInMemoryTest {
+public class EventDaoTest {
 
-    private EventDaoInMemory eventDao;
+    private EventDao eventDao;
 
     @Before
     public void setup() {
-        eventDao = new EventDaoInMemory();
+        eventDao = new EventDao(new InMemoryDaoPersistenceService());
     }
 
     @Test
