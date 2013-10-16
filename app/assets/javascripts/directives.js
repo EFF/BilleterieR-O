@@ -11,13 +11,13 @@ define(['app'], function (app) {
                     return Login.isLoggedIn;
                   }, function(isLoggedIn){
                     $scope.isLoggedIn = isLoggedIn;
-                  }, true);
+                  }, false);
 
-                  $scope.$watch(function(){
-                      return Login.username;
-                    }, function(username){
-                      $scope.username = username;
-                    }, true);
+                $scope.$watch(function(){
+                    return Login.username;
+                  }, function(username){
+                    $scope.username = username;
+                  }, false);
 
                 $scope.logout = Login.logout;
             }

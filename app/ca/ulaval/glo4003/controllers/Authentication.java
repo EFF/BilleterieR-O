@@ -29,8 +29,8 @@ public class Authentication extends Controller {
             return badRequest("Expected username and password in Json.");
         }
 
-        String username = json.findPath("username").getTextValue();
-        String password = json.findPath("password").getTextValue();
+        String username = json.get("username").asText();
+        String password = json.get("password").asText();
 
         if (username.equals("user") && password.equals("password")) {
             session().clear();

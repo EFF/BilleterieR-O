@@ -126,8 +126,7 @@ define(['app'], function (app) {
 
             $http.post('/login', data, {})
                 .success(function() {
-                    exports.isLoggedIn = true;
-                    exports.username = username;
+                    setCredentials(true, username);
                     successCallback();
                 })
                 .error(errorCallback);
@@ -136,19 +135,23 @@ define(['app'], function (app) {
         exports.logout = function() {
             $http.post('/logout', {}, {})
                 .success(function() {
-                    exports.isLoggedIn = false;
+                    setCredentials(false, null);
                 });
         };
 
-        var check = function() {
+        var checkAuthenticationState = function() {
             $http.get('/login')
             .success(function(data) {
-                exports.isLoggedIn = data.authenticated;
-                exports.username = data.username;
+                setCredentials(data.authenticated, data.username);
             })
         };
 
-        check();
+        var setCredentials = function(isLoggedIn, authenticated) {
+             exports.isLoggedIn = isLoggedIn;
+             exports.username = authenticated;
+        };
+
+        checkAuthenticationState();
 
         return exports;
     }]);
