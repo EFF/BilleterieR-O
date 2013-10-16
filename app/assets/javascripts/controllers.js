@@ -118,12 +118,12 @@ define(['app'], function (app) {
         function($scope, $location, Login, FlashMessage) {
 
             var loginSuccess = function() {
-                FlashMessage.send("success", "Connection à votre compte réussie!");
+                FlashMessage.send("success", "Connexion à votre compte réussie!");
                 $location.path("/events");
             };
 
             var loginFailed = function() {
-                FlashMessage.send("error", "Connection échouée.");
+                FlashMessage.send("error", "Connexion échouée.");
             };
 
             $scope.login = function() {
