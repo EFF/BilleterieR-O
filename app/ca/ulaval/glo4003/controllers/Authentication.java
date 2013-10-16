@@ -1,6 +1,10 @@
 package ca.ulaval.glo4003.controllers;
 
+import ca.ulaval.glo4003.dataaccessobjects.UserDao;
 import ca.ulaval.glo4003.exceptions.InvalidJsonException;
+import ca.ulaval.glo4003.exceptions.RecordNotFoundException;
+import ca.ulaval.glo4003.models.User;
+import com.google.inject.Inject;
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.node.ObjectNode;
 import play.libs.Json;
@@ -10,6 +14,13 @@ import play.mvc.Result;
 import static ca.ulaval.glo4003.helpers.JsonExpectationsHelper.expectFilledString;
 
 public class Authentication extends Controller {
+
+    private final UserDao userDao;
+
+    @Inject
+    public Authentication(UserDao userDao) {
+        this.userDao = userDao;
+    }
 
     public Result index() {
         ObjectNode result = Json.newObject();
@@ -32,16 +43,15 @@ public class Authentication extends Controller {
         String username = json.get("username").asText();
         String password = json.get("password").asText();
 
-        if (username.equals("user") && password.equals("password")) {
+        try {
+            User user = userDao.findByEmailAndPassword(username, password);
             session().clear();
-            session().put("email", username);
+            session().put("email", user.getEmail());
 
             return ok("Authenticated");
-
-        } else {
+        } catch (RecordNotFoundException e) {
             return unauthorized("Bad username/password.");
         }
-
     }
 
     public Result logout() {
