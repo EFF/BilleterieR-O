@@ -12,10 +12,8 @@ import java.io.IOException;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 import static org.mockito.internal.verification.VerificationModeFactory.times;
 
 public class PersistedDaoTest {
@@ -192,7 +190,7 @@ public class PersistedDaoTest {
     }
 
     @Test
-    public void persistsOnUpdate() throws IOException {
+    public void persistsOnUpdate() throws IOException, RecordNotFoundException {
         // Arrange
         DaoPersistenceService persistenceSvc = mock(InMemoryDaoPersistenceService.class);
         dao = new PersistedDao<TestRecord>(persistenceSvc) {};
@@ -200,20 +198,16 @@ public class PersistedDaoTest {
         // Act
         TestRecord record = new TestRecord();
         dao.create(record);
-        try {
-            record.setValue(2);
-            dao.update(record);
-        }
-        catch(Exception e) {
-            fail("Expected no error while updating record.");
-        }
+
+        record.setValue(2);
+        dao.update(record);
 
         // Assert
         verify(persistenceSvc, times(2)).persist(dao);
     }
 
     @Test
-    public void persistsOnEveryUpdates() throws IOException {
+    public void persistsOnEveryUpdates() throws IOException, RecordNotFoundException {
         // Arrange
         DaoPersistenceService persistenceSvc = mock(InMemoryDaoPersistenceService.class);
         dao = new PersistedDao<TestRecord>(persistenceSvc) {};
@@ -221,19 +215,15 @@ public class PersistedDaoTest {
         // Act
         TestRecord record = new TestRecord();
         dao.create(record);
-        try {
-            record.setValue(2);
-            dao.update(record);
 
-            record.setValue(3);
-            dao.update(record);
+        record.setValue(2);
+        dao.update(record);
 
-            record.setValue(5);
-            dao.update(record);
-        }
-        catch(Exception e) {
-            fail("Expected no error while updating record.");
-        }
+        record.setValue(3);
+        dao.update(record);
+
+        record.setValue(5);
+        dao.update(record);
 
         // Assert
         verify(persistenceSvc, times(4)).persist(dao);
