@@ -19,7 +19,7 @@ public class ApplicationModule extends AbstractModule {
         EventDao eventDao = new EventDao(this.persistenceService);
         SportDao sportDao = new SportDao(this.persistenceService);
 
-        bind(EventDao.class).toInstance(eventDao);
+        //bind(EventDao.class).toInstance(eventDao);
         bind(SportDao.class).toInstance(sportDao);
     }
 }
