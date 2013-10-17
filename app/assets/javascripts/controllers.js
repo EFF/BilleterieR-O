@@ -8,18 +8,18 @@ define(['app'], function (app) {
             $scope.facets = facets;
         });
 
-        function apiCallSuccessCallback(results) {
+        var apiCallSuccessCallback = function (results) {
             $scope.events = results;
             $scope.isLoading = false;
         };
 
-        function apiCallErrorCallback(err) {
+        var apiCallErrorCallback = function (err) {
             //TODO emit error event and handle it in a directive
             $scope.events = [];
             $scope.isLoading = false;
         };
 
-        function apiCall() {
+        var apiCall = function () {
             $scope.isLoading = true;
             var url = '/api/events';
             var nbFilters = 0;
@@ -55,11 +55,11 @@ define(['app'], function (app) {
             FlashMessage.send("success", "L'item a été ajouté au panier");
         }
 
-        function apiCallSuccessCallback(result) {
+        var apiCallSuccessCallback = function (result) {
             $scope.event = result
         }
 
-        function apiCallErrorCallback(err) {
+        var apiCallErrorCallback = function (err) {
             //TODO emit error event and handle it in a directive
             $scope.event = null;
         }
@@ -69,8 +69,8 @@ define(['app'], function (app) {
             .error(apiCallErrorCallback);
     }]);
 
-    app.controller('CartController', ['$scope', 'FlashMessage', 'Cart', '$location',
-        function ($scope, FlashMessage, Cart, $location) {
+    app.controller('CartController', ['$scope', 'FlashMessage', 'Cart', '$location', 'Login',
+        function ($scope, FlashMessage, Cart, $location, Login) {
             $scope.selectAll = true;
             $scope.cart = Cart.getItems();
             $scope.getTotalSelectedQuantity = Cart.getTotalSelectedQuantity;
@@ -99,9 +99,17 @@ define(['app'], function (app) {
             $scope.checkout = function () {
                 if (Cart.isSelectionEmpty()) {
                     FlashMessage.send('warning', 'La sélection d\'achat est vide');
-                } else if (window.confirm("Confirmez-vous le paiment de " + $scope.getTotalPrice() + "$ ?")) {
+                }
+                else if(!Login.isLoggedIn){
+                    notifyUserToLogin();
+                }
+                else if (window.confirm("Confirmez-vous le paiment de " + $scope.getTotalPrice() + "$ ?")) {
                     Cart.checkout(checkoutSuccess, checkoutError);
                 }
+            }
+
+            var notifyUserToLogin = function () {
+                window.alert('Vous devez vous connecter avant de procéder au paiement');
             }
 
             var checkoutSuccess = function () {
@@ -109,27 +117,32 @@ define(['app'], function (app) {
                 $location.path("/thanks");
             }
 
-            var checkoutError = function (error) {
-                FlashMessage.send("error", error);
+            var checkoutError = function (error, status) {
+                if (status === 401) {
+                    notifyUserToLogin();
+                }
+                else {
+                    FlashMessage.send("error", error);
+                }
             }
         }]);
 
     app.controller('LoginController', ['$scope', '$location', 'Login', 'FlashMessage',
-        function($scope, $location, Login, FlashMessage) {
+        function ($scope, $location, Login, FlashMessage) {
 
-            var loginSuccess = function() {
+            var loginSuccess = function () {
                 FlashMessage.send("success", "Connexion à votre compte réussie!");
                 $location.path("/events");
             };
 
-            var loginFailed = function() {
+            var loginFailed = function () {
                 FlashMessage.send("error", "Connexion échouée.");
             };
 
-            $scope.login = function() {
+            $scope.login = function () {
                 Login.login($scope.username, $scope.password, loginSuccess, loginFailed);
             };
 
-    }]);
+        }]);
 
 });

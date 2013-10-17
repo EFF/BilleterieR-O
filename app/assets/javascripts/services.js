@@ -6,7 +6,7 @@ define(['app'], function (app) {
             cart = [];
         }
 
-        function updateCartCookie(cart) {
+        var updateCartCookie = function (cart) {
             $cookieStore.put('cart', cart)
         }
 
@@ -71,7 +71,7 @@ define(['app'], function (app) {
             updateCartCookie(cart);
         }
 
-        function getCheckoutlist() {
+        var getCheckoutlist = function () {
             var checkoutList = [];
             for (var index in cart) {
                 var item = cart[index];
@@ -87,7 +87,7 @@ define(['app'], function (app) {
             return checkoutList;
         }
 
-        function removeAllSelectedItems(index, cart) {
+        var removeAllSelectedItems = function (index, cart) {
             if (cart[index].selected) {
                 cart.splice(index, 1);
             } else index++;
@@ -96,7 +96,7 @@ define(['app'], function (app) {
                 updateCartCookie(cart);
                 return 0;
             }
-            removeAllSelectedItems(index, cart);
+            return removeAllSelectedItems(index, cart);
         }
 
         exports.checkout = function (successCallback, errorCallback) {
@@ -141,9 +141,9 @@ define(['app'], function (app) {
 
         var checkAuthenticationState = function() {
             $http.get('/login')
-            .success(function(data) {
-                setCredentials(data.authenticated, data.username);
-            })
+                .success(function(data) {
+                    setCredentials(data.authenticated, data.username);
+                });
         };
 
         var setCredentials = function(isLoggedIn, authenticated) {
@@ -159,7 +159,7 @@ define(['app'], function (app) {
     app.factory('FlashMessage', ['$rootScope', function ($rootScope) {
         var exports = {};
 
-        function typeAsString(type) {
+        var typeAsString = function (type) {
             if (type == "error") return "Erreur";
             else if (type == "info") return "Informations";
             else if (type == "warning") return "Attention";
