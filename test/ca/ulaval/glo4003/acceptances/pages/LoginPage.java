@@ -20,6 +20,13 @@ public class LoginPage extends BaseFluentPage {
         await().atMost(TIMEOUT).until("#login-button").isPresent();
     }
 
+    public void performLogin(String email, String password){
+        fillUsername(email);
+        fillPassword(password);
+        login();
+        await().atMost(TIMEOUT).until(".login-status-in").isPresent();
+    }
+
     public void fillUsername(String value) {
         fill("input", withId().equalTo("username-input")).with(value);
     }
@@ -33,6 +40,6 @@ public class LoginPage extends BaseFluentPage {
     }
 
     public void login() {
-        find("button", withId().equalTo("login-button")).click();
+        findFirst("button", withId().equalTo("login-button")).click();
     }
 }

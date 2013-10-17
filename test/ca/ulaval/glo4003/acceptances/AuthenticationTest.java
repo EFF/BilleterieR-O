@@ -12,6 +12,9 @@ import static play.test.Helpers.*;
 
 public class AuthenticationTest {
 
+    private static final String EMAIL = "user@example.com";
+    private static final String PASSWORD = "secret";
+
     @Test
      public void MenuShowsLoginWhenLoggedOut() {
         running(testServer(3333, fakeApplication(new TestGlobal())), FIREFOX, new F.Callback<TestBrowser>() {
@@ -64,8 +67,8 @@ public class AuthenticationTest {
                 loginPage.isAt();
 
                 // Act
-                loginPage.fillUsername("user");
-                loginPage.fillPassword("password");
+                loginPage.fillUsername(EMAIL);
+                loginPage.fillPassword(PASSWORD);
 
                 assertThat(loginPage.isLogInDisplayed()).isTrue();
 
@@ -92,8 +95,8 @@ public class AuthenticationTest {
                 loginPage.isAt();
 
 
-                loginPage.fillUsername("user");
-                loginPage.fillPassword("password");
+                loginPage.fillUsername(EMAIL);
+                loginPage.fillPassword(PASSWORD);
 
                 assertThat(loginPage.isLogInDisplayed()).isTrue();
 

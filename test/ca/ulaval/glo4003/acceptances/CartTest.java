@@ -3,6 +3,7 @@ package ca.ulaval.glo4003.acceptances;
 import ca.ulaval.glo4003.TestGlobal;
 import ca.ulaval.glo4003.acceptances.pages.CartPage;
 import ca.ulaval.glo4003.acceptances.pages.EventPage;
+import ca.ulaval.glo4003.acceptances.pages.LoginPage;
 import ca.ulaval.glo4003.acceptances.pages.PaymentResultPage;
 import org.junit.Test;
 import org.openqa.selenium.WebDriver;
@@ -14,6 +15,8 @@ import static play.test.Helpers.*;
 
 public class CartTest {
 
+    private static final String EMAIL = "user@example.com";
+    private static final String PASSWORD = "secret";
     private static final int FIRST_ITEM_INDEX = 0;
     private static final int FIRST_EVENT = 1;
     private static final String A_CVV = "123";
@@ -63,9 +66,14 @@ public class CartTest {
         running(testServer(3333, fakeApplication(new TestGlobal())), FIREFOX, new F.Callback<TestBrowser>() {
             @Override
             public void invoke(TestBrowser browser) {
+                LoginPage loginPage = new LoginPage(browser.getDriver());
                 EventPage eventPage1 = new EventPage(browser.getDriver(), FIRST_EVENT);
                 CartPage cartPage = new CartPage(browser.getDriver());
                 PaymentResultPage resultPage = new PaymentResultPage(browser.getDriver());
+
+                goToLoginPage(loginPage);
+
+                loginPage.performLogin(EMAIL, PASSWORD);
 
                 goToEventPage(eventPage1);
 
@@ -95,7 +103,12 @@ public class CartTest {
             public void invoke(TestBrowser browser) {
                 EventPage eventPage1 = new EventPage(browser.getDriver(), FIRST_EVENT);
                 CartPage cartPage = new CartPage(browser.getDriver());
+                LoginPage loginPage = new LoginPage(browser.getDriver());
                 PaymentResultPage resultPage = new PaymentResultPage(browser.getDriver());
+
+                goToLoginPage(loginPage);
+
+                loginPage.performLogin(EMAIL, PASSWORD);
 
                 goToEventPage(eventPage1);
 
@@ -124,9 +137,14 @@ public class CartTest {
         running(testServer(3333, fakeApplication(new TestGlobal())), FIREFOX, new F.Callback<TestBrowser>() {
             @Override
             public void invoke(TestBrowser browser) {
+                LoginPage loginPage = new LoginPage(browser.getDriver());
                 EventPage eventPage1 = new EventPage(browser.getDriver(), FIRST_EVENT);
                 CartPage cartPage = new CartPage(browser.getDriver());
                 PaymentResultPage resultPage = new PaymentResultPage(browser.getDriver());
+
+                goToLoginPage(loginPage);
+
+                loginPage.performLogin(EMAIL, PASSWORD);
 
                 goToEventPage(eventPage1);
                 eventPage1.buyTicketsForCategory(0, 1);
@@ -137,7 +155,6 @@ public class CartTest {
                 assertThat(resultPage.getCartSize()).isEqualTo(0);
             }
         });
-
     }
 
     @Test
@@ -145,9 +162,14 @@ public class CartTest {
         running(testServer(3333, fakeApplication(new TestGlobal())), FIREFOX, new F.Callback<TestBrowser>() {
             @Override
             public void invoke(TestBrowser browser) {
+                LoginPage loginPage = new LoginPage(browser.getDriver());
                 EventPage eventPage1 = new EventPage(browser.getDriver(), FIRST_EVENT);
                 CartPage cartPage = new CartPage(browser.getDriver());
                 PaymentResultPage resultPage = new PaymentResultPage(browser.getDriver());
+
+                goToLoginPage(loginPage);
+
+                loginPage.performLogin(EMAIL, PASSWORD);
 
                 goToEventPage(eventPage1);
                 eventPage1.buyTicketsForCategory(0, 1);
@@ -158,7 +180,28 @@ public class CartTest {
                 assertThat(resultPage.getCartSize()).isEqualTo(1);
             }
         });
+    }
 
+    @Test
+    public void anAnonymousUserReceivesAMessageTuConnectBeforeContinue(){
+        running(testServer(3333, fakeApplication(new TestGlobal())), FIREFOX, new F.Callback<TestBrowser>() {
+            @Override
+            public void invoke(TestBrowser browser) {
+                EventPage eventPage1 = new EventPage(browser.getDriver(), FIRST_EVENT);
+                CartPage cartPage = new CartPage(browser.getDriver());
+
+                goToEventPage(eventPage1);
+
+                eventPage1.buyTicketsForCategory(0, 1);
+
+                goToCartPage(cartPage, 1);
+
+                payCartWithCard(cartPage, A_CARD_TYPE, browser.getDriver());
+
+                String message = cartPage.waitAndGetAlert().getText();
+                assertThat(message).isEqualTo("Vous devez vous connecter avant de procéder au paiement");
+            }
+        });
     }
 
     private void payCartWithCard(CartPage cartPage, String cardName, WebDriver driver) {
@@ -180,5 +223,10 @@ public class CartTest {
         eventPage.go();
         eventPage.isAt();
         eventPage.waitUntilCategoriesHasSize(2);
+    }
+
+    private void goToLoginPage(LoginPage loginPage) {
+        loginPage.go();
+        loginPage.isAt();
     }
 }

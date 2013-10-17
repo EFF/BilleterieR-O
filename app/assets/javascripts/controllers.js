@@ -13,7 +13,7 @@ define(['app'], function (app) {
             $scope.isLoading = false;
         };
 
-        var apiCallErrorCallback = function (err) {
+        var apiCallErrorCallback = function () {
             //TODO emit error event and handle it in a directive
             $scope.events = [];
             $scope.isLoading = false;
@@ -39,7 +39,7 @@ define(['app'], function (app) {
                 .error(apiCallErrorCallback);
         }
 
-        $scope.$watch('filters', function (newValue, oldValue) {
+        $scope.$watch('filters', function () {
             apiCall();
         }, true);
 
@@ -59,7 +59,7 @@ define(['app'], function (app) {
             $scope.event = result
         }
 
-        var apiCallErrorCallback = function (err) {
+        var apiCallErrorCallback = function () {
             //TODO emit error event and handle it in a directive
             $scope.event = null;
         }
