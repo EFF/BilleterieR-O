@@ -7,10 +7,14 @@ import org.junit.Test;
 import play.libs.F;
 import play.test.TestBrowser;
 
-import static org.fest.assertions.Assertions.assertThat;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import static play.test.Helpers.*;
 
 public class AuthenticationTest {
+
+    private static final String EMAIL = "user@example.com";
+    private static final String PASSWORD = "secret";
 
     @Test
      public void MenuShowsLoginWhenLoggedOut() {
@@ -24,7 +28,7 @@ public class AuthenticationTest {
                 eventsPage.isAt();
 
                 // Assert
-                assertThat(eventsPage.isLogInDisplayed()).isTrue();
+                assertTrue(eventsPage.isLogInDisplayed());
             }
         });
     }
@@ -41,7 +45,7 @@ public class AuthenticationTest {
                 eventsPage.go();
                 eventsPage.isAt();
 
-                assertThat(eventsPage.isLogInDisplayed()).isTrue();
+                assertTrue(eventsPage.isLogInDisplayed());
 
                 // Act
                 eventsPage.clickLoginButon();
@@ -64,18 +68,18 @@ public class AuthenticationTest {
                 loginPage.isAt();
 
                 // Act
-                loginPage.fillUsername("user");
-                loginPage.fillPassword("password");
+                loginPage.fillUsername(EMAIL);
+                loginPage.fillPassword(PASSWORD);
 
-                assertThat(loginPage.isLogInDisplayed()).isTrue();
+                assertTrue(loginPage.isLogInDisplayed());
 
                 loginPage.login();
 
                 // Assert
                 eventsPage.isAt();
                 eventsPage.waitForSuccessMessageToDisplay();
-                assertThat(loginPage.isLogInDisplayed()).isFalse();
-                assertThat(loginPage.isLogOutDisplayed()).isTrue();
+                assertFalse(loginPage.isLogInDisplayed());
+                assertTrue(loginPage.isLogOutDisplayed());
             }
         });
     }
@@ -92,17 +96,17 @@ public class AuthenticationTest {
                 loginPage.isAt();
 
 
-                loginPage.fillUsername("user");
-                loginPage.fillPassword("password");
+                loginPage.fillUsername(EMAIL);
+                loginPage.fillPassword(PASSWORD);
 
-                assertThat(loginPage.isLogInDisplayed()).isTrue();
+                assertTrue(loginPage.isLogInDisplayed());
 
                 loginPage.login();
 
                 eventsPage.isAt();
                 eventsPage.waitForSuccessMessageToDisplay();
-                assertThat(loginPage.isLogInDisplayed()).isFalse();
-                assertThat(loginPage.isLogOutDisplayed()).isTrue();
+                assertFalse(loginPage.isLogInDisplayed());
+                assertTrue(loginPage.isLogOutDisplayed());
 
                 // Act
                 eventsPage.clickLoginButon();
@@ -129,7 +133,7 @@ public class AuthenticationTest {
                 loginPage.fillUsername("bad");
                 loginPage.fillPassword("credentials");
 
-                assertThat(loginPage.isLogInDisplayed()).isTrue();
+                assertTrue(loginPage.isLogInDisplayed());
 
                 loginPage.login();
 
@@ -137,7 +141,7 @@ public class AuthenticationTest {
                 eventsPage.go();
                 eventsPage.isAt();
                 eventsPage.waitForErrorMessageToDisplay();
-                assertThat(loginPage.isLogInDisplayed()).isTrue();
+                assertTrue(loginPage.isLogInDisplayed());
             }
         });
     }

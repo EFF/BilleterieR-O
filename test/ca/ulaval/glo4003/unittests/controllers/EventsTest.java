@@ -92,6 +92,5 @@ public class EventsTest {
         // Assert
         assertEquals(1, jsonNode.get("id").asLong());
     }
-
     // TODO: Add tests for different queries on index
 }
