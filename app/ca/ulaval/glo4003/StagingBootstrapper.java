@@ -2,10 +2,8 @@ package ca.ulaval.glo4003;
 
 import ca.ulaval.glo4003.dataaccessobjects.EventDao;
 import ca.ulaval.glo4003.dataaccessobjects.SportDao;
-import ca.ulaval.glo4003.models.Category;
-import ca.ulaval.glo4003.models.Event;
-import ca.ulaval.glo4003.models.Gender;
-import ca.ulaval.glo4003.models.Sport;
+import ca.ulaval.glo4003.dataaccessobjects.UserDao;
+import ca.ulaval.glo4003.models.*;
 import com.google.inject.Inject;
 import org.joda.time.LocalDateTime;
 
@@ -15,26 +13,32 @@ public class StagingBootstrapper implements Bootstrapper {
 
     private final EventDao eventDao;
     private final SportDao sportDao;
+    private final UserDao userDao;
 
     @Inject
-    public StagingBootstrapper(EventDao eventDao, SportDao sportDao) {
+    public StagingBootstrapper(EventDao eventDao, SportDao sportDao, UserDao userDao) {
         this.eventDao = eventDao;
         this.sportDao = sportDao;
+        this.userDao = userDao;
     }
 
     @Override
     public void initData() {
-        Sport soccer = new Sport("Soccer");
-        Sport football = new Sport("Football");
-        Sport rugby = new Sport("Rugby");
-        Sport volleyball = new Sport("Volleyball");
-        Sport basketball = new Sport("Basketball");
-        sportDao.create(soccer);
-        sportDao.create(football);
-        sportDao.create(rugby);
-        sportDao.create(volleyball);
-        sportDao.create(basketball);
+        initSports();
+        initEvents();
+        initUsers();
+    }
 
+    private void initUsers() {
+        for(int i=0; i < 5; i++){
+            User user = new User();
+            user.setEmail("user" + i + "@example.com");
+            user.setPassword("secret");
+            userDao.create(user);
+        }
+    }
+
+    private void initEvents() {
         for (Sport sport : sportDao.list()) {
             int nbEvents = new Random().nextInt(20);
             for (int i = 0; i < nbEvents; i++) {
@@ -58,9 +62,23 @@ public class StagingBootstrapper implements Bootstrapper {
         }
     }
 
+    private void initSports(){
+        Sport soccer = new Sport("Soccer");
+        Sport football = new Sport("Football");
+        Sport rugby = new Sport("Rugby");
+        Sport volleyball = new Sport("Volleyball");
+        Sport basketball = new Sport("Basketball");
+        sportDao.create(soccer);
+        sportDao.create(football);
+        sportDao.create(rugby);
+        sportDao.create(volleyball);
+        sportDao.create(basketball);
+    }
+
     @Override
     public void deleteAll() {
         eventDao.deleteAll();
         sportDao.deleteAll();
+        userDao.deleteAll();
     }
 }
