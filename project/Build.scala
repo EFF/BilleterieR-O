@@ -16,7 +16,8 @@ object ApplicationBuild extends Build {
     "joda-time" % "joda-time" % "2.3",
 
     "org.seleniumhq.selenium" % "selenium-java" % "2.35.0" % "test",
-    "org.mockito" % "mockito-all" % "1.9.5" % "test"
+    "org.mockito" % "mockito-all" % "1.9.5" % "test",
+    "org.jukito" % "jukito" % "1.2" % "test"
   )
 
   val main = play.Project(appName, appVersion, appDependencies).settings(

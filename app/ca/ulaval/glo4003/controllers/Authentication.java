@@ -54,6 +54,14 @@ public class Authentication extends Controller {
         }
     }
 
+    public void test() {
+        try {
+            User user = userDao.findByEmailAndPassword("username", "password");
+        } catch (RecordNotFoundException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }
+    }
+
     public Result logout() {
         session().clear();
         return ok();
