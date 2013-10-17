@@ -1,5 +1,7 @@
 package ca.ulaval.glo4003.acceptances.pages;
 
+import org.openqa.selenium.Alert;
+import org.openqa.selenium.NoAlertPresentException;
 import org.openqa.selenium.WebDriver;
 
 import static org.fluentlenium.core.filter.FilterConstructor.withId;
@@ -23,6 +25,21 @@ public class CartPage extends BaseFluentPage {
 
     public void waitUntilItemsHasSize(int count) {
         await().atMost(TIMEOUT).until(".item").hasSize(count);
+    }
+
+    public Alert waitAndGetAlert() {
+        int i = 0;
+        while (i++ < 10) {
+            try {
+                return getDriver().switchTo().alert();
+            } catch (NoAlertPresentException e) {
+                try {
+                    Thread.sleep(500);
+                } catch (InterruptedException ignored) {
+                }
+            }
+        }
+        return null;
     }
 
     public void removeItem(int itemIndex) {

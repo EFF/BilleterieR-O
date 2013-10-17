@@ -7,7 +7,7 @@ import play.mvc.Result;
 
 public class Bootstrap extends Controller {
 
-    private Bootstrapper bootstrapper;
+    private final Bootstrapper bootstrapper;
 
     @Inject
     public Bootstrap(Bootstrapper bootstrapper) {

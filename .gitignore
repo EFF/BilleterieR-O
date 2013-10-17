@@ -17,3 +17,4 @@ dist
 /.ca.ulaval.glo4003.settings
 /.target
 .settings/org.eclipse.core.resources.prefs
+/data
