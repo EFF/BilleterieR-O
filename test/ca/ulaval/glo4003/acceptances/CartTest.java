@@ -10,7 +10,7 @@ import org.openqa.selenium.WebDriver;
 import play.libs.F;
 import play.test.TestBrowser;
 
-import static org.fest.assertions.Assertions.assertThat;
+import static org.junit.Assert.assertEquals;
 import static play.test.Helpers.*;
 
 public class CartTest {
@@ -37,26 +37,26 @@ public class CartTest {
                 goToEventPage(eventPage1);
                 // Buy two tickets from events/1, category 0
                 eventPage1.buyTicketsForCategory(0, 2);
-                assertThat(eventPage1.getCartSize()).isEqualTo(2);
+                assertEquals(2, eventPage1.getCartSize());
                 // Buy five tickets from events/1, category 1
                 eventPage1.buyTicketsForCategory(1, 5);
-                assertThat(eventPage1.getCartSize()).isEqualTo(7);
+                assertEquals(7, eventPage1.getCartSize());
                 // Buy one ticket from event #2, category 0
                 goToEventPage(eventPage2);
                 eventPage2.buyTicketsForCategory(0, 1);
-                assertThat(eventPage2.getCartSize()).isEqualTo(8);
+                assertEquals(8, eventPage2.getCartSize());
 
                 goToCartPage(cartPage, 3);
 
                 // Remove one item
                 cartPage.removeItem(FIRST_ITEM_INDEX);
                 cartPage.waitUntilItemsHasSize(2);
-                assertThat(cartPage.getCartSize()).isEqualTo(6);
+                assertEquals(6, cartPage.getCartSize());
 
                 // Remove all items
                 cartPage.removeAllItems();
                 cartPage.waitUntilItemsHasSize(0);
-                assertThat(eventPage1.getCartSize()).isEqualTo(0);
+                assertEquals(0, eventPage1.getCartSize());
             }
         });
     }
@@ -74,6 +74,7 @@ public class CartTest {
                 goToLoginPage(loginPage);
 
                 loginPage.performLogin(EMAIL, PASSWORD);
+                loginPage.waitUntilLoginIsDone();
 
                 goToEventPage(eventPage1);
 
@@ -81,7 +82,7 @@ public class CartTest {
 
                 eventPage1.buyTicketsForCategory(0, 1);
                 eventPage1.buyTicketsForCategory(1, 1);
-                assertThat(eventPage1.getCartSize()).isEqualTo(2);
+                assertEquals(2, eventPage1.getCartSize());
 
                 goToCartPage(cartPage, 2);
 
@@ -91,7 +92,7 @@ public class CartTest {
                 resultPage.isAt();
 
                 goToEventPage(eventPage1);
-                assertThat(eventPage1.getTicketNumberForCategory(0)).isEqualTo(firstCategoryTicketCount - 1);
+                assertEquals(firstCategoryTicketCount - 1, eventPage1.getTicketNumberForCategory(0));
             }
         });
     }
@@ -109,6 +110,7 @@ public class CartTest {
                 goToLoginPage(loginPage);
 
                 loginPage.performLogin(EMAIL, PASSWORD);
+                loginPage.waitUntilLoginIsDone();
 
                 goToEventPage(eventPage1);
 
@@ -117,7 +119,7 @@ public class CartTest {
 
                 eventPage1.buyTicketsForCategory(0, 1);
                 eventPage1.buyTicketsForCategory(1, 1);
-                assertThat(eventPage1.getCartSize()).isEqualTo(2);
+                assertEquals(2, eventPage1.getCartSize());
 
                 goToCartPage(cartPage, 2);
 
@@ -126,8 +128,8 @@ public class CartTest {
                 resultPage.isAt();
 
                 goToEventPage(eventPage1);
-                assertThat(eventPage1.getTicketNumberForCategory(0)).isEqualTo(cart1TicketNumber - 1);
-                assertThat(eventPage1.getTicketNumberForCategory(1)).isEqualTo(cart2TicketNumber - 1);
+                assertEquals(cart1TicketNumber - 1, eventPage1.getTicketNumberForCategory(0));
+                assertEquals(cart2TicketNumber - 1, eventPage1.getTicketNumberForCategory(1));
             }
         });
     }
@@ -152,7 +154,7 @@ public class CartTest {
                 goToCartPage(cartPage, 1);
                 payCartWithCard(cartPage, A_CARD_TYPE, browser.getDriver());
                 cartPage.confirm(browser.getDriver());
-                assertThat(resultPage.getCartSize()).isEqualTo(0);
+                assertEquals(0, resultPage.getCartSize());
             }
         });
     }
@@ -177,13 +179,13 @@ public class CartTest {
                 goToCartPage(cartPage, 1);
                 payCartWithCard(cartPage, A_CARD_TYPE, browser.getDriver());
                 cartPage.dismiss(browser.getDriver());
-                assertThat(resultPage.getCartSize()).isEqualTo(1);
+                assertEquals(1, resultPage.getCartSize());
             }
         });
     }
 
     @Test
-    public void anAnonymousUserReceivesAMessageTuConnectBeforeContinue(){
+    public void connectionRequiredMessage(){
         running(testServer(3333, fakeApplication(new TestGlobal())), FIREFOX, new F.Callback<TestBrowser>() {
             @Override
             public void invoke(TestBrowser browser) {
@@ -199,7 +201,8 @@ public class CartTest {
                 payCartWithCard(cartPage, A_CARD_TYPE, browser.getDriver());
 
                 String message = cartPage.waitAndGetAlert().getText();
-                assertThat(message).isEqualTo("Vous devez vous connecter avant de procéder au paiement");
+                String expectedMessage = "Vous devez vous connecter avant de procéder au paiement";
+                assertEquals(expectedMessage, message);
             }
         });
     }
