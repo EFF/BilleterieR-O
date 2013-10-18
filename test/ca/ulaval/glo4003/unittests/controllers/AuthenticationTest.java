@@ -22,13 +22,13 @@ import static play.test.Helpers.status;
 @RunWith(JukitoRunner.class)
 public class AuthenticationTest extends BaseControllerTest {
     @Inject
-    Authentication authentication;
+    private Authentication authentication;
 
-    User mockedUser;
+    private User mockedUser;
 
-    String username = "username";
-    String password = "password";
-    String email = "email@test.com";
+    private String username = "username";
+    private String password = "password";
+    private String email = "email@test.com";
 
     @Before
     public void setup() {
