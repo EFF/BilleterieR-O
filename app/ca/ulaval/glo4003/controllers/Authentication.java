@@ -17,6 +17,8 @@ public class Authentication extends Controller {
 
     private final UserDao userDao;
 
+    public static final String emailTag = "email";
+
     @Inject
     public Authentication(UserDao userDao) {
         this.userDao = userDao;
@@ -25,8 +27,8 @@ public class Authentication extends Controller {
     public Result index() {
         ObjectNode result = Json.newObject();
 
-        result.put("authenticated", session().get("email") != null);
-        result.put("username", session().get("email"));
+        result.put("authenticated", session().get(emailTag) != null);
+        result.put("username", session().get(emailTag));
 
         return ok(result);
     }
@@ -46,7 +48,7 @@ public class Authentication extends Controller {
         try {
             User user = userDao.findByEmailAndPassword(username, password);
             session().clear();
-            session().put("email", user.getEmail());
+            session().put(emailTag, user.getEmail());
 
             return ok("Authenticated");
         } catch (RecordNotFoundException e) {
