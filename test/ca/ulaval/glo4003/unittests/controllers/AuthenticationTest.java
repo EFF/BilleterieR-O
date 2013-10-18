@@ -12,21 +12,21 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import play.libs.Json;
 import play.mvc.Http;
-import play.test.FakeApplication;
-import play.test.Helpers;
+import play.mvc.Result;
 
 import java.util.HashMap;
 
+import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.*;
-import static play.test.Helpers.start;
-import static play.test.Helpers.stop;
+import static play.test.Helpers.status;
 
 @RunWith(JukitoRunner.class)
 public class AuthenticationTest {
     @Inject
     Authentication authentication;
 
-    //UserDao mockedUserDao;
+    Http.Request mockedRequest;
+
     String username = "username";
     String password = "password";
 
@@ -36,14 +36,13 @@ public class AuthenticationTest {
         json.put("username", username);
         json.put("password", password);
 
-        //mockedUserDao = mock(UserDao.class);
         User mockedUser = mock(User.class);
         when(mockedUser.getEmail()).thenReturn("email@test.com");
 
         Http.RequestBody mockedBody = mock(Http.RequestBody.class);
         when(mockedBody.asJson()).thenReturn(json);
 
-        Http.Request mockedRequest = mock(Http.Request.class);
+        mockedRequest = mock(Http.Request.class);
         when(mockedRequest.body()).thenReturn(mockedBody);
 
         when(mockedUserDao.findByEmailAndPassword(anyString(), anyString())).thenReturn(mockedUser);
@@ -55,30 +54,11 @@ public class AuthenticationTest {
 
     @Test
     public void loginTest(UserDao mockedUserDao) throws RecordNotFoundException {
-        FakeApplication app = Helpers.fakeApplication();
+        Result result = authentication.login();
 
-        start(app);
-
-        ObjectNode json = Json.newObject();
-        json.put("username", username);
-        json.put("password", password);
-
-        //Result result = callAction(
-        //        ca.ulaval.glo4003.controllers.routes.ref.Authentication.login(),
-        //        fakeRequest().withSession("email", "email@test.com").withJsonBody(json)
-        //);
-        authentication.login();
-
-        stop(app);
-
+        verify(mockedRequest).body();
+        verify(mocked).cl();
         verify(mockedUserDao).findByEmailAndPassword(anyString(), anyString());
-        //assertEquals(200, status(result));
-    }
-
-    @Test
-    public void dummyTest(UserDao mockedUserDao) throws RecordNotFoundException {
-        authentication.test();
-
-        verify(mockedUserDao).findByEmailAndPassword(anyString(), anyString());
+        assertEquals(Http.Status.OK, status(result));
     }
 }
