@@ -1,31 +1,31 @@
 # Billetterie R&O
 
-Projet développé dans le cadre du cours GLO-4003 Architecture logiciellle
+Projet pilote développé dans le cadre du cours GLO-4003 Architecture logicielle à l'université Laval. Billetterie R&O est développé en Java et utilise [Play! framework](http://www.playframework.com/) pour serveur et [Angular.js](http://angularjs.org) pour le client web.
+Nous avons opté pour un projet suivant le style "slim API & fat client".
 
 ## Pré-requis
 * Java 7
-* [Play! framework 2.1.4](http://www.playframework.com/download)
+* [Play! framework 2.1.4](http://downloads.typesafe.com/play/2.1.4/play-2.1.4.zip)
 
-## Installation
 
-1. Ajouter `play` à votre `PATH`
-2. Il n'y a pas de 2ème étape
+## Ajout de Play à votre PATH (facultatif)
+1. Vous pouvez ajouter `play` à votre `PATH`
+2. sinon `cd path_to_/play-2.1.4`
 
-## Lancer l'app
-    play run
-
-## Bootstrap fresh data
-1. Lancer l'application en mode dev
-2. ```curl localhost:9000/bootstrap```
+## Lancer l'application
+1. `play run`
+2. `curl localhost:9000/bootstrap` (initialisation des données en mode développement)
+3. `open http://localhost:9000/`
 
 ## Lancer les tests
-    play test
+1. Assurez-vous d'avoir une version récente de firefox pour pouvoir rouler les tests d'acceptation
+2. `play test`
 
 ## Utiliser Eclipse
-    play eclipse
+`play eclipse`
 
 ## Utiliser Intellij
-    play idea
+`play idea`
 
 ## Utiliser Netbeans
-    play netbeans
+`play netbeans`
