@@ -8,11 +8,9 @@ Nous avons opté pour un projet suivant le style "slim API & fat client".
 * [Play! framework 2.1.4](http://www.playframework.com/download)
 
 ## Lancer l'app
-    /path/to/play_2.1.4/play run
+1. ```/path/to/play_2.1.4/play run```
+2. ```curl localhost:9000/bootstrap``` (initialisation des données)
 
-## Initialiser des données
-1. Lancer l'application
-2. ```curl localhost:9000/bootstrap```
 
 ## Lancer les tests
 1. Assurez-vous d'avoir une version récente de firefox pour pouvoir rouler les tests d'acceptation
