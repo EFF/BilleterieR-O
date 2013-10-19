@@ -16,7 +16,7 @@ Nous avons opté pour un projet suivant le style "slim API & fat client".
 
 ## Lancer les tests
 1. Assurez-vous d'avoir une version récente de firefox pour pouvoir rouler les tests d'acceptation
-2. ```/path/to/play_2.1.4/play run```
+2. ```/path/to/play_2.1.4/play test```
 
 ## Utiliser Eclipse
     /path/to/play_2.1.4/play eclipse
