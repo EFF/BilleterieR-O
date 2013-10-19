@@ -1,5 +1,6 @@
 package ca.ulaval.glo4003.controllers;
 
+import ca.ulaval.glo4003.Secured;
 import ca.ulaval.glo4003.dataaccessobjects.EventDao;
 import ca.ulaval.glo4003.exceptions.MaximumExceededException;
 import ca.ulaval.glo4003.exceptions.RecordNotFoundException;
@@ -12,6 +13,8 @@ import org.joda.time.LocalDateTime;
 import play.libs.Json;
 import play.mvc.Controller;
 import play.mvc.Result;
+import play.mvc.Security;
+import play.mvc.With;
 
 import java.util.Iterator;
 
@@ -58,6 +61,7 @@ public class Events extends Controller {
         }
     }
 
+    @Security.Authenticated(Secured.class)
     public Result decrementCategoryCounter() {
         JsonNode items = request().body().asJson();
         Iterator<JsonNode> jsonNodeIterator = items.iterator();

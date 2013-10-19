@@ -7,7 +7,6 @@ Nous avons opté pour un projet suivant le style "slim API & fat client".
 * Java 7
 * [Play! framework 2.1.4](http://downloads.typesafe.com/play/2.1.4/play-2.1.4.zip)
 
-
 ## Ajout de Play à votre PATH (facultatif)
 1. Vous pouvez ajouter `play` à votre `PATH`
 2. sinon `cd path_to_/play-2.1.4`

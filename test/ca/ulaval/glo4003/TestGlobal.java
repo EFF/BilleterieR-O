@@ -8,7 +8,7 @@ import play.GlobalSettings;
 
 public class TestGlobal extends GlobalSettings {
 
-    private static final Injector INJECTOR = createInjector();
+    public final Injector INJECTOR = createInjector();
 
     @Override
     public <A> A getControllerInstance(Class<A> controllerClass)
@@ -32,7 +32,7 @@ public class TestGlobal extends GlobalSettings {
         bootstrapper.deleteAll();
     }
 
-    private static Injector createInjector() {
+    private Injector createInjector() {
         return Guice.createInjector(new TestModule());
     }
 }

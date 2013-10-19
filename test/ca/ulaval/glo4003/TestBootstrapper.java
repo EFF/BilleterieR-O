@@ -2,10 +2,8 @@ package ca.ulaval.glo4003;
 
 import ca.ulaval.glo4003.dataaccessobjects.EventDao;
 import ca.ulaval.glo4003.dataaccessobjects.SportDao;
-import ca.ulaval.glo4003.models.Category;
-import ca.ulaval.glo4003.models.Event;
-import ca.ulaval.glo4003.models.Gender;
-import ca.ulaval.glo4003.models.Sport;
+import ca.ulaval.glo4003.dataaccessobjects.UserDao;
+import ca.ulaval.glo4003.models.*;
 import com.google.inject.Inject;
 import org.joda.time.LocalDateTime;
 
@@ -13,11 +11,13 @@ public class TestBootstrapper implements Bootstrapper {
 
     private final EventDao eventDao;
     private final SportDao sportDao;
+    private final UserDao userDao;
 
     @Inject
-    public TestBootstrapper(EventDao eventDao, SportDao sportDao) {
+    public TestBootstrapper(EventDao eventDao, SportDao sportDao, UserDao userDao) {
         this.eventDao = eventDao;
         this.sportDao = sportDao;
+        this.userDao = userDao;
     }
 
     @Override
@@ -45,11 +45,19 @@ public class TestBootstrapper implements Bootstrapper {
         event2.addCategory(category4);
 
         eventDao.create(event2);
+
+        User user = new User();
+        user.setEmail("user@example.com");
+        user.setPassword("secret");
+
+        userDao.create(user);
     }
+
 
     @Override
     public void deleteAll() {
         eventDao.deleteAll();
         sportDao.deleteAll();
+        userDao.deleteAll();
     }
 }
