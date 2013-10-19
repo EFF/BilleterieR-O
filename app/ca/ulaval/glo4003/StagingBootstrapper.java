@@ -30,7 +30,7 @@ public class StagingBootstrapper implements Bootstrapper {
     }
 
     private void initUsers() {
-        for(int i=0; i < 5; i++){
+        for (int i = 0; i < 5; i++) {
             User user = new User();
             user.setEmail("user" + i + "@example.com");
             user.setPassword("secret");
@@ -40,7 +40,7 @@ public class StagingBootstrapper implements Bootstrapper {
 
     private void initEvents() {
         for (Sport sport : sportDao.list()) {
-            int nbEvents = new Random().nextInt(20);
+            int nbEvents = new Random().nextInt(19) + 1;
             for (int i = 0; i < nbEvents; i++) {
                 Gender gender = (i % 2 == 0) ? Gender.MALE : Gender.FEMALE;
 
@@ -62,7 +62,7 @@ public class StagingBootstrapper implements Bootstrapper {
         }
     }
 
-    private void initSports(){
+    private void initSports() {
         Sport soccer = new Sport("Soccer");
         Sport football = new Sport("Football");
         Sport rugby = new Sport("Rugby");
