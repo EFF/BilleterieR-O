@@ -1,5 +1,6 @@
 package ca.ulaval.glo4003.unittests.controllers;
 
+import org.junit.After;
 import org.junit.Before;
 import play.libs.Json;
 import play.mvc.Http;
@@ -26,5 +27,10 @@ public abstract class BaseControllerTest {
         when(mockedContext.session()).thenReturn(mockedSession);
 
         Http.Context.current.set(mockedContext);
+    }
+
+    @After
+    public void tearDown() {
+        Http.Context.current.remove();
     }
 }
