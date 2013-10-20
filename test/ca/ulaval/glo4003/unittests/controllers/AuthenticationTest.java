@@ -24,11 +24,7 @@ import static play.test.Helpers.status;
 public class AuthenticationTest extends BaseControllerTest {
     @Inject
     private Authentication authentication;
-
     private User mockedUser;
-
-    private String username = "username";
-    private String password = "password";
     private String email = "email@test.com";
 
     @Before
@@ -36,9 +32,12 @@ public class AuthenticationTest extends BaseControllerTest {
         mockedUser = mock(User.class);
         when(mockedUser.getEmail()).thenReturn(email);
 
+        String username = "username";
+        String password = "password";
+
         ObjectNode json = Json.newObject();
-        json.put("username", username);
-        json.put("password", password);
+        json.put(ConstantsManager.USERNAME_FIELD_NAME, username);
+        json.put(ConstantsManager.PASSWORD_FIELD_NAME, password);
 
         when(mockedBody.asJson()).thenReturn(json);
     }

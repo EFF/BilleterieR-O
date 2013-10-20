@@ -1,5 +1,6 @@
 package ca.ulaval.glo4003.unittests.controllers;
 
+import ca.ulaval.glo4003.ConstantsManager;
 import ca.ulaval.glo4003.controllers.Facets;
 import ca.ulaval.glo4003.dataaccessobjects.SportDao;
 import ca.ulaval.glo4003.models.Gender;
@@ -52,15 +53,15 @@ public class FacetsTest extends BaseControllerTest {
         assertEquals(Helpers.OK, Helpers.status(result));
         assertEquals("application/json", Helpers.contentType(result));
 
-        assertTrue(jsonNode.get("gender").isArray());
-        assertNotSame(Gender.values(), jsonNode.get("gender"));
-        assertEquals(2, jsonNode.get("gender").size());
+        assertTrue(jsonNode.get(ConstantsManager.FACET_GENDER).isArray());
+        assertNotSame(Gender.values(), jsonNode.get(ConstantsManager.FACET_GENDER));
+        assertEquals(2, jsonNode.get(ConstantsManager.FACET_GENDER).size());
 
-        assertTrue(jsonNode.get("sport").isArray());
+        assertTrue(jsonNode.get(ConstantsManager.FACET_SPORT).isArray());
 
         //Json.toJson always create new Objects.
-        assertNotSame(tempList, jsonNode.get("sport"));
-        assertEquals(tempList.size(), jsonNode.get("sport").size());
+        assertNotSame(tempList, jsonNode.get(ConstantsManager.FACET_SPORT));
+        assertEquals(tempList.size(), jsonNode.get(ConstantsManager.FACET_SPORT).size());
 
         verify(mockedSportDao).list();
     }
