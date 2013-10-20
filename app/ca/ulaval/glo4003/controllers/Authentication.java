@@ -1,17 +1,15 @@
 package ca.ulaval.glo4003.controllers;
 
 import ca.ulaval.glo4003.dataaccessobjects.UserDao;
-import ca.ulaval.glo4003.exceptions.InvalidJsonException;
 import ca.ulaval.glo4003.exceptions.RecordNotFoundException;
 import ca.ulaval.glo4003.models.User;
 import com.google.inject.Inject;
+import org.apache.commons.lang3.StringUtils;
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.node.ObjectNode;
 import play.libs.Json;
 import play.mvc.Controller;
 import play.mvc.Result;
-
-import static ca.ulaval.glo4003.helpers.JsonExpectationsHelper.expectFilledString;
 
 public class Authentication extends Controller {
 
@@ -36,9 +34,7 @@ public class Authentication extends Controller {
     public Result login() {
         JsonNode json = request().body().asJson();
 
-        try {
-            expectFilledString(json, "username", "password");
-        } catch (InvalidJsonException e) {
+        if (!validateLoginParameters(json)) {
             return badRequest("Expected username and password in Json.");
         }
 
@@ -59,5 +55,12 @@ public class Authentication extends Controller {
     public Result logout() {
         session().clear();
         return ok();
+    }
+
+    private boolean validateLoginParameters(JsonNode json) {
+        return json.has("username") &&
+                StringUtils.isNotBlank(json.get("username").asText()) &&
+                json.has("password") &&
+                StringUtils.isNotBlank(json.get("password").asText());
     }
 }
