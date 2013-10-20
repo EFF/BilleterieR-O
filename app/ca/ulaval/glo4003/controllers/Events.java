@@ -14,7 +14,6 @@ import play.libs.Json;
 import play.mvc.Controller;
 import play.mvc.Result;
 import play.mvc.Security;
-import play.mvc.With;
 
 import java.util.Iterator;
 
@@ -78,7 +77,7 @@ public class Events extends Controller {
             } catch (RecordNotFoundException e) {
                 return notFound();
             } catch (MaximumExceededException e) {
-                return internalServerError("Il n'y a pas assez de billets disponibles dans la catégorie" + categoryId.toString());
+                return badRequest("Il n'y a pas assez de billets disponibles dans la catégorie" + categoryId.toString());
             }
         }
 

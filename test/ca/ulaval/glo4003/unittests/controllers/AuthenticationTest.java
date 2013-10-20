@@ -5,6 +5,7 @@ import ca.ulaval.glo4003.dataaccessobjects.UserDao;
 import ca.ulaval.glo4003.exceptions.RecordNotFoundException;
 import ca.ulaval.glo4003.models.User;
 import com.google.inject.Inject;
+import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.node.ObjectNode;
 import org.jukito.JukitoRunner;
 import org.junit.Before;
@@ -14,8 +15,11 @@ import org.mockito.InOrder;
 import play.libs.Json;
 import play.mvc.Http;
 import play.mvc.Result;
+import play.test.Helpers;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.*;
 import static play.test.Helpers.status;
 
@@ -26,7 +30,6 @@ public class AuthenticationTest extends BaseControllerTest {
 
     private User mockedUser;
 
-    private String username = "username";
     private String password = "password";
     private String email = "email@test.com";
 
@@ -36,19 +39,56 @@ public class AuthenticationTest extends BaseControllerTest {
         when(mockedUser.getEmail()).thenReturn(email);
 
         ObjectNode json = Json.newObject();
-        json.put("username", username);
+        json.put("username", email);
         json.put("password", password);
 
         when(mockedBody.asJson()).thenReturn(json);
     }
 
     @Test
-    public void index() {
+    public void indexWhenAuthenticated() {
+        when(mockedSession.get(Authentication.emailTag)).thenReturn(email);
+
         Result result = authentication.index();
 
-        verify(mockedSession, times(2)).get(Authentication.emailTag);
+        verify(mockedSession, atLeast(1)).get(Authentication.emailTag);
 
         assertEquals(Http.Status.OK, status(result));
+
+        assertEquals("application/json", Helpers.contentType(result));
+
+        String json = Helpers.contentAsString(result);
+        JsonNode jsonNode = Json.parse(json);
+
+        assertTrue(jsonNode.isContainerNode());
+        JsonNode authenticatedValue = jsonNode.get("authenticated");
+        JsonNode username1 = jsonNode.get("username");
+
+        assertTrue(authenticatedValue.asBoolean());
+        assertEquals(email, username1.asText());
+    }
+
+    @Test
+    public void indexWhenNotAuthenticated() {
+        when(mockedSession.get(Authentication.emailTag)).thenReturn(null);
+
+        Result result = authentication.index();
+
+        verify(mockedSession, atLeast(1)).get(Authentication.emailTag);
+
+        assertEquals(Http.Status.OK, status(result));
+
+        assertEquals("application/json", Helpers.contentType(result));
+
+        String json = Helpers.contentAsString(result);
+        JsonNode jsonNode = Json.parse(json);
+
+        assertTrue(jsonNode.isContainerNode());
+        JsonNode authenticatedValue = jsonNode.get("authenticated");
+        JsonNode username1 = jsonNode.get("username");
+
+        assertFalse(authenticatedValue.asBoolean());
+        assertTrue(username1.isNull());
     }
 
     @Test
@@ -62,7 +102,7 @@ public class AuthenticationTest extends BaseControllerTest {
 
     @Test
     public void loginWithRegisteredUser(UserDao mockedUserDao) throws RecordNotFoundException {
-        when(mockedUserDao.findByEmailAndPassword(anyString(), anyString()))
+        when(mockedUserDao.findByEmailAndPassword(email, password))
                 .thenReturn(mockedUser);
 
         Result result = authentication.login();
