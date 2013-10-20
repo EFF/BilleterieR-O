@@ -16,8 +16,6 @@ public class Authentication extends Controller {
 
     private final UserDao userDao;
 
-    public static final String emailTag = "email";
-
     @Inject
     public Authentication(UserDao userDao) {
         this.userDao = userDao;
