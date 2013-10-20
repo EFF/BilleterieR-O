@@ -55,7 +55,6 @@ public class EventsTest extends BaseControllerTest {
 
         eventSearchCriteria = new EventSearchCriteria();
         when(mockedEventDao.search(refEq(eventSearchCriteria))).thenReturn(tempEventsList);
-        doThrow(new RecordNotFoundException()).when(mockedEventDao).decrementEventCategoryNumberOfTickets(anyLong(), anyLong(), anyInt());
     }
 
     @Test
@@ -169,6 +168,8 @@ public class EventsTest extends BaseControllerTest {
 
     @Test
     public void decrementCategoryCounterDoNothingWhenThereIsNoItems(EventDao mockedEventDao) throws RecordNotFoundException, MaximumExceededException {
+        doThrow(new RecordNotFoundException()).when(mockedEventDao).decrementEventCategoryNumberOfTickets(anyLong(), anyLong(), anyInt());
+
         Result result = events.decrementCategoryCounter();
 
         assertEquals(Helpers.OK, Helpers.status(result));
@@ -226,7 +227,7 @@ public class EventsTest extends BaseControllerTest {
 
         Result result = events.decrementCategoryCounter();
 
-        assertEquals(Helpers.INTERNAL_SERVER_ERROR, Helpers.status(result));
+        assertEquals(Helpers.BAD_REQUEST, Helpers.status(result));
         verify(mockedEventDao).decrementEventCategoryNumberOfTickets(anyLong(), anyLong(), anyInt());
         verify(mockedEventDao).decrementEventCategoryNumberOfTickets(eventId1, categoryId1, quantity1);
     }
