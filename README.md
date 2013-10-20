@@ -5,22 +5,26 @@ Nous avons opté pour un projet suivant le style "slim API & fat client".
 
 ## Pré-requis
 * Java 7
-* [Play! framework 2.1.4](http://www.playframework.com/download)
+* [Play! framework 2.1.4](http://downloads.typesafe.com/play/2.1.4/play-2.1.4.zip)
 
-## Lancer l'app
-1. ```/path/to/play_2.1.4/play run```
-2. ```curl localhost:9000/bootstrap``` (initialisation des données)
+## Ajout de Play à votre PATH (facultatif)
+1. Vous pouvez ajouter `play` à votre `PATH`
+2. sinon `cd path_to_/play-2.1.4`
 
+## Lancer l'application
+1. `play run`
+2. `curl localhost:9000/bootstrap` (initialisation des données en mode développement)
+3. `open http://localhost:9000/`
 
 ## Lancer les tests
 1. Assurez-vous d'avoir une version récente de firefox pour pouvoir rouler les tests d'acceptation
-2. ```/path/to/play_2.1.4/play test```
+2. `play test`
 
 ## Utiliser Eclipse
-    /path/to/play_2.1.4/play eclipse
+`play eclipse`
 
 ## Utiliser Intellij
-    /path/to/play_2.1.4/play idea
+`play idea`
 
 ## Utiliser Netbeans
-    /path/to/play_2.1.4/play netbeans
+`play netbeans`
