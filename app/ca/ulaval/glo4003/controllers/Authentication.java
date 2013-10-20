@@ -1,5 +1,6 @@
 package ca.ulaval.glo4003.controllers;
 
+import ca.ulaval.glo4003.ConstantsManager;
 import ca.ulaval.glo4003.dataaccessobjects.UserDao;
 import ca.ulaval.glo4003.exceptions.RecordNotFoundException;
 import ca.ulaval.glo4003.models.User;
@@ -23,8 +24,8 @@ public class Authentication extends Controller {
     public Result index() {
         ObjectNode result = Json.newObject();
 
-        result.put("authenticated", session().get("email") != null);
-        result.put("username", session().get("email"));
+        result.put("authenticated", session().get(ConstantsManager.COOKIE_SESSION_FIELD_NAME) != null);
+        result.put("username", session().get(ConstantsManager.COOKIE_SESSION_FIELD_NAME));
 
         return ok(result);
     }
@@ -42,7 +43,7 @@ public class Authentication extends Controller {
         try {
             User user = userDao.findByEmailAndPassword(username, password);
             session().clear();
-            session().put("email", user.getEmail());
+            session().put(ConstantsManager.COOKIE_SESSION_FIELD_NAME, user.getEmail());
 
             return ok("Authenticated");
         } catch (RecordNotFoundException e) {
