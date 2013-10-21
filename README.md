@@ -12,7 +12,7 @@ Nous avons opté pour un projet suivant le style "slim API & fat client".
 2. sinon vous pouvez accéder directement `./path_to_/play-2.1.4/play`
 
 ## Lancer l'application
-1. `cd ./path_whe_you_cloned_the_project/archilo`
+1. `cd ./path_where_you_cloned_the_project/archilo`
 2. `play run`
 3. `curl localhost:9000/bootstrap` (initialisation des données en mode développement)
 4. `open http://localhost:9000/`
