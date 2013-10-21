@@ -1,5 +1,6 @@
 package ca.ulaval.glo4003.controllers;
 
+import ca.ulaval.glo4003.ConstantsManager;
 import ca.ulaval.glo4003.dataaccessobjects.SportDao;
 import ca.ulaval.glo4003.models.Gender;
 import play.libs.Json;
@@ -24,8 +25,8 @@ public class Facets extends Controller {
     public Result index() {
         Map<String, List> facets = new HashMap<>();
 
-        facets.put("sport", sportDao.list());
-        facets.put("gender", Arrays.asList(Gender.values()));
+        facets.put(ConstantsManager.FACET_SPORT, sportDao.list());
+        facets.put(ConstantsManager.FACET_GENDER, Arrays.asList(Gender.values()));
 
         return ok(Json.toJson(facets));
     }
