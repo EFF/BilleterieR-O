@@ -1,5 +1,6 @@
 package ca.ulaval.glo4003.controllers;
 
+import ca.ulaval.glo4003.ConstantsManager;
 import ca.ulaval.glo4003.Secured;
 import ca.ulaval.glo4003.dataaccessobjects.EventDao;
 import ca.ulaval.glo4003.exceptions.MaximumExceededException;
@@ -27,11 +28,11 @@ public class Events extends Controller {
     }
 
     public Result index() {
-        final String sport = request().getQueryString("sport");
-        final String dateStart = request().getQueryString("dateStart");
-        final String dateEnd = request().getQueryString("dateEnd");
-        final String team = request().getQueryString("team");
-        final String genderString = request().getQueryString("gender");
+        final String sport = request().getQueryString(ConstantsManager.QUERY_STRING_SPORT_PARAM_NAME);
+        final String dateStart = request().getQueryString(ConstantsManager.QUERY_STRING_DATE_START_PARAM_NAME);
+        final String dateEnd = request().getQueryString(ConstantsManager.QUERY_STRING_DATE_END_PARAM_NAME);
+        final String team = request().getQueryString(ConstantsManager.QUERY_STRING_TEAM_PARAM_NAME);
+        final String genderString = request().getQueryString(ConstantsManager.QUERY_STRING_GENDER_PARAM_NAME);
 
         LocalDateTime start = dateStart == null ? null : LocalDateTime.parse(dateStart);
         LocalDateTime end = dateEnd == null ? null : LocalDateTime.parse(dateEnd);
@@ -68,9 +69,9 @@ public class Events extends Controller {
         while (jsonNodeIterator.hasNext()) {
             JsonNode item = jsonNodeIterator.next();
 
-            Long eventId = item.get("eventId").asLong();
-            Long categoryId = item.get("categoryId").asLong();
-            int quantity = item.get("quantity").asInt();
+            Long eventId = item.get(ConstantsManager.EVENT_ID_FIELD_NAME).asLong();
+            Long categoryId = item.get(ConstantsManager.CATEGORY_ID_FIELD_NAME).asLong();
+            int quantity = item.get(ConstantsManager.QUANTITY_FIELD_NAME).asInt();
 
             try {
                 eventDao.decrementEventCategoryNumberOfTickets(eventId, categoryId, quantity);

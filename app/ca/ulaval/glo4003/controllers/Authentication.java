@@ -1,5 +1,6 @@
 package ca.ulaval.glo4003.controllers;
 
+import ca.ulaval.glo4003.ConstantsManager;
 import ca.ulaval.glo4003.dataaccessobjects.UserDao;
 import ca.ulaval.glo4003.exceptions.RecordNotFoundException;
 import ca.ulaval.glo4003.models.User;
@@ -15,8 +16,6 @@ public class Authentication extends Controller {
 
     private final UserDao userDao;
 
-    public static final String emailTag = "email";
-
     @Inject
     public Authentication(UserDao userDao) {
         this.userDao = userDao;
@@ -25,8 +24,8 @@ public class Authentication extends Controller {
     public Result index() {
         ObjectNode result = Json.newObject();
 
-        result.put("authenticated", session().get(emailTag) != null);
-        result.put("username", session().get(emailTag));
+        result.put(ConstantsManager.USER_AUTHENTICATED_FIELD_NAME, session().get(ConstantsManager.COOKIE_SESSION_FIELD_NAME) != null);
+        result.put(ConstantsManager.USERNAME_FIELD_NAME, session().get(ConstantsManager.COOKIE_SESSION_FIELD_NAME));
 
         return ok(result);
     }
@@ -35,16 +34,16 @@ public class Authentication extends Controller {
         JsonNode json = request().body().asJson();
 
         if (!validateLoginParameters(json)) {
-            return badRequest("Expected username and password in Json.");
+            return badRequest("Expected username and password");
         }
 
-        String username = json.get("username").asText();
-        String password = json.get("password").asText();
+        String username = json.get(ConstantsManager.USERNAME_FIELD_NAME).asText();
+        String password = json.get(ConstantsManager.PASSWORD_FIELD_NAME).asText();
 
         try {
             User user = userDao.findByEmailAndPassword(username, password);
             session().clear();
-            session().put(emailTag, user.getEmail());
+            session().put(ConstantsManager.COOKIE_SESSION_FIELD_NAME, user.getEmail());
 
             return ok("Authenticated");
         } catch (RecordNotFoundException e) {
@@ -58,9 +57,9 @@ public class Authentication extends Controller {
     }
 
     private boolean validateLoginParameters(JsonNode json) {
-        return json.has("username") &&
-                StringUtils.isNotBlank(json.get("username").asText()) &&
-                json.has("password") &&
-                StringUtils.isNotBlank(json.get("password").asText());
+        return json.has(ConstantsManager.USERNAME_FIELD_NAME) &&
+                StringUtils.isNotBlank(json.get(ConstantsManager.USERNAME_FIELD_NAME).asText()) &&
+                json.has(ConstantsManager.PASSWORD_FIELD_NAME) &&
+                StringUtils.isNotBlank(json.get(ConstantsManager.PASSWORD_FIELD_NAME).asText());
     }
 }

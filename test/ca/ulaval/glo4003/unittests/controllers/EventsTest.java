@@ -1,5 +1,6 @@
 package ca.ulaval.glo4003.unittests.controllers;
 
+import ca.ulaval.glo4003.ConstantsManager;
 import ca.ulaval.glo4003.controllers.Events;
 import ca.ulaval.glo4003.dataaccessobjects.EventDao;
 import ca.ulaval.glo4003.exceptions.MaximumExceededException;
@@ -95,11 +96,11 @@ public class EventsTest extends BaseControllerTest {
         eventSearchCriteria.setGender(Gender.MALE);
         when(mockedEventDao.search(refEq(eventSearchCriteria))).thenReturn(tempFilteredListEvent);
 
-        when(mockedRequest.getQueryString("sport")).thenReturn(firstEvent.getSport().getName());
-        when(mockedRequest.getQueryString("dateStart")).thenReturn(dateStart.toString());
-        when(mockedRequest.getQueryString("dateEnd")).thenReturn(dateEnd.toString());
-        when(mockedRequest.getQueryString("team")).thenReturn(teamName);
-        when(mockedRequest.getQueryString("gender")).thenReturn(Gender.MALE.toString());
+        when(mockedRequest.getQueryString(ConstantsManager.QUERY_STRING_SPORT_PARAM_NAME)).thenReturn(firstEvent.getSport().getName());
+        when(mockedRequest.getQueryString(ConstantsManager.QUERY_STRING_DATE_START_PARAM_NAME)).thenReturn(dateStart.toString());
+        when(mockedRequest.getQueryString(ConstantsManager.QUERY_STRING_DATE_END_PARAM_NAME)).thenReturn(dateEnd.toString());
+        when(mockedRequest.getQueryString(ConstantsManager.QUERY_STRING_TEAM_PARAM_NAME)).thenReturn(teamName);
+        when(mockedRequest.getQueryString(ConstantsManager.QUERY_STRING_GENDER_PARAM_NAME)).thenReturn(Gender.MALE.toString());
 
         Result result = events.index();
 
@@ -128,8 +129,8 @@ public class EventsTest extends BaseControllerTest {
         eventSearchCriteria.setDateStart(dateStart);
         when(mockedEventDao.search(refEq(eventSearchCriteria))).thenThrow(new InvalidParameterException("Test"));
 
-        when(mockedRequest.getQueryString("dateStart")).thenReturn(dateStart.toString());
-        when(mockedRequest.getQueryString("dateEnd")).thenReturn(dateEnd.toString());
+        when(mockedRequest.getQueryString(ConstantsManager.QUERY_STRING_DATE_START_PARAM_NAME)).thenReturn(dateStart.toString());
+        when(mockedRequest.getQueryString(ConstantsManager.QUERY_STRING_DATE_END_PARAM_NAME)).thenReturn(dateEnd.toString());
 
         Result result = events.index();
 
@@ -187,14 +188,14 @@ public class EventsTest extends BaseControllerTest {
         ObjectNode jsonMaster = Json.newObject();
         ObjectNode json1 = Json.newObject();
         ObjectNode json2 = Json.newObject();
-        json1.put("eventId", eventId1);
-        json1.put("categoryId", categoryId1);
-        json1.put("quantity", quantity1);
+        json1.put(ConstantsManager.EVENT_ID_FIELD_NAME, eventId1);
+        json1.put(ConstantsManager.CATEGORY_ID_FIELD_NAME, categoryId1);
+        json1.put(ConstantsManager.QUANTITY_FIELD_NAME, quantity1);
         jsonMaster.put("1", json1);
         doNothing().when(mockedEventDao).decrementEventCategoryNumberOfTickets(eventId1, categoryId1, quantity1);
-        json2.put("eventId", eventId2);
-        json2.put("categoryId", categoryId2);
-        json2.put("quantity", quantity2);
+        json2.put(ConstantsManager.EVENT_ID_FIELD_NAME, eventId2);
+        json2.put(ConstantsManager.CATEGORY_ID_FIELD_NAME, categoryId2);
+        json2.put(ConstantsManager.QUANTITY_FIELD_NAME, quantity2);
         jsonMaster.put("2", json2);
         doNothing().when(mockedEventDao).decrementEventCategoryNumberOfTickets(eventId2, categoryId2, quantity2);
 
@@ -216,9 +217,9 @@ public class EventsTest extends BaseControllerTest {
 
         ObjectNode jsonMaster = Json.newObject();
         ObjectNode json1 = Json.newObject();
-        json1.put("eventId", eventId1);
-        json1.put("categoryId", categoryId1);
-        json1.put("quantity", quantity1);
+        json1.put(ConstantsManager.EVENT_ID_FIELD_NAME, eventId1);
+        json1.put(ConstantsManager.CATEGORY_ID_FIELD_NAME, categoryId1);
+        json1.put(ConstantsManager.QUANTITY_FIELD_NAME, quantity1);
         jsonMaster.put("1", json1);
         doThrow(new MaximumExceededException()).when(mockedEventDao).decrementEventCategoryNumberOfTickets(eventId1, categoryId1, quantity1);
 
@@ -240,9 +241,9 @@ public class EventsTest extends BaseControllerTest {
 
         ObjectNode jsonMaster = Json.newObject();
         ObjectNode json1 = Json.newObject();
-        json1.put("eventId", eventId1);
-        json1.put("categoryId", categoryId1);
-        json1.put("quantity", quantity1);
+        json1.put(ConstantsManager.EVENT_ID_FIELD_NAME, eventId1);
+        json1.put(ConstantsManager.CATEGORY_ID_FIELD_NAME, categoryId1);
+        json1.put(ConstantsManager.QUANTITY_FIELD_NAME, quantity1);
         jsonMaster.put("1", json1);
         doThrow(new RecordNotFoundException()).when(mockedEventDao).decrementEventCategoryNumberOfTickets(eventId1, categoryId1, quantity1);
 
