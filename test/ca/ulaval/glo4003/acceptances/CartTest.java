@@ -62,6 +62,29 @@ public class CartTest {
     }
 
     @Test
+    public void putTheSameItemManyTimesIntoTheCartShouldOnlyCreateOneItemInCart() {
+        running(testServer(3333, fakeApplication(new TestGlobal())), FIREFOX, new F.Callback<TestBrowser>() {
+            @Override
+            public void invoke(TestBrowser browser) {
+                EventPage eventPage = new EventPage(browser.getDriver(), FIRST_EVENT);
+                CartPage cartPage = new CartPage(browser.getDriver());
+
+                goToEventPage(eventPage);
+
+                // Buy one ticket from events #1, category 0
+                eventPage.buyTicketsForCategory(0, 1);
+
+                // But another two tickets for the same category and the same event
+                eventPage.buyTicketsForCategory(0, 2);
+
+                // Should have one item with quantity equals to 3
+                goToCartPage(cartPage, 1);
+                cartPage.itemHas(0, 3);
+            }
+        });
+    }
+
+    @Test
     public void buyASelectedTicketThenCountDecrements() {
         running(testServer(3333, fakeApplication(new TestGlobal())), FIREFOX, new F.Callback<TestBrowser>() {
             @Override

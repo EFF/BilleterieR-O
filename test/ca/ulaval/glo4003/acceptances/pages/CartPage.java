@@ -1,5 +1,6 @@
 package ca.ulaval.glo4003.acceptances.pages;
 
+import org.fluentlenium.core.domain.FluentWebElement;
 import org.openqa.selenium.Alert;
 import org.openqa.selenium.NoAlertPresentException;
 import org.openqa.selenium.WebDriver;
@@ -85,5 +86,12 @@ public class CartPage extends BaseFluentPage {
 
     public void dismiss(WebDriver driver) {
         driver.switchTo().alert().dismiss();
+    }
+
+    public boolean itemHas(int i, int expectedQuantity) {
+        FluentWebElement cartItem = find(".item").get(i);
+        int quantity = Integer.parseInt(cartItem.findFirst(".quantity").getText());
+
+        return (quantity == expectedQuantity);
     }
 }
