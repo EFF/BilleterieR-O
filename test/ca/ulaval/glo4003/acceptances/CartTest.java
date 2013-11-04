@@ -74,7 +74,7 @@ public class CartTest {
                 // Buy one ticket from events #1, category 0
                 eventPage.buyTicketsForCategory(0, 1);
 
-                // But another two tickets for the same category and the same event
+                // Buy another two tickets for the same category and the same event
                 eventPage.buyTicketsForCategory(0, 2);
 
                 // Should have one item with quantity equals to 3
