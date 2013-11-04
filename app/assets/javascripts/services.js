@@ -10,6 +10,17 @@ define(['app'], function (app) {
             $cookieStore.put('cart', cart)
         }
 
+        var getItemByEventAndCategory = function (event, category) {
+            for (var index in cart) {
+                var item = cart[index];
+
+                if (item.event.id == event.id && item.category.id == category.id) {
+                    return item;
+                }
+            }
+            return null;
+        }
+
         exports.addItem = function (quantity, category, event) {
             var item = {
                 quantity: quantity,
@@ -17,7 +28,15 @@ define(['app'], function (app) {
                 event: event,
                 selected: true
             }
-            cart.push(item);
+
+            var existingItem = getItemByEventAndCategory(event, category);
+
+            if (existingItem) {
+                existingItem.quantity += quantity;
+            } else {
+                cart.push(item);
+            }
+
             updateCartCookie(cart);
         }
 
