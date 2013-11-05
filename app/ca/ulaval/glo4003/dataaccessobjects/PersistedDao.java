@@ -5,7 +5,6 @@ import ca.ulaval.glo4003.models.Record;
 import ca.ulaval.glo4003.services.DaoPersistenceService;
 import org.apache.commons.lang3.SerializationUtils;
 
-import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -76,8 +75,7 @@ public abstract class PersistedDao<T extends Record> implements DataAccessObject
         list.add(elementCopy);
         try {
             this.persistenceService.persist(this);
-        }
-        catch(Exception e) {
+        } catch (Exception e) {
             System.err.println("Error persisting DAO [" + this.getClass().getSimpleName() + "] : " + e.getMessage());
         }
     }

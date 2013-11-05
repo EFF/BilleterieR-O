@@ -15,7 +15,7 @@ public class Bootstrap extends Controller {
     }
 
     public Result index() {
-        if(!play.Play.isDev()) {
+        if (!play.Play.isDev()) {
             return unauthorized();
         }
 
