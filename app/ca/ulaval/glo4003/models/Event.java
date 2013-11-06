@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-public class Event extends Record  implements Serializable {
+public class Event extends Record implements Serializable {
 
     private List<Category> categories;
     private Sport sport;

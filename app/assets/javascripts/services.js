@@ -128,7 +128,7 @@ define(['app'], function (app) {
             }
             $http(config)
                 .success(successCallback)
-                .error(errorCallback)
+                .error(errorCallback);
         }
 
         return exports;
