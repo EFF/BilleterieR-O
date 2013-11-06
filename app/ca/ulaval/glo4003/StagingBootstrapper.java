@@ -2,6 +2,7 @@ package ca.ulaval.glo4003;
 
 import ca.ulaval.glo4003.dataaccessobjects.EventDao;
 import ca.ulaval.glo4003.dataaccessobjects.SportDao;
+import ca.ulaval.glo4003.dataaccessobjects.TicketDao;
 import ca.ulaval.glo4003.dataaccessobjects.UserDao;
 import ca.ulaval.glo4003.models.*;
 import com.google.inject.Inject;
@@ -14,28 +15,22 @@ public class StagingBootstrapper implements Bootstrapper {
     private final EventDao eventDao;
     private final SportDao sportDao;
     private final UserDao userDao;
+    private final TicketDao ticketDao;
 
     @Inject
-    public StagingBootstrapper(EventDao eventDao, SportDao sportDao, UserDao userDao) {
+    public StagingBootstrapper(EventDao eventDao, SportDao sportDao, UserDao userDao, TicketDao ticketDao) {
         this.eventDao = eventDao;
         this.sportDao = sportDao;
         this.userDao = userDao;
+        this.ticketDao = ticketDao;
     }
 
     @Override
     public void initData() {
         initSports();
         initEvents();
+        initTicket();
         initUsers();
-    }
-
-    private void initUsers() {
-        for (int i = 0; i < 5; i++) {
-            User user = new User();
-            user.setEmail("user" + i + "@example.com");
-            user.setPassword("secret");
-            userDao.create(user);
-        }
     }
 
     private void initEvents() {
@@ -53,7 +48,7 @@ public class StagingBootstrapper implements Bootstrapper {
 
                 for (int j = 0; j < 3; j++) {
                     double price = new Random().nextInt(20);
-                    int numberOfTickets = (new Random().nextInt(10) + 1) * 100;
+                    int numberOfTickets = (new Random().nextInt(10) + 1) * 10;
                     Category category = new Category(price, numberOfTickets, j);
                     event.addCategory(category);
                 }
@@ -75,10 +70,33 @@ public class StagingBootstrapper implements Bootstrapper {
         sportDao.create(basketball);
     }
 
+    private void initTicket() {
+        for (Event event : eventDao.list()) {
+            for (Category category : event.getCategories()) {
+                int numberOfTickets = category.getNumberOfTickets();
+                while (numberOfTickets > 0) {
+                    Ticket ticket = new Ticket(event.getId(), category.getId());
+                    ticketDao.create(ticket);
+                    numberOfTickets--;
+                }
+            }
+        }
+    }
+
+    private void initUsers() {
+        for (int i = 0; i < 5; i++) {
+            User user = new User();
+            user.setEmail("user" + i + "@example.com");
+            user.setPassword("secret");
+            userDao.create(user);
+        }
+    }
+
     @Override
     public void deleteAll() {
         eventDao.deleteAll();
         sportDao.deleteAll();
+        ticketDao.deleteAll();
         userDao.deleteAll();
     }
 }
