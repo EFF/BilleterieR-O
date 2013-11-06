@@ -94,7 +94,7 @@ public class EventDaoTest {
 
         // Assert
         Assertions.assertThat(result.size()).isEqualTo(1);
-        Assertions.assertThat(result.get(0).getTeam().getName()).isEqualTo(EventsTestHelper.A_RANDOM_TEAM_NAME);
+        Assertions.assertThat(result.get(0).getHomeTeam().getName()).isEqualTo(EventsTestHelper.A_RANDOM_TEAM_NAME);
     }
 
     @Test

@@ -91,7 +91,7 @@ public class EventDao extends PersistedDao<Event> {
         return results.filter(new Predicate<Event>() {
             @Override
             public boolean apply(Event input) {
-                return StringUtils.isBlank(teamName) || input.getTeam().getName().toLowerCase().equals(teamName
+                return StringUtils.isBlank(teamName) || input.getHomeTeam().getName().toLowerCase().equals(teamName
                         .toLowerCase());
             }
         });

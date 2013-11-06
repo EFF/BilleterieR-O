@@ -1,11 +1,21 @@
 package ca.ulaval.glo4003.dataaccessobjects;
 
-/**
- * Created with IntelliJ IDEA.
- * User: Ben
- * Date: 06/11/13
- * Time: 10:22 AM
- * To change this template use File | Settings | File Templates.
- */
-public class TeamDao {
+
+import ca.ulaval.glo4003.exceptions.RecordNotFoundException;
+import ca.ulaval.glo4003.models.Team;
+import ca.ulaval.glo4003.services.DaoPersistenceService;
+
+public class TeamDao extends PersistedDao<Team>{
+    public TeamDao(DaoPersistenceService persistenceService){
+        super(persistenceService);
+    }
+
+    public Team read(String name) throws RecordNotFoundException {
+        for(Team team : super.list()){
+            if(team.getName().equals(name)){
+                return team;
+            }
+        }
+        throw new RecordNotFoundException();
+    }
 }

@@ -1,9 +1,7 @@
 package ca.ulaval.glo4003;
 
-import ca.ulaval.glo4003.dataaccessobjects.EventDao;
-import ca.ulaval.glo4003.dataaccessobjects.SportDao;
-import ca.ulaval.glo4003.dataaccessobjects.TicketDao;
-import ca.ulaval.glo4003.dataaccessobjects.UserDao;
+import ca.ulaval.glo4003.dataaccessobjects.*;
+import ca.ulaval.glo4003.exceptions.RecordNotFoundException;
 import ca.ulaval.glo4003.models.*;
 import com.google.inject.Inject;
 import org.joda.time.LocalDateTime;
@@ -12,34 +10,50 @@ import java.util.Random;
 
 public class StagingBootstrapper implements Bootstrapper {
 
+    public static final String ROUGE_ET_OR = "Rouge et Or";
+    public static final String VERT_ET_OR = "Vert et Or";
     private final EventDao eventDao;
     private final SportDao sportDao;
     private final UserDao userDao;
     private final TicketDao ticketDao;
+    private final TeamDao teamDao;
 
     @Inject
-    public StagingBootstrapper(EventDao eventDao, SportDao sportDao, UserDao userDao, TicketDao ticketDao) {
+    public StagingBootstrapper(EventDao eventDao, SportDao sportDao, UserDao userDao, TicketDao ticketDao, TeamDao teamDao) {
         this.eventDao = eventDao;
         this.sportDao = sportDao;
         this.userDao = userDao;
         this.ticketDao = ticketDao;
+        this.teamDao = teamDao;
     }
 
     @Override
-    public void initData() {
-        initSports();
-        initEvents();
-        initTicket();
-        initUsers();
+    public void initData() throws Exception {
+            initSports();
+            initTeams();
+            initEvents();
+            initTicket();
+            initUsers();
     }
 
-    private void initEvents() {
+    private void initTeams() {
+        Team ulaval = new Team(ROUGE_ET_OR);
+        Team sherbrooke = new Team(VERT_ET_OR);
+
+        teamDao.create(ulaval);
+        teamDao.create(sherbrooke);
+    }
+
+    private void initEvents() throws RecordNotFoundException {
         for (Sport sport : sportDao.list()) {
             int nbEvents = new Random().nextInt(19) + 1;
             for (int i = 0; i < nbEvents; i++) {
                 Gender gender = (i % 2 == 0) ? Gender.MALE : Gender.FEMALE;
 
                 Event event = new Event(sport, gender);
+                event.setHomeTeam(teamDao.read(ROUGE_ET_OR));
+                event.setVisitorTeam(teamDao.read(VERT_ET_OR));
+
                 LocalDateTime eventDate = new LocalDateTime();
                 eventDate = eventDate.plusDays(i).withSecondOfMinute(0).withMinuteOfHour(0);
                 eventDate = eventDate.withHourOfDay(18 + new Random().nextInt(4));
@@ -102,5 +116,6 @@ public class StagingBootstrapper implements Bootstrapper {
         sportDao.deleteAll();
         ticketDao.deleteAll();
         userDao.deleteAll();
+        teamDao.deleteAll();
     }
 }
