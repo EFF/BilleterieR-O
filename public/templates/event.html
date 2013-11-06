@@ -28,14 +28,23 @@
 
                 <div class="col-md-3">
                     <select id="sectionList" class="form-control">
-                        <option value="{{section.name}}" ng-repeat="section in category.sections">{{section.name}}</option>
+                        <option value="{{section}}" ng-repeat="section in ticketsSections">{{section}}</option>
                     </select>
                 </div>
 
-                <div class="col-md-7">
+                <div class="col-md-3">
+                    <select id="ticketList" class="form-control">
+                        <option value="{{ticket.seat}}" ng-repeat="ticket in tickets">
+                                <ANY ng-if="category.id == ticket.categoryId">{{ticket.seat}}</ANY>
+                        </option>
+                    </select>
+                </div>
+
+                <div class="col-md-4">
                     <button class="btn btn-success category-add" ng-click="addToCart(quantity, category)"
                             ng-hide="category.numberOfTickets == 0">Ajouter au panier
                     </button>
+                    <a href="/#!/tickets/{{ticket.id}}" class="btn btn-info " ng-hide="ticketList">Détails </a>
                 </div>
             </div>
         </td>

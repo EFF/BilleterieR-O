@@ -49,6 +49,8 @@ define(['app'], function (app) {
     app.controller('EventController', ['$scope', '$http', '$routeParams', 'Cart', 'FlashMessage', function ($scope, $http, $routeParams, Cart, FlashMessage) {
         var eventId = $routeParams.eventId;
         $scope.event = null;
+        $scope.ticketsSections = null;
+        $scope.tickets = null;
 
         $scope.addToCart = function (quantity, category) {
             Cart.addItem(quantity, category, $scope.event);
@@ -56,7 +58,11 @@ define(['app'], function (app) {
         }
 
         var apiCallSuccessCallback = function (result) {
-            $scope.event = result
+            $scope.event = result;
+            $http.get('/api/events/' + result.id + '/tickets/sections' ).success(function (sections) {
+                       $scope.ticketsSections = sections; });
+            $http.get('/api/events/' + result.id + '/tickets' ).success(function (tickets) {
+                       $scope.tickets = tickets; });
         }
 
         var apiCallErrorCallback = function () {
@@ -145,26 +151,26 @@ define(['app'], function (app) {
 
         }]);
 
-    app.controller('TicketController', ['$scope', '$http', '$routeParams',
-        function ($scope, $http, $routeParams) {
-            var ticketId = $routeParams.ticketId;
-            $scope.ticket = null;
-            $scope.event = null;
-
-            var apiCallSuccessCallback = function (result) {
-                $scope.ticket = result;
-                $http.get('api/events/' + result.eventId).success(function (event) {
-                    $scope.event = event;
-                });
-            }
-
-            var apiCallErrorCallback = function () {
-                //TODO emit error event and handle it in a directive
+     app.controller('TicketController', ['$scope', '$http', '$routeParams',
+            function ($scope, $http, $routeParams) {
+                var ticketId = $routeParams.ticketId;
                 $scope.ticket = null;
-            }
+                $scope.event = null;
 
-            $http.get('/api/tickets/' + ticketId)
-                .success(apiCallSuccessCallback)
-                .error(apiCallErrorCallback);
-        }]);
+                var apiCallSuccessCallback = function (result) {
+                    $scope.ticket = result;
+                    $http.get('api/events/' + result.eventId).success(function (event) {
+                        $scope.event = event;
+                    });
+                }
+
+                var apiCallErrorCallback = function () {
+                    //TODO emit error event and handle it in a directive
+                    $scope.ticket = null;
+                }
+
+                $http.get('/api/tickets/' + ticketId)
+                    .success(apiCallSuccessCallback)
+                    .error(apiCallErrorCallback);
+            }]);
 });

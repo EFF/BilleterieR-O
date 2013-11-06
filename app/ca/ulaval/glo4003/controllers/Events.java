@@ -3,11 +3,13 @@ package ca.ulaval.glo4003.controllers;
 import ca.ulaval.glo4003.ConstantsManager;
 import ca.ulaval.glo4003.Secured;
 import ca.ulaval.glo4003.dataaccessobjects.EventDao;
+import ca.ulaval.glo4003.dataaccessobjects.TicketDao;
 import ca.ulaval.glo4003.exceptions.MaximumExceededException;
 import ca.ulaval.glo4003.exceptions.RecordNotFoundException;
 import ca.ulaval.glo4003.models.Event;
 import ca.ulaval.glo4003.models.EventSearchCriteria;
 import ca.ulaval.glo4003.models.Gender;
+import ca.ulaval.glo4003.models.Ticket;
 import com.google.inject.Inject;
 import org.codehaus.jackson.JsonNode;
 import org.joda.time.LocalDateTime;
@@ -16,15 +18,19 @@ import play.mvc.Controller;
 import play.mvc.Result;
 import play.mvc.Security;
 
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 public class Events extends Controller {
 
     private final EventDao eventDao;
+    private final TicketDao ticketDao;
 
     @Inject
-    public Events(EventDao eventDao) {
+    public Events(EventDao eventDao, TicketDao ticketDao) {
         this.eventDao = eventDao;
+        this.ticketDao = ticketDao;
     }
 
     public Result index() {
@@ -59,6 +65,23 @@ public class Events extends Controller {
         } catch (RecordNotFoundException e) {
             return notFound();
         }
+    }
+
+    public Result showEventTickets(long eventId) {
+        List<Ticket> tickets = ticketDao.readForEvent(eventId);
+        return ok(Json.toJson(tickets));
+    }
+
+    public Result showEventTicketsSections(long eventId){
+        List<Ticket> tickets = ticketDao.readForEvent(eventId);
+        List<String> sections = new ArrayList<>();
+
+        for(Ticket ticket : tickets){
+             if(!sections.contains(ticket.getSection())){
+                 sections.add(ticket.getSection());
+             }
+        }
+        return ok(Json.toJson(sections));
     }
 
     @Security.Authenticated(Secured.class)
