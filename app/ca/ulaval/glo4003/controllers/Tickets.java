@@ -2,11 +2,13 @@ package ca.ulaval.glo4003.controllers;
 
 
 import ca.ulaval.glo4003.dataaccessobjects.TicketDao;
+import ca.ulaval.glo4003.exceptions.RecordNotFoundException;
 import ca.ulaval.glo4003.models.Ticket;
 import com.google.inject.Inject;
 import play.libs.Json;
 import play.mvc.Result;
 
+import static play.mvc.Results.notFound;
 import static play.mvc.Results.ok;
 
 public class Tickets {
@@ -18,8 +20,11 @@ public class Tickets {
     }
 
     public Result show(long id) {
-        Ticket ticket = new Ticket(1, 1);
-        ticket.setId(1);
-        return ok(Json.toJson(ticket));
+        try {
+            Ticket ticket = ticketDao.read(id);
+            return ok(Json.toJson(ticket));
+        } catch (RecordNotFoundException e) {
+            return notFound();
+        }
     }
 }

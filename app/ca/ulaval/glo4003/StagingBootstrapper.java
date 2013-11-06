@@ -52,6 +52,7 @@ public class StagingBootstrapper implements Bootstrapper {
                     Category category = new Category(price, numberOfTickets, j);
                     event.addCategory(category);
                 }
+                //TODO add opponents (local team and visitor team) of this event. Will probably need a TeamDao...
                 eventDao.create(event);
             }
         }
@@ -76,6 +77,9 @@ public class StagingBootstrapper implements Bootstrapper {
                 int numberOfTickets = category.getNumberOfTickets();
                 while (numberOfTickets > 0) {
                     Ticket ticket = new Ticket(event.getId(), category.getId());
+                    int section = (new Random().nextInt(2) + 1) * 100;
+                    ticket.setSection("Niveau " + section);
+                    ticket.setSeat(numberOfTickets);
                     ticketDao.create(ticket);
                     numberOfTickets--;
                 }

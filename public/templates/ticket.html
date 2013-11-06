@@ -1,10 +1,15 @@
 <ol class="breadcrumb">
     <li><a href="/#!/events">Événements</a></li>
-    <li class="active">Billet</li>
+    <li><a href="/#!/events/{{event.id}}">Détail de l'évènement</a></li>
+    <li class="active">Détail du billet</li>
 </ol>
 
+<h1>{{ event.sport.name }} {{event.gender | gender}}</h1>
+<p>Date: {{event.dateAsString | date:'dd-MM-yyyy HH:mm'}}</p>
 
-<h2>Billet under dev</h2>
+<h2>Billet</h2>
 
-        <p>EventId: {{event.id}}</p>
+<p>EventId: {{event.id}}</p>
 <p>TicketId: {{ticket.id}}</p>
+<p>Seat: {{ticket.seat}}</p>
+<p>Section: {{ticket.section}}</p>
