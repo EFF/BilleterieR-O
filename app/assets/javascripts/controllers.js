@@ -73,6 +73,17 @@ define(['app'], function (app) {
         $http.get('/api/events/' + eventId)
             .success(apiCallSuccessCallback)
             .error(apiCallErrorCallback);
+
+         $scope.ticketsSeatInCategory = function (tickets, catId) {
+           var catTickets = [];
+
+           for(var ticket in tickets){
+                if(ticket[1] == catId){
+                    catTickets.push(ticket);
+                }
+           }
+              return catTickets;
+          };
     }]);
 
     app.controller('CartController', ['$scope', 'FlashMessage', 'Cart', '$location', 'Login',

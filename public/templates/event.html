@@ -33,10 +33,10 @@
                 </div>
 
                 <div class="col-md-3">
-                    <select id="ticketList" class="form-control">
-                        <option value="{{ticket.seat}}" ng-repeat="ticket in tickets">
-                                <ANY ng-if="category.id == ticket.categoryId">{{ticket.seat}}</ANY>
-                        </option>
+                    <select id="ticketList" class="form-control" ng-model="ticketId">
+                            <option value="{{ticket}}" ng-repeat="ticket in ticketsSeatInCategory(tickets,category.id)">
+                                {{ticket }}
+                            </option>
                     </select>
                 </div>
 
@@ -44,7 +44,7 @@
                     <button class="btn btn-success category-add" ng-click="addToCart(quantity, category)"
                             ng-hide="category.numberOfTickets == 0">Ajouter au panier
                     </button>
-                    <a href="/#!/tickets/{{ticket.id}}" class="btn btn-info " ng-hide="ticketList">Détails </a>
+                    <a href="/#!/tickets/{{ticket.id}}" class="btn btn-info " ng-hide="ticketId == ' ' ">Détails </a>
                 </div>
             </div>
         </td>
