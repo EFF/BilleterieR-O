@@ -1,16 +1,16 @@
 package ca.ulaval.glo4003;
 
 import ca.ulaval.glo4003.dataaccessobjects.*;
-import ca.ulaval.glo4003.exceptions.RecordNotFoundException;
 import ca.ulaval.glo4003.models.*;
 import com.google.inject.Inject;
 import org.joda.time.LocalDateTime;
 
+import java.util.List;
 import java.util.Random;
 
 public class StagingBootstrapper implements Bootstrapper {
 
-    public static final String ROUGE_ET_OR = "Rouge et Or";
+    //public static final String ROUGE_ET_OR = "Rouge et Or";
     public static final String VERT_ET_OR = "Vert et Or";
     private final EventDao eventDao;
     private final SportDao sportDao;
@@ -28,7 +28,7 @@ public class StagingBootstrapper implements Bootstrapper {
     }
 
     @Override
-    public void initData() throws Exception {
+    public void initData() {
             initSports();
             initTeams();
             initEvents();
@@ -37,22 +37,24 @@ public class StagingBootstrapper implements Bootstrapper {
     }
 
     private void initTeams() {
-        Team ulaval = new Team(ROUGE_ET_OR);
+        Team ulaval = new Team("Rouge et Or");
         Team sherbrooke = new Team(VERT_ET_OR);
 
         teamDao.create(ulaval);
         teamDao.create(sherbrooke);
     }
 
-    private void initEvents() throws RecordNotFoundException {
+    private void initEvents() {
         for (Sport sport : sportDao.list()) {
             int nbEvents = new Random().nextInt(19) + 1;
             for (int i = 0; i < nbEvents; i++) {
                 Gender gender = (i % 2 == 0) ? Gender.MALE : Gender.FEMALE;
 
                 Event event = new Event(sport, gender);
-                event.setHomeTeam(teamDao.read(ROUGE_ET_OR));
-                event.setVisitorTeam(teamDao.read(VERT_ET_OR));
+
+                List<Team> teams = teamDao.list();
+                event.setHomeTeam(teams.get(0));
+                event.setVisitorTeam(teams.get(1));
 
                 LocalDateTime eventDate = new LocalDateTime();
                 eventDate = eventDate.plusDays(i).withSecondOfMinute(0).withMinuteOfHour(0);

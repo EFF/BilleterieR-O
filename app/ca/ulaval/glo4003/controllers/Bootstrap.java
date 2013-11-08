@@ -19,12 +19,9 @@ public class Bootstrap extends Controller {
             return unauthorized();
         }
 
-        try {
-            bootstrapper.deleteAll();
-            bootstrapper.initData();
-        } catch (Exception e) {
-            return internalServerError(e.getMessage());
-        }
+
+        bootstrapper.deleteAll();
+        bootstrapper.initData();
 
         return ok("Bootstrapped!");
     }
