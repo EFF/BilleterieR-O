@@ -10,6 +10,8 @@ import ca.ulaval.glo4003.models.Event;
 import ca.ulaval.glo4003.models.EventSearchCriteria;
 import ca.ulaval.glo4003.models.Gender;
 import ca.ulaval.glo4003.models.Ticket;
+import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.ListMultimap;
 import com.google.inject.Inject;
 import org.codehaus.jackson.JsonNode;
 import org.joda.time.LocalDateTime;
@@ -67,13 +69,17 @@ public class Events extends Controller {
         }
     }
 
-    public Result showEventTickets(long eventId) {
-        List<Ticket> tickets = ticketDao.readForEvent(eventId);
-        return ok(Json.toJson(tickets));
+    public Result showEventTicketsByCategories(long eventId) {
+        List<Ticket> tickets = ticketDao.searchByEvent(eventId);
+        ListMultimap<Long, Ticket> result = ArrayListMultimap.create();
+        for (Ticket ticket : tickets) {
+            result.put(ticket.getCategoryId(), ticket);
+        }
+        return ok(Json.toJson(result.asMap()));
     }
 
-    public Result showEventTicketsSections(long eventId){
-        List<Ticket> tickets = ticketDao.readForEvent(eventId);
+    public Result showEventTicketSections(long eventId){
+        List<Ticket> tickets = ticketDao.searchByEvent(eventId);
         List<String> sections = new ArrayList<>();
 
         for(Ticket ticket : tickets){

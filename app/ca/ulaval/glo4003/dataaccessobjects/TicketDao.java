@@ -12,7 +12,7 @@ public class TicketDao extends PersistedDao<Ticket> implements DataAccessObject<
         super(persistenceService);
     }
 
-    public List<Ticket> readForEvent(long eventId) {
+    public List<Ticket> searchByEvent(long eventId) {
         List<Ticket> tickets = new ArrayList<>();
 
         for(Ticket ticket :super.list()){

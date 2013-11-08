@@ -50,7 +50,7 @@ define(['app'], function (app) {
         var eventId = $routeParams.eventId;
         $scope.event = null;
         $scope.ticketsSections = null;
-        $scope.tickets = null;
+        $scope.ticketsByCategories = null;
 
         $scope.addToCart = function (quantity, category) {
             Cart.addItem(quantity, category, $scope.event);
@@ -59,10 +59,12 @@ define(['app'], function (app) {
 
         var apiCallSuccessCallback = function (result) {
             $scope.event = result;
-            $http.get('/api/events/' + result.id + '/tickets/sections' ).success(function (sections) {
-                       $scope.ticketsSections = sections; });
-            $http.get('/api/events/' + result.id + '/tickets' ).success(function (tickets) {
-                       $scope.tickets = tickets; });
+            $http.get('/api/events/' + result.id + '/tickets/sections' )
+                .success(function (sections) {
+                    $scope.ticketsSections = sections; });
+            $http.get('/api/events/' + result.id + '/ticketsByCategories' )
+                .success(function (ticketsByCategories) {
+                    $scope.ticketsByCategories = ticketsByCategories; });
         }
 
         var apiCallErrorCallback = function () {
@@ -73,17 +75,6 @@ define(['app'], function (app) {
         $http.get('/api/events/' + eventId)
             .success(apiCallSuccessCallback)
             .error(apiCallErrorCallback);
-
-         $scope.ticketsSeatInCategory = function (tickets, catId) {
-           var catTickets = [];
-
-           for(var ticket in tickets){
-                if(ticket[1] == catId){
-                    catTickets.push(ticket);
-                }
-           }
-              return catTickets;
-          };
     }]);
 
     app.controller('CartController', ['$scope', 'FlashMessage', 'Cart', '$location', 'Login',
@@ -162,26 +153,26 @@ define(['app'], function (app) {
 
         }]);
 
-     app.controller('TicketController', ['$scope', '$http', '$routeParams',
-            function ($scope, $http, $routeParams) {
-                var ticketId = $routeParams.ticketId;
+    app.controller('TicketController', ['$scope', '$http', '$routeParams',
+        function ($scope, $http, $routeParams) {
+            var ticketId = $routeParams.ticketId;
+            $scope.ticket = null;
+            $scope.event = null;
+
+            var apiCallSuccessCallback = function (result) {
+                $scope.ticket = result;
+                $http.get('api/events/' + result.eventId).success(function (event) {
+                    $scope.event = event;
+                });
+            }
+
+            var apiCallErrorCallback = function () {
+                //TODO emit error event and handle it in a directive
                 $scope.ticket = null;
-                $scope.event = null;
+            }
 
-                var apiCallSuccessCallback = function (result) {
-                    $scope.ticket = result;
-                    $http.get('api/events/' + result.eventId).success(function (event) {
-                        $scope.event = event;
-                    });
-                }
-
-                var apiCallErrorCallback = function () {
-                    //TODO emit error event and handle it in a directive
-                    $scope.ticket = null;
-                }
-
-                $http.get('/api/tickets/' + ticketId)
-                    .success(apiCallSuccessCallback)
-                    .error(apiCallErrorCallback);
-            }]);
+            $http.get('/api/tickets/' + ticketId)
+                .success(apiCallSuccessCallback)
+                .error(apiCallErrorCallback);
+        }]);
 });

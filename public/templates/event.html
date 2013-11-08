@@ -34,9 +34,9 @@
 
                 <div class="col-md-3">
                     <select id="ticketList" class="form-control" ng-model="ticketId">
-                            <option value="{{ticket}}" ng-repeat="ticket in ticketsSeatInCategory(tickets,category.id)">
-                                {{ticket }}
-                            </option>
+                        <option value="{{ticket}}" ng-repeat="ticket in ticketsByCategories[category.id]">
+                            {{ticket.seat}}
+                        </option>
                     </select>
                 </div>
 
