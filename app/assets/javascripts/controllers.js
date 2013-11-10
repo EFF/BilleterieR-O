@@ -100,7 +100,7 @@ define(['app'], function (app) {
                 if (Cart.isSelectionEmpty()) {
                     FlashMessage.send('warning', 'La sélection d\'achat est vide');
                 }
-                else if(!Login.isLoggedIn){
+                else if (!Login.isLoggedIn) {
                     notifyUserToLogin();
                 }
                 else if (window.confirm("Confirmez-vous le paiment de " + $scope.getTotalPrice() + "$ ?")) {
@@ -143,6 +143,44 @@ define(['app'], function (app) {
                 Login.login($scope.username, $scope.password, loginSuccess, loginFailed);
             };
 
+        }]);
+
+    app.controller('UserProfileController', ['$scope', '$location', '$http', 'Login', 'FlashMessage',
+        function ($scope, $location, $http, Login, FlashMessage) {
+            if (Login.isLoggedIn) {
+                $scope.email = Login.username;
+            } else {
+                $location.path("/");
+            }
+
+            $scope.updatePassword = function () {
+                if ($scope.password == $scope.password_confirmation) {
+                    $http.post('/api/user_profile/password', {
+                        actual_password: $scope.actual_password,
+                        password: $scope.password,
+                        password_confirmation: $scope.password_confirmation
+                    }).success(function () {
+                            FlashMessage.send("success", "Votre mot de passe a été modifié avec succès.");
+                        }).error(function () {
+                            // TODO: Mettre le bon message selon l'erreur
+                            FlashMessage.error("error", "Erreur lors de la modification de votre mot de passe.");
+                        });
+                } else {
+                    // TODO: Mot de passe identique
+                }
+            };
+
+            $scope.updateEmail = function () {
+                var email = $scope.email;
+                $http.post('api/user_profile/email', {
+                    username: email
+                }).success(function () {
+                        Login.username = email;
+                        FlashMessage.send("success", "Votre email a été modifié avec succès.");
+                    }).error(function () {
+                        FlashMessage.error("error", "Erreur lors de la modification de votre email")
+                    });
+            }
         }]);
 
 });

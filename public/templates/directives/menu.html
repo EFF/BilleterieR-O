@@ -6,13 +6,18 @@
         <nav role="navigation">
 
             <ul class="nav navbar-nav pull-right" ng-switch on="isLoggedIn">
-                <li ng-switch-when="false"><a class="login-status login-status-out" ng-href="#!/login">Log in</a></li>
-                <li ng-switch-when="true"><a class="login-status login-status-in" ng-href="#!/login" ng-click="logout()">Log out ({{username}})</a></li>
+                <li ng-show="isLoggedIn">
+                    <a ng-href="#!/user_profile">
+                        Votre profil ({{username}})
+                    </a>
+                </li>
                 <li>
                     <a ng-href="#!/cart">
                         Panier (<span class="cart-size">{{getTotalQuantity()}}</span>)
                     </a>
                 </li>
+                <li ng-switch-when="false"><a class="login-status login-status-out" ng-href="#!/login">Log in</a></li>
+                <li ng-switch-when="true"><a class="login-status login-status-in" ng-href="#!/login" ng-click="logout()">Log out</a></li>
             </ul>
         </nav>
     </div>

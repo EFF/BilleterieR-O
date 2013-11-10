@@ -7,6 +7,8 @@ import com.google.common.base.Optional;
 import com.google.common.base.Predicate;
 import com.google.common.collect.FluentIterable;
 
+import javax.annotation.Nullable;
+
 public class UserDao extends PersistedDao<User> implements DataAccessObject<User> {
 
     public UserDao(DaoPersistenceService persistenceService) {
@@ -24,6 +26,25 @@ public class UserDao extends PersistedDao<User> implements DataAccessObject<User
         });
 
         if (userOptional.isPresent()) {
+            return userOptional.get();
+        }
+
+        throw new RecordNotFoundException();
+    }
+
+    // TODO: Remove find by email and password.
+    // TODO: Rewrite associated tests
+    public User findByEmail(final String email) throws RecordNotFoundException {
+        FluentIterable<User> users = FluentIterable.from(this.list());
+
+        Optional<User> userOptional = users.firstMatch(new Predicate<User>() {
+            @Override
+            public boolean apply(@Nullable User user) {
+                return user.getEmail().toLowerCase().equals(email.toLowerCase());
+            }
+        });
+
+        if(userOptional.isPresent()) {
             return userOptional.get();
         }
 
