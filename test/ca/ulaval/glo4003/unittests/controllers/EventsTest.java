@@ -13,6 +13,7 @@ import com.google.inject.Inject;
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.node.ObjectNode;
 import org.joda.time.LocalDateTime;
+import org.jukito.JukitoModule;
 import org.jukito.JukitoRunner;
 import org.junit.Before;
 import org.junit.Test;
@@ -254,5 +255,13 @@ public class EventsTest extends BaseControllerTest {
         assertEquals(Helpers.NOT_FOUND, Helpers.status(result));
         verify(mockedEventDao).decrementEventCategoryNumberOfTickets(anyLong(), anyLong(), anyInt());
         verify(mockedEventDao).decrementEventCategoryNumberOfTickets(eventId1, categoryId1, quantity1);
+    }
+
+    public static class TestModule extends JukitoModule {
+
+        @Override
+        protected void configureTest() {
+            forceMock(EventDao.class);
+        }
     }
 }
