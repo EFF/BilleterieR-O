@@ -9,9 +9,14 @@ import org.joda.time.LocalDateTime;
 import org.joda.time.Period;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mock;
 
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertNotNull;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.internal.verification.VerificationModeFactory.atLeastOnce;
 
 public class CheckoutServiceTest {
 
@@ -28,6 +33,12 @@ public class CheckoutServiceTest {
         assertNotNull(transaction);
     }
 
+    @Test
+    public void fulfillTransaction_fulfills_the_transaction() {
+        Transaction transaction = mock(Transaction.class);
 
+        checkoutService.fulfillTransaction(transaction);
 
+        verify(transaction, times(1)).fulfill();
+    }
 }

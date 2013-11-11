@@ -54,7 +54,7 @@ public class Checkout extends Controller {
                 }
             }
 
-            transaction.fulfill();
+            this.checkoutService.fulfillTransaction(transaction);
         } catch (Exception e) {
             transaction.fail();
             return internalServerError("Unexpected error while checking out.");

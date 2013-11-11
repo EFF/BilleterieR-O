@@ -7,4 +7,10 @@ public class ConcreteCheckoutService implements CheckoutService {
     public Transaction startNewTransaction() {
         return new Transaction();
     }
+
+    @Override
+    public void fulfillTransaction(Transaction transaction) {
+        transaction.fulfill();
+        // TODO Send email
+    }
 }

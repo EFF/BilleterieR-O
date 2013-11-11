@@ -8,4 +8,6 @@ public interface CheckoutService {
     //void freezeTickets(Long eventId, Long categoryId, int quantity);
 
     Transaction startNewTransaction();
+
+    void fulfillTransaction(Transaction transaction);
 }

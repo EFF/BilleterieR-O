@@ -1,6 +1,7 @@
 package ca.ulaval.glo4003.unittests.controllers;
 
 import ca.ulaval.glo4003.ConstantsManager;
+import ca.ulaval.glo4003.controllers.Checkout;
 import ca.ulaval.glo4003.controllers.Events;
 import ca.ulaval.glo4003.dataaccessobjects.EventDao;
 import ca.ulaval.glo4003.exceptions.MaximumExceededException;
@@ -164,95 +165,5 @@ public class EventsTest extends BaseControllerTest {
         assertEquals(null, Helpers.contentType(result));
 
         verify(mockedEventDao).read(firstEvent.getId());
-    }
-
-    @Test
-    public void decrementCategoryCounterDoNothingWhenThereIsNoItems(EventDao mockedEventDao) throws RecordNotFoundException, MaximumExceededException {
-        doThrow(new RecordNotFoundException()).when(mockedEventDao).decrementEventCategoryNumberOfTickets(anyLong(), anyLong(), anyInt());
-
-        Result result = events.decrementCategoryCounter();
-
-        assertEquals(Helpers.OK, Helpers.status(result));
-        verify(mockedEventDao, never()).decrementEventCategoryNumberOfTickets(anyLong(), anyLong(), anyInt());
-    }
-
-    @Test
-    public void decrementCategoryCounterWithSeveralItems(EventDao mockedEventDao) throws RecordNotFoundException, MaximumExceededException {
-        long eventId1 = 1;
-        long categoryId1 = 1;
-        int quantity1 = 10;
-        long eventId2 = eventId1 + 1;
-        long categoryId2 = categoryId1 + 1;
-        int quantity2 = quantity1 * 2;
-
-        ObjectNode jsonMaster = Json.newObject();
-        ObjectNode json1 = Json.newObject();
-        ObjectNode json2 = Json.newObject();
-        json1.put(ConstantsManager.EVENT_ID_FIELD_NAME, eventId1);
-        json1.put(ConstantsManager.CATEGORY_ID_FIELD_NAME, categoryId1);
-        json1.put(ConstantsManager.QUANTITY_FIELD_NAME, quantity1);
-        jsonMaster.put("1", json1);
-        doNothing().when(mockedEventDao).decrementEventCategoryNumberOfTickets(eventId1, categoryId1, quantity1);
-        json2.put(ConstantsManager.EVENT_ID_FIELD_NAME, eventId2);
-        json2.put(ConstantsManager.CATEGORY_ID_FIELD_NAME, categoryId2);
-        json2.put(ConstantsManager.QUANTITY_FIELD_NAME, quantity2);
-        jsonMaster.put("2", json2);
-        doNothing().when(mockedEventDao).decrementEventCategoryNumberOfTickets(eventId2, categoryId2, quantity2);
-
-        when(mockedBody.asJson()).thenReturn(jsonMaster);
-
-        Result result = events.decrementCategoryCounter();
-
-        assertEquals(Helpers.OK, Helpers.status(result));
-        verify(mockedEventDao, times(2)).decrementEventCategoryNumberOfTickets(anyLong(), anyLong(), anyInt());
-        verify(mockedEventDao).decrementEventCategoryNumberOfTickets(eventId1, categoryId1, quantity1);
-        verify(mockedEventDao).decrementEventCategoryNumberOfTickets(eventId2, categoryId2, quantity2);
-    }
-
-    @Test
-    public void decrementCategoryCounterWhenMaximumIsExceeded(EventDao mockedEventDao) throws RecordNotFoundException, MaximumExceededException {
-        long eventId1 = 1;
-        long categoryId1 = 1;
-        int quantity1 = 10;
-
-        ObjectNode jsonMaster = Json.newObject();
-        ObjectNode json1 = Json.newObject();
-        json1.put(ConstantsManager.EVENT_ID_FIELD_NAME, eventId1);
-        json1.put(ConstantsManager.CATEGORY_ID_FIELD_NAME, categoryId1);
-        json1.put(ConstantsManager.QUANTITY_FIELD_NAME, quantity1);
-        jsonMaster.put("1", json1);
-        doThrow(new MaximumExceededException()).when(mockedEventDao).decrementEventCategoryNumberOfTickets(eventId1, categoryId1, quantity1);
-
-        when(mockedBody.asJson()).thenReturn(jsonMaster);
-
-        Result result = events.decrementCategoryCounter();
-
-        assertEquals(Helpers.BAD_REQUEST, Helpers.status(result));
-        verify(mockedEventDao).decrementEventCategoryNumberOfTickets(anyLong(), anyLong(), anyInt());
-        verify(mockedEventDao).decrementEventCategoryNumberOfTickets(eventId1, categoryId1, quantity1);
-    }
-
-    @Test
-    public void decrementCategoryCounterWhenRecordNotFoundExceptionIsThrown(EventDao mockedEventDao) throws RecordNotFoundException, MaximumExceededException {
-        reset(mockedEventDao);
-        long eventId1 = 1;
-        long categoryId1 = 1;
-        int quantity1 = 10;
-
-        ObjectNode jsonMaster = Json.newObject();
-        ObjectNode json1 = Json.newObject();
-        json1.put(ConstantsManager.EVENT_ID_FIELD_NAME, eventId1);
-        json1.put(ConstantsManager.CATEGORY_ID_FIELD_NAME, categoryId1);
-        json1.put(ConstantsManager.QUANTITY_FIELD_NAME, quantity1);
-        jsonMaster.put("1", json1);
-        doThrow(new RecordNotFoundException()).when(mockedEventDao).decrementEventCategoryNumberOfTickets(eventId1, categoryId1, quantity1);
-
-        when(mockedBody.asJson()).thenReturn(jsonMaster);
-
-        Result result = events.decrementCategoryCounter();
-
-        assertEquals(Helpers.NOT_FOUND, Helpers.status(result));
-        verify(mockedEventDao).decrementEventCategoryNumberOfTickets(anyLong(), anyLong(), anyInt());
-        verify(mockedEventDao).decrementEventCategoryNumberOfTickets(eventId1, categoryId1, quantity1);
     }
 }
