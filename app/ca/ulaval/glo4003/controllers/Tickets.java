@@ -24,14 +24,18 @@ public class Tickets extends Controller {
     }
 
     public Result index() {
-        final Long eventId = Long.parseLong(request().getQueryString("eventId"));
+        final String eventId = request().getQueryString("eventId");
         final String sectionName = request().getQueryString("sectionName");
-        final Long categoryId = Long.parseLong(request().getQueryString("categoryId"));
+        final String categoryId = request().getQueryString("categoryId");
 
         TicketSearchCriteria ticketSearchCriteria = new TicketSearchCriteria();
-        ticketSearchCriteria.setEventId(eventId);
+        if (eventId != null) {
+            ticketSearchCriteria.setEventId(Long.parseLong(eventId));
+        }
+        if (categoryId != null) {
+            ticketSearchCriteria.setCategoryId(Long.parseLong(categoryId));
+        }
         ticketSearchCriteria.setSectionName(sectionName);
-        ticketSearchCriteria.setCategoryId(categoryId);
 
         try {
             return ok(Json.toJson(ticketDao.search(ticketSearchCriteria)));
@@ -49,7 +53,7 @@ public class Tickets extends Controller {
         }
     }
 
-    public Result showEventTicketSections(long eventId, long categoryId){
+    public Result showEventTicketSections(long eventId){
         TicketSearchCriteria ticketSearchCriteria = new TicketSearchCriteria();
         ticketSearchCriteria.setEventId(eventId);
         List<Ticket> tickets = ticketDao.search(ticketSearchCriteria);

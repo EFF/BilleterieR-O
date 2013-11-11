@@ -27,14 +27,18 @@
                 </div>
 
                 <div class="col-md-3">
-                    <select id="sectionList" class="form-control">
-                        <option value="{{section}}" ng-repeat="section in ticketsSections">{{section}}</option>
+                    <select id="sectionList" class="form-control" ng-model="activeSectionNameByCategories[category.id]">
+                        <option value="">Section...</option>
+                        <option value="{{section}}" ng-repeat="section in sectionsByCategories[category.id]">
+                            {{section}}
+                        </option>
                     </select>
                 </div>
 
                 <div class="col-md-3">
                     <select id="ticketList" class="form-control" ng-model="ticketId">
-                        <option value="{{ticket}}" ng-repeat="ticket in ticketsByCategories[category.id]">
+                        <option value="">Siège disponible...</option>
+                        <option value="{{ticket.id}}" ng-repeat="ticket in ticketsByCategories[category.id]">
                             {{ticket.seat}}
                         </option>
                     </select>
@@ -44,7 +48,7 @@
                     <button class="btn btn-success category-add" ng-click="addToCart(quantity, category)"
                             ng-hide="category.numberOfTickets == 0">Ajouter au panier
                     </button>
-                    <a href="/#!/tickets/{{ticket.id}}" class="btn btn-info " ng-hide="ticketId == ' ' ">Détails </a>
+                    <a href="/#!/tickets/{{ticketId}}" ng-disabled="ticketId == null" class="btn btn-info">Détails</a>
                 </div>
             </div>
         </td>

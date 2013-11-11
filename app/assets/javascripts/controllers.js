@@ -49,22 +49,39 @@ define(['app'], function (app) {
     app.controller('EventController', ['$scope', '$http', '$routeParams', 'Cart', 'FlashMessage', function ($scope, $http, $routeParams, Cart, FlashMessage) {
         var eventId = $routeParams.eventId;
         $scope.event = null;
+        $scope.activeSectionNameByCategories = new Array();
         $scope.ticketsSections = null;
-        $scope.ticketsByCategories = null;
+        $scope.ticketsByCategories = new Array();
 
         $scope.addToCart = function (quantity, category) {
             Cart.addItem(quantity, category, $scope.event);
             FlashMessage.send("success", "L'item a été ajouté au panier");
         }
 
+        var refreshTicketsList = function(eventId, categoryId, sectionName) {
+            var url = '/api/tickets?eventId=' + eventId + '&categoryId=' + categoryId;
+
+            if (sectionName != '')
+                url += '&sectionName=' + encodeURIComponent(sectionName);
+            $http.get(url)
+                .success(function (tickets) {
+                    var categoryId = null;
+
+                    for (var i in tickets) {
+                        var ticket = tickets[i];
+                        if (categoryId == null || ticket.categoryId != categoryId) {
+                            categoryId = ticket.categoryId;
+                            $scope.ticketsByCategories[categoryId] = new Array();
+                        }
+                        $scope.ticketsByCategories[categoryId].push(ticket);
+                    }
+                });
+        }
+
         var apiCallSuccessCallback = function (result) {
             $scope.event = result;
-            $http.get('/api/events/' + result.id + '/tickets/sections' )
-                .success(function (sections) {
-                    $scope.ticketsSections = sections; });
-            $http.get('/api/events/' + result.id + '/ticketsByCategories' )
-                .success(function (ticketsByCategories) {
-                    $scope.ticketsByCategories = ticketsByCategories; });
+            console.log('allo');
+            console.log($scope.activeSectionNameByCategories);
         }
 
         var apiCallErrorCallback = function () {
@@ -72,9 +89,29 @@ define(['app'], function (app) {
             $scope.event = null;
         }
 
-        $http.get('/api/events/' + eventId)
-            .success(apiCallSuccessCallback)
-            .error(apiCallErrorCallback);
+        var apiCall = function () {
+            var url = '/api/events/' + eventId;
+
+            for (var categoryId in $scope.activeSectionNameByCategories) {
+                var sectionName = $scope.activeSectionNameByCategories[categoryId];
+                console.log('Refresh', eventId, categoryId, sectionName);
+                refreshTicketsList(eventId, categoryId, sectionName);
+            }
+
+            $http.get(url)
+                .success(apiCallSuccessCallback)
+                .error(apiCallErrorCallback);
+        }
+
+        $scope.$watch('activeSectionNameByCategories', function () {
+            apiCall();
+        }, true);
+
+        $http.get('/api/tickets/sections/' + eventId )
+            .success(function (sections) {
+                $scope.sectionsByCategories = sections; });
+
+        apiCall();
     }]);
 
     app.controller('CartController', ['$scope', 'FlashMessage', 'Cart', '$location', 'Login',

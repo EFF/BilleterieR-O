@@ -14,7 +14,7 @@ GET     /api/events/:id                                 @ca.ulaval.glo4003.contr
 GET     /api/facets                                     @ca.ulaval.glo4003.controllers.Facets.index()
 GET     /api/tickets                                    @ca.ulaval.glo4003.controllers.Tickets.index()
 GET     /api/tickets/:id                                @ca.ulaval.glo4003.controllers.Tickets.show(id: Long)
-GET     /api/tickets/sections/:eventId/:categoryId      @ca.ulaval.glo4003.controllers.Tickets.showEventTicketSections(eventId: Long, categoryId: Long)
+GET     /api/tickets/sections/:eventId                  @ca.ulaval.glo4003.controllers.Tickets.showEventTicketSections(eventId: Long)
 GET     /bootstrap                                      @ca.ulaval.glo4003.controllers.Bootstrap.index()
 POST    /api/checkout                                   @ca.ulaval.glo4003.controllers.Events.decrementCategoryCounter()
 GET     /login                                          @ca.ulaval.glo4003.controllers.Authentication.index()

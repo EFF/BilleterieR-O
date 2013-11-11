@@ -3,6 +3,8 @@ package ca.ulaval.glo4003.models;
 public class TicketSearchCriteria {
 
     private Long eventId;
+    private Long categoryId;
+    private String sectionName;
 
     public Long getEventId() {
         return eventId;
@@ -27,7 +29,4 @@ public class TicketSearchCriteria {
     public void setSectionName(String sectionName) {
         this.sectionName = sectionName;
     }
-
-    private Long categoryId;
-    private String sectionName;
 }
