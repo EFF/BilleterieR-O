@@ -49,9 +49,9 @@ define(['app'], function (app) {
     app.controller('EventController', ['$scope', '$http', '$routeParams', 'Cart', 'FlashMessage', function ($scope, $http, $routeParams, Cart, FlashMessage) {
         var eventId = $routeParams.eventId;
         $scope.event = null;
-        $scope.activeSectionNameByCategories = new Array();
-        $scope.ticketsSections = null;
-        $scope.ticketsByCategories = new Array();
+        $scope.activeSectionNameByCategories = [];
+        $scope.sectionsByCategories = [];
+        $scope.ticketsByCategories = [];
 
         $scope.addToCart = function (quantity, category) {
             Cart.addItem(quantity, category, $scope.event);
@@ -61,8 +61,11 @@ define(['app'], function (app) {
         var refreshTicketsList = function(eventId, categoryId, sectionName) {
             var url = '/api/tickets?eventId=' + eventId + '&categoryId=' + categoryId;
 
-            if (sectionName != '')
-                url += '&sectionName=' + encodeURIComponent(sectionName);
+            if (sectionName == null || sectionName == '') {
+                $scope.ticketsByCategories[categoryId] = [];
+                return;
+            }
+            url += '&sectionName=' + encodeURIComponent(sectionName);
             $http.get(url)
                 .success(function (tickets) {
                     var categoryId = null;
@@ -71,7 +74,7 @@ define(['app'], function (app) {
                         var ticket = tickets[i];
                         if (categoryId == null || ticket.categoryId != categoryId) {
                             categoryId = ticket.categoryId;
-                            $scope.ticketsByCategories[categoryId] = new Array();
+                            $scope.ticketsByCategories[categoryId] = [];
                         }
                         $scope.ticketsByCategories[categoryId].push(ticket);
                     }
@@ -80,38 +83,30 @@ define(['app'], function (app) {
 
         var apiCallSuccessCallback = function (result) {
             $scope.event = result;
-            console.log('allo');
-            console.log($scope.activeSectionNameByCategories);
         }
 
         var apiCallErrorCallback = function () {
             //TODO emit error event and handle it in a directive
             $scope.event = null;
+            $scope.activeSectionNameByCategories = [];
+            $scope.ticketsByCategories = [];
         }
 
-        var apiCall = function () {
-            var url = '/api/events/' + eventId;
-
+        $scope.apiCall = function () {
             for (var categoryId in $scope.activeSectionNameByCategories) {
                 var sectionName = $scope.activeSectionNameByCategories[categoryId];
-                console.log('Refresh', eventId, categoryId, sectionName);
                 refreshTicketsList(eventId, categoryId, sectionName);
             }
-
-            $http.get(url)
+            $http.get('/api/events/' + eventId)
                 .success(apiCallSuccessCallback)
                 .error(apiCallErrorCallback);
         }
-
-        $scope.$watch('activeSectionNameByCategories', function () {
-            apiCall();
-        }, true);
 
         $http.get('/api/tickets/sections/' + eventId )
             .success(function (sections) {
                 $scope.sectionsByCategories = sections; });
 
-        apiCall();
+        $scope.apiCall();
     }]);
 
     app.controller('CartController', ['$scope', 'FlashMessage', 'Cart', '$location', 'Login',

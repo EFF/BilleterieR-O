@@ -27,16 +27,13 @@
                 </div>
 
                 <div class="col-md-3">
-                    <select id="sectionList" class="form-control" ng-model="activeSectionNameByCategories[category.id]">
+                    <select id="sectionList{{category.id}}" class="form-control" ng-change="apiCall()" ng-model="activeSectionNameByCategories[category.id]" ng-options="section for section in sectionsByCategories[category.id]">
                         <option value="">Section...</option>
-                        <option value="{{section}}" ng-repeat="section in sectionsByCategories[category.id]">
-                            {{section}}
-                        </option>
                     </select>
                 </div>
 
                 <div class="col-md-3">
-                    <select id="ticketList" class="form-control" ng-model="ticketId">
+                    <select id="ticketList{{category.id}}" class="form-control" ng-model="ticketId">
                         <option value="">Siège disponible...</option>
                         <option value="{{ticket.id}}" ng-repeat="ticket in ticketsByCategories[category.id]">
                             {{ticket.seat}}
