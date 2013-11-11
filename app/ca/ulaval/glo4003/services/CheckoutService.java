@@ -4,7 +4,8 @@ import ca.ulaval.glo4003.models.Transaction;
 
 public interface CheckoutService {
 
-    void freezeTickets(Long eventId, Long categoryId, int quantity);
+    // TODO Not required in the scope of that story
+    //void freezeTickets(Long eventId, Long categoryId, int quantity);
 
     Transaction startNewTransaction();
 }

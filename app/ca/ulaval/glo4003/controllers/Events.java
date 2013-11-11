@@ -60,28 +60,4 @@ public class Events extends Controller {
             return notFound();
         }
     }
-
-    @Security.Authenticated(Secured.class)
-    public Result decrementCategoryCounter() {
-        JsonNode items = request().body().asJson();
-        Iterator<JsonNode> jsonNodeIterator = items.iterator();
-
-        while (jsonNodeIterator.hasNext()) {
-            JsonNode item = jsonNodeIterator.next();
-
-            Long eventId = item.get(ConstantsManager.EVENT_ID_FIELD_NAME).asLong();
-            Long categoryId = item.get(ConstantsManager.CATEGORY_ID_FIELD_NAME).asLong();
-            int quantity = item.get(ConstantsManager.QUANTITY_FIELD_NAME).asInt();
-
-            try {
-                eventDao.decrementEventCategoryNumberOfTickets(eventId, categoryId, quantity);
-            } catch (RecordNotFoundException e) {
-                return notFound();
-            } catch (MaximumExceededException e) {
-                return badRequest("Il n'y a pas assez de billets disponibles dans la catégorie" + categoryId.toString());
-            }
-        }
-
-        return ok();
-    }
 }

@@ -6,6 +6,8 @@ define(['app'], function (app) {
             cart = [];
         }
 
+        exports.transactionId = "TRANSACTION ID";
+
         var updateCartCookie = function (cart) {
             $cookieStore.put('cart', cart)
         }

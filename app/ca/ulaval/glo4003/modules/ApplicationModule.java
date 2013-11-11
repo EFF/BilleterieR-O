@@ -3,6 +3,8 @@ package ca.ulaval.glo4003.modules;
 import ca.ulaval.glo4003.dataaccessobjects.EventDao;
 import ca.ulaval.glo4003.dataaccessobjects.SportDao;
 import ca.ulaval.glo4003.dataaccessobjects.UserDao;
+import ca.ulaval.glo4003.services.CheckoutService;
+import ca.ulaval.glo4003.services.ConcreteCheckoutService;
 import ca.ulaval.glo4003.services.DaoPersistenceService;
 import com.google.inject.AbstractModule;
 
@@ -24,5 +26,7 @@ public class ApplicationModule extends AbstractModule {
         bind(EventDao.class).toInstance(eventDao);
         bind(SportDao.class).toInstance(sportDao);
         bind(UserDao.class).toInstance(userDao);
+
+        bind(CheckoutService.class).to(ConcreteCheckoutService.class);
     }
 }

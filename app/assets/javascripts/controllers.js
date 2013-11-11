@@ -80,6 +80,7 @@ define(['app'], function (app) {
             $scope.validCards = ['Vasi', 'Mistercard', 'AmericanExpresso'];
             $scope.monthOfYear = ['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12'];
             $scope.expirationYears = [];
+            $scope.getTransactionId = function() {return Cart.transactionId;}
 
             var currentDate = new Date();
             for (var i = 0; i < 5; i++) {
@@ -112,7 +113,8 @@ define(['app'], function (app) {
                 window.alert('Vous devez vous connecter avant de procéder au paiement');
             }
 
-            var checkoutSuccess = function () {
+            var checkoutSuccess = function (transactionId) {
+                Cart.transactionId = transactionId;
                 FlashMessage.send("success", "La transaction a été complétée");
                 $location.path("/thanks");
             }
