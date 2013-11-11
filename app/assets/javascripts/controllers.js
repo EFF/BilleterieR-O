@@ -49,7 +49,6 @@ define(['app'], function (app) {
     app.controller('EventController', ['$scope', '$http', '$routeParams', 'Cart', 'FlashMessage', function ($scope, $http, $routeParams, Cart, FlashMessage) {
         var eventId = $routeParams.eventId;
         $scope.event = null;
-        $scope.activeSectionNameByCategories = [];
         $scope.sectionsByCategories = [];
         $scope.ticketsByCategories = [];
 
@@ -60,9 +59,15 @@ define(['app'], function (app) {
 
         var refreshTicketsList = function(eventId, categoryId, sectionName) {
             var url = '/api/tickets?eventId=' + eventId + '&categoryId=' + categoryId;
+            var emptyTicketList = {
+                type : 'select',
+                name : 'ticketList' + categoryId,
+                value : '',
+                values : []
+            };
 
             if (sectionName == null || sectionName == '') {
-                $scope.ticketsByCategories[categoryId] = [];
+                $scope.ticketsByCategories[categoryId] = emptyTicketList;
                 return;
             }
             url += '&sectionName=' + encodeURIComponent(sectionName);
@@ -74,9 +79,10 @@ define(['app'], function (app) {
                         var ticket = tickets[i];
                         if (categoryId == null || ticket.categoryId != categoryId) {
                             categoryId = ticket.categoryId;
-                            $scope.ticketsByCategories[categoryId] = [];
+                            $scope.ticketsByCategories[categoryId] = emptyTicketList;
                         }
-                        $scope.ticketsByCategories[categoryId].push(ticket);
+                        $scope.ticketsByCategories[categoryId].value = '';
+                        $scope.ticketsByCategories[categoryId].values.push(ticket);
                     }
                 });
         }
@@ -88,13 +94,15 @@ define(['app'], function (app) {
         var apiCallErrorCallback = function () {
             //TODO emit error event and handle it in a directive
             $scope.event = null;
-            $scope.activeSectionNameByCategories = [];
+            for (var categoryId in $scope.sectionsByCategories) {
+                $scope.sectionsByCategories[categoryId].value = null;
+            }
             $scope.ticketsByCategories = [];
         }
 
         $scope.apiCall = function () {
-            for (var categoryId in $scope.activeSectionNameByCategories) {
-                var sectionName = $scope.activeSectionNameByCategories[categoryId];
+            for (var categoryId in $scope.sectionsByCategories) {
+                var sectionName = $scope.sectionsByCategories[categoryId].value;
                 refreshTicketsList(eventId, categoryId, sectionName);
             }
             $http.get('/api/events/' + eventId)
@@ -104,7 +112,14 @@ define(['app'], function (app) {
 
         $http.get('/api/tickets/sections/' + eventId )
             .success(function (sections) {
-                $scope.sectionsByCategories = sections; });
+                for (var categoryId in sections) {
+                    $scope.sectionsByCategories.push({
+                        type : 'select',
+                        name : 'sectionList' + categoryId,
+                        value : null,
+                        values : sections[categoryId]
+                    });
+                }});
 
         $scope.apiCall();
     }]);

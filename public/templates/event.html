@@ -27,15 +27,22 @@
                 </div>
 
                 <div class="col-md-3">
-                    <select id="sectionList{{category.id}}" class="form-control" ng-change="apiCall()" ng-model="activeSectionNameByCategories[category.id]" ng-options="section for section in sectionsByCategories[category.id]">
+                    <select id="{{sectionsByCategories[category.id].name}}"
+                            class="form-control"
+                            ng-change="apiCall()"
+                            ng-model="sectionsByCategories[category.id].value"
+                            ng-options="s for s in sectionsByCategories[category.id].values">
                         <option value="">Section...</option>
                     </select>
                 </div>
 
                 <div class="col-md-3">
-                    <select id="ticketList{{category.id}}" class="form-control" ng-model="ticketId">
+                    <select id="{{ticketsByCategories[category.id].name}}"
+                            class="form-control"
+                            ng-model="ticketsByCategories[category.id].value">
                         <option value="">Siège disponible...</option>
-                        <option value="{{ticket.id}}" ng-repeat="ticket in ticketsByCategories[category.id]">
+                        <option value="{{ticket.id}}"
+                                ng-repeat="ticket in ticketsByCategories[category.id].values">
                             {{ticket.seat}}
                         </option>
                     </select>
@@ -45,7 +52,11 @@
                     <button class="btn btn-success category-add" ng-click="addToCart(quantity, category)"
                             ng-hide="category.numberOfTickets == 0">Ajouter au panier
                     </button>
-                    <a href="/#!/tickets/{{ticketId}}" ng-disabled="ticketId == null" class="btn btn-info">Détails</a>
+                    <a href="/#!/tickets/{{ticketsByCategories[category.id].value}}"
+                       ng-disabled="!ticketsByCategories[category.id].value"
+                       class="btn btn-info">
+                        Détails
+                    </a>
                 </div>
             </div>
         </td>
