@@ -8,6 +8,7 @@ import ca.ulaval.glo4003.models.User;
 import com.google.inject.Inject;
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.node.ObjectNode;
+import org.jukito.JukitoModule;
 import org.jukito.JukitoRunner;
 import org.junit.Before;
 import org.junit.Test;
@@ -18,9 +19,7 @@ import play.mvc.Http;
 import play.mvc.Result;
 import play.test.Helpers;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 import static play.test.Helpers.status;
 
@@ -151,5 +150,13 @@ public class AuthenticationTest extends BaseControllerTest {
         verify(mockedSession, never()).put(ConstantsManager.COOKIE_SESSION_FIELD_NAME, email);
 
         assertEquals(Http.Status.BAD_REQUEST, status(result));
+    }
+
+    public static class TestModule extends JukitoModule {
+
+        @Override
+        protected void configureTest() {
+            forceMock(UserDao.class);
+        }
     }
 }
