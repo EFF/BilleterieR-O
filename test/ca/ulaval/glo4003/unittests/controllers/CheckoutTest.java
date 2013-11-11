@@ -48,7 +48,7 @@ public class CheckoutTest extends BaseControllerTest {
     }
 
     @Test
-    public void checkoutWithSeveralItems(EventDao mockedEventDao) throws RecordNotFoundException, MaximumExceededException {
+    public void checkoutWithSeveralItems(EventDao mockedEventDao, CheckoutService mockedCheckoutSvc) throws RecordNotFoundException, MaximumExceededException {
         long eventId1 = 1;
         long categoryId1 = 1;
         int quantity1 = 10;
@@ -78,10 +78,11 @@ public class CheckoutTest extends BaseControllerTest {
         verify(mockedEventDao, times(2)).decrementEventCategoryNumberOfTickets(anyLong(), anyLong(), anyInt());
         verify(mockedEventDao).decrementEventCategoryNumberOfTickets(eventId1, categoryId1, quantity1);
         verify(mockedEventDao).decrementEventCategoryNumberOfTickets(eventId2, categoryId2, quantity2);
+        verify(mockedCheckoutSvc).fulfillTransaction(any(Transaction.class));
     }
 
     @Test
-    public void checkoutWhenMaximumIsExceeded(EventDao mockedEventDao) throws RecordNotFoundException, MaximumExceededException {
+    public void checkoutWhenMaximumIsExceeded(EventDao mockedEventDao, CheckoutService mockedCheckoutSvc) throws RecordNotFoundException, MaximumExceededException {
         long eventId1 = 1;
         long categoryId1 = 1;
         int quantity1 = 10;
@@ -101,10 +102,11 @@ public class CheckoutTest extends BaseControllerTest {
         assertEquals(Helpers.BAD_REQUEST, Helpers.status(result));
         verify(mockedEventDao).decrementEventCategoryNumberOfTickets(anyLong(), anyLong(), anyInt());
         verify(mockedEventDao).decrementEventCategoryNumberOfTickets(eventId1, categoryId1, quantity1);
+        verify(mockedCheckoutSvc, never()).fulfillTransaction(any(Transaction.class));
     }
 
     @Test
-    public void checkoutWhenRecordNotFoundExceptionIsThrown(EventDao mockedEventDao) throws RecordNotFoundException, MaximumExceededException {
+    public void checkoutWhenRecordNotFoundExceptionIsThrown(EventDao mockedEventDao, CheckoutService mockedCheckoutSvc) throws RecordNotFoundException, MaximumExceededException {
         reset(mockedEventDao);
         long eventId1 = 1;
         long categoryId1 = 1;
@@ -125,6 +127,7 @@ public class CheckoutTest extends BaseControllerTest {
         assertEquals(Helpers.NOT_FOUND, Helpers.status(result));
         verify(mockedEventDao).decrementEventCategoryNumberOfTickets(anyLong(), anyLong(), anyInt());
         verify(mockedEventDao).decrementEventCategoryNumberOfTickets(eventId1, categoryId1, quantity1);
+        verify(mockedCheckoutSvc, never()).fulfillTransaction(any(Transaction.class));
     }
 
 }
