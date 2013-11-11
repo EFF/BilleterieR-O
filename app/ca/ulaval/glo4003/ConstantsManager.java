@@ -23,4 +23,6 @@ public class ConstantsManager {
 
     public final static String PERSISTENCE_DIRECTORY = "data";
     public final static String PERSISTENCE_FILE_EXTENSION = ".ser";
+
+    public final static int SERVICE_OPERATION_TIMEOUT = 5000;
 }
