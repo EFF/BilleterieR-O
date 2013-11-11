@@ -1,23 +1,25 @@
 package ca.ulaval.glo4003.dataaccessobjects;
 
 import ca.ulaval.glo4003.exceptions.RecordNotFoundException;
+import ca.ulaval.glo4003.exceptions.UniqueConstraintException;
 import ca.ulaval.glo4003.models.Record;
 import ca.ulaval.glo4003.services.DaoPersistenceService;
 import org.apache.commons.lang3.SerializationUtils;
 
-import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 public abstract class PersistedDao<T extends Record> implements DataAccessObject<T>, Serializable {
 
-    private long lastId = 1;
     protected List<T> list = new ArrayList<>();
     protected DaoPersistenceService persistenceService;
+    private long lastId = 1;
+    private UniqueConstraintValidator uniqueConstraintValidator;
 
-    public PersistedDao(DaoPersistenceService persistenceService) {
+    public PersistedDao(DaoPersistenceService persistenceService, UniqueConstraintValidator uniqueConstraintValidator) {
         this.persistenceService = persistenceService;
+        this.uniqueConstraintValidator = uniqueConstraintValidator;
 
         try {
             this.list = this.persistenceService.restore(this);
@@ -28,7 +30,7 @@ public abstract class PersistedDao<T extends Record> implements DataAccessObject
         }
     }
 
-    public T create(T element) {
+    public T create(T element) throws UniqueConstraintException {
         element.setId(lastId);
         persist(element);
         lastId++;
@@ -44,7 +46,7 @@ public abstract class PersistedDao<T extends Record> implements DataAccessObject
         throw new RecordNotFoundException();
     }
 
-    public void update(T element) throws RecordNotFoundException {
+    public void update(T element) throws RecordNotFoundException, UniqueConstraintException {
         delete(element.getId());
         persist(element);
     }
@@ -67,7 +69,9 @@ public abstract class PersistedDao<T extends Record> implements DataAccessObject
         return list.size();
     }
 
-    protected void persist(T element) {
+    protected void persist(T element) throws UniqueConstraintException {
+        uniqueConstraintValidator.validate((List<Record>) list(), element);
+
         // We clone the object before saving it in the DB
         // Otherwise, a change on a record outside this
         // dao would reflect in the DB without calling
