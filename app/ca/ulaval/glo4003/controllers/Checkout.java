@@ -9,6 +9,7 @@ import ca.ulaval.glo4003.models.Transaction;
 import ca.ulaval.glo4003.services.CheckoutService;
 import com.google.inject.Inject;
 import org.codehaus.jackson.JsonNode;
+import org.codehaus.jackson.node.ObjectNode;
 import play.libs.Json;
 import play.mvc.Controller;
 import play.mvc.Result;
@@ -59,6 +60,10 @@ public class Checkout extends Controller {
             return internalServerError("Unexpected error while checking out.");
         }
 
-        return ok(Json.toJson(transaction.getId()));
+        ObjectNode result = Json.newObject();
+
+        result.put(ConstantsManager.TRANSACTION_ID_FIELD_NAME, transaction.getId().toString());
+
+        return ok(result);
     }
 }

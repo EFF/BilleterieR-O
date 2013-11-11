@@ -113,8 +113,8 @@ define(['app'], function (app) {
                 window.alert('Vous devez vous connecter avant de procéder au paiement');
             }
 
-            var checkoutSuccess = function (transactionId) {
-                Cart.transactionId = transactionId;
+            var checkoutSuccess = function (data) {
+                Cart.transactionId = data.transactionId;
                 FlashMessage.send("success", "La transaction a été complétée");
                 $location.path("/thanks");
             }

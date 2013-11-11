@@ -8,6 +8,8 @@ public class ConstantsManager {
     public final static String USERNAME_FIELD_NAME = "username";
     public final static String PASSWORD_FIELD_NAME = "password";
 
+    public final static String TRANSACTION_ID_FIELD_NAME = "transactionId";
+
     public final static String QUERY_STRING_SPORT_PARAM_NAME = "sport";
     public final static String QUERY_STRING_DATE_START_PARAM_NAME = "dateStart";
     public final static String QUERY_STRING_DATE_END_PARAM_NAME = "dateEnd";
