@@ -13,7 +13,7 @@ import static play.test.Helpers.*;
 
 public class AuthenticationTest {
 
-    private static final String EMAIL = "user@example.com";
+    private static final String EMAIL = "user1@example.com";
     private static final String PASSWORD = "secret";
 
     @Test

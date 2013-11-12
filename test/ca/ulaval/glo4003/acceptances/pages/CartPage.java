@@ -10,6 +10,12 @@ import static org.fluentlenium.core.filter.FilterConstructor.withText;
 
 public class CartPage extends BaseFluentPage {
 
+    private static final String A_CARD_TYPE = "vasi";
+    private static final String A_CARD_NUMBER = "1234567890987654";
+    private static final String A_CVV = "666";
+    private static final String A_MONTH = "06";
+    private static final String A_YEAR = "2015";
+
     public CartPage(WebDriver driver) {
         super(driver);
     }
@@ -93,5 +99,14 @@ public class CartPage extends BaseFluentPage {
         int quantity = Integer.parseInt(cartItem.findFirst(".quantity").getText());
 
         return (quantity == expectedQuantity);
+    }
+
+    public void payWithCreditCard() {
+        selectComboLabel(A_CARD_TYPE);
+        fillCreditCardNumber(A_CARD_NUMBER);
+        fillCvv(A_CVV);
+        selectExpirationMonth(A_MONTH);
+        selectExpirationYear(A_YEAR);
+        checkout();
     }
 }
