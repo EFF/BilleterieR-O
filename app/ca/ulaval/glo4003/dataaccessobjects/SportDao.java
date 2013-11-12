@@ -11,5 +11,4 @@ public class SportDao extends PersistedDao<Sport> {
             uniqueConstraintValidator) {
         super(persistenceService, uniqueConstraintValidator);
     }
-
 }
