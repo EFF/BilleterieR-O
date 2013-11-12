@@ -1,9 +1,11 @@
 package ca.ulaval.glo4003.models;
 
+import javax.persistence.Column;
 import java.io.Serializable;
 
 public class User extends Record implements Serializable {
 
+    @Column(unique = true)
     private String email;
     private String password;
 

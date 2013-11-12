@@ -11,8 +11,9 @@ import com.google.inject.Inject;
 public class UserDao extends PersistedDao<User> implements DataAccessObject<User> {
 
     @Inject
-    public UserDao(DaoPersistenceService persistenceService) {
-        super(persistenceService);
+    public UserDao(DaoPersistenceService persistenceService, UniqueConstraintValidator<User>
+            uniqueConstraintValidator) {
+        super(persistenceService, uniqueConstraintValidator);
     }
 
     public User findByEmailAndPassword(final String email, final String password) throws RecordNotFoundException {
@@ -21,7 +22,8 @@ public class UserDao extends PersistedDao<User> implements DataAccessObject<User
         Optional<User> userOptional = users.firstMatch(new Predicate<User>() {
             @Override
             public boolean apply(User input) {
-                return input.getEmail().toLowerCase().equals(email.toLowerCase()) && input.getPassword().equals(password);
+                return input.getEmail().toLowerCase().equals(email.toLowerCase())
+                        && input.getPassword().equals(password);
             }
         });
 

@@ -7,8 +7,8 @@ import com.google.inject.Inject;
 public class SportDao extends PersistedDao<Sport> {
 
     @Inject
-    public SportDao(DaoPersistenceService persistenceService) {
-        super(persistenceService);
+    public SportDao(DaoPersistenceService persistenceService, UniqueConstraintValidator<Sport>
+            uniqueConstraintValidator) {
+        super(persistenceService, uniqueConstraintValidator);
     }
-
 }
