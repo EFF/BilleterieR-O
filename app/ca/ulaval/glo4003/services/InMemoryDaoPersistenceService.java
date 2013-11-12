@@ -15,6 +15,6 @@ public class InMemoryDaoPersistenceService implements DaoPersistenceService {
 
     @Override
     public <T extends Record, Y extends DataAccessObject> List<T> restore(Y dao) {
-        return new ArrayList();
+        return new ArrayList<>();
     }
 }

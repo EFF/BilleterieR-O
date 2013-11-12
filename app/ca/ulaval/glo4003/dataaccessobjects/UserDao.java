@@ -6,13 +6,16 @@ import ca.ulaval.glo4003.services.DaoPersistenceService;
 import com.google.common.base.Optional;
 import com.google.common.base.Predicate;
 import com.google.common.collect.FluentIterable;
+import com.google.inject.Inject;
 
 import javax.annotation.Nullable;
 
 public class UserDao extends PersistedDao<User> implements DataAccessObject<User> {
 
-    public UserDao(DaoPersistenceService persistenceService) {
-        super(persistenceService);
+    @Inject
+    public UserDao(DaoPersistenceService persistenceService, UniqueConstraintValidator<User>
+            uniqueConstraintValidator) {
+        super(persistenceService, uniqueConstraintValidator);
     }
 
     public User findByEmailAndPassword(final String email, final String password) throws RecordNotFoundException {
@@ -21,7 +24,8 @@ public class UserDao extends PersistedDao<User> implements DataAccessObject<User
         Optional<User> userOptional = users.firstMatch(new Predicate<User>() {
             @Override
             public boolean apply(User input) {
-                return input.getEmail().toLowerCase().equals(email.toLowerCase()) && input.getPassword().equals(password);
+                return input.getEmail().toLowerCase().equals(email.toLowerCase())
+                        && input.getPassword().equals(password);
             }
         });
 
