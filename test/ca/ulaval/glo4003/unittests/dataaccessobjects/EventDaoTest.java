@@ -1,6 +1,7 @@
 package ca.ulaval.glo4003.unittests.dataaccessobjects;
 
 import ca.ulaval.glo4003.dataaccessobjects.EventDao;
+import ca.ulaval.glo4003.dataaccessobjects.UniqueConstraintValidator;
 import ca.ulaval.glo4003.exceptions.MaximumExceededException;
 import ca.ulaval.glo4003.exceptions.RecordNotFoundException;
 import ca.ulaval.glo4003.models.Category;
@@ -21,14 +22,16 @@ public class EventDaoTest {
 
     @Before
     public void setup() {
-        eventDao = new EventDao(new InMemoryDaoPersistenceService());
+        eventDao = new EventDao(new InMemoryDaoPersistenceService(), new UniqueConstraintValidator<Event>());
     }
 
     @Test
     public void listReturnsAllEvents() {
         // Arrange
-        Event firstEvent = EventsTestHelper.createRandomEventtWithCategoryGivenSport(EventsTestHelper.FIRST_RANDOM_SPORT);
-        Event secondEvent = EventsTestHelper.createRandomEventtWithCategoryGivenSport(EventsTestHelper.SECOND_RANDOM_SPORT);
+        Event firstEvent = EventsTestHelper.createRandomEventtWithCategoryGivenSport(EventsTestHelper
+                .FIRST_RANDOM_SPORT);
+        Event secondEvent = EventsTestHelper.createRandomEventtWithCategoryGivenSport(EventsTestHelper
+                .SECOND_RANDOM_SPORT);
 
         eventDao.create(firstEvent);
         eventDao.create(secondEvent);
@@ -44,8 +47,10 @@ public class EventDaoTest {
     @Test
     public void searchAllThenReturnsAllEvents() {
         // Arrange
-        Event firstEvent = EventsTestHelper.createRandomEventtWithCategoryGivenSport(EventsTestHelper.FIRST_RANDOM_SPORT);
-        Event secondEvent = EventsTestHelper.createRandomEventtWithCategoryGivenSport(EventsTestHelper.SECOND_RANDOM_SPORT);
+        Event firstEvent = EventsTestHelper.createRandomEventtWithCategoryGivenSport(EventsTestHelper
+                .FIRST_RANDOM_SPORT);
+        Event secondEvent = EventsTestHelper.createRandomEventtWithCategoryGivenSport(EventsTestHelper
+                .SECOND_RANDOM_SPORT);
 
         eventDao.create(firstEvent);
         eventDao.create(secondEvent);
@@ -60,8 +65,10 @@ public class EventDaoTest {
     @Test
     public void searchSportThenReturnsFilteredResults() {
         // Arrange
-        Event firstEvent = EventsTestHelper.createRandomEventtWithCategoryGivenSport(EventsTestHelper.FIRST_RANDOM_SPORT);
-        Event secondEvent = EventsTestHelper.createRandomEventtWithCategoryGivenSport(EventsTestHelper.SECOND_RANDOM_SPORT);
+        Event firstEvent = EventsTestHelper.createRandomEventtWithCategoryGivenSport(EventsTestHelper
+                .FIRST_RANDOM_SPORT);
+        Event secondEvent = EventsTestHelper.createRandomEventtWithCategoryGivenSport(EventsTestHelper
+                .SECOND_RANDOM_SPORT);
 
         eventDao.create(firstEvent);
         eventDao.create(secondEvent);
@@ -100,8 +107,10 @@ public class EventDaoTest {
     @Test
     public void searchDateStartWhenDateIsBeforeEventThenReturnsFilteredResults() {
         // Arrange
-        Event firstEvent = EventsTestHelper.createRandomEventtWithCategoryGivenSport(EventsTestHelper.FIRST_RANDOM_SPORT);
-        Event secondEvent = EventsTestHelper.createRandomEventtWithCategoryGivenSport(EventsTestHelper.SECOND_RANDOM_SPORT);
+        Event firstEvent = EventsTestHelper.createRandomEventtWithCategoryGivenSport(EventsTestHelper
+                .FIRST_RANDOM_SPORT);
+        Event secondEvent = EventsTestHelper.createRandomEventtWithCategoryGivenSport(EventsTestHelper
+                .SECOND_RANDOM_SPORT);
 
         LocalDateTime dayOne = new LocalDateTime();
         LocalDateTime dayTwo = dayOne.plusDays(1);
@@ -127,8 +136,10 @@ public class EventDaoTest {
     @Test
     public void searchDateStartWhenDateIsSameDayAsEventThenReturnsFilteredResults() {
         // Arrange
-        Event firstEvent = EventsTestHelper.createRandomEventtWithCategoryGivenSport(EventsTestHelper.FIRST_RANDOM_SPORT);
-        Event secondEvent = EventsTestHelper.createRandomEventtWithCategoryGivenSport(EventsTestHelper.SECOND_RANDOM_SPORT);
+        Event firstEvent = EventsTestHelper.createRandomEventtWithCategoryGivenSport(EventsTestHelper
+                .FIRST_RANDOM_SPORT);
+        Event secondEvent = EventsTestHelper.createRandomEventtWithCategoryGivenSport(EventsTestHelper
+                .SECOND_RANDOM_SPORT);
 
         LocalDateTime dayOne = new LocalDateTime();
         LocalDateTime dayThree = dayOne.plusDays(3);
@@ -153,8 +164,10 @@ public class EventDaoTest {
     @Test
     public void searchDateEndWhenDateIsAfterEventThenReturnsFilteredResults() {
         // Arrange
-        Event firstEvent = EventsTestHelper.createRandomEventtWithCategoryGivenSport(EventsTestHelper.FIRST_RANDOM_SPORT);
-        Event secondEvent = EventsTestHelper.createRandomEventtWithCategoryGivenSport(EventsTestHelper.SECOND_RANDOM_SPORT);
+        Event firstEvent = EventsTestHelper.createRandomEventtWithCategoryGivenSport(EventsTestHelper
+                .FIRST_RANDOM_SPORT);
+        Event secondEvent = EventsTestHelper.createRandomEventtWithCategoryGivenSport(EventsTestHelper
+                .SECOND_RANDOM_SPORT);
 
         LocalDateTime dayOne = new LocalDateTime();
         LocalDateTime veryFarAway = dayOne.plusDays(90);
@@ -180,8 +193,10 @@ public class EventDaoTest {
     @Test
     public void searchDateEndWhenDateIsSameDayAsEventThenReturnsFilteredResults() {
         // Arrange
-        Event firstEvent = EventsTestHelper.createRandomEventtWithCategoryGivenSport(EventsTestHelper.FIRST_RANDOM_SPORT);
-        Event secondEvent = EventsTestHelper.createRandomEventtWithCategoryGivenSport(EventsTestHelper.SECOND_RANDOM_SPORT);
+        Event firstEvent = EventsTestHelper.createRandomEventtWithCategoryGivenSport(EventsTestHelper
+                .FIRST_RANDOM_SPORT);
+        Event secondEvent = EventsTestHelper.createRandomEventtWithCategoryGivenSport(EventsTestHelper
+                .SECOND_RANDOM_SPORT);
 
         LocalDateTime dayOne = new LocalDateTime();
         LocalDateTime dayThree = dayOne.plusDays(3);
@@ -206,9 +221,12 @@ public class EventDaoTest {
     @Test
     public void searchDatesRangeThenReturnsFilteredResultsWithinDateRange() {
         // Arrange
-        Event firstEvent = EventsTestHelper.createRandomEventtWithCategoryGivenSport(EventsTestHelper.FIRST_RANDOM_SPORT);
-        Event secondEvent = EventsTestHelper.createRandomEventtWithCategoryGivenSport(EventsTestHelper.SECOND_RANDOM_SPORT);
-        Event thirdEvent = EventsTestHelper.createRandomEventtWithCategoryGivenSport(EventsTestHelper.SECOND_RANDOM_SPORT);
+        Event firstEvent = EventsTestHelper.createRandomEventtWithCategoryGivenSport(EventsTestHelper
+                .FIRST_RANDOM_SPORT);
+        Event secondEvent = EventsTestHelper.createRandomEventtWithCategoryGivenSport(EventsTestHelper
+                .SECOND_RANDOM_SPORT);
+        Event thirdEvent = EventsTestHelper.createRandomEventtWithCategoryGivenSport(EventsTestHelper
+                .SECOND_RANDOM_SPORT);
 
         LocalDateTime beforeRange = new LocalDateTime();
         LocalDateTime whithinRange = beforeRange.plusDays(2);
@@ -236,8 +254,10 @@ public class EventDaoTest {
     @Test
     public void searchDateStartAndEndWhenDateIsSameDayAsEventThenReturnsFilteredResults() {
         // Arrange
-        Event firstEvent = EventsTestHelper.createRandomEventtWithCategoryGivenSport(EventsTestHelper.FIRST_RANDOM_SPORT);
-        Event secondEvent = EventsTestHelper.createRandomEventtWithCategoryGivenSport(EventsTestHelper.SECOND_RANDOM_SPORT);
+        Event firstEvent = EventsTestHelper.createRandomEventtWithCategoryGivenSport(EventsTestHelper
+                .FIRST_RANDOM_SPORT);
+        Event secondEvent = EventsTestHelper.createRandomEventtWithCategoryGivenSport(EventsTestHelper
+                .SECOND_RANDOM_SPORT);
 
         LocalDateTime dayOne = new LocalDateTime();
         LocalDateTime dayThree = dayOne.plusDays(3);
@@ -283,9 +303,11 @@ public class EventDaoTest {
     }
 
     @Test(expected = MaximumExceededException.class)
-    public void decrementEventCategoryNumberOfTicketsThrowsExceptionWhenNoneAvailable() throws RecordNotFoundException, MaximumExceededException {
+    public void decrementEventCategoryNumberOfTicketsThrowsExceptionWhenNoneAvailable() throws
+            MaximumExceededException, RecordNotFoundException {
         //Arrange
-        Category category = new Category(EventsTestHelper.A_DOUBLE, EventsTestHelper.AN_INT, EventsTestHelper.A_CATEGORY_ID);
+        Category category = new Category(EventsTestHelper.A_DOUBLE, EventsTestHelper.AN_INT,
+                EventsTestHelper.A_CATEGORY_ID);
         Event event = EventsTestHelper.createRandomEventGivenACategory(category);
         eventDao.create(event);
 
@@ -294,9 +316,11 @@ public class EventDaoTest {
     }
 
     @Test
-    public void decrementEventCategoryNumberOfTicketsDecrements() throws MaximumExceededException, RecordNotFoundException {
+    public void decrementEventCategoryNumberOfTicketsDecrements() throws MaximumExceededException,
+            RecordNotFoundException {
         //Arrange
-        Category category = new Category(EventsTestHelper.A_DOUBLE, EventsTestHelper.AN_INT, EventsTestHelper.A_CATEGORY_ID);
+        Category category = new Category(EventsTestHelper.A_DOUBLE, EventsTestHelper.AN_INT,
+                EventsTestHelper.A_CATEGORY_ID);
         Event event = EventsTestHelper.createRandomEventGivenACategory(category);
         eventDao.create(event);
 

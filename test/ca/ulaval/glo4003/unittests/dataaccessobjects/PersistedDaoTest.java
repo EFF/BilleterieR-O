@@ -1,13 +1,15 @@
 package ca.ulaval.glo4003.unittests.dataaccessobjects;
 
 import ca.ulaval.glo4003.dataaccessobjects.PersistedDao;
+import ca.ulaval.glo4003.dataaccessobjects.UniqueConstraintValidator;
 import ca.ulaval.glo4003.exceptions.RecordNotFoundException;
 import ca.ulaval.glo4003.models.Record;
 import ca.ulaval.glo4003.services.DaoPersistenceService;
-import ca.ulaval.glo4003.services.InMemoryDaoPersistenceService;
 import org.junit.Before;
 import org.junit.Test;
 
+import javax.persistence.Column;
+import javax.validation.ValidationException;
 import java.io.IOException;
 import java.util.List;
 
@@ -21,18 +23,22 @@ public class PersistedDaoTest {
     private static final int UNEXISTING_ID = 10;
     private static final int A_VALUE = 50;
     private static final int ANOTHER_VALUE = 100;
+    private static final int YET_ANOTHER_VALUE = 150;
 
     private PersistedDao<TestRecord> dao;
+    private DaoPersistenceService mockedPersistenceService;
 
     @Before
     public void setUp() {
-        dao = new PersistedDao<TestRecord>(new InMemoryDaoPersistenceService()) {};
+        mockedPersistenceService = mock(DaoPersistenceService.class);
+        dao = new PersistedDao<TestRecord>(mockedPersistenceService,
+                new UniqueConstraintValidator<TestRecord>()) {};
     }
 
     @Test
     public void createOneElement() {
         // Arrange
-        TestRecord record = new TestRecord();
+        TestRecord record = new TestRecord(A_VALUE);
         dao.create(record);
 
         // Act
@@ -46,9 +52,9 @@ public class PersistedDaoTest {
     @Test
     public void createManyElements() {
         // Arrange
-        TestRecord record1 = new TestRecord();
-        TestRecord record2 = new TestRecord();
-        TestRecord record3 = new TestRecord();
+        TestRecord record1 = new TestRecord(A_VALUE);
+        TestRecord record2 = new TestRecord(ANOTHER_VALUE);
+        TestRecord record3 = new TestRecord(YET_ANOTHER_VALUE);
         dao.create(record1);
         dao.create(record2);
         dao.create(record3);
@@ -63,24 +69,34 @@ public class PersistedDaoTest {
         assertEquals(3, dao.list().get(2).getId());
     }
 
+    @Test(expected = ValidationException.class)
+    public void createTwoElementsWithNonUniqueValueShouldThrowValidationException() {
+        // Arrange
+        TestRecord record1 = new TestRecord(A_VALUE);
+        TestRecord record2 = new TestRecord(A_VALUE);
+
+        // Act
+        dao.create(record1);
+        dao.create(record2);
+    }
+
     @Test
     public void changesToARecordWithoutSavingItDoesntAlterTheDb() throws RecordNotFoundException {
         // Arrange
-        TestRecord record = new TestRecord();
-        record.setValue(A_VALUE);
+        TestRecord record = new TestRecord(A_VALUE);
         dao.create(record);
 
         // Act
-        record.setValue(ANOTHER_VALUE);
+        record.setUniqueValue(ANOTHER_VALUE);
 
         // Assert
-        assertEquals(A_VALUE, dao.read(1).getValue());
+        assertEquals(A_VALUE, dao.read(1).getUniqueValue());
     }
 
     @Test
     public void readAnExistingRecordReturnThisRecord() throws RecordNotFoundException {
         // Arrange
-        TestRecord record = new TestRecord();
+        TestRecord record = new TestRecord(A_VALUE);
         dao.create(record);
 
         // Act
@@ -99,8 +115,8 @@ public class PersistedDaoTest {
     @Test
     public void deleteAllRecords() {
         // Arrange
-        TestRecord record1 = new TestRecord();
-        TestRecord record2 = new TestRecord();
+        TestRecord record1 = new TestRecord(A_VALUE);
+        TestRecord record2 = new TestRecord(ANOTHER_VALUE);
 
         dao.create(record1);
         dao.create(record2);
@@ -115,8 +131,8 @@ public class PersistedDaoTest {
     @Test
     public void deleteOneRecord() throws RecordNotFoundException {
         // Arrange
-        TestRecord record1 = new TestRecord();
-        TestRecord record2 = new TestRecord();
+        TestRecord record1 = new TestRecord(A_VALUE);
+        TestRecord record2 = new TestRecord(ANOTHER_VALUE);
         dao.create(record1);
         dao.create(record2);
 
@@ -131,7 +147,7 @@ public class PersistedDaoTest {
     @Test(expected = RecordNotFoundException.class)
     public void deleteUnexistingRecord() throws RecordNotFoundException {
         // Arrange
-        TestRecord record = new TestRecord();
+        TestRecord record = new TestRecord(A_VALUE);
         dao.create(record);
 
         // Act
@@ -141,25 +157,24 @@ public class PersistedDaoTest {
     @Test
     public void updateRecord() throws RecordNotFoundException {
         // Arrange
-        TestRecord record1 = new TestRecord();
-        record1.setValue(A_VALUE);
-        TestRecord record2 = new TestRecord();
+        TestRecord record1 = new TestRecord(A_VALUE);
+        TestRecord record2 = new TestRecord(ANOTHER_VALUE);
         dao.create(record1);
         dao.create(record2);
 
         // Act
-        record1.setValue(ANOTHER_VALUE);
+        record1.setUniqueValue(YET_ANOTHER_VALUE);
         dao.update(record1);
 
         // Assert
         assertEquals(2, dao.count());
-        assertEquals(ANOTHER_VALUE, dao.read(record1.getId()).getValue());
+        assertEquals(YET_ANOTHER_VALUE, dao.read(record1.getId()).getUniqueValue());
     }
 
     @Test(expected = RecordNotFoundException.class)
     public void updateUnsavedRecordThrowAnException() throws RecordNotFoundException {
         // Arrange
-        TestRecord unsavedRecord = new TestRecord();
+        TestRecord unsavedRecord = new TestRecord(A_VALUE);
 
         // Act
         dao.update(unsavedRecord);
@@ -168,7 +183,7 @@ public class PersistedDaoTest {
     @Test(expected = RecordNotFoundException.class)
     public void updatePreviouslyDeletedRecordThrowAnException() throws RecordNotFoundException {
         // Arrange
-        TestRecord record = new TestRecord();
+        TestRecord record = new TestRecord(A_VALUE);
         dao.create(record);
         dao.delete(record.getId());
 
@@ -178,79 +193,66 @@ public class PersistedDaoTest {
 
     @Test
     public void persistsOnAdd() throws IOException {
-        // Arrange
-        DaoPersistenceService persistenceSvc = mock(InMemoryDaoPersistenceService.class);
-        dao = new PersistedDao<TestRecord>(persistenceSvc) {};
-
         // Act
-        dao.create(new TestRecord());
+        dao.create(new TestRecord(A_VALUE));
 
         // Assert
-        verify(persistenceSvc, times(1)).persist(dao);
+        verify(mockedPersistenceService, times(1)).persist(dao);
     }
 
     @Test
     public void persistsOnUpdate() throws IOException, RecordNotFoundException {
-        // Arrange
-        DaoPersistenceService persistenceSvc = mock(InMemoryDaoPersistenceService.class);
-        dao = new PersistedDao<TestRecord>(persistenceSvc) {};
-
         // Act
-        TestRecord record = new TestRecord();
+        TestRecord record = new TestRecord(A_VALUE);
         dao.create(record);
 
-        record.setValue(2);
+        record.setUniqueValue(2);
         dao.update(record);
 
         // Assert
-        verify(persistenceSvc, times(2)).persist(dao);
+        verify(mockedPersistenceService, times(2)).persist(dao);
     }
 
     @Test
     public void persistsOnEveryUpdates() throws IOException, RecordNotFoundException {
-        // Arrange
-        DaoPersistenceService persistenceSvc = mock(InMemoryDaoPersistenceService.class);
-        dao = new PersistedDao<TestRecord>(persistenceSvc) {};
-
         // Act
-        TestRecord record = new TestRecord();
+        TestRecord record = new TestRecord(A_VALUE);
         dao.create(record);
 
-        record.setValue(2);
+        record.setUniqueValue(2);
         dao.update(record);
 
-        record.setValue(3);
+        record.setUniqueValue(3);
         dao.update(record);
 
-        record.setValue(5);
+        record.setUniqueValue(5);
         dao.update(record);
 
         // Assert
-        verify(persistenceSvc, times(4)).persist(dao);
+        verify(mockedPersistenceService, times(4)).persist(dao);
     }
 
     @Test
     public void restoreOnDaoCreation() throws IOException, ClassNotFoundException {
-        // Arrange
-        DaoPersistenceService persistenceSvc = mock(InMemoryDaoPersistenceService.class);
-
-        // Act
-        dao = new PersistedDao<TestRecord>(persistenceSvc) {};
-
         // Assert
-        verify(persistenceSvc, times(1)).restore(dao);
+        verify(mockedPersistenceService, times(1)).restore(dao);
     }
 
     public static class TestRecord extends Record {
 
-        private int value;
+        @Column(unique = true)
+        private int uniqueValue;
 
-        public int getValue() {
-            return value;
+        public TestRecord(int uniqueValue) {
+            this.uniqueValue = uniqueValue;
         }
 
-        public void setValue(int value) {
-            this.value = value;
+        public int getUniqueValue() {
+            return uniqueValue;
+        }
+
+        public void setUniqueValue(int uniqueValue) {
+            this.uniqueValue = uniqueValue;
         }
     }
 }

@@ -1,21 +1,30 @@
 package ca.ulaval.glo4003.unittests.dataaccessobjects;
 
+import ca.ulaval.glo4003.dataaccessobjects.UniqueConstraintValidator;
 import ca.ulaval.glo4003.dataaccessobjects.UserDao;
 import ca.ulaval.glo4003.exceptions.RecordNotFoundException;
 import ca.ulaval.glo4003.models.User;
 import ca.ulaval.glo4003.services.DaoPersistenceService;
+import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.Mockito.mock;
 
+@RunWith(MockitoJUnitRunner.class)
 public class UserDaoTest {
 
-    private DaoPersistenceService daoPersistenceService;
+    @Mock
+    private UniqueConstraintValidator<User> uniqueConstraintValidator;
+    private UserDao userDao;
 
+    @Before
     public void setUp() {
-        daoPersistenceService = mock(DaoPersistenceService.class);
+        userDao = new UserDao(mock(DaoPersistenceService.class), uniqueConstraintValidator);
     }
 
     @Test
@@ -25,7 +34,6 @@ public class UserDaoTest {
         user.setEmail("user@example.com");
         user.setPassword("secret");
 
-        UserDao userDao = new UserDao(daoPersistenceService);
         userDao.create(user);
 
         //Act
@@ -42,7 +50,6 @@ public class UserDaoTest {
         user.setEmail("user@example.com");
         user.setPassword("secret");
 
-        UserDao userDao = new UserDao(daoPersistenceService);
         userDao.create(user);
 
         //Act
@@ -56,7 +63,6 @@ public class UserDaoTest {
         user.setEmail("user@example.com");
         user.setPassword("secret");
 
-        UserDao userDao = new UserDao(daoPersistenceService);
         userDao.create(user);
 
         //Act

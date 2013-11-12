@@ -1,7 +1,6 @@
 package ca.ulaval.glo4003.dataaccessobjects;
 
 import ca.ulaval.glo4003.exceptions.RecordNotFoundException;
-import ca.ulaval.glo4003.exceptions.UniqueConstraintException;
 import ca.ulaval.glo4003.models.Record;
 import ca.ulaval.glo4003.services.DaoPersistenceService;
 import org.apache.commons.lang3.SerializationUtils;
@@ -12,12 +11,13 @@ import java.util.List;
 
 public abstract class PersistedDao<T extends Record> implements DataAccessObject<T>, Serializable {
 
-    protected List<T> list = new ArrayList<>();
-    protected DaoPersistenceService persistenceService;
     private long lastId = 1;
-    private UniqueConstraintValidator uniqueConstraintValidator;
+    private List<T> list = new ArrayList<>();
+    private DaoPersistenceService persistenceService;
+    private UniqueConstraintValidator<T> uniqueConstraintValidator;
 
-    public PersistedDao(DaoPersistenceService persistenceService, UniqueConstraintValidator uniqueConstraintValidator) {
+    public PersistedDao(DaoPersistenceService persistenceService, UniqueConstraintValidator<T>
+            uniqueConstraintValidator) {
         this.persistenceService = persistenceService;
         this.uniqueConstraintValidator = uniqueConstraintValidator;
 
@@ -26,11 +26,12 @@ public abstract class PersistedDao<T extends Record> implements DataAccessObject
             System.out.println("Successfully restored DAO [" + this.getClass().getSimpleName() + "] with a total of " +
                     this.list.size() + " items.");
         } catch (Exception e) {
-            System.out.println("Warning: Could not restore DAO [" + this.getClass().getSimpleName() + "]: " + e.getMessage());
+            System.out.println("Warning: Could not restore DAO [" + this.getClass().getSimpleName() + "]: " + e
+                    .getMessage());
         }
     }
 
-    public T create(T element) throws UniqueConstraintException {
+    public T create(T element) {
         element.setId(lastId);
         persist(element);
         lastId++;
@@ -46,7 +47,7 @@ public abstract class PersistedDao<T extends Record> implements DataAccessObject
         throw new RecordNotFoundException();
     }
 
-    public void update(T element) throws RecordNotFoundException, UniqueConstraintException {
+    public void update(T element) throws RecordNotFoundException {
         delete(element.getId());
         persist(element);
     }
@@ -69,8 +70,8 @@ public abstract class PersistedDao<T extends Record> implements DataAccessObject
         return list.size();
     }
 
-    protected void persist(T element) throws UniqueConstraintException {
-        uniqueConstraintValidator.validate((List<Record>) list(), element);
+    protected void persist(T element) {
+        uniqueConstraintValidator.validate(list(), element);
 
         // We clone the object before saving it in the DB
         // Otherwise, a change on a record outside this
@@ -80,8 +81,7 @@ public abstract class PersistedDao<T extends Record> implements DataAccessObject
         list.add(elementCopy);
         try {
             this.persistenceService.persist(this);
-        }
-        catch(Exception e) {
+        } catch (Exception e) {
             System.err.println("Error persisting DAO [" + this.getClass().getSimpleName() + "] : " + e.getMessage());
         }
     }

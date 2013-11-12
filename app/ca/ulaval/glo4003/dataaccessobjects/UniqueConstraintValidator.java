@@ -1,26 +1,29 @@
 package ca.ulaval.glo4003.dataaccessobjects;
 
-import ca.ulaval.glo4003.exceptions.UniqueConstraintException;
 import ca.ulaval.glo4003.models.Record;
+import org.apache.commons.beanutils.PropertyUtils;
 
 import javax.persistence.Column;
+import javax.validation.ValidationException;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
-public class UniqueConstraintValidator {
+public class UniqueConstraintValidator<T extends Record> {
 
     private List<Field> uniqueFields;
 
-    public void validate(List<Record> list, Record element) throws UniqueConstraintException {
+    public void validate(List<T> list, T element) {
         for (Field field : getUniqueFields(element.getClass())) {
-            for (Record elem : list) {
+            for (T element2 : list) {
                 try {
-                    if (field.get(element).equals(field.get(elem)) && element.getId() != elem.getId()) {
-                        throw new UniqueConstraintException();
+                    Object value1 = PropertyUtils.getProperty(element, field.getName());
+                    Object value2 = PropertyUtils.getProperty(element2, field.getName());
+                    if (value1.equals(value2) && element.getId() != element2.getId()) {
+                        throw new ValidationException();
                     }
-                } catch (IllegalAccessException e) {
-                    // The field should exists.
+                } catch (ReflectiveOperationException e) {
+                    e.printStackTrace();
                 }
             }
         }

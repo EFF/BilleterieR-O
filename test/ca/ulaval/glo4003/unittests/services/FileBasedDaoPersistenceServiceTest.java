@@ -8,23 +8,32 @@ import org.apache.commons.io.FileUtils;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.runners.MockitoJUnitRunner;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
 
 import static org.fest.assertions.Assertions.assertThat;
+import static org.mockito.Mockito.when;
 
+@RunWith(MockitoJUnitRunner.class)
 public class FileBasedDaoPersistenceServiceTest {
 
-    private FileBasedDaoPersistenceService persistenceService;
-    private PersistedDao<PersistedDaoTest.TestRecord> dao;
-
     private static final String PROFILE = "UTests";
+    private static final int A_VALUE = 50;
+    private static final int AN_ID = 666;
+
+    @Mock
+    private PersistedDao<PersistedDaoTest.TestRecord> mockedDao;
+    private FileBasedDaoPersistenceService persistenceService;
 
     @Before
     public void setUp() throws IOException {
-        this.persistenceService = new FileBasedDaoPersistenceService(PROFILE);
-        this.dao = new PersistedDao<PersistedDaoTest.TestRecord>(persistenceService) {};
+        persistenceService = new FileBasedDaoPersistenceService(PROFILE);
         deleteAllData();
     }
 
@@ -36,24 +45,24 @@ public class FileBasedDaoPersistenceServiceTest {
     @Test(expected = IOException.class)
     public void restoreThrowsWhenPersistenceFilesNotFound() throws IOException, ClassNotFoundException {
         // Act & Assert
-        this.persistenceService.restore(this.dao);
+        persistenceService.restore(mockedDao);
     }
 
     @Test
     public void restoreDoesNotThrowWhenPersistenceFilesFound() throws IOException, ClassNotFoundException {
         // Arrange
         System.out.println(getPersistenceFilesDirectory().getAbsolutePath());
-        this.persistenceService.persist(this.dao);
+        persistenceService.persist(mockedDao);
 
         // Act & Assert
         assertThat(getPersistenceFilesDirectory().exists()).isTrue();
-        this.persistenceService.restore(this.dao);
+        persistenceService.restore(mockedDao);
     }
 
     @Test
     public void persistCreatesDestinationDirectoryIfDoesNotExist() throws IOException, ClassNotFoundException {
         // Arrange
-        this.persistenceService.persist(this.dao);
+        persistenceService.persist(mockedDao);
 
         // Act & Assert
         assertThat(getPersistenceFilesDirectory().exists()).isTrue();
@@ -62,25 +71,24 @@ public class FileBasedDaoPersistenceServiceTest {
     @Test
     public void persistAndRestoreWorks() throws IOException, ClassNotFoundException, RecordNotFoundException {
         // Arrange
-        PersistedDaoTest.TestRecord record = new PersistedDaoTest.TestRecord();
-        record.setValue(123);
-        record.setId(666);
-        this.dao.create(record);
+        PersistedDaoTest.TestRecord record = new PersistedDaoTest.TestRecord(A_VALUE);
+        record.setId(AN_ID);
+        when(mockedDao.list()).thenReturn(Arrays.asList(record));
+        persistenceService.persist(mockedDao);
 
         // Act
-        PersistedDao<PersistedDaoTest.TestRecord> dao2 = new PersistedDao<PersistedDaoTest.TestRecord>(persistenceService) {};
-        this.persistenceService.restore(dao2);
+        List<PersistedDaoTest.TestRecord> restoredRecord = persistenceService.restore(mockedDao);
 
         // Assert
-        assertThat(dao2.count()).isEqualTo(1);
-        assertThat(dao2.read(record.getId()).getValue()).isEqualTo(record.getValue());
+        assertThat(restoredRecord.size()).isEqualTo(1);
+        assertThat(restoredRecord.get(0).getUniqueValue()).isEqualTo(record.getUniqueValue());
     }
 
     private void deleteAllData() throws IOException {
-        FileUtils.deleteDirectory(this.getPersistenceFilesDirectory());
+        FileUtils.deleteDirectory(getPersistenceFilesDirectory());
     }
 
     private File getPersistenceFilesDirectory() {
-        return persistenceService.getDaoPersistencePath(this.dao).getParentFile();
+        return persistenceService.getDaoPersistencePath(mockedDao).getParentFile();
     }
 }
