@@ -10,15 +10,19 @@ import org.openqa.selenium.WebDriver;
 import play.libs.F;
 import play.test.TestBrowser;
 
+import static org.fest.assertions.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static play.test.Helpers.*;
 
 public class CartTest {
 
-    private static final String EMAIL = "user@example.com";
-    private static final String PASSWORD = "secret";
     private static final int FIRST_ITEM_INDEX = 0;
     private static final int FIRST_EVENT = 1;
+    private static final int VALID_TICKET_QUANTITY = 10;
+    private static final int EXEEDED_TICKET_QUANTITY = 30000;
+    private static final String EMAIL = "user@example.com";
+    private static final String PASSWORD = "secret";
     private static final String A_CVV = "123";
     private static final String A_CARD_NUMBER = "12345678901234";
     private static final String A_MONTH = "01";
@@ -70,16 +74,13 @@ public class CartTest {
                 CartPage cartPage = new CartPage(browser.getDriver());
 
                 goToEventPage(eventPage);
-
-                // Buy one ticket from events #1, category 0
                 eventPage.buyTicketsForCategory(0, 1);
-
-                // Buy another two tickets for the same category and the same event
                 eventPage.buyTicketsForCategory(0, 2);
+                goToCartPage(cartPage, 1);
 
                 // Should have one item with quantity equals to 3
-                goToCartPage(cartPage, 1);
-                cartPage.itemHas(0, 3);
+                assertThat(cartPage.getNumberOfItems()).isEqualTo(1);
+                assertThat(cartPage.getQuantityForItem(0)).isEqualTo(3);
             }
         });
     }
@@ -226,6 +227,80 @@ public class CartTest {
                 String message = cartPage.waitAndGetAlert().getText();
                 String expectedMessage = "Vous devez vous connecter avant de procéder au paiement";
                 assertEquals(expectedMessage, message);
+            }
+        });
+    }
+
+    @Test
+    public void modifyNumberOfTicketsIsPossible(){
+        running(testServer(3333, fakeApplication(new TestGlobal())), FIREFOX, new F.Callback<TestBrowser>() {
+            @Override
+            public void invoke(TestBrowser browser) {
+                EventPage eventPage1 = new EventPage(browser.getDriver(), FIRST_EVENT);
+                CartPage cartPage = new CartPage(browser.getDriver());
+                goToEventPage(eventPage1);
+
+                eventPage1.buyTicketsForCategory(0, 1);
+                goToCartPage(cartPage, 1);
+                cartPage.modifyNumberOfTicketsForItem(0, VALID_TICKET_QUANTITY);
+
+                browser.getDriver().navigate().refresh();
+                cartPage.waitUntilItemsHasSize(1);
+                assertEquals(cartPage.getQuantityForItem(0), VALID_TICKET_QUANTITY);
+            }
+        });
+    }
+
+    @Test
+    public void aWarningMessageIsDisplayedWhenMaximumNumberOfTicketsIsExeeded(){
+        running(testServer(3333, fakeApplication(new TestGlobal())), FIREFOX, new F.Callback<TestBrowser>() {
+            @Override
+            public void invoke(TestBrowser browser) {
+                EventPage eventPage1 = new EventPage(browser.getDriver(), FIRST_EVENT);
+                CartPage cartPage = new CartPage(browser.getDriver());
+                goToEventPage(eventPage1);
+
+                eventPage1.buyTicketsForCategory(0, 1);
+                goToCartPage(cartPage, 1);
+                cartPage.modifyNumberOfTicketsForItem(0, EXEEDED_TICKET_QUANTITY);
+
+                assertTrue(cartPage.isWarningMessageDisplayed());
+            }
+        });
+    }
+
+    @Test
+    public void notPossibleToAddMoreThanMaximumNumberOfTickets(){
+        running(testServer(3333, fakeApplication(new TestGlobal())), FIREFOX, new F.Callback<TestBrowser>() {
+            @Override
+            public void invoke(TestBrowser browser) {
+                EventPage eventPage1 = new EventPage(browser.getDriver(), FIRST_EVENT);
+                CartPage cartPage = new CartPage(browser.getDriver());
+                goToEventPage(eventPage1);
+
+                eventPage1.buyTicketsForCategory(0, 1);
+                goToCartPage(cartPage, 1);
+                cartPage.modifyNumberOfTicketsForItem(0, EXEEDED_TICKET_QUANTITY);
+
+                assertThat(cartPage.getQuantityForItem(0)).isNotEqualTo(EXEEDED_TICKET_QUANTITY);
+            }
+        });
+    }
+
+    @Test
+    public void ensureThatAQuantityOfZeroRemoveTheItemFromTheCart(){
+        running(testServer(3333, fakeApplication(new TestGlobal())), FIREFOX, new F.Callback<TestBrowser>() {
+            @Override
+            public void invoke(TestBrowser browser) {
+                EventPage eventPage1 = new EventPage(browser.getDriver(), FIRST_EVENT);
+                CartPage cartPage = new CartPage(browser.getDriver());
+                goToEventPage(eventPage1);
+
+                eventPage1.buyTicketsForCategory(0, 1);
+                goToCartPage(cartPage, 1);
+                cartPage.modifyNumberOfTicketsForItem(0, 0);
+
+                assertThat(cartPage.getNumberOfItems()).isEqualTo(0);
             }
         });
     }

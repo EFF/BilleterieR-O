@@ -2,6 +2,7 @@ package ca.ulaval.glo4003.acceptances.pages;
 
 import org.fluentlenium.core.FluentPage;
 import org.fluentlenium.core.domain.FluentList;
+import org.fluentlenium.core.domain.FluentWebElement;
 import org.openqa.selenium.WebDriver;
 
 public abstract class BaseFluentPage extends FluentPage {
@@ -35,5 +36,14 @@ public abstract class BaseFluentPage extends FluentPage {
 
     public void waitForSuccessMessageToDisplay() {
         await().atMost(TIMEOUT).until(".alertContainer .alert-success").isPresent();
+    }
+
+    public void waitForWarningMessageToDisplay() {
+        await().atMost(TIMEOUT).until(".alertContainer .alert-warning").isPresent();
+    }
+
+    public boolean isWarningMessageDisplayed() {
+        waitForWarningMessageToDisplay();
+        return find(".alertContainer .alert-warning").size() >= 1;
     }
 }
