@@ -18,26 +18,6 @@ public class UserDao extends PersistedDao<User> implements DataAccessObject<User
         super(persistenceService, uniqueConstraintValidator);
     }
 
-    public User findByEmailAndPassword(final String email, final String password) throws RecordNotFoundException {
-        FluentIterable<User> users = FluentIterable.from(this.list());
-
-        Optional<User> userOptional = users.firstMatch(new Predicate<User>() {
-            @Override
-            public boolean apply(User input) {
-                return input.getEmail().toLowerCase().equals(email.toLowerCase())
-                        && input.getPassword().equals(password);
-            }
-        });
-
-        if (userOptional.isPresent()) {
-            return userOptional.get();
-        }
-
-        throw new RecordNotFoundException();
-    }
-
-    // TODO: Remove find by email and password.
-    // TODO: Rewrite associated tests
     public User findByEmail(final String email) throws RecordNotFoundException {
         FluentIterable<User> users = FluentIterable.from(this.list());
 

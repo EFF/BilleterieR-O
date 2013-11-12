@@ -28,35 +28,23 @@ public class UserDaoTest {
     }
 
     @Test
-    public void findUserByEmailAndPasswordReturnsTheUser() throws RecordNotFoundException {
+    public void findUserByEmailReturnsTheUser() throws RecordNotFoundException {
         User user = new User();
         user.setEmail("user@example.com");
-        user.setPassword("secret");
         userDao.create(user);
 
-        User result = userDao.findByEmailAndPassword(user.getEmail(), user.getPassword());
+        User result = userDao.findByEmail(user.getEmail());
 
         assertNotNull(result);
         assertEquals(user.getEmail(), result.getEmail());
     }
 
     @Test(expected = RecordNotFoundException.class)
-    public void findUserByEmailAndPasswordThrowsRecordNotFoundIfTheEmailIsWrong() throws RecordNotFoundException {
+    public void findUserByEmailThrowsRecordNotFoundIfTheEmailIsWrong() throws RecordNotFoundException {
         User user = new User();
         user.setEmail("user@example.com");
-        user.setPassword("secret");
         userDao.create(user);
 
-        userDao.findByEmailAndPassword("wrong@email.com", user.getPassword());
-    }
-
-    @Test(expected = RecordNotFoundException.class)
-    public void findUserByEmailAndPasswordThrowsRecordNotFoundIfThePasswordIsWrong() throws RecordNotFoundException {
-        User user = new User();
-        user.setEmail("user@example.com");
-        user.setPassword("secret");
-        userDao.create(user);
-
-        userDao.findByEmailAndPassword(user.getEmail(), "wrong");
+        userDao.findByEmail("wrong@email.com");
     }
 }

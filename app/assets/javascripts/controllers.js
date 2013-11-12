@@ -154,20 +154,20 @@ define(['app'], function (app) {
             }
 
             $scope.updatePassword = function () {
-                if ($scope.password == $scope.password_confirmation) {
-                    $http.post('/api/user_profile/password', {
-                        actual_password: $scope.actual_password,
-                        password: $scope.password,
-                        password_confirmation: $scope.password_confirmation
-                    }).success(function () {
-                            FlashMessage.send("success", "Votre mot de passe a été modifié avec succès.");
-                        }).error(function () {
-                            // TODO: Mettre le bon message selon l'erreur
-                            FlashMessage.error("error", "Erreur lors de la modification de votre mot de passe.");
-                        });
-                } else {
-                    // TODO: Mot de passe identique
+                if ($scope.password != $scope.password_confirmation) {
+                    FlashMessage.send("error", "Les deux mots de passe doivent être identiques.")
+                    return;
                 }
+                $http.post('/api/user_profile/password', {
+                    actual_password: $scope.actual_password,
+                    password: $scope.password,
+                    password_confirmation: $scope.password_confirmation
+                }).success(function () {
+                        FlashMessage.send("success", "Votre mot de passe a été modifié avec succès.");
+                    }).error(function () {
+                        // TODO: Mettre le bon message selon l'erreur
+                        FlashMessage.error("error", "Erreur lors de la modification de votre mot de passe.");
+                    });
             };
 
             $scope.updateEmail = function () {
@@ -178,9 +178,12 @@ define(['app'], function (app) {
                         Login.username = email;
                         FlashMessage.send("success", "Votre email a été modifié avec succès.");
                     }).error(function () {
-                        FlashMessage.error("error", "Erreur lors de la modification de votre email")
+                        FlashMessage.error("error", "La modification de votre email a échouée")
                     });
             }
-        }]);
+        }
+    ])
+    ;
 
-});
+})
+;
