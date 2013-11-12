@@ -69,7 +69,6 @@ define(['app'], function (app) {
         };
 
         exports.removeItem = function (index) {
-            console.log(index);
             cart.splice(index, 1);
             updateCartCookie(cart);
         };

@@ -120,12 +120,13 @@ define(['app'], function (app) {
             };
 
             var currentDate = new Date();
-            for (var i = 0; i < 5; i++) {
+            var followingYears = 5;
+            for (var i = 0; i < followingYears; i++) {
                 $scope.expirationYears.push(currentDate.getFullYear() + i);
             }
 
             var notifyUserToLogin = function () {
-                window.alert('Vous devez vous connecter avant de procéder au paiement');
+                FlashMessage.send('info','Vous devez vous connecter avant de procéder au paiement');
             };
 
             var checkoutSuccess = function () {
