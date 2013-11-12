@@ -6,12 +6,15 @@ import ca.ulaval.glo4003.models.TicketSearchCriteria;
 import ca.ulaval.glo4003.services.DaoPersistenceService;
 import com.google.common.base.Predicate;
 import com.google.common.collect.FluentIterable;
+import com.google.inject.Inject;
 import org.apache.commons.lang3.StringUtils;
 
 import java.security.InvalidParameterException;
 import java.util.List;
 
-public class TicketDao extends PersistedDao<Ticket> implements DataAccessObject<Ticket> {
+public class TicketDao extends PersistedDao<Ticket> {
+
+    @Inject
     public TicketDao(DaoPersistenceService persistenceService) {
         super(persistenceService);
     }

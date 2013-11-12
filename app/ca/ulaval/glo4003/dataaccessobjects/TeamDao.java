@@ -4,8 +4,11 @@ package ca.ulaval.glo4003.dataaccessobjects;
 import ca.ulaval.glo4003.exceptions.RecordNotFoundException;
 import ca.ulaval.glo4003.models.Team;
 import ca.ulaval.glo4003.services.DaoPersistenceService;
+import com.google.inject.Inject;
 
-public class TeamDao extends PersistedDao<Team>{
+public class TeamDao extends PersistedDao<Team> {
+
+    @Inject
     public TeamDao(DaoPersistenceService persistenceService){
         super(persistenceService);
     }
