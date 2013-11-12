@@ -1,10 +1,7 @@
 package ca.ulaval.glo4003.unittests;
 
 import ca.ulaval.glo4003.StagingBootstrapper;
-import ca.ulaval.glo4003.dataaccessobjects.EventDao;
-import ca.ulaval.glo4003.dataaccessobjects.SportDao;
-import ca.ulaval.glo4003.dataaccessobjects.TicketDao;
-import ca.ulaval.glo4003.dataaccessobjects.UserDao;
+import ca.ulaval.glo4003.dataaccessobjects.*;
 import ca.ulaval.glo4003.models.Event;
 import ca.ulaval.glo4003.models.Sport;
 import org.junit.Before;
@@ -21,6 +18,7 @@ public class StagingBootstrapTest {
     private EventDao eventDao;
     private SportDao sportDao;
     private TicketDao ticketDao;
+    private TeamDao teamDao;
     private UserDao userDao;
     private StagingBootstrapper bootstrap;
 
@@ -31,8 +29,9 @@ public class StagingBootstrapTest {
         eventDao = mock(EventDao.class);
         sportDao = mock(SportDao.class);
         ticketDao = mock(TicketDao.class);
+        teamDao = mock(TeamDao.class);
         userDao = mock(UserDao.class);
-        bootstrap = new StagingBootstrapper(eventDao, sportDao, userDao, ticketDao);
+        bootstrap = new StagingBootstrapper(eventDao, sportDao, userDao, ticketDao, teamDao);
     }
 
     @Test
