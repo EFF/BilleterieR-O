@@ -36,14 +36,14 @@ public class CartTest {
 
                 goToEventPage(eventPage1);
                 // Buy two tickets from events/1, category 0
-                eventPage1.buyTicketsForCategory(0, 2);
+                eventPage1.addTicketsToCartForCategory(0, 2);
                 assertEquals(2, eventPage1.getCartSize());
                 // Buy five tickets from events/1, category 1
-                eventPage1.buyTicketsForCategory(1, 5);
+                eventPage1.addTicketsToCartForCategory(1, 5);
                 assertEquals(7, eventPage1.getCartSize());
                 // Buy one ticket from event #2, category 0
                 goToEventPage(eventPage2);
-                eventPage2.buyTicketsForCategory(0, 1);
+                eventPage2.addTicketsToCartForCategory(0, 1);
                 assertEquals(8, eventPage2.getCartSize());
 
                 goToCartPage(cartPage, 3);
@@ -72,10 +72,10 @@ public class CartTest {
                 goToEventPage(eventPage);
 
                 // Buy one ticket from events #1, category 0
-                eventPage.buyTicketsForCategory(0, 1);
+                eventPage.addTicketsToCartForCategory(0, 1);
 
                 // Buy another two tickets for the same category and the same event
-                eventPage.buyTicketsForCategory(0, 2);
+                eventPage.addTicketsToCartForCategory(0, 2);
 
                 // Should have one item with quantity equals to 3
                 goToCartPage(cartPage, 1);
@@ -103,14 +103,14 @@ public class CartTest {
 
                 int firstCategoryTicketCount = eventPage1.getTicketNumberForCategory(0);
 
-                eventPage1.buyTicketsForCategory(0, 1);
-                eventPage1.buyTicketsForCategory(1, 1);
+                eventPage1.addTicketsToCartForCategory(0, 1);
+                eventPage1.addTicketsToCartForCategory(1, 1);
                 assertEquals(2, eventPage1.getCartSize());
 
                 goToCartPage(cartPage, 2);
 
                 cartPage.selectItem(0);
-                payCartWithCard(cartPage, A_CARD_TYPE, browser.getDriver());
+                payCartWithCard(cartPage, A_CARD_TYPE);
                 cartPage.confirm(browser.getDriver());
                 resultPage.isAt();
 
@@ -140,13 +140,13 @@ public class CartTest {
                 int cart1TicketNumber = eventPage1.getTicketNumberForCategory(0);
                 int cart2TicketNumber = eventPage1.getTicketNumberForCategory(1);
 
-                eventPage1.buyTicketsForCategory(0, 1);
-                eventPage1.buyTicketsForCategory(1, 1);
+                eventPage1.addTicketsToCartForCategory(0, 1);
+                eventPage1.addTicketsToCartForCategory(1, 1);
                 assertEquals(2, eventPage1.getCartSize());
 
                 goToCartPage(cartPage, 2);
 
-                payCartWithCard(cartPage, A_CARD_TYPE, browser.getDriver());
+                payCartWithCard(cartPage, A_CARD_TYPE);
                 cartPage.confirm(browser.getDriver());
                 resultPage.isAt();
 
@@ -172,10 +172,10 @@ public class CartTest {
                 loginPage.performLogin(EMAIL, PASSWORD);
 
                 goToEventPage(eventPage1);
-                eventPage1.buyTicketsForCategory(0, 1);
+                eventPage1.addTicketsToCartForCategory(0, 1);
 
                 goToCartPage(cartPage, 1);
-                payCartWithCard(cartPage, A_CARD_TYPE, browser.getDriver());
+                payCartWithCard(cartPage, A_CARD_TYPE);
                 cartPage.confirm(browser.getDriver());
                 assertEquals(0, resultPage.getCartSize());
             }
@@ -197,10 +197,10 @@ public class CartTest {
                 loginPage.performLogin(EMAIL, PASSWORD);
 
                 goToEventPage(eventPage1);
-                eventPage1.buyTicketsForCategory(0, 1);
+                eventPage1.addTicketsToCartForCategory(0, 1);
 
                 goToCartPage(cartPage, 1);
-                payCartWithCard(cartPage, A_CARD_TYPE, browser.getDriver());
+                payCartWithCard(cartPage, A_CARD_TYPE);
                 cartPage.dismiss(browser.getDriver());
                 assertEquals(1, resultPage.getCartSize());
             }
@@ -217,11 +217,11 @@ public class CartTest {
 
                 goToEventPage(eventPage1);
 
-                eventPage1.buyTicketsForCategory(0, 1);
+                eventPage1.addTicketsToCartForCategory(0, 1);
 
                 goToCartPage(cartPage, 1);
 
-                payCartWithCard(cartPage, A_CARD_TYPE, browser.getDriver());
+                payCartWithCard(cartPage, A_CARD_TYPE);
 
                 String message = cartPage.waitAndGetAlert().getText();
                 String expectedMessage = "Vous devez vous connecter avant de procéder au paiement";
@@ -230,7 +230,7 @@ public class CartTest {
         });
     }
 
-    private void payCartWithCard(CartPage cartPage, String cardName, WebDriver driver) {
+    private void payCartWithCard(CartPage cartPage, String cardName) {
         cartPage.selectComboLabel(cardName);
         cartPage.fillCreditCardNumber(A_CARD_NUMBER);
         cartPage.fillCvv(A_CVV);

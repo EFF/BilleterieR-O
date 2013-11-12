@@ -3,6 +3,7 @@ package ca.ulaval.glo4003.acceptances.pages;
 import org.openqa.selenium.WebDriver;
 
 import static org.fluentlenium.core.filter.FilterConstructor.withId;
+import static org.fluentlenium.core.filter.FilterConstructor.withText;
 
 public class LoginPage extends BaseFluentPage {
 
@@ -44,5 +45,9 @@ public class LoginPage extends BaseFluentPage {
 
     public void login() {
         find("button", withId().equalTo("login-button")).click();
+    }
+
+    public String displayedUsername() {
+        return find("#username").getText();
     }
 }
