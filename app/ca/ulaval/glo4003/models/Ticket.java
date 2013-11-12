@@ -9,9 +9,11 @@ public class Ticket extends Record implements Serializable {
     private String section;
     private long seat;
 
-    public Ticket(long eventId, long categoryId) {
+    public Ticket(long eventId, long categoryId, String section, long seat) {
         this.categoryId = categoryId;
         this.eventId = eventId;
+        this.section = section;
+        this.seat = seat;
     }
 
     public long getCategoryId() {
@@ -26,15 +28,7 @@ public class Ticket extends Record implements Serializable {
         return section;
     }
 
-    public void setSection(String section) {
-        this.section = section;
-    }
-
     public long getSeat() {
         return seat;
-    }
-
-    public void setSeat(long seat) {
-        this.seat = seat;
     }
 }

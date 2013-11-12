@@ -29,11 +29,11 @@ public class StagingBootstrapper implements Bootstrapper {
 
     @Override
     public void initData() {
-            initSports();
-            initTeams();
-            initEvents();
-            initTicket();
-            initUsers();
+        initSports();
+        initTeams();
+        initEvents();
+        initTicket();
+        initUsers();
     }
 
     private void initTeams() {
@@ -92,10 +92,11 @@ public class StagingBootstrapper implements Bootstrapper {
             for (Category category : event.getCategories()) {
                 int numberOfTickets = category.getNumberOfTickets();
                 while (numberOfTickets > 0) {
-                    Ticket ticket = new Ticket(event.getId(), category.getId());
                     int section = (new Random().nextInt(2) + 1) * 100;
-                    ticket.setSection("Niveau " + section);
-                    ticket.setSeat(numberOfTickets);
+                    Ticket ticket = new Ticket(event.getId(),
+                            category.getId(),
+                            "Niveau " + section,
+                            numberOfTickets);
                     ticketDao.create(ticket);
                     numberOfTickets--;
                 }

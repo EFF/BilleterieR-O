@@ -53,6 +53,16 @@ public class Tickets extends Controller {
         }
     }
 
+    public Result shows(String ids) {
+        return ok(Json.toJson("Works!"));
+//        try {
+//            Ticket ticket = ticketDao.read(id);
+//            return ok(Json.toJson(ticket));
+//        } catch (RecordNotFoundException e) {
+//            return notFound();
+//        }
+    }
+
     public Result showEventTicketSections(long eventId){
         TicketSearchCriteria ticketSearchCriteria = new TicketSearchCriteria();
         ticketSearchCriteria.setEventId(eventId);

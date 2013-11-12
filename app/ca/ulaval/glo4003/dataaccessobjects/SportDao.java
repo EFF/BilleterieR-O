@@ -10,5 +10,4 @@ public class SportDao extends PersistedDao<Sport> {
     public SportDao(DaoPersistenceService persistenceService) {
         super(persistenceService);
     }
-
 }
