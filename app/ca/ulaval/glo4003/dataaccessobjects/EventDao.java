@@ -57,9 +57,8 @@ public class EventDao extends PersistedDao<Event> {
         throw new RecordNotFoundException();
     }
 
-    public void decrementEventCategoryNumberOfTickets(long eventId, long categoryId,
-                                                      int numberOfTickets) throws RecordNotFoundException,
-            MaximumExceededException {
+    public void decrementEventCategoryNumberOfTickets(long eventId, long categoryId, int numberOfTickets)
+            throws RecordNotFoundException, MaximumExceededException {
         Category category = findCategory(eventId, categoryId);
         category.decrementNumberOfTickets(numberOfTickets);
     }

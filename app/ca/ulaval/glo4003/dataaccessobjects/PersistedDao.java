@@ -26,8 +26,8 @@ public abstract class PersistedDao<T extends Record> implements DataAccessObject
             System.out.println("Successfully restored DAO [" + this.getClass().getSimpleName() + "] with a total of " +
                     this.list.size() + " items.");
         } catch (Exception e) {
-            System.out.println("Warning: Could not restore DAO [" + this.getClass().getSimpleName() + "]: " + e
-                    .getMessage());
+            System.out.println("Warning: Could not restore DAO [" + this.getClass().getSimpleName() + "]: " +
+                    e.getMessage());
         }
     }
 
