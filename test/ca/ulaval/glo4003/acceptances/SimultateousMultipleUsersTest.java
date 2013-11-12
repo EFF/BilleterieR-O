@@ -28,8 +28,8 @@ public class SimultateousMultipleUsersTest {
             @Override
             public void invoke(TestBrowser browser) {
                 WebDriver driver1 = browser.getDriver();
-                //Create a second driver so we can test in simili parallel
                 FirefoxDriver driver2 = new FirefoxDriver();
+
                 LoginPage loginPage1 = new LoginPage(driver1);
                 LoginPage loginPage2 = new LoginPage(driver2);
 
@@ -49,8 +49,8 @@ public class SimultateousMultipleUsersTest {
             @Override
             public void invoke(TestBrowser browser) {
                 WebDriver driver1 = browser.getDriver();
-                //Create a second driver so we can test in simili parallel
                 FirefoxDriver driver2 = new FirefoxDriver();
+
                 EventPage eventPage1 = new EventPage(driver1, EVENT_INDEX);
                 EventPage eventPage2 = new EventPage(driver2, EVENT_INDEX);
 
@@ -69,21 +69,48 @@ public class SimultateousMultipleUsersTest {
             @Override
             public void invoke(TestBrowser browser) {
                 WebDriver driver1 = browser.getDriver();
-                //Create a second driver so we can test in simili parallel
                 FirefoxDriver driver2 = new FirefoxDriver();
+
+                LoginPage loginPage1 = new LoginPage(driver1);
+                LoginPage loginPage2 = new LoginPage(driver2);
                 EventPage eventPage1 = new EventPage(driver1, EVENT_INDEX);
                 EventPage eventPage2 = new EventPage(driver2, EVENT_INDEX);
-
-                loginWithDifferentUsersOnBothDrivers(loginPage1, loginPAge2);
+                CartPage cartPage1 = new CartPage(driver1);
+                CartPage cartPage2 = new CartPage(driver2);
+                loginWithDifferentUsersOnBothDrivers(loginPage1, loginPage2);
                 goToEventPages(eventPage1, eventPage2);
-                addTicketsToCarts(eventPage1, eventPage2);
-                checkoutBoth(cartPage1, cartPage2);
+                int initialNumberOfTicketsInCategory = eventPage1.getTicketNumberForCategory(TICKET_CATEGORY_ID);
 
-                assertThat(eventPage1.getTicketNumberForCategory(1)).isEqualTo(eventPage2.getTicketNumberForCategory(1));
+                addTicketsToCartOnBothDrivers(eventPage1, eventPage2);
+                goToCartPages(cartPage1, cartPage2);
+                checkoutBoth(cartPage1, cartPage2);
+                cartPage1.confirm(driver1);
+                cartPage2.confirm(driver2);
+                goToEventPages(eventPage1, eventPage2);
+
+                assertThat(eventPage1.getTicketNumberForCategory(TICKET_CATEGORY_ID)).isEqualTo(eventPage2.getTicketNumberForCategory(TICKET_CATEGORY_ID));
+                assertThat(eventPage1.getTicketNumberForCategory(TICKET_CATEGORY_ID)).isEqualTo(initialNumberOfTicketsInCategory - 2*TICKET_QUANTITY);
 
                 closeDriver(driver2);
             }
         });
+    }
+
+    private void goToCartPages(CartPage cartPage1, CartPage cartPage2) {
+        cartPage1.go();
+        cartPage2.go();
+        cartPage1.isAt();
+        cartPage2.isAt();
+    }
+
+    private void checkoutBoth(CartPage cartPage1, CartPage cartPage2) {
+        cartPage1.payWithCreditCard();
+        cartPage2.payWithCreditCard();
+    }
+
+    private void addTicketsToCartOnBothDrivers(EventPage eventPage1, EventPage eventPage2) {
+        eventPage1.addTicketsToCartForCategory(TICKET_CATEGORY_ID, TICKET_QUANTITY);
+        eventPage2.addTicketsToCartForCategory(TICKET_CATEGORY_ID, TICKET_QUANTITY);
     }
 
 
@@ -98,19 +125,6 @@ public class SimultateousMultipleUsersTest {
         loginPage2.isAt();
         loginPage1.performLogin(VALID_USER_EMAIL_1, PASSWORD);
         loginPage2.performLogin(VALID_USER_EMAIL_2, PASSWORD);
-    }
-
-    private void EnsureAbleToBuyTicketsWithBothDrivers(WebDriver driver1, FirefoxDriver driver2) {
-        CartPage cartPage1 = new CartPage(driver1);
-        CartPage cartPage2 = new CartPage(driver2);
-        cartPage1.go();
-        cartPage2.go();
-        cartPage1.isAt();
-        cartPage2.isAt();
-
-
-        cartPage1.checkout();
-        cartPage2.checkout();
     }
 
     private void goToEventPages(EventPage eventPage1, EventPage eventPage2) {

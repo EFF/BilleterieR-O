@@ -15,15 +15,10 @@ import static play.test.Helpers.*;
 
 public class CartTest {
 
-    private static final String EMAIL = "user@example.com";
+    private static final String EMAIL = "user1@example.com";
     private static final String PASSWORD = "secret";
     private static final int FIRST_ITEM_INDEX = 0;
     private static final int FIRST_EVENT = 1;
-    private static final String A_CVV = "123";
-    private static final String A_CARD_NUMBER = "12345678901234";
-    private static final String A_MONTH = "01";
-    private static final String A_YEAR = "2015";
-    private static final String A_CARD_TYPE = "Vasi";
 
     @Test
     public void putManyItemsFromManyEventsIntoTheCartAndRemoveThem() {
@@ -110,7 +105,7 @@ public class CartTest {
                 goToCartPage(cartPage, 2);
 
                 cartPage.selectItem(0);
-                payCartWithCard(cartPage, A_CARD_TYPE);
+                cartPage.payWithCreditCard();
                 cartPage.confirm(browser.getDriver());
                 resultPage.isAt();
 
@@ -146,7 +141,7 @@ public class CartTest {
 
                 goToCartPage(cartPage, 2);
 
-                payCartWithCard(cartPage, A_CARD_TYPE);
+                cartPage.payWithCreditCard();
                 cartPage.confirm(browser.getDriver());
                 resultPage.isAt();
 
@@ -175,7 +170,7 @@ public class CartTest {
                 eventPage1.addTicketsToCartForCategory(0, 1);
 
                 goToCartPage(cartPage, 1);
-                payCartWithCard(cartPage, A_CARD_TYPE);
+                cartPage.payWithCreditCard();
                 cartPage.confirm(browser.getDriver());
                 assertEquals(0, resultPage.getCartSize());
             }
@@ -200,7 +195,7 @@ public class CartTest {
                 eventPage1.addTicketsToCartForCategory(0, 1);
 
                 goToCartPage(cartPage, 1);
-                payCartWithCard(cartPage, A_CARD_TYPE);
+                cartPage.payWithCreditCard();
                 cartPage.dismiss(browser.getDriver());
                 assertEquals(1, resultPage.getCartSize());
             }
@@ -221,22 +216,13 @@ public class CartTest {
 
                 goToCartPage(cartPage, 1);
 
-                payCartWithCard(cartPage, A_CARD_TYPE);
+                cartPage.payWithCreditCard();
 
                 String message = cartPage.waitAndGetAlert().getText();
                 String expectedMessage = "Vous devez vous connecter avant de procéder au paiement";
                 assertEquals(expectedMessage, message);
             }
         });
-    }
-
-    private void payCartWithCard(CartPage cartPage, String cardName) {
-        cartPage.selectComboLabel(cardName);
-        cartPage.fillCreditCardNumber(A_CARD_NUMBER);
-        cartPage.fillCvv(A_CVV);
-        cartPage.selectExpirationMonth(A_MONTH);
-        cartPage.selectExpirationYear(A_YEAR);
-        cartPage.checkout();
     }
 
     private void goToCartPage(CartPage cartPage, int itemSize) {
