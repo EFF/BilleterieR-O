@@ -6,9 +6,11 @@ import ca.ulaval.glo4003.services.DaoPersistenceService;
 import com.google.common.base.Optional;
 import com.google.common.base.Predicate;
 import com.google.common.collect.FluentIterable;
+import com.google.inject.Inject;
 
 public class UserDao extends PersistedDao<User> implements DataAccessObject<User> {
 
+    @Inject
     public UserDao(DaoPersistenceService persistenceService) {
         super(persistenceService);
     }

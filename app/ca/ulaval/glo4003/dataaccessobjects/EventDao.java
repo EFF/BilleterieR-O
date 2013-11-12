@@ -9,6 +9,7 @@ import ca.ulaval.glo4003.models.Gender;
 import ca.ulaval.glo4003.services.DaoPersistenceService;
 import com.google.common.base.Predicate;
 import com.google.common.collect.FluentIterable;
+import com.google.inject.Inject;
 import org.apache.commons.lang3.StringUtils;
 import org.joda.time.LocalDateTime;
 
@@ -18,6 +19,7 @@ import java.util.List;
 
 public class EventDao extends PersistedDao<Event> {
 
+    @Inject
     public EventDao(DaoPersistenceService persistenceService) {
         super(persistenceService);
     }
