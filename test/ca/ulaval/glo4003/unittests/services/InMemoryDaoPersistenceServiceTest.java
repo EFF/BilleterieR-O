@@ -34,12 +34,10 @@ public class InMemoryDaoPersistenceServiceTest {
         /* The expected behaviour of a memory persistence service
         is to always return nothing because InMemory is volatile
         persistency by definition.*/
-        // Arrange
         PersistedDaoTest.TestRecord record = new PersistedDaoTest.TestRecord(A_VALUE);
         record.setId(AN_ID);
         when(mockedDao.list()).thenReturn(Arrays.asList(record));
 
-        // Act & Assert
         assertThat(persistenceService.restore(mockedDao)).isEmpty();
     }
 

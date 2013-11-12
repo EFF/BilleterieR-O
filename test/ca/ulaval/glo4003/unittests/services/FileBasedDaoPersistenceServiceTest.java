@@ -44,42 +44,34 @@ public class FileBasedDaoPersistenceServiceTest {
 
     @Test(expected = IOException.class)
     public void restoreThrowsWhenPersistenceFilesNotFound() throws IOException, ClassNotFoundException {
-        // Act & Assert
         persistenceService.restore(mockedDao);
     }
 
     @Test
     public void restoreDoesNotThrowWhenPersistenceFilesFound() throws IOException, ClassNotFoundException {
-        // Arrange
         System.out.println(getPersistenceFilesDirectory().getAbsolutePath());
         persistenceService.persist(mockedDao);
 
-        // Act & Assert
         assertThat(getPersistenceFilesDirectory().exists()).isTrue();
         persistenceService.restore(mockedDao);
     }
 
     @Test
     public void persistCreatesDestinationDirectoryIfDoesNotExist() throws IOException, ClassNotFoundException {
-        // Arrange
         persistenceService.persist(mockedDao);
 
-        // Act & Assert
         assertThat(getPersistenceFilesDirectory().exists()).isTrue();
     }
 
     @Test
     public void persistAndRestoreWorks() throws IOException, ClassNotFoundException, RecordNotFoundException {
-        // Arrange
         PersistedDaoTest.TestRecord record = new PersistedDaoTest.TestRecord(A_VALUE);
         record.setId(AN_ID);
         when(mockedDao.list()).thenReturn(Arrays.asList(record));
         persistenceService.persist(mockedDao);
 
-        // Act
         List<PersistedDaoTest.TestRecord> restoredRecord = persistenceService.restore(mockedDao);
 
-        // Assert
         assertThat(restoredRecord.size()).isEqualTo(1);
         assertThat(restoredRecord.get(0).getUniqueValue()).isEqualTo(record.getUniqueValue());
     }
