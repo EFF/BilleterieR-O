@@ -28,7 +28,9 @@
                 {{item.event.dateAsString | date:'dd-MM-yyyy HH:mm'}}</a>
         </td>
         <td>{{item.category.price}}$</td>
-        <td class="quantity">{{item.quantity}}</td>
+        <td class="col-md-2">
+            <input id="input_quantity{{$index}}" class="form-control" type="number" required step="1" ng-model="item.quantity" ng-change="updateItemQuantity($index, item.quantity, item.category.numberOfTickets)" ng-init="item.quantity" max="{{item.category.numberOfTickets}}">
+        </td>
         <td>{{item.quantity * item.category.price}}$</td>
         <td>
             <button class="btn btn-danger item-remove" ng-click="removeItem($index)">x</button>

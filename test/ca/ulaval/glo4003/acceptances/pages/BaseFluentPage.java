@@ -35,4 +35,13 @@ public abstract class BaseFluentPage extends FluentPage {
     public void waitForSuccessMessageToDisplay() {
         await().atMost(TIMEOUT).until(".alertContainer .alert-success").isPresent();
     }
+
+    public void waitForWarningMessageToDisplay() {
+        await().atMost(TIMEOUT).until(".alertContainer .alert-warning").isPresent();
+    }
+
+    public boolean isWarningMessageDisplayed() {
+        waitForWarningMessageToDisplay();
+        return find(".alertContainer .alert-warning").size() >= 1;
+    }
 }

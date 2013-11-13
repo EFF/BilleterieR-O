@@ -23,7 +23,7 @@ public class SimultateousMultipleUsersTest {
     private static final int TICKET_QUANTITY = 1;
 
     @Test
-    public void ensureLoginWithTwoUserAtTheSameTime() {
+    public void ensureLoginWithTwoUsersAtTheSameTime() {
         running(testServer(3333, fakeApplication(new TestGlobal())), FIREFOX, new F.Callback<TestBrowser>() {
             @Override
             public void invoke(TestBrowser browser) {
@@ -44,7 +44,7 @@ public class SimultateousMultipleUsersTest {
     }
 
     @Test
-    public void ensureDifferentSessionsHaveSameNumberOfTicketForCategory() {
+    public void ensureDifferentSessionsHaveSameNumberOfTicketsForCategory() {
         running(testServer(3333, fakeApplication(new TestGlobal())), FIREFOX, new F.Callback<TestBrowser>() {
             @Override
             public void invoke(TestBrowser browser) {
@@ -112,7 +112,6 @@ public class SimultateousMultipleUsersTest {
         eventPage1.addTicketsToCartForCategory(TICKET_CATEGORY_ID, TICKET_QUANTITY);
         eventPage2.addTicketsToCartForCategory(TICKET_CATEGORY_ID, TICKET_QUANTITY);
     }
-
 
     private void closeDriver(FirefoxDriver driver) {
         driver.close();
