@@ -160,8 +160,7 @@ define(['app'], function (app) {
                 }
                 $http.post('/api/user_profile/password', {
                     actual_password: $scope.actual_password,
-                    password: $scope.password,
-                    password_confirmation: $scope.password_confirmation
+                    password: $scope.password
                 }).success(function () {
                         FlashMessage.send("success", "Votre mot de passe a été modifié avec succès.");
                     }).error(function () {

@@ -12,7 +12,15 @@ import play.mvc.Controller;
 import play.mvc.Result;
 import play.mvc.Security;
 
+import javax.validation.ValidationException;
+
 public class UserProfile extends Controller {
+
+    public static final String EMAIL_SHOULD_BE_UNIQUE = "Email should be unique";
+    public static final String BAD_SESSION_WRONG_USERNAME = "Bad session, wrong username";
+    public static final String EMAIL_EXPECTED = "Email expected";
+    public static final String ACTUAL_AND_NEW_PASSWORD_EXPECTED = "Actual and new password expected";
+    public static final String WRONG_ACTUAL_PASSWORD = "Wrong actual password";
 
     private final UserDao userDao;
 
@@ -26,7 +34,7 @@ public class UserProfile extends Controller {
         JsonNode json = request().body().asJson();
 
         if (!validateUpdateEmailParameters(json)) {
-            return badRequest("Email expected");
+            return badRequest(EMAIL_EXPECTED);
         }
 
         String actualEmail = session().get(ConstantsManager.COOKIE_SESSION_FIELD_NAME);
@@ -35,12 +43,13 @@ public class UserProfile extends Controller {
         try {
             User user = userDao.findByEmail(actualEmail);
             user.setEmail(newEmail);
-            // TODO: Email should be unique
             userDao.update(user);
             session().put(ConstantsManager.COOKIE_SESSION_FIELD_NAME, newEmail);
             return ok();
         } catch (RecordNotFoundException e) {
-            return unauthorized();
+            return unauthorized(BAD_SESSION_WRONG_USERNAME);
+        } catch (ValidationException e) {
+            return unauthorized(EMAIL_SHOULD_BE_UNIQUE);
         }
     }
 
@@ -49,31 +58,25 @@ public class UserProfile extends Controller {
         JsonNode json = request().body().asJson();
 
         if (!validateUpdatePasswordParameters(json)) {
-            return badRequest("Actual and new password expected");
+            return badRequest(ACTUAL_AND_NEW_PASSWORD_EXPECTED);
         }
 
         String email = session().get(ConstantsManager.COOKIE_SESSION_FIELD_NAME);
         String actualPassword = json.get(ConstantsManager.ACTUAL_PASSWORD_FIELD_NAME).asText();
         String newPassword = json.get(ConstantsManager.PASSWORD_FIELD_NAME).asText();
-        String confirmationPassword = json.get(ConstantsManager.PASSWORD_CONFIRMATION_FIELD_NAME).asText();
-
-        if(!newPassword.equals(confirmationPassword)) {
-            // TODO: Is it the best HTTP error
-            return unauthorized();
-        }
 
         try {
             User user = userDao.findByEmail(email);
 
             if(!user.getPassword().equals(actualPassword)) {
-                return unauthorized();
+                return unauthorized(WRONG_ACTUAL_PASSWORD);
             }
 
             user.setPassword(newPassword);
             userDao.update(user);
             return ok();
         } catch (RecordNotFoundException e) {
-            return unauthorized();
+            return unauthorized(BAD_SESSION_WRONG_USERNAME);
         }
 
     }
@@ -84,8 +87,7 @@ public class UserProfile extends Controller {
 
     private boolean validateUpdatePasswordParameters(JsonNode json) {
         return isNotBlank(json, ConstantsManager.ACTUAL_PASSWORD_FIELD_NAME) && isNotBlank(json,
-                ConstantsManager.PASSWORD_FIELD_NAME) && isNotBlank(json,
-                ConstantsManager.PASSWORD_CONFIRMATION_FIELD_NAME);
+                ConstantsManager.PASSWORD_FIELD_NAME);
     }
 
     private boolean isNotBlank(JsonNode json, String fieldName) {
