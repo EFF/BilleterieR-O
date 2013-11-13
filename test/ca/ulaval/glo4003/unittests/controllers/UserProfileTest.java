@@ -2,6 +2,7 @@ package ca.ulaval.glo4003.unittests.controllers;
 
 import ca.ulaval.glo4003.ConstantsManager;
 import ca.ulaval.glo4003.controllers.UserProfile;
+import ca.ulaval.glo4003.dataaccessobjects.UniqueValidationException;
 import ca.ulaval.glo4003.dataaccessobjects.UserDao;
 import ca.ulaval.glo4003.exceptions.RecordNotFoundException;
 import ca.ulaval.glo4003.models.User;
@@ -15,7 +16,7 @@ import play.libs.Json;
 import play.mvc.Http;
 import play.mvc.Result;
 
-import javax.validation.ValidationException;
+import javax.validation.ConstraintViolationException;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.anyString;
@@ -30,6 +31,7 @@ public class UserProfileTest extends BaseControllerTest {
     private static final String ANOTHER_PASSWORD = "secret2";
     private static final String NEW_PASSWORD = "secret2";
     private static final String AN_EMAIL = "email@test.com";
+    private static final String INVALID_EMAIL = "invalid";
 
     @Inject
     private UserProfile userProfile;
@@ -38,7 +40,7 @@ public class UserProfileTest extends BaseControllerTest {
 
     @Test
     public void updateEmailWithWrongUsernameSession() throws RecordNotFoundException {
-        addEmailBody();
+        addEmailBody(AN_EMAIL);
         when(mockedUserDao.findByEmail(anyString())).thenThrow(RecordNotFoundException.class);
 
         Result result = userProfile.updateEmail();
@@ -51,7 +53,7 @@ public class UserProfileTest extends BaseControllerTest {
     @Test
     public void updateEmailWithAUniqueEmail() throws RecordNotFoundException {
         User mockedUser = mock(User.class);
-        addEmailBody();
+        addEmailBody(AN_EMAIL);
         when(mockedUserDao.findByEmail(anyString())).thenReturn(mockedUser);
 
         Result result = userProfile.updateEmail();
@@ -63,13 +65,25 @@ public class UserProfileTest extends BaseControllerTest {
 
     @Test
     public void updateEmailWithANonUniqueEmail() throws RecordNotFoundException {
-        addEmailBody();
-        when(mockedUserDao.findByEmail(anyString())).thenThrow(ValidationException.class);
+        addEmailBody(AN_EMAIL);
+        when(mockedUserDao.findByEmail(anyString())).thenThrow(UniqueValidationException.class);
 
         Result result = userProfile.updateEmail();
 
         assertEquals(Http.Status.UNAUTHORIZED, status(result));
         assertEquals(UserProfile.EMAIL_SHOULD_BE_UNIQUE, contentAsString(result));
+        verify(mockedUserDao, never()).update(any(User.class));
+    }
+
+    @Test
+    public void updateEmailWithInvalidEmail() throws RecordNotFoundException {
+        addEmailBody(INVALID_EMAIL);
+        when(mockedUserDao.findByEmail(anyString())).thenThrow(ConstraintViolationException.class);
+
+        Result result = userProfile.updateEmail();
+
+        assertEquals(Http.Status.UNAUTHORIZED, status(result));
+        assertEquals(UserProfile.EMAIL_IS_INVALID, contentAsString(result));
         verify(mockedUserDao, never()).update(any(User.class));
     }
 
@@ -142,9 +156,9 @@ public class UserProfileTest extends BaseControllerTest {
         when(mockedBody.asJson()).thenReturn(json);
     }
 
-    private void addEmailBody() {
+    private void addEmailBody(String email) {
         ObjectNode json = Json.newObject();
-        json.put(ConstantsManager.USERNAME_FIELD_NAME, AN_EMAIL);
+        json.put(ConstantsManager.USERNAME_FIELD_NAME, email);
         when(mockedBody.asJson()).thenReturn(json);
     }
 

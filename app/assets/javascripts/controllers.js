@@ -162,7 +162,7 @@ define(['app'], function (app) {
 
         }]);
 
-    app.controller('UserProfileController', ['$scope', '$location', '$http', 'Login', 'FlashMessage',
+    app.controller('UserController', ['$scope', '$location', '$http', 'Login', 'FlashMessage',
         function ($scope, $location, $http, Login, FlashMessage) {
             if (Login.isLoggedIn) {
                 $scope.email = Login.username;
@@ -171,12 +171,12 @@ define(['app'], function (app) {
             }
 
             $scope.updatePassword = function () {
-                if ($scope.password != $scope.password_confirmation) {
+                if ($scope.password != $scope.passwordConfirmation) {
                     FlashMessage.send("error", "Les deux mots de passe doivent être identiques.")
                     return;
                 }
-                $http.post('/api/user_profile/password', {
-                    actual_password: $scope.actual_password,
+                $http.post('/api/user/password', {
+                    actualPassword: $scope.actualPassword,
                     password: $scope.password
                 }).success(function () {
                         FlashMessage.send("success", "Votre mot de passe a été modifié avec succès.");
@@ -187,7 +187,7 @@ define(['app'], function (app) {
 
             $scope.updateEmail = function () {
                 var email = $scope.email;
-                $http.post('api/user_profile/email', {
+                $http.post('api/user/email', {
                     username: email
                 }).success(function () {
                         Login.username = email;

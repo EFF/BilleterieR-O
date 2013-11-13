@@ -2,14 +2,16 @@ package ca.ulaval.glo4003.unittests.dataaccessobjects;
 
 import ca.ulaval.glo4003.dataaccessobjects.PersistedDao;
 import ca.ulaval.glo4003.dataaccessobjects.UniqueConstraintValidator;
+import ca.ulaval.glo4003.dataaccessobjects.UniqueValidationException;
 import ca.ulaval.glo4003.exceptions.RecordNotFoundException;
 import ca.ulaval.glo4003.models.Record;
 import ca.ulaval.glo4003.services.DaoPersistenceService;
 import org.junit.Before;
 import org.junit.Test;
+import play.data.validation.Constraints;
 
 import javax.persistence.Column;
-import javax.validation.ValidationException;
+import javax.validation.ConstraintViolationException;
 import java.io.IOException;
 import java.util.List;
 
@@ -24,6 +26,8 @@ public class PersistedDaoTest {
     private static final int A_VALUE = 50;
     private static final int ANOTHER_VALUE = 100;
     private static final int YET_ANOTHER_VALUE = 150;
+    private static final int INVALID_VALUE = -1;
+    private static final int MIN_VALUE_CONSTRAINT = 0;
 
     private PersistedDao<TestRecord> dao;
     private DaoPersistenceService mockedPersistenceService;
@@ -63,13 +67,20 @@ public class PersistedDaoTest {
         assertEquals(3, dao.list().get(2).getId());
     }
 
-    @Test(expected = ValidationException.class)
-    public void createTwoElementsWithNonUniqueValueShouldThrowValidationException() {
+    @Test(expected = UniqueValidationException.class)
+    public void createTwoElementsWithNonUniqueValueShouldThrowAnException() {
         TestRecord record1 = new TestRecord(A_VALUE);
         TestRecord record2 = new TestRecord(A_VALUE);
 
         dao.create(record1);
         dao.create(record2);
+    }
+
+    @Test(expected = ConstraintViolationException.class)
+    public void createElementWithInvalidValueShouldThrowAnException() {
+        TestRecord record = new TestRecord(INVALID_VALUE);
+
+        dao.create(record);
     }
 
     @Test
@@ -201,6 +212,7 @@ public class PersistedDaoTest {
     public static class TestRecord extends Record {
 
         @Column(unique = true)
+        @Constraints.Min(MIN_VALUE_CONSTRAINT)
         private int uniqueValue;
 
         public TestRecord(int uniqueValue) {

@@ -2,6 +2,7 @@ package ca.ulaval.glo4003.controllers;
 
 import ca.ulaval.glo4003.ConstantsManager;
 import ca.ulaval.glo4003.Secured;
+import ca.ulaval.glo4003.dataaccessobjects.UniqueValidationException;
 import ca.ulaval.glo4003.dataaccessobjects.UserDao;
 import ca.ulaval.glo4003.exceptions.RecordNotFoundException;
 import ca.ulaval.glo4003.models.User;
@@ -12,7 +13,7 @@ import play.mvc.Controller;
 import play.mvc.Result;
 import play.mvc.Security;
 
-import javax.validation.ValidationException;
+import javax.validation.ConstraintViolationException;
 
 public class UserProfile extends Controller {
 
@@ -21,6 +22,7 @@ public class UserProfile extends Controller {
     public static final String EMAIL_EXPECTED = "Email expected";
     public static final String ACTUAL_AND_NEW_PASSWORD_EXPECTED = "Actual and new password expected";
     public static final String WRONG_ACTUAL_PASSWORD = "Wrong actual password";
+    public static final String EMAIL_IS_INVALID = "Invalid email";
 
     private final UserDao userDao;
 
@@ -48,8 +50,10 @@ public class UserProfile extends Controller {
             return ok();
         } catch (RecordNotFoundException e) {
             return unauthorized(BAD_SESSION_WRONG_USERNAME);
-        } catch (ValidationException e) {
+        } catch (UniqueValidationException e) {
             return unauthorized(EMAIL_SHOULD_BE_UNIQUE);
+        } catch (ConstraintViolationException e) {
+            return unauthorized(EMAIL_IS_INVALID);
         }
     }
 
@@ -68,7 +72,8 @@ public class UserProfile extends Controller {
         try {
             User user = userDao.findByEmail(email);
 
-            if(!user.getPassword().equals(actualPassword)) {
+
+            if (!user.getPassword().equals(actualPassword)) {
                 return unauthorized(WRONG_ACTUAL_PASSWORD);
             }
 

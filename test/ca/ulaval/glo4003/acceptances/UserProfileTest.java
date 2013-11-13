@@ -98,7 +98,6 @@ public class UserProfileTest {
         loginPage.go();
         loginPage.isAt();
         loginPage.performLogin(EMAIL, PASSWORD);
-        loginPage.waitUntilLoginIsDone();
 
         userProfilePage.go();
         userProfilePage.isAt();

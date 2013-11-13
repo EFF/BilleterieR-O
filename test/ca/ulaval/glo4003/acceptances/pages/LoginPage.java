@@ -24,9 +24,6 @@ public class LoginPage extends BaseFluentPage {
         fillUsername(email);
         fillPassword(password);
         login();
-    }
-
-    public void waitUntilLoginIsDone() {
         await().atMost(TIMEOUT).until(".login-status-in").isPresent();
     }
 

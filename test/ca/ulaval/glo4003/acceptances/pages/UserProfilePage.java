@@ -10,7 +10,7 @@ public class UserProfilePage extends BaseFluentPage {
 
     @Override
     public String getUrl() {
-        return BASE_URL + "user_profile";
+        return BASE_URL + "user";
     }
 
     @Override

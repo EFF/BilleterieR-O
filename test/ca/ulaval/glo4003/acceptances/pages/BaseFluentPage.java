@@ -42,7 +42,6 @@ public abstract class BaseFluentPage extends FluentPage {
 
     public void waitForInfoMessageToDisplay() {
         await().atMost(TIMEOUT).until(".alertContainer .alert-info").isPresent();
-
     }
 
     public boolean isWarningMessageDisplayed() {
