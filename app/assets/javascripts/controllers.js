@@ -164,7 +164,7 @@ define(['app'], function (app) {
                 }).success(function () {
                         FlashMessage.send("success", "Votre mot de passe a été modifié avec succès.");
                     }).error(function () {
-                        FlashMessage.error("error", "Erreur lors de la modification de votre mot de passe.");
+                        FlashMessage.send("error", "Erreur lors de la modification de votre mot de passe.");
                     });
             };
 
@@ -176,7 +176,7 @@ define(['app'], function (app) {
                         Login.username = email;
                         FlashMessage.send("success", "Votre email a été modifié avec succès.");
                     }).error(function () {
-                        FlashMessage.error("error", "La modification de votre email a échouée")
+                        FlashMessage.send("error", "La modification de votre email a échouée");
                     });
             }
         }

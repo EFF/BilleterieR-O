@@ -27,10 +27,10 @@ public class UserProfilePage extends BaseFluentPage {
         await().atMost(TIMEOUT).until("#username").hasText(email);
     }
 
-    public void updatePassword(String password, String newPassword) {
+    public void updatePassword(String password, String newPassword, String confirmationPassword) {
         fill("#input-actual-password").with(password);
         fill("#input-password").with(newPassword);
-        fill("#input-password-confirmation").with(newPassword);
+        fill("#input-password-confirmation").with(confirmationPassword);
         find("#submit-password").click();
     }
 }
