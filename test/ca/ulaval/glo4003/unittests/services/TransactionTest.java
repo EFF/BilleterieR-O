@@ -3,6 +3,7 @@ package ca.ulaval.glo4003.unittests.services;
 import ca.ulaval.glo4003.ConstantsManager;
 import ca.ulaval.glo4003.models.Transaction;
 import ca.ulaval.glo4003.models.TransactionState;
+import ca.ulaval.glo4003.models.User;
 import org.fest.assertions.Assertions;
 import org.joda.time.LocalDateTime;
 import org.joda.time.Period;
@@ -12,25 +13,25 @@ import static junit.framework.Assert.assertEquals;
 
 public class TransactionTest {
 
-    private static long TRANSACTION_USER_ID = 666;
-
     @Test
     public void ctor_setsTime() {
-        Transaction transaction = new Transaction(TRANSACTION_USER_ID);
+        Transaction transaction = new Transaction(new User());
 
         assertAboutSameDateTime(new LocalDateTime(), transaction.getStartedOn());
     }
 
     @Test
-    public void ctor_setsUserId() {
-        Transaction transaction = new Transaction(TRANSACTION_USER_ID);
+    public void ctor_setsUser() {
+        User user = new User();
 
-        assertEquals(TRANSACTION_USER_ID, transaction.getId());
+        Transaction transaction = new Transaction(user);
+
+        assertEquals(user, transaction.getUser());
     }
 
     @Test
     public void ctor_isUnfulfilled() {
-        Transaction transaction = new Transaction(TRANSACTION_USER_ID);
+        Transaction transaction = new Transaction(new User());
 
         assertEquals(TransactionState.Unfulfilled, transaction.getState());
     }

@@ -4,7 +4,7 @@ import org.joda.time.LocalDateTime;
 
 public class Transaction extends Record {
 
-    private long userId;
+    private User user;
 
     private LocalDateTime startedOn;
 
@@ -12,10 +12,10 @@ public class Transaction extends Record {
 
     private TransactionState state;
 
-    public Transaction(long userId) {
+    public Transaction(User user) {
         this.startedOn = new LocalDateTime();
         this.state = TransactionState.Unfulfilled;
-        this.userId = userId;
+        this.user = user;
     }
 
     public void fulfill() {
@@ -40,7 +40,7 @@ public class Transaction extends Record {
         return endedOn;
     }
 
-    public long getUserId() {
-        return userId;
+    public User getUser() {
+        return user;
     }
 }

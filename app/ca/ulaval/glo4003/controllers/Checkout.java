@@ -3,6 +3,7 @@ package ca.ulaval.glo4003.controllers;
 import ca.ulaval.glo4003.ConstantsManager;
 import ca.ulaval.glo4003.Secured;
 import ca.ulaval.glo4003.dataaccessobjects.EventDao;
+import ca.ulaval.glo4003.dataaccessobjects.UserDao;
 import ca.ulaval.glo4003.exceptions.MaximumExceededException;
 import ca.ulaval.glo4003.exceptions.RecordNotFoundException;
 import ca.ulaval.glo4003.models.Transaction;
@@ -21,20 +22,22 @@ public class Checkout extends Controller {
 
     private final EventDao eventDao;
     private final CheckoutService checkoutService;
+    private final UserDao userDao;
 
     @Inject
-    public Checkout(EventDao eventDao, CheckoutService checkoutService) {
+    public Checkout(EventDao eventDao, CheckoutService checkoutService, UserDao userDao) {
         this.eventDao = eventDao;
         this.checkoutService = checkoutService;
+        this.userDao = userDao;
     }
 
     @Security.Authenticated(Secured.class)
-    public Result index() {
+    public Result index() throws RecordNotFoundException {
         JsonNode items = request().body().asJson();
         Iterator<JsonNode> jsonNodeIterator = items.iterator();
 
         Long userId = Long.parseLong(session().get(ConstantsManager.USER_SESSION_FIELD_NAME));
-        Transaction transaction = this.checkoutService.startNewTransaction(userId);
+        Transaction transaction = this.checkoutService.startNewTransaction(userDao.read(userId));
 
         try {
             while (jsonNodeIterator.hasNext()) {

@@ -27,5 +27,8 @@ public class ConstantsManager {
     public final static String PERSISTENCE_DIRECTORY = "data";
     public final static String PERSISTENCE_FILE_EXTENSION = ".ser";
 
+    public final static String CHECKOUT_CONFIRMATION_EMAIL = "Votre transaction c'est bien effectuée sur le système." +
+            " Votre numéro de confirmation est le: ";
+
     public final static int SERVICE_OPERATION_TIMEOUT = 5000;
 }

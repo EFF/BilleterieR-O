@@ -3,10 +3,12 @@ package ca.ulaval.glo4003.unittests.controllers;
 import ca.ulaval.glo4003.ConstantsManager;
 import ca.ulaval.glo4003.controllers.Checkout;
 import ca.ulaval.glo4003.dataaccessobjects.EventDao;
+import ca.ulaval.glo4003.dataaccessobjects.UserDao;
 import ca.ulaval.glo4003.exceptions.MaximumExceededException;
 import ca.ulaval.glo4003.exceptions.RecordNotFoundException;
 import ca.ulaval.glo4003.models.EventSearchCriteria;
 import ca.ulaval.glo4003.models.Transaction;
+import ca.ulaval.glo4003.models.User;
 import ca.ulaval.glo4003.services.CheckoutService;
 import ca.ulaval.glo4003.unittests.helpers.EventsTestHelper;
 import com.google.inject.Inject;
@@ -29,12 +31,21 @@ import static org.mockito.Mockito.*;
 @RunWith(JukitoRunner.class)
 public class CheckoutTest extends BaseControllerTest {
 
+    private static String USER_EMAIL = "user@email.com";
+    private static Long USER_ID = 666L;
+
     @Inject
     private Checkout checkout;
 
     @Before
-    public void setup(CheckoutService mockedCheckoutSvc) throws RecordNotFoundException, MaximumExceededException {
-        when(mockedCheckoutSvc.startNewTransaction()).thenReturn(new Transaction());
+    public void setup(CheckoutService mockedCheckoutSvc, UserDao userDao) throws RecordNotFoundException, MaximumExceededException {
+        User user = new User();
+        user.setId(USER_ID);
+        user.setEmail(USER_EMAIL);
+
+        when(mockedSession.get(ConstantsManager.USER_SESSION_FIELD_NAME)).thenReturn(String.valueOf(USER_ID));
+        when(userDao.read(USER_ID)).thenReturn(user);
+        when(mockedCheckoutSvc.startNewTransaction(user)).thenReturn(new Transaction(user));
     }
 
     @Test
