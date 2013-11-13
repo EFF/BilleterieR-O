@@ -15,7 +15,22 @@ public class UserProfilePage extends BaseFluentPage {
 
     @Override
     public void isAt() {
-        // TODO:
-        super.isAt();
+        await().atMost(TIMEOUT).until("#input-email").isPresent();
+    }
+
+    public void updateEmail(String email) {
+        fill("#input-email").with(email);
+        find("#submit-email").click();
+    }
+
+    public void waitUntilDisplayedUsernameIs(String email) {
+        await().atMost(TIMEOUT).until("#username").hasText(email);
+    }
+
+    public void updatePassword(String password, String newPassword) {
+        fill("#input-actual-password").with(password);
+        fill("#input-password").with(newPassword);
+        fill("#input-password-confirmation").with(newPassword);
+        find("#submit-password").click();
     }
 }

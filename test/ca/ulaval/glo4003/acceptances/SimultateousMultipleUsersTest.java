@@ -35,8 +35,8 @@ public class SimultateousMultipleUsersTest {
 
                 loginWithDifferentUsersOnBothDrivers(loginPage1, loginPage2);
 
-                assertThat(loginPage1.displayedUsername()).isEqualTo(VALID_USER_EMAIL_1);
-                assertThat(loginPage2.displayedUsername()).isEqualTo(VALID_USER_EMAIL_2);
+                assertThat(loginPage1.getDisplayedUsername()).isEqualTo(VALID_USER_EMAIL_1);
+                assertThat(loginPage2.getDisplayedUsername()).isEqualTo(VALID_USER_EMAIL_2);
 
                 closeDriver(driver2);
             }

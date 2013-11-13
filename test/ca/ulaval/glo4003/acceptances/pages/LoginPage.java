@@ -3,7 +3,6 @@ package ca.ulaval.glo4003.acceptances.pages;
 import org.openqa.selenium.WebDriver;
 
 import static org.fluentlenium.core.filter.FilterConstructor.withId;
-import static org.fluentlenium.core.filter.FilterConstructor.withText;
 
 public class LoginPage extends BaseFluentPage {
 
@@ -21,13 +20,13 @@ public class LoginPage extends BaseFluentPage {
         await().atMost(TIMEOUT).until("#login-button").isPresent();
     }
 
-    public void performLogin(String email, String password){
+    public void performLogin(String email, String password) {
         fillUsername(email);
         fillPassword(password);
         login();
     }
 
-    public void waitUntilLoginIsDone(){
+    public void waitUntilLoginIsDone() {
         await().atMost(TIMEOUT).until(".login-status-in").isPresent();
     }
 
@@ -47,7 +46,7 @@ public class LoginPage extends BaseFluentPage {
         find("button", withId().equalTo("login-button")).click();
     }
 
-    public String displayedUsername() {
+    public String getDisplayedUsername() {
         return find("#username").getText();
     }
 }

@@ -164,7 +164,6 @@ define(['app'], function (app) {
                 }).success(function () {
                         FlashMessage.send("success", "Votre mot de passe a été modifié avec succès.");
                     }).error(function () {
-                        // TODO: Mettre le bon message selon l'erreur
                         FlashMessage.error("error", "Erreur lors de la modification de votre mot de passe.");
                     });
             };

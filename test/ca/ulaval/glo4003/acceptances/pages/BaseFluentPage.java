@@ -1,7 +1,6 @@
 package ca.ulaval.glo4003.acceptances.pages;
 
 import org.fluentlenium.core.FluentPage;
-import org.fluentlenium.core.domain.FluentList;
 import org.openqa.selenium.WebDriver;
 
 public abstract class BaseFluentPage extends FluentPage {
