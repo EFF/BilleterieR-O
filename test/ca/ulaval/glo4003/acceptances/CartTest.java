@@ -215,12 +215,9 @@ public class CartTest {
                 eventPage1.addTicketsToCartForCategory(0, 1);
 
                 goToCartPage(cartPage, 1);
-
                 cartPage.payWithCreditCard();
 
-                String message = cartPage.waitAndGetAlert().getText();
-                String expectedMessage = "Vous devez vous connecter avant de procéder au paiement";
-                assertEquals(expectedMessage, message);
+                cartPage.waitForInfoMessageToDisplay();
             }
         });
     }
