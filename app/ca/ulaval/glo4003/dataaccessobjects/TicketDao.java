@@ -70,7 +70,7 @@ public class TicketDao extends PersistedDao<Ticket> {
         return results.filter(new Predicate<Ticket>() {
             @Override
             public boolean apply(Ticket input) {
-                return states != null || states.contains(input.getState());
+                return states != null && states.contains(input.getState());
             }
         });
     }

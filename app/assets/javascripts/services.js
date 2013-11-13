@@ -58,7 +58,6 @@ define(['app'], function (app) {
                 selected: true
             }
 
-
             if (ticket) {
                 var existingItem = getItemByTicketId(ticket.id);
                 if (existingItem) {
@@ -68,23 +67,54 @@ define(['app'], function (app) {
                     $http.get(url)
                         .success(function () {
                             cart.push(item);
+                            updateCartCookie(cart);
                         });
                 }
             } else {
                 cart.push(item);
+                updateCartCookie(cart);
             }
-
-            updateCartCookie(cart);
         };
 
         exports.removeItem = function (index) {
-            cart.splice(index, 1);
-            updateCartCookie(cart);
+            if (cart[index].ticket) {
+                var url = '/api/tickets/free/' + cart[index].ticket.id;
+                $http.get(url)
+                    .success(function () {
+                        cart.splice(index, 1);
+                        updateCartCookie(cart);
+                    });
+            } else {
+                cart.splice(index, 1);
+                updateCartCookie(cart);
+            }
         };
 
         exports.removeAllItem = function () {
-            cart.splice(0, cart.length);
-            updateCartCookie(cart);
+            var ticketIds = [];
+            for (var i in cart) {
+                if (cart[i].ticket) {
+                    ticketIds.push(cart[i].ticket.id);
+                }
+            }
+            if (ticketIds.length > 0) {
+                var url = '/api/tickets/free/';
+                for (var i in ticketIds) {
+                    url += ticketIds[i];
+                    if (i < ticketIds.length - 1) {
+                        url += ','
+                    }
+                }
+
+                $http.get(url)
+                    .success(function () {
+                        cart.splice(0, cart.length);
+                        updateCartCookie(cart);
+                    });
+            } else {
+                cart.splice(0, cart.length);
+                updateCartCookie(cart);
+            }
         };
 
         exports.getItems = function () {

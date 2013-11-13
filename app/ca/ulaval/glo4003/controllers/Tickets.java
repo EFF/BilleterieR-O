@@ -73,14 +73,18 @@ public class Tickets extends Controller {
         }
     }
 
-    public Result shows(String ids) {
-        return ok(Json.toJson("Works!"));
-//        try {
-//            Ticket ticket = ticketDao.read(id);
-//            return ok(Json.toJson(ticket));
-//        } catch (RecordNotFoundException e) {
-//            return notFound();
-//        }
+    public Result free(String strIds) {
+        try {
+            for (String strId : strIds.split(",")) {
+                Long id = Long.valueOf(strId).longValue();
+                Ticket ticket = ticketDao.read(id);
+                ticket.setState(TicketState.AVAILABLE);
+                ticketDao.update(ticket);
+            }
+            return ok();
+        } catch (RecordNotFoundException e) {
+            return notFound();
+        }
     }
 
     public Result showEventTicketSections(long eventId){

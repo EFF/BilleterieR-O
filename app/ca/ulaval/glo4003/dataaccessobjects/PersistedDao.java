@@ -6,8 +6,7 @@ import ca.ulaval.glo4003.services.DaoPersistenceService;
 import org.apache.commons.lang3.SerializationUtils;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public abstract class PersistedDao<T extends Record> implements DataAccessObject<T>, Serializable {
 
@@ -15,6 +14,13 @@ public abstract class PersistedDao<T extends Record> implements DataAccessObject
     private List<T> list = new ArrayList<>();
     private DaoPersistenceService persistenceService;
     private UniqueConstraintValidator<T> uniqueConstraintValidator;
+    Comparator<T> comparator = new Comparator<T>() {
+        public int compare(T c1, T c2) {
+            Long id1 = c1.getId();
+            Long id2 = c2.getId();
+            return id2.compareTo(id1);
+        }
+    };
 
     public PersistedDao(DaoPersistenceService persistenceService, UniqueConstraintValidator<T>
             uniqueConstraintValidator) {
@@ -50,6 +56,7 @@ public abstract class PersistedDao<T extends Record> implements DataAccessObject
     public void update(T element) throws RecordNotFoundException {
         delete(element.getId());
         persist(element);
+        Collections.sort(list, comparator);
     }
 
     public void delete(long id) throws RecordNotFoundException {
