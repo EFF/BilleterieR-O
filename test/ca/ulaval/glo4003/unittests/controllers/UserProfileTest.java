@@ -26,9 +26,9 @@ import static play.test.Helpers.status;
 @RunWith(JukitoRunner.class)
 public class UserProfileTest extends BaseControllerTest {
 
-    public static final String A_PASSWORD = "secret";
-    public static final String ANOTHER_PASSWORD = "secret2";
-    public static final String NEW_PASSWORD = "secret2";
+    private static final String A_PASSWORD = "secret";
+    private static final String ANOTHER_PASSWORD = "secret2";
+    private static final String NEW_PASSWORD = "secret2";
     private static final String AN_EMAIL = "email@test.com";
 
     @Inject

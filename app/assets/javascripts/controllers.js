@@ -180,8 +180,6 @@ define(['app'], function (app) {
                     });
             }
         }
-    ])
-    ;
-
+    ]);
 })
 ;

@@ -16,7 +16,7 @@ public class UserProfileTest {
     private static final String DUPLICATE_EMAIL = "user2@example.com";
     private static final String PASSWORD = "secret";
     private static final String NEW_PASSWORD = "newsecret";
-    public static final String NOT_MY_ACTUAL_PASSWORD = "wrong";
+    private static final String NOT_MY_ACTUAL_PASSWORD = "wrong";
 
     @Test
     public void updateMyEmailWithValidNewEmail() {

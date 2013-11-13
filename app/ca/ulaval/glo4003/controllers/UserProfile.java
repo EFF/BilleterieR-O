@@ -78,7 +78,6 @@ public class UserProfile extends Controller {
         } catch (RecordNotFoundException e) {
             return unauthorized(BAD_SESSION_WRONG_USERNAME);
         }
-
     }
 
     private boolean validateUpdateEmailParameters(JsonNode json) {
