@@ -4,10 +4,15 @@ import ca.ulaval.glo4003.exceptions.RecordNotFoundException;
 import ca.ulaval.glo4003.models.Record;
 import ca.ulaval.glo4003.services.DaoPersistenceService;
 import org.apache.commons.lang3.SerializationUtils;
+import play.data.validation.Validation;
 
+import javax.validation.ConstraintViolation;
+import javax.validation.ConstraintViolationException;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public abstract class PersistedDao<T extends Record> implements DataAccessObject<T>, Serializable {
 
@@ -72,6 +77,10 @@ public abstract class PersistedDao<T extends Record> implements DataAccessObject
 
     protected void persist(T element) {
         uniqueConstraintValidator.validate(list(), element);
+        Set<ConstraintViolation<T>> violations = Validation.getValidator().validate(element);
+        if (!violations.isEmpty()) {
+            throw new ConstraintViolationException(new HashSet<ConstraintViolation<?>>(violations));
+        }
 
         // We clone the object before saving it in the DB
         // Otherwise, a change on a record outside this
