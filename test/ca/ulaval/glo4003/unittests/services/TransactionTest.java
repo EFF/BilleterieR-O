@@ -36,6 +36,42 @@ public class TransactionTest {
         assertEquals(TransactionState.Unfulfilled, transaction.getState());
     }
 
+    @Test
+    public void fulfill_changesStateToFulfilled() {
+        Transaction transaction = new Transaction(new User());
+
+        transaction.fulfill();
+
+        assertEquals(TransactionState.Fulfilled, transaction.getState());
+    }
+
+    @Test
+    public void fail_changesStateToFailed() {
+        Transaction transaction = new Transaction(new User());
+
+        transaction.fail();
+
+        assertEquals(TransactionState.Failed, transaction.getState());
+    }
+
+    @Test
+    public void fulfill_UpdatesDate() {
+        Transaction transaction = new Transaction(new User());
+
+        transaction.fulfill();
+
+        assertEquals(new LocalDateTime(), transaction.getEndedOn());
+    }
+
+    @Test
+    public void fail_UpdatesDate() {
+        Transaction transaction = new Transaction(new User());
+
+        transaction.fail();
+
+        assertEquals(new LocalDateTime(), transaction.getEndedOn());
+    }
+
     private void assertAboutSameDateTime(LocalDateTime dt1, LocalDateTime dt2) {
         Period diff = Period.fieldDifference(dt1, dt2);
         Assertions.assertThat(diff.getMillis()).isLessThan(ConstantsManager.SERVICE_OPERATION_TIMEOUT);

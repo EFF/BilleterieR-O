@@ -84,7 +84,7 @@ define(['app'], function (app) {
             $scope.validCards = ['Vasi', 'Mistercard', 'AmericanExpresso'];
             $scope.monthOfYear = ['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12'];
             $scope.expirationYears = [];
-            $scope.getTransactionId = function() {return Cart.transactionId;}
+            $scope.getTransactionId = function() { return Cart.transactionId; }
 
             $scope.updateItemQuantity = function (index, newQuantity, maxQuantity) {
                 if (newQuantity <= 0) {
