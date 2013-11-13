@@ -16,8 +16,9 @@ import java.util.List;
 public class TicketDao extends PersistedDao<Ticket> {
 
     @Inject
-    public TicketDao(DaoPersistenceService persistenceService) {
-        super(persistenceService);
+    public TicketDao(DaoPersistenceService persistenceService, UniqueConstraintValidator<Ticket>
+            uniqueConstraintValidator) {
+        super(persistenceService, uniqueConstraintValidator);
     }
 
     public List<Ticket> search(final TicketSearchCriteria criteria) throws InvalidParameterException {

@@ -133,18 +133,13 @@ define(['app'], function (app) {
             };
             $http(config)
                 .success(successCallback)
-<<<<<<< HEAD
                 .error(errorCallback);
-        }
-=======
-                .error(errorCallback)
         };
 
         exports.updateItemQuantity = function(index, newQuantity){
             cart[index].quantity = newQuantity
             updateCartCookie(cart);
         };
->>>>>>> fdde8e5d2182ed02d69400587229a055ed3c1e47
 
         return exports;
     }]);

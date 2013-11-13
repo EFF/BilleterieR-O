@@ -9,8 +9,9 @@ import com.google.inject.Inject;
 public class TeamDao extends PersistedDao<Team> {
 
     @Inject
-    public TeamDao(DaoPersistenceService persistenceService){
-        super(persistenceService);
+    public TeamDao(DaoPersistenceService persistenceService, UniqueConstraintValidator<Team>
+            uniqueConstraintValidator){
+        super(persistenceService, uniqueConstraintValidator);
     }
 
     public Team read(String name) throws RecordNotFoundException {

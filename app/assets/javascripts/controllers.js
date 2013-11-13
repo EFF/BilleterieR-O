@@ -37,7 +37,7 @@ define(['app'], function (app) {
             $http.get(url)
                 .success(apiCallSuccessCallback)
                 .error(apiCallErrorCallback);
-        }
+        };
 
         $scope.$watch('filters', function () {
             apiCall();
@@ -52,7 +52,6 @@ define(['app'], function (app) {
         $scope.sectionsByCategories = [];
         $scope.ticketsByCategories = [];
 
-<<<<<<< HEAD
         $scope.addToCart = function (ticketId, category) {
             var url = '/api/tickets/' + ticketId;
             $http.get(url)
@@ -61,7 +60,7 @@ define(['app'], function (app) {
                     refreshTicketsList(eventId, category.id, ticket.section);
                     FlashMessage.send("success", "L'item a été ajouté au panier");
                 });
-        }
+        };
 
         var refreshTicketsList = function(eventId, categoryId, sectionName) {
             var url = '/api/tickets?eventId=' + eventId + '&categoryId=' + categoryId + '&states=AVAILABLE,RESALE';
@@ -91,20 +90,11 @@ define(['app'], function (app) {
                         $scope.ticketsByCategories[categoryId].values.push(ticket);
                     }
                 });
-=======
-        $scope.addToCart = function (quantity, category) {
-            if (quantity > category.numberOfTickets) {
-                FlashMessage.send('error', 'Le nombre de billets ajoutés au panier excède le nombre de billets restants');
-            } else {
-                Cart.addItem(quantity, category, $scope.event);
-                FlashMessage.send("success", "L'item a été ajouté au panier");
-            }
->>>>>>> fdde8e5d2182ed02d69400587229a055ed3c1e47
-        }
+        };
 
         var apiCallSuccessCallback = function (result) {
             $scope.event = result;
-        }
+        };
 
         var apiCallErrorCallback = function () {
             //TODO emit error event and handle it in a directive
@@ -113,7 +103,7 @@ define(['app'], function (app) {
                 $scope.sectionsByCategories[categoryId].value = null;
             }
             $scope.ticketsByCategories = [];
-        }
+        };
 
         $scope.apiCall = function () {
             for (var categoryId in $scope.sectionsByCategories) {
@@ -123,7 +113,7 @@ define(['app'], function (app) {
             $http.get('/api/events/' + eventId)
                 .success(apiCallSuccessCallback)
                 .error(apiCallErrorCallback);
-        }
+        };
 
         $http.get('/api/tickets/sections/' + eventId )
             .success(function (sections) {
@@ -207,7 +197,7 @@ define(['app'], function (app) {
                 else {
                     FlashMessage.send("error", error);
                 }
-            }
+            };
         }]);
 
     app.controller('LoginController', ['$scope', '$location', 'Login', 'FlashMessage',
@@ -239,12 +229,12 @@ define(['app'], function (app) {
                 $http.get('api/events/' + result.eventId).success(function (event) {
                     $scope.event = event;
                 });
-            }
+            };
 
             var apiCallErrorCallback = function () {
                 //TODO emit error event and handle it in a directive
                 $scope.ticket = null;
-            }
+            };
 
             $http.get('/api/tickets/' + ticketId)
                 .success(apiCallSuccessCallback)
