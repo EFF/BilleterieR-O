@@ -8,6 +8,7 @@ import ca.ulaval.glo4003.models.User;
 import com.google.inject.Inject;
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.node.ObjectNode;
+import org.jukito.JukitoModule;
 import org.jukito.JukitoRunner;
 import org.junit.Before;
 import org.junit.Test;
@@ -18,9 +19,7 @@ import play.mvc.Http;
 import play.mvc.Result;
 import play.test.Helpers;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 import static play.test.Helpers.status;
 
@@ -36,6 +35,7 @@ public class AuthenticationTest extends BaseControllerTest {
     public void setup() {
         mockedUser = mock(User.class);
         when(mockedUser.getEmail()).thenReturn(email);
+        when(mockedUser.getPassword()).thenReturn(password);
 
         ObjectNode json = Json.newObject();
         json.put(ConstantsManager.USERNAME_FIELD_NAME, email);
@@ -101,14 +101,14 @@ public class AuthenticationTest extends BaseControllerTest {
 
     @Test
     public void loginWithRegisteredUser(UserDao mockedUserDao) throws RecordNotFoundException {
-        when(mockedUserDao.findByEmailAndPassword(email, password))
+        when(mockedUserDao.findByEmail(email))
                 .thenReturn(mockedUser);
 
         Result result = authentication.login();
 
         verify(mockedBody).asJson();
         verify(mockedRequest).body();
-        verify(mockedUserDao).findByEmailAndPassword(anyString(), anyString());
+        verify(mockedUserDao).findByEmail(anyString());
         verify(mockedUser).getEmail();
 
         InOrder inOrder = inOrder(mockedSession);
@@ -120,14 +120,14 @@ public class AuthenticationTest extends BaseControllerTest {
 
     @Test
     public void loginWithUnregisteredUser(UserDao mockedUserDao) throws RecordNotFoundException {
-        when(mockedUserDao.findByEmailAndPassword(anyString(), anyString()))
+        when(mockedUserDao.findByEmail(anyString()))
                 .thenThrow(new RecordNotFoundException());
 
         Result result = authentication.login();
 
         verify(mockedBody).asJson();
         verify(mockedRequest).body();
-        verify(mockedUserDao).findByEmailAndPassword(anyString(), anyString());
+        verify(mockedUserDao).findByEmail(anyString());
         verify(mockedUser, never()).getEmail();
 
         verify(mockedSession, never()).clear();
@@ -144,12 +144,20 @@ public class AuthenticationTest extends BaseControllerTest {
 
         verify(mockedBody).asJson();
         verify(mockedRequest).body();
-        verify(mockedUserDao, never()).findByEmailAndPassword(anyString(), anyString());
+        verify(mockedUserDao, never()).findByEmail(anyString());
         verify(mockedUser, never()).getEmail();
 
         verify(mockedSession, never()).clear();
         verify(mockedSession, never()).put(ConstantsManager.COOKIE_SESSION_FIELD_NAME, email);
 
         assertEquals(Http.Status.BAD_REQUEST, status(result));
+    }
+
+    public static class TestModule extends JukitoModule {
+
+        @Override
+        protected void configureTest() {
+            forceMock(UserDao.class);
+        }
     }
 }

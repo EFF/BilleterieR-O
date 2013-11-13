@@ -24,7 +24,8 @@ public class Authentication extends Controller {
     public Result index() {
         ObjectNode result = Json.newObject();
 
-        result.put(ConstantsManager.USER_AUTHENTICATED_FIELD_NAME, session().get(ConstantsManager.COOKIE_SESSION_FIELD_NAME) != null);
+        result.put(ConstantsManager.USER_AUTHENTICATED_FIELD_NAME, session().get(ConstantsManager
+                .COOKIE_SESSION_FIELD_NAME) != null);
         result.put(ConstantsManager.USERNAME_FIELD_NAME, session().get(ConstantsManager.COOKIE_SESSION_FIELD_NAME));
 
         return ok(result);
@@ -41,7 +42,10 @@ public class Authentication extends Controller {
         String password = json.get(ConstantsManager.PASSWORD_FIELD_NAME).asText();
 
         try {
-            User user = userDao.findByEmailAndPassword(username, password);
+            User user = userDao.findByEmail(username);
+            if (!user.getPassword().equals(password)) {
+                return unauthorized("Bad username/password.");
+            }
             session().clear();
             session().put(ConstantsManager.COOKIE_SESSION_FIELD_NAME, user.getEmail());
             session().put(ConstantsManager.USER_SESSION_FIELD_NAME, String.valueOf(user.getId()));

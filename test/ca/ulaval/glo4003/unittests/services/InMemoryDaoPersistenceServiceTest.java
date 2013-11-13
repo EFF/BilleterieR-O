@@ -5,19 +5,28 @@ import ca.ulaval.glo4003.services.InMemoryDaoPersistenceService;
 import ca.ulaval.glo4003.unittests.dataaccessobjects.PersistedDaoTest;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.runners.MockitoJUnitRunner;
+
+import java.util.Arrays;
 
 import static org.fest.assertions.Assertions.assertThat;
+import static org.mockito.Mockito.when;
 
+@RunWith(MockitoJUnitRunner.class)
 public class InMemoryDaoPersistenceServiceTest {
 
+    private static final int A_VALUE = 50;
+    private static final int AN_ID = 666;
+
+    @Mock
+    private PersistedDao<PersistedDaoTest.TestRecord> mockedDao;
     private InMemoryDaoPersistenceService persistenceService;
-    private PersistedDao<PersistedDaoTest.TestRecord> dao;
 
     @Before
     public void setUp() {
-
-        this.persistenceService = new InMemoryDaoPersistenceService();
-        this.dao = new PersistedDao<PersistedDaoTest.TestRecord>(persistenceService) {};
+        persistenceService = new InMemoryDaoPersistenceService();
     }
 
     @Test
@@ -25,9 +34,11 @@ public class InMemoryDaoPersistenceServiceTest {
         /* The expected behaviour of a memory persistence service
         is to always return nothing because InMemory is volatile
         persistency by definition.*/
+        PersistedDaoTest.TestRecord record = new PersistedDaoTest.TestRecord(A_VALUE);
+        record.setId(AN_ID);
+        when(mockedDao.list()).thenReturn(Arrays.asList(record));
 
-        // Act & Assert
-        assertThat(this.persistenceService.restore(this.dao)).isEmpty();
+        assertThat(persistenceService.restore(mockedDao)).isEmpty();
     }
 
 }

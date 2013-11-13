@@ -7,6 +7,7 @@ import ca.ulaval.glo4003.models.Gender;
 import ca.ulaval.glo4003.models.Sport;
 import com.google.inject.Inject;
 import org.codehaus.jackson.JsonNode;
+import org.jukito.JukitoModule;
 import org.jukito.JukitoRunner;
 import org.junit.Before;
 import org.junit.Test;
@@ -64,6 +65,14 @@ public class FacetsTest extends BaseControllerTest {
         assertEquals(tempList.size(), jsonNode.get(ConstantsManager.FACET_SPORT).size());
 
         verify(mockedSportDao).list();
+    }
+
+    public static class TestModule extends JukitoModule {
+
+        @Override
+        protected void configureTest() {
+            forceMock(SportDao.class);
+        }
     }
 }
 

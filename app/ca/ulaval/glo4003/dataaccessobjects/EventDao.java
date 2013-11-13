@@ -9,6 +9,7 @@ import ca.ulaval.glo4003.models.Gender;
 import ca.ulaval.glo4003.services.DaoPersistenceService;
 import com.google.common.base.Predicate;
 import com.google.common.collect.FluentIterable;
+import com.google.inject.Inject;
 import org.apache.commons.lang3.StringUtils;
 import org.joda.time.LocalDateTime;
 
@@ -18,8 +19,10 @@ import java.util.List;
 
 public class EventDao extends PersistedDao<Event> {
 
-    public EventDao(DaoPersistenceService persistenceService) {
-        super(persistenceService);
+    @Inject
+    public EventDao(DaoPersistenceService persistenceService, UniqueConstraintValidator<Event>
+            uniqueConstraintValidator) {
+        super(persistenceService, uniqueConstraintValidator);
     }
 
     public List<Event> search(final EventSearchCriteria criteria) throws InvalidParameterException {
@@ -54,7 +57,8 @@ public class EventDao extends PersistedDao<Event> {
         throw new RecordNotFoundException();
     }
 
-    public void decrementEventCategoryNumberOfTickets(long eventId, long categoryId, int numberOfTickets) throws RecordNotFoundException, MaximumExceededException {
+    public void decrementEventCategoryNumberOfTickets(long eventId, long categoryId, int numberOfTickets)
+            throws RecordNotFoundException, MaximumExceededException {
         Category category = findCategory(eventId, categoryId);
         category.decrementNumberOfTickets(numberOfTickets);
     }

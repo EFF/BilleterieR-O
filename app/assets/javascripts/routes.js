@@ -7,6 +7,7 @@ define(['app', 'controllers', 'filters', 'services', 'directives'], function (ap
         routeProvider.when('/cart', {controller: 'CartController', templateUrl: 'assets/templates/cart.html'});
         routeProvider.when('/thanks', {controller: 'CartController', templateUrl: 'assets/templates/thanks.html'});
         routeProvider.when('/login', {controller: 'LoginController', templateUrl: 'assets/templates/login.html'});
+        routeProvider.when('/user', {controller: 'UserController', templateUrl: 'assets/templates/user.html'});
         routeProvider.otherwise({redirectTo: '/events'});
     }]);
 });

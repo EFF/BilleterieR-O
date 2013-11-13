@@ -49,13 +49,13 @@ public class TestBootstrapper implements Bootstrapper {
 
         eventDao.create(event2);
 
-        User user = new User();
-        user.setEmail("user@example.com");
-        user.setPassword("secret");
-
-        userDao.create(user);
+        for (int i = 0; i < 5; i++) {
+            User user = new User();
+            user.setEmail("user" + i + "@example.com");
+            user.setPassword("secret");
+            userDao.create(user);
+        }
     }
-
 
     @Override
     public void deleteAll() {

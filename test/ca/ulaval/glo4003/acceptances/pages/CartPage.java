@@ -10,6 +10,12 @@ import static org.fluentlenium.core.filter.FilterConstructor.withText;
 
 public class CartPage extends BaseFluentPage {
 
+    private static final String A_CARD_TYPE = "vasi";
+    private static final String A_CARD_NUMBER = "1234567890987654";
+    private static final String A_CVV = "666";
+    private static final String A_MONTH = "06";
+    private static final String A_YEAR = "2015";
+
     public CartPage(WebDriver driver) {
         super(driver);
     }
@@ -88,10 +94,25 @@ public class CartPage extends BaseFluentPage {
         driver.switchTo().alert().dismiss();
     }
 
-    public boolean itemHas(int i, int expectedQuantity) {
-        FluentWebElement cartItem = find(".item").get(i);
-        int quantity = Integer.parseInt(cartItem.findFirst(".quantity").getText());
+    public void modifyNumberOfTicketsForItem(int i, Integer quantity) {
+        fill("input", withId("input_quantity" + i)).with(quantity.toString());
+    }
 
-        return (quantity == expectedQuantity);
+    public int getQuantityForItem(int i) {
+        FluentWebElement quantityInput = findFirst("input", withId("input_quantity" + i));
+        return Integer.parseInt(quantityInput.getValue());
+    }
+
+    public int getNumberOfItems() {
+        return find(".item").size();
+    }
+
+    public void payWithCreditCard() {
+        selectComboLabel(A_CARD_TYPE);
+        fillCreditCardNumber(A_CARD_NUMBER);
+        fillCvv(A_CVV);
+        selectExpirationMonth(A_MONTH);
+        selectExpirationYear(A_YEAR);
+        checkout();
     }
 }

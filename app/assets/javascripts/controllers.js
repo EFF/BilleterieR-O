@@ -51,8 +51,12 @@ define(['app'], function (app) {
         $scope.event = null;
 
         $scope.addToCart = function (quantity, category) {
-            Cart.addItem(quantity, category, $scope.event);
-            FlashMessage.send("success", "L'item a été ajouté au panier");
+            if (quantity > category.numberOfTickets) {
+                FlashMessage.send('error', 'Le nombre de billets ajoutés au panier excède le nombre de billets restants');
+            } else {
+                Cart.addItem(quantity, category, $scope.event);
+                FlashMessage.send("success", "L'item a été ajouté au panier");
+            }
         }
 
         var apiCallSuccessCallback = function (result) {
@@ -82,10 +86,17 @@ define(['app'], function (app) {
             $scope.expirationYears = [];
             $scope.getTransactionId = function() {return Cart.transactionId;}
 
-            var currentDate = new Date();
-            for (var i = 0; i < 5; i++) {
-                $scope.expirationYears.push(currentDate.getFullYear() + i);
-            }
+            $scope.updateItemQuantity = function (index, newQuantity, maxQuantity) {
+                if (newQuantity <= 0) {
+                    Cart.removeItem(index);
+                } else {
+                    if (newQuantity > maxQuantity) {
+                        FlashMessage.send("warning", "Le nombre de billet maximum est de " + maxQuantity.toString());
+                        newQuantity = maxQuantity;
+                    }
+                    Cart.updateItemQuantity(index, newQuantity);
+                }
+            };
 
             $scope.updateSelectAll = function () {
                 $scope.selectAll = false;
@@ -101,23 +112,29 @@ define(['app'], function (app) {
                 if (Cart.isSelectionEmpty()) {
                     FlashMessage.send('warning', 'La sélection d\'achat est vide');
                 }
-                else if(!Login.isLoggedIn){
+                else if (!Login.isLoggedIn) {
                     notifyUserToLogin();
                 }
                 else if (window.confirm("Confirmez-vous le paiment de " + $scope.getTotalPrice() + "$ ?")) {
                     Cart.checkout(checkoutSuccess, checkoutError);
                 }
+            };
+
+            var currentDate = new Date();
+            var followingYears = 5;
+            for (var i = 0; i < followingYears; i++) {
+                $scope.expirationYears.push(currentDate.getFullYear() + i);
             }
 
             var notifyUserToLogin = function () {
-                window.alert('Vous devez vous connecter avant de procéder au paiement');
-            }
+                FlashMessage.send('info','Vous devez vous connecter avant de procéder au paiement');
+            };
 
             var checkoutSuccess = function (data) {
                 Cart.transactionId = data.transactionId;
                 FlashMessage.send("success", "La transaction a été complétée");
                 $location.path("/thanks");
-            }
+            };
 
             var checkoutError = function (error, status) {
                 if (status === 401) {
@@ -147,4 +164,41 @@ define(['app'], function (app) {
 
         }]);
 
-});
+    app.controller('UserController', ['$scope', '$location', '$http', 'Login', 'FlashMessage',
+        function ($scope, $location, $http, Login, FlashMessage) {
+            if (Login.isLoggedIn) {
+                $scope.email = Login.username;
+            } else {
+                $location.path("/");
+            }
+
+            $scope.updatePassword = function () {
+                if ($scope.password != $scope.passwordConfirmation) {
+                    FlashMessage.send("error", "Les deux mots de passe doivent être identiques.")
+                    return;
+                }
+                $http.post('/api/user/password', {
+                    actualPassword: $scope.actualPassword,
+                    password: $scope.password
+                }).success(function () {
+                        FlashMessage.send("success", "Votre mot de passe a été modifié avec succès.");
+                    }).error(function () {
+                        FlashMessage.send("error", "Erreur lors de la modification de votre mot de passe.");
+                    });
+            };
+
+            $scope.updateEmail = function () {
+                var email = $scope.email;
+                $http.post('api/user/email', {
+                    username: email
+                }).success(function () {
+                        Login.username = email;
+                        FlashMessage.send("success", "Votre email a été modifié avec succès.");
+                    }).error(function () {
+                        FlashMessage.send("error", "La modification de votre email a échouée");
+                    });
+            }
+        }
+    ]);
+})
+;

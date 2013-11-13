@@ -4,27 +4,35 @@ import ca.ulaval.glo4003.exceptions.RecordNotFoundException;
 import ca.ulaval.glo4003.models.Record;
 import ca.ulaval.glo4003.services.DaoPersistenceService;
 import org.apache.commons.lang3.SerializationUtils;
+import play.data.validation.Validation;
 
-import java.io.IOException;
+import javax.validation.ConstraintViolation;
+import javax.validation.ConstraintViolationException;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public abstract class PersistedDao<T extends Record> implements DataAccessObject<T>, Serializable {
 
     private long lastId = 1;
-    protected List<T> list = new ArrayList<>();
-    protected DaoPersistenceService persistenceService;
+    private List<T> list = new ArrayList<>();
+    private DaoPersistenceService persistenceService;
+    private UniqueConstraintValidator<T> uniqueConstraintValidator;
 
-    public PersistedDao(DaoPersistenceService persistenceService) {
+    public PersistedDao(DaoPersistenceService persistenceService, UniqueConstraintValidator<T>
+            uniqueConstraintValidator) {
         this.persistenceService = persistenceService;
+        this.uniqueConstraintValidator = uniqueConstraintValidator;
 
         try {
             this.list = this.persistenceService.restore(this);
             System.out.println("Successfully restored DAO [" + this.getClass().getSimpleName() + "] with a total of " +
                     this.list.size() + " items.");
         } catch (Exception e) {
-            System.out.println("Warning: Could not restore DAO [" + this.getClass().getSimpleName() + "]: " + e.getMessage());
+            System.out.println("Warning: Could not restore DAO [" + this.getClass().getSimpleName() + "]: " +
+                    e.getMessage());
         }
     }
 
@@ -68,6 +76,12 @@ public abstract class PersistedDao<T extends Record> implements DataAccessObject
     }
 
     protected void persist(T element) {
+        uniqueConstraintValidator.validate(list(), element);
+        Set<ConstraintViolation<T>> violations = Validation.getValidator().validate(element);
+        if (!violations.isEmpty()) {
+            throw new ConstraintViolationException(new HashSet<ConstraintViolation<?>>(violations));
+        }
+
         // We clone the object before saving it in the DB
         // Otherwise, a change on a record outside this
         // dao would reflect in the DB without calling
@@ -76,8 +90,7 @@ public abstract class PersistedDao<T extends Record> implements DataAccessObject
         list.add(elementCopy);
         try {
             this.persistenceService.persist(this);
-        }
-        catch(Exception e) {
+        } catch (Exception e) {
             System.err.println("Error persisting DAO [" + this.getClass().getSimpleName() + "] : " + e.getMessage());
         }
     }
