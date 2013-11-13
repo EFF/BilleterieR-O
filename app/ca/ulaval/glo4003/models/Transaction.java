@@ -2,9 +2,9 @@ package ca.ulaval.glo4003.models;
 
 import org.joda.time.LocalDateTime;
 
-import java.util.UUID;
+public class Transaction extends Record {
 
-public class Transaction {
+    private long userId;
 
     private LocalDateTime startedOn;
 
@@ -12,12 +12,10 @@ public class Transaction {
 
     private TransactionState state;
 
-    private UUID id;
-
-    public Transaction() {
+    public Transaction(long userId) {
         this.startedOn = new LocalDateTime();
         this.state = TransactionState.Unfulfilled;
-        this.id = UUID.randomUUID();
+        this.userId = userId;
     }
 
     public void fulfill() {
@@ -38,11 +36,11 @@ public class Transaction {
         return state;
     }
 
-    public UUID getId() {
-        return id;
-    }
-
     public LocalDateTime getEndedOn() {
         return endedOn;
+    }
+
+    public long getUserId() {
+        return userId;
     }
 }

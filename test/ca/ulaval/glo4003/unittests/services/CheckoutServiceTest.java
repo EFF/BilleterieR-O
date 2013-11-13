@@ -1,5 +1,6 @@
 package ca.ulaval.glo4003.unittests.services;
 
+import ca.ulaval.glo4003.dataaccessobjects.TransactionDao;
 import ca.ulaval.glo4003.models.Transaction;
 import ca.ulaval.glo4003.models.TransactionState;
 import ca.ulaval.glo4003.services.CheckoutService;
@@ -21,20 +22,38 @@ import static org.mockito.internal.verification.VerificationModeFactory.atLeastO
 public class CheckoutServiceTest {
 
     private CheckoutService checkoutService;
+    private TransactionDao transactionDao;
+
+    private static long TRANSACTION_USER_ID = 666;
 
     @Before
     public void setup() {
-        this.checkoutService = new ConcreteCheckoutService();
+        this.transactionDao = mock(TransactionDao.class);
+        this.checkoutService = new ConcreteCheckoutService(transactionDao);
     }
 
     @Test
     public void startingANewTransaction() {
-        Transaction transaction = this.checkoutService.startNewTransaction();
+        Transaction transaction = this.checkoutService.startNewTransaction(TRANSACTION_USER_ID);
         assertNotNull(transaction);
     }
 
     @Test
-    public void fulfillTransaction_fulfills_the_transaction() {
+    public void startingANewTransaction_InsertsInDao() {
+        Transaction transaction = this.checkoutService.startNewTransaction(TRANSACTION_USER_ID);
+
+        verify(transactionDao, times(1)).create(transaction);
+    }
+
+    @Test
+    public void startingANewTransaction_TransactionHasProvidedUserId() {
+        Transaction transaction = this.checkoutService.startNewTransaction(TRANSACTION_USER_ID);
+
+        assertEquals(TRANSACTION_USER_ID, transaction.getId());
+    }
+
+    @Test
+    public void fulfillTransactionFulfillsTheTransaction() {
         Transaction transaction = mock(Transaction.class);
 
         checkoutService.fulfillTransaction(transaction);

@@ -3,6 +3,7 @@ package ca.ulaval.glo4003;
 public class ConstantsManager {
 
     public final static String COOKIE_SESSION_FIELD_NAME = "email";
+    public final static String USER_SESSION_FIELD_NAME = "userId";
 
     public final static String USER_AUTHENTICATED_FIELD_NAME = "authenticated";
     public final static String USERNAME_FIELD_NAME = "username";

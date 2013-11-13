@@ -11,29 +11,28 @@ import org.junit.Test;
 import static junit.framework.Assert.assertEquals;
 
 public class TransactionTest {
+
+    private static long TRANSACTION_USER_ID = 666;
+
     @Test
     public void ctor_setsTime() {
-        Transaction transaction = new Transaction();
+        Transaction transaction = new Transaction(TRANSACTION_USER_ID);
 
         assertAboutSameDateTime(new LocalDateTime(), transaction.getStartedOn());
     }
 
     @Test
-    public void ctor_isUnfulfilled() {
-        Transaction transaction = new Transaction();
+    public void ctor_setsUserId() {
+        Transaction transaction = new Transaction(TRANSACTION_USER_ID);
 
-        assertEquals(TransactionState.Unfulfilled, transaction.getState());
+        assertEquals(TRANSACTION_USER_ID, transaction.getId());
     }
 
     @Test
-    public void ctor_assignsRandomUUID() {
-        Transaction transaction1 = new Transaction();
-        Transaction transaction2 = new Transaction();
-        Transaction transaction3 = new Transaction();
+    public void ctor_isUnfulfilled() {
+        Transaction transaction = new Transaction(TRANSACTION_USER_ID);
 
-        Assertions.assertThat(transaction1.getId()).isNotEqualTo(transaction2.getId());
-        Assertions.assertThat(transaction1.getId()).isNotEqualTo(transaction3.getId());
-        Assertions.assertThat(transaction2.getId()).isNotEqualTo(transaction3.getId());
+        assertEquals(TransactionState.Unfulfilled, transaction.getState());
     }
 
     private void assertAboutSameDateTime(LocalDateTime dt1, LocalDateTime dt2) {

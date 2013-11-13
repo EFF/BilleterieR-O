@@ -7,7 +7,7 @@ public interface CheckoutService {
     // TODO Not required in the scope of that story
     //void freezeTickets(Long eventId, Long categoryId, int quantity);
 
-    Transaction startNewTransaction();
+    Transaction startNewTransaction(long userId);
 
     void fulfillTransaction(Transaction transaction);
 }

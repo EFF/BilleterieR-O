@@ -33,7 +33,8 @@ public class Checkout extends Controller {
         JsonNode items = request().body().asJson();
         Iterator<JsonNode> jsonNodeIterator = items.iterator();
 
-        Transaction transaction = this.checkoutService.startNewTransaction();
+        Long userId = Long.parseLong(session().get(ConstantsManager.USER_SESSION_FIELD_NAME));
+        Transaction transaction = this.checkoutService.startNewTransaction(userId);
 
         try {
             while (jsonNodeIterator.hasNext()) {
@@ -62,7 +63,7 @@ public class Checkout extends Controller {
 
         ObjectNode result = Json.newObject();
 
-        result.put(ConstantsManager.TRANSACTION_ID_FIELD_NAME, transaction.getId().toString());
+        result.put(ConstantsManager.TRANSACTION_ID_FIELD_NAME, transaction.getId());
 
         return ok(result);
     }

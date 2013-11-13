@@ -2,6 +2,7 @@ package ca.ulaval.glo4003;
 
 import ca.ulaval.glo4003.dataaccessobjects.EventDao;
 import ca.ulaval.glo4003.dataaccessobjects.SportDao;
+import ca.ulaval.glo4003.dataaccessobjects.TransactionDao;
 import ca.ulaval.glo4003.dataaccessobjects.UserDao;
 import ca.ulaval.glo4003.models.*;
 import com.google.inject.Inject;
@@ -12,12 +13,14 @@ public class TestBootstrapper implements Bootstrapper {
     private final EventDao eventDao;
     private final SportDao sportDao;
     private final UserDao userDao;
+    private TransactionDao transactionDao;
 
     @Inject
-    public TestBootstrapper(EventDao eventDao, SportDao sportDao, UserDao userDao) {
+    public TestBootstrapper(EventDao eventDao, SportDao sportDao, UserDao userDao, TransactionDao transactionDao) {
         this.eventDao = eventDao;
         this.sportDao = sportDao;
         this.userDao = userDao;
+        this.transactionDao = transactionDao;
     }
 
     @Override
@@ -59,5 +62,6 @@ public class TestBootstrapper implements Bootstrapper {
         eventDao.deleteAll();
         sportDao.deleteAll();
         userDao.deleteAll();
+        transactionDao.deleteAll();
     }
 }
