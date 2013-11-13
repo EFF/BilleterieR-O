@@ -1,26 +1,20 @@
 package ca.ulaval.glo4003.unittests.services;
 
 import ca.ulaval.glo4003.dataaccessobjects.TransactionDao;
-import ca.ulaval.glo4003.dataaccessobjects.UserDao;
 import ca.ulaval.glo4003.exceptions.RecordNotFoundException;
 import ca.ulaval.glo4003.models.Transaction;
-import ca.ulaval.glo4003.models.TransactionState;
 import ca.ulaval.glo4003.models.User;
 import ca.ulaval.glo4003.services.CheckoutService;
 import ca.ulaval.glo4003.services.ConcreteCheckoutService;
 import ca.ulaval.glo4003.services.EmailService;
-import org.fest.assertions.Assertions;
-import org.joda.time.LocalDateTime;
-import org.joda.time.Period;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.Mock;
+import org.mockito.ArgumentCaptor;
 
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertNotNull;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
-import static org.mockito.internal.verification.VerificationModeFactory.atLeastOnce;
 
 public class CheckoutServiceTest {
 
@@ -71,10 +65,18 @@ public class CheckoutServiceTest {
     @Test
     public void fulfillTransaction_SendsConfirmationEmail() {
         Transaction transaction = mock(Transaction.class);
-        when(transaction.getUser()).thenReturn(new User());
+        User user = new User();
+        user.setEmail("me@random.com");
+        Long transactionId = 75686735L;
+        when(transaction.getUser()).thenReturn(user);
+        when(transaction.getId()).thenReturn(transactionId);
 
         checkoutService.fulfillTransaction(transaction);
 
-        verify(emailService, times(1)).SendEmail(any(String.class), any(String.class), any(String.class));
+        ArgumentCaptor<String> emailCaptor = ArgumentCaptor.forClass(String.class);
+        ArgumentCaptor<String> messageCaptor = ArgumentCaptor.forClass(String.class);
+        verify(emailService, times(1)).SendEmail(emailCaptor.capture(), any(String.class), messageCaptor.capture());
+        assert(emailCaptor.getValue()).contains(user.getEmail());
+        assert(messageCaptor.getValue()).contains(String.valueOf(transactionId));
     }
 }
