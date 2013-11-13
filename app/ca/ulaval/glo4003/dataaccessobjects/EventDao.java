@@ -20,8 +20,9 @@ import java.util.List;
 public class EventDao extends PersistedDao<Event> {
 
     @Inject
-    public EventDao(DaoPersistenceService persistenceService) {
-        super(persistenceService);
+    public EventDao(DaoPersistenceService persistenceService, UniqueConstraintValidator<Event>
+            uniqueConstraintValidator) {
+        super(persistenceService, uniqueConstraintValidator);
     }
 
     public List<Event> search(final EventSearchCriteria criteria) throws InvalidParameterException {
@@ -56,7 +57,8 @@ public class EventDao extends PersistedDao<Event> {
         throw new RecordNotFoundException();
     }
 
-    public void decrementEventCategoryNumberOfTickets(long eventId, long categoryId, int numberOfTickets) throws RecordNotFoundException, MaximumExceededException {
+    public void decrementEventCategoryNumberOfTickets(long eventId, long categoryId, int numberOfTickets)
+            throws RecordNotFoundException, MaximumExceededException {
         Category category = findCategory(eventId, categoryId);
         category.decrementNumberOfTickets(numberOfTickets);
     }

@@ -8,7 +8,7 @@ define(['app'], function (app) {
 
         var updateCartCookie = function (cart) {
             $cookieStore.put('cart', cart)
-        }
+        };
 
         var getItemByTicketId = function (ticketId) {
             for (var index in cart) {
@@ -19,7 +19,35 @@ define(['app'], function (app) {
                 }
             }
             return null;
-        }
+        };
+
+        var getCheckoutlist = function () {
+            var checkoutList = [];
+            for (var index in cart) {
+                var item = cart[index];
+                if (item.selected) {
+                    var checkoutItem = {
+                        eventId: item.event.id,
+                        categoryId: item.category.id,
+                        quantity: item.quantity
+                    };
+                    checkoutList.push(checkoutItem);
+                }
+            }
+            return checkoutList;
+        };
+
+        var removeAllSelectedItems = function (index, cart) {
+            if (cart[index].selected) {
+                cart.splice(index, 1);
+            } else index++;
+
+            if (index >= cart.length) {
+                updateCartCookie(cart);
+                return 0;
+            }
+            return removeAllSelectedItems(index, cart);
+        };
 
         exports.addItem = function (ticket, category, event) {
             var item = {
@@ -43,34 +71,34 @@ define(['app'], function (app) {
             }
 
             updateCartCookie(cart);
-        }
+        };
 
         exports.removeItem = function (index) {
             cart.splice(index, 1);
             updateCartCookie(cart);
-        }
+        };
 
         exports.removeAllItem = function () {
             cart.splice(0, cart.length);
             updateCartCookie(cart);
-        }
+        };
 
         exports.getItems = function () {
             return cart;
-        }
+        };
 
         exports.isSelectionEmpty = function () {
             for (key in cart) {
                 if (cart[key].selected) return false;
             }
             return true;
-        }
+        };
 
         exports.getTotalQuantity = function () {
             return cart.reduce(function (a, item) {
                 return a + item.quantity;
             }, 0);
-        }
+        };
 
         exports.getTotalSelectedQuantity = function () {
             return cart.reduce(function (a, item) {
@@ -79,7 +107,7 @@ define(['app'], function (app) {
                 }
                 return a;
             }, 0);
-        }
+        };
 
         exports.getTotalPrice = function () {
             return cart.reduce(function (a, item) {
@@ -88,40 +116,12 @@ define(['app'], function (app) {
                 }
                 return a;
             }, 0);
-        }
+        };
 
         exports.setItemSelected = function (key, value) {
             cart[key].selected = value;
             updateCartCookie(cart);
-        }
-
-        var getCheckoutlist = function () {
-            var checkoutList = [];
-            for (var index in cart) {
-                var item = cart[index];
-                if (item.selected) {
-                    var checkoutItem = {
-                        eventId: item.event.id,
-                        categoryId: item.category.id,
-                        quantity: item.quantity
-                    }
-                    checkoutList.push(checkoutItem);
-                }
-            }
-            return checkoutList;
-        }
-
-        var removeAllSelectedItems = function (index, cart) {
-            if (cart[index].selected) {
-                cart.splice(index, 1);
-            } else index++;
-
-            if (index >= cart.length) {
-                updateCartCookie(cart);
-                return 0;
-            }
-            return removeAllSelectedItems(index, cart);
-        }
+        };
 
         exports.checkout = function (successCallback, errorCallback) {
             var itemsToCheckout = getCheckoutlist()
@@ -130,11 +130,21 @@ define(['app'], function (app) {
                 method: 'POST',
                 url: '/api/checkout',
                 data: itemsToCheckout
-            }
+            };
             $http(config)
                 .success(successCallback)
+<<<<<<< HEAD
                 .error(errorCallback);
         }
+=======
+                .error(errorCallback)
+        };
+
+        exports.updateItemQuantity = function(index, newQuantity){
+            cart[index].quantity = newQuantity
+            updateCartCookie(cart);
+        };
+>>>>>>> fdde8e5d2182ed02d69400587229a055ed3c1e47
 
         return exports;
     }]);
@@ -195,10 +205,10 @@ define(['app'], function (app) {
                 type: type,
                 title: typeAsString(type),
                 content: message
-            }
+            };
 
             $rootScope.$broadcast('messageEvent', message);
-        }
+        };
 
         return exports;
     }]);

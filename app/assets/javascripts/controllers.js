@@ -52,6 +52,7 @@ define(['app'], function (app) {
         $scope.sectionsByCategories = [];
         $scope.ticketsByCategories = [];
 
+<<<<<<< HEAD
         $scope.addToCart = function (ticketId, category) {
             var url = '/api/tickets/' + ticketId;
             $http.get(url)
@@ -90,6 +91,15 @@ define(['app'], function (app) {
                         $scope.ticketsByCategories[categoryId].values.push(ticket);
                     }
                 });
+=======
+        $scope.addToCart = function (quantity, category) {
+            if (quantity > category.numberOfTickets) {
+                FlashMessage.send('error', 'Le nombre de billets ajoutés au panier excède le nombre de billets restants');
+            } else {
+                Cart.addItem(quantity, category, $scope.event);
+                FlashMessage.send("success", "L'item a été ajouté au panier");
+            }
+>>>>>>> fdde8e5d2182ed02d69400587229a055ed3c1e47
         }
 
         var apiCallSuccessCallback = function (result) {
@@ -141,10 +151,17 @@ define(['app'], function (app) {
             $scope.monthOfYear = ['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12'];
             $scope.expirationYears = [];
 
-            var currentDate = new Date();
-            for (var i = 0; i < 5; i++) {
-                $scope.expirationYears.push(currentDate.getFullYear() + i);
-            }
+            $scope.updateItemQuantity = function (index, newQuantity, maxQuantity) {
+                if (newQuantity <= 0) {
+                    Cart.removeItem(index);
+                } else {
+                    if (newQuantity > maxQuantity) {
+                        FlashMessage.send("warning", "Le nombre de billet maximum est de " + maxQuantity.toString());
+                        newQuantity = maxQuantity;
+                    }
+                    Cart.updateItemQuantity(index, newQuantity);
+                }
+            };
 
             $scope.updateSelectAll = function () {
                 $scope.selectAll = false;
@@ -160,22 +177,28 @@ define(['app'], function (app) {
                 if (Cart.isSelectionEmpty()) {
                     FlashMessage.send('warning', 'La sélection d\'achat est vide');
                 }
-                else if(!Login.isLoggedIn){
+                else if (!Login.isLoggedIn) {
                     notifyUserToLogin();
                 }
                 else if (window.confirm("Confirmez-vous le paiment de " + $scope.getTotalPrice() + "$ ?")) {
                     Cart.checkout(checkoutSuccess, checkoutError);
                 }
+            };
+
+            var currentDate = new Date();
+            var followingYears = 5;
+            for (var i = 0; i < followingYears; i++) {
+                $scope.expirationYears.push(currentDate.getFullYear() + i);
             }
 
             var notifyUserToLogin = function () {
-                window.alert('Vous devez vous connecter avant de procéder au paiement');
-            }
+                FlashMessage.send('info','Vous devez vous connecter avant de procéder au paiement');
+            };
 
             var checkoutSuccess = function () {
                 FlashMessage.send("success", "La transaction a été complétée");
                 $location.path("/thanks");
-            }
+            };
 
             var checkoutError = function (error, status) {
                 if (status === 401) {

@@ -12,18 +12,22 @@ import java.util.List;
 public abstract class PersistedDao<T extends Record> implements DataAccessObject<T>, Serializable {
 
     private long lastId = 1;
-    protected List<T> list = new ArrayList<>();
-    protected DaoPersistenceService persistenceService;
+    private List<T> list = new ArrayList<>();
+    private DaoPersistenceService persistenceService;
+    private UniqueConstraintValidator<T> uniqueConstraintValidator;
 
-    public PersistedDao(DaoPersistenceService persistenceService) {
+    public PersistedDao(DaoPersistenceService persistenceService, UniqueConstraintValidator<T>
+            uniqueConstraintValidator) {
         this.persistenceService = persistenceService;
+        this.uniqueConstraintValidator = uniqueConstraintValidator;
 
         try {
             this.list = this.persistenceService.restore(this);
             System.out.println("Successfully restored DAO [" + this.getClass().getSimpleName() + "] with a total of " +
                     this.list.size() + " items.");
         } catch (Exception e) {
-            System.out.println("Warning: Could not restore DAO [" + this.getClass().getSimpleName() + "]: " + e.getMessage());
+            System.out.println("Warning: Could not restore DAO [" + this.getClass().getSimpleName() + "]: " +
+                    e.getMessage());
         }
     }
 
@@ -67,6 +71,8 @@ public abstract class PersistedDao<T extends Record> implements DataAccessObject
     }
 
     protected void persist(T element) {
+        uniqueConstraintValidator.validate(list(), element);
+
         // We clone the object before saving it in the DB
         // Otherwise, a change on a record outside this
         // dao would reflect in the DB without calling
