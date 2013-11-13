@@ -9,11 +9,13 @@ public class Category implements Serializable {
     private long id;
     private double price;
     private int numberOfTickets;
+    private CategoryType type;
 
-    public Category(double price, int numberOfTickets, long id) {
+    public Category(double price, int numberOfTickets, long id, CategoryType type) {
         this.price = price;
         this.id = id;
         this.numberOfTickets = numberOfTickets;
+        this.type = type;
     }
 
     public double getPrice() {
@@ -31,5 +33,9 @@ public class Category implements Serializable {
 
     public long getId() {
         return id;
+    }
+
+    public CategoryType getType() {
+        return type;
     }
 }

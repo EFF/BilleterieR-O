@@ -65,7 +65,11 @@ public class StagingBootstrapper implements Bootstrapper {
                 for (int j = 0; j < 3; j++) {
                     double price = new Random().nextInt(20);
                     int numberOfTickets = (new Random().nextInt(10) + 1) * 10;
-                    Category category = new Category(price, numberOfTickets, j);
+                    CategoryType type = CategoryType.SEAT;
+                    if (j == 0) {
+                        type = CategoryType.GENERAL_ADMISSION;
+                    }
+                    Category category = new Category(price, numberOfTickets, j, type);
                     event.addCategory(category);
                 }
                 //TODO add opponents (local team and visitor team) of this event. Will probably need a TeamDao...
@@ -90,15 +94,17 @@ public class StagingBootstrapper implements Bootstrapper {
     private void initTicket() {
         for (Event event : eventDao.list()) {
             for (Category category : event.getCategories()) {
-                int numberOfTickets = category.getNumberOfTickets();
-                while (numberOfTickets > 0) {
-                    int section = (new Random().nextInt(2) + 1) * 100;
-                    Ticket ticket = new Ticket(event.getId(),
-                            category.getId(),
-                            "Niveau " + section,
-                            numberOfTickets);
-                    ticketDao.create(ticket);
-                    numberOfTickets--;
+                if (category.getType() != CategoryType.GENERAL_ADMISSION) {
+                    int numberOfTickets = category.getNumberOfTickets();
+                    while (numberOfTickets > 0) {
+                        int section = (new Random().nextInt(2) + 1) * 100;
+                        Ticket ticket = new Ticket(event.getId(),
+                                category.getId(),
+                                "Niveau " + section,
+                                numberOfTickets);
+                        ticketDao.create(ticket);
+                        numberOfTickets--;
+                    }
                 }
             }
         }

@@ -52,7 +52,7 @@ define(['app'], function (app) {
         $scope.sectionsByCategories = [];
         $scope.ticketsByCategories = [];
 
-        $scope.addToCart = function (ticketId, category) {
+        $scope.addToCart = function (ticketId, category, quantity) {
             var url = '/api/tickets/' + ticketId;
             $http.get(url)
                 .success(function (ticket) {

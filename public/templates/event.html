@@ -12,7 +12,9 @@
     <tr>
         <th>Prix</th>
         <th>Billets disponibles</th>
-        <th></th>
+        <th>Type</th>
+        <th>Section/Quantité</th>
+        <th>Siège</th>
     </tr>
     </thead>
     <tbody>
@@ -20,48 +22,49 @@
         <td class="price">{{category.price}}$</td>
         <td class="numberOfTickets">{{category.numberOfTickets}}</td>
         <td>
-            <div class="row">
-                <div class="col-md-2">
-                    <input type="number" step="1" ng-model="quantity" ng-init="quantity=1"
-                           class="form-control category-quantity" min="1" max="{{category.numberOfTickets}}">
-                </div>
+            <p ng-hide="category.type == 'GENERAL_ADMISSION'">Siège réservé</p>
+            <p ng-hide="category.type == 'SEAT'">Admission Générale</p>
+        </td>
 
-                <div class="col-md-3">
-                    <select id="{{sectionsByCategories[category.id].name}}"
-                            class="form-control"
-                            ng-change="apiCall()"
-                            ng-model="sectionsByCategories[category.id].value"
-                            ng-options="s for s in sectionsByCategories[category.id].values">
-                        <option value="">Section...</option>
-                    </select>
-                </div>
+        <td>
+            <input type="number" step="1" ng-model="quantity" ng-init="quantity=1"
+                   class="form-control category-quantity" min="1" max="{{category.numberOfTickets}}"
+                   ng-hide="category.type == 'SEAT'">
+            <select id="{{sectionsByCategories[category.id].name}}"
+                    class="form-control"
+                    ng-change="apiCall()"
+                    ng-model="sectionsByCategories[category.id].value"
+                    ng-options="s for s in sectionsByCategories[category.id].values"
+                    ng-hide="category.type == 'GENERAL_ADMISSION'">
+                <option value="">Section...</option>
+            </select>
+        </td>
 
-                <div class="col-md-3">
-                    <select id="{{ticketsByCategories[category.id].name}}"
-                            class="form-control"
-                            ng-model="ticketsByCategories[category.id].value">
-                        <option value="">Siège disponible...</option>
-                        <option value="{{ticket.id}}"
-                                ng-repeat="ticket in ticketsByCategories[category.id].values">
-                            {{ticket.seat}}
-                        </option>
-                    </select>
-                </div>
+        <td>
+            <select id="{{ticketsByCategories[category.id].name}}"
+                    class="form-control"
+                    ng-model="ticketsByCategories[category.id].value"
+                    ng-hide="category.type == 'GENERAL_ADMISSION'">
+                <option value="">Siège disponible...</option>
+                <option value="{{ticket.id}}"
+                        ng-repeat="ticket in ticketsByCategories[category.id].values">
+                    {{ticket.seat}}
+                </option>
+            </select>
+        </td>
 
-                <div class="col-md-4">
-                    <button class="btn btn-success category-add"
-                            ng-click="addToCart(ticketsByCategories[category.id].value, category)"
-                            ng-hide="category.numberOfTickets == 0"
-                            ng-disabled="!ticketsByCategories[category.id].value">
-                        Ajouter au panier
-                    </button>
-                    <a href="/#!/tickets/{{ticketsByCategories[category.id].value}}"
-                       ng-disabled="!ticketsByCategories[category.id].value"
-                       class="btn btn-info">
-                        Détails
-                    </a>
-                </div>
-            </div>
+        <td>
+            <button class="btn btn-success category-add"
+                    ng-click="addToCart(ticketsByCategories[category.id].value, category)"
+                    ng-hide="category.numberOfTickets == 0"
+                    ng-disabled="!ticketsByCategories[category.id].value && category.type == 'SEAT'">
+                Ajouter au panier
+            </button>
+            <a href="/#!/tickets/{{ticketsByCategories[category.id].value}}"
+               ng-disabled="!ticketsByCategories[category.id].value && category.type == 'SEAT'"
+               class="btn btn-info">
+                Détails
+            </a>
         </td>
     </tr>
     </tbody>

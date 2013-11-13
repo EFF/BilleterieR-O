@@ -21,7 +21,7 @@ define(['app'], function (app) {
             return null;
         };
 
-        var getCheckoutlist = function () {
+        var getCheckoutList = function () {
             var checkoutList = [];
             for (var index in cart) {
                 var item = cart[index];
@@ -124,7 +124,7 @@ define(['app'], function (app) {
         };
 
         exports.checkout = function (successCallback, errorCallback) {
-            var itemsToCheckout = getCheckoutlist()
+            var itemsToCheckout = getCheckoutList()
             removeAllSelectedItems(0, cart);
             var config = {
                 method: 'POST',
