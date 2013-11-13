@@ -51,15 +51,25 @@ define(['app'], function (app) {
         $scope.event = null;
         $scope.sectionsByCategories = [];
         $scope.ticketsByCategories = [];
+        $scope.quantity = [];
 
         $scope.addToCart = function (ticketId, category, quantity) {
-            var url = '/api/tickets/' + ticketId;
-            $http.get(url)
-                .success(function (ticket) {
-                    Cart.addItem(ticket, category, $scope.event);
-                    refreshTicketsList(eventId, category.id, ticket.section);
+            if (ticketId) {
+                var url = '/api/tickets/' + ticketId;
+                $http.get(url)
+                    .success(function (ticket) {
+                        Cart.addItem(ticket, category, $scope.event, quantity);
+                        refreshTicketsList(eventId, category.id, ticket.section);
+                        FlashMessage.send("success", "L'item a été ajouté au panier");
+                    });
+            } else {
+                if (quantity > category.numberOfTickets) {
+                    FlashMessage.send('error', 'Le nombre de billets ajoutés au panier excède le nombre de billets restants');
+                } else {
+                    Cart.addItem(null, category, $scope.event, quantity);
                     FlashMessage.send("success", "L'item a été ajouté au panier");
-                });
+                }
+            }
         };
 
         var refreshTicketsList = function(eventId, categoryId, sectionName) {

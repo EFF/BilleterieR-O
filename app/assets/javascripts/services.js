@@ -14,7 +14,7 @@ define(['app'], function (app) {
             for (var index in cart) {
                 var item = cart[index];
 
-                if (item.ticket.id == ticketId) {
+                if (item.ticket && item.ticket.id == ticketId) {
                     return item;
                 }
             }
@@ -49,25 +49,29 @@ define(['app'], function (app) {
             return removeAllSelectedItems(index, cart);
         };
 
-        exports.addItem = function (ticket, category, event) {
+        exports.addItem = function (ticket, category, event, quantity) {
             var item = {
-                quantity: 1,
+                quantity: quantity,
                 category: category,
                 ticket: ticket,
                 event: event,
                 selected: true
             }
 
-            var existingItem = getItemByTicketId(ticket.id);
 
-            if (existingItem) {
-                console.log("Throw error");
+            if (ticket) {
+                var existingItem = getItemByTicketId(ticket.id);
+                if (existingItem) {
+                    console.log("Throw error");
+                } else {
+                    var url = '/api/tickets/reserve/' + ticket.id;
+                    $http.get(url)
+                        .success(function () {
+                            cart.push(item);
+                        });
+                }
             } else {
-                var url = '/api/tickets/reserve/' + ticket.id;
-                $http.get(url)
-                    .success(function () {
-                        cart.push(item);
-                    });
+                cart.push(item);
             }
 
             updateCartCookie(cart);

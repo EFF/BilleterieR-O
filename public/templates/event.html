@@ -27,9 +27,10 @@
         </td>
 
         <td>
-            <input type="number" step="1" ng-model="quantity" ng-init="quantity=1"
-                   class="form-control category-quantity" min="1" max="{{category.numberOfTickets}}"
-                   ng-hide="category.type == 'SEAT'">
+            <input type="number" step="1" ng-model="quantity[category.id]" ng-init="quantity[category.id]=1"
+                   class="form-control" min="1" max="{{category.numberOfTickets}}"
+                   ng-hide="category.type == 'SEAT'"
+                   ng-disabled="category.numberOfTickets == 0">
             <select id="{{sectionsByCategories[category.id].name}}"
                     class="form-control"
                     ng-change="apiCall()"
@@ -55,13 +56,14 @@
 
         <td>
             <button class="btn btn-success category-add"
-                    ng-click="addToCart(ticketsByCategories[category.id].value, category)"
+                    ng-click="addToCart(ticketsByCategories[category.id].value, category, quantity[category.id])"
                     ng-hide="category.numberOfTickets == 0"
                     ng-disabled="!ticketsByCategories[category.id].value && category.type == 'SEAT'">
                 Ajouter au panier
             </button>
             <a href="/#!/tickets/{{ticketsByCategories[category.id].value}}"
                ng-disabled="!ticketsByCategories[category.id].value && category.type == 'SEAT'"
+               ng-hide="category.type == 'GENERAL_ADMISSION'"
                class="btn btn-info">
                 Détails
             </a>
