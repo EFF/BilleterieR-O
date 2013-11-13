@@ -1,10 +1,18 @@
 package ca.ulaval.glo4003.models;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class TicketSearchCriteria {
 
     private Long eventId;
     private Long categoryId;
     private String sectionName;
+    private List<TicketState> states;
+
+    public TicketSearchCriteria() {
+        states = new ArrayList<>();
+    }
 
     public Long getEventId() {
         return eventId;
@@ -28,5 +36,13 @@ public class TicketSearchCriteria {
 
     public void setSectionName(String sectionName) {
         this.sectionName = sectionName;
+    }
+
+    public List<TicketState> getStates() {
+        return states;
+    }
+
+    public void addState(TicketState state) {
+        this.states.add(state);
     }
 }

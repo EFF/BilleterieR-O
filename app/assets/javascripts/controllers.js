@@ -52,13 +52,18 @@ define(['app'], function (app) {
         $scope.sectionsByCategories = [];
         $scope.ticketsByCategories = [];
 
-        $scope.addToCart = function (quantity, category) {
-            Cart.addItem(quantity, category, $scope.event);
-            FlashMessage.send("success", "L'item a été ajouté au panier");
+        $scope.addToCart = function (ticketId, category) {
+            var url = '/api/tickets/' + ticketId;
+            $http.get(url)
+                .success(function (ticket) {
+                    Cart.addItem(ticket, category, $scope.event);
+                    refreshTicketsList(eventId, category.id, ticket.section);
+                    FlashMessage.send("success", "L'item a été ajouté au panier");
+                });
         }
 
         var refreshTicketsList = function(eventId, categoryId, sectionName) {
-            var url = '/api/tickets?eventId=' + eventId + '&categoryId=' + categoryId;
+            var url = '/api/tickets?eventId=' + eventId + '&categoryId=' + categoryId + '&states=AVAILABLE,RESALE';
             var emptyTicketList = {
                 type : 'select',
                 name : 'ticketList' + categoryId,

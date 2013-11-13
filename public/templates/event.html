@@ -49,8 +49,11 @@
                 </div>
 
                 <div class="col-md-4">
-                    <button class="btn btn-success category-add" ng-click="addToCart(quantity, category)"
-                            ng-hide="category.numberOfTickets == 0">Ajouter au panier
+                    <button class="btn btn-success category-add"
+                            ng-click="addToCart(ticketsByCategories[category.id].value, category)"
+                            ng-hide="category.numberOfTickets == 0"
+                            ng-disabled="!ticketsByCategories[category.id].value">
+                        Ajouter au panier
                     </button>
                     <a href="/#!/tickets/{{ticketsByCategories[category.id].value}}"
                        ng-disabled="!ticketsByCategories[category.id].value"

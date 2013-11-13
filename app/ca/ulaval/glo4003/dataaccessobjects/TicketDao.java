@@ -3,6 +3,7 @@ package ca.ulaval.glo4003.dataaccessobjects;
 
 import ca.ulaval.glo4003.models.Ticket;
 import ca.ulaval.glo4003.models.TicketSearchCriteria;
+import ca.ulaval.glo4003.models.TicketState;
 import ca.ulaval.glo4003.services.DaoPersistenceService;
 import com.google.common.base.Predicate;
 import com.google.common.collect.FluentIterable;
@@ -28,6 +29,9 @@ public class TicketDao extends PersistedDao<Ticket> {
         }
         if (criteria.getCategoryId() != null) {
             results = filterByCategoryId(criteria.getCategoryId(), results);
+        }
+        if (criteria.getStates() != null && criteria.getStates().size() >= 1) {
+            results = filterByStates(criteria.getStates(), results);
         }
 
         return results.toList();
@@ -57,6 +61,15 @@ public class TicketDao extends PersistedDao<Ticket> {
             @Override
             public boolean apply(Ticket input) {
                 return categoryId < 0 || input.getCategoryId() == categoryId;
+            }
+        });
+    }
+
+    private FluentIterable<Ticket> filterByStates(final List<TicketState> states, FluentIterable<Ticket> results) {
+        return results.filter(new Predicate<Ticket>() {
+            @Override
+            public boolean apply(Ticket input) {
+                return states != null || states.contains(input.getState());
             }
         });
     }

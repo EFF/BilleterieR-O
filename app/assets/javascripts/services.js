@@ -10,31 +10,36 @@ define(['app'], function (app) {
             $cookieStore.put('cart', cart)
         }
 
-        var getItemByEventAndCategory = function (event, category) {
+        var getItemByTicketId = function (ticketId) {
             for (var index in cart) {
                 var item = cart[index];
 
-                if (item.event.id == event.id && item.category.id == category.id) {
+                if (item.ticket.id == ticketId) {
                     return item;
                 }
             }
             return null;
         }
 
-        exports.addItem = function (quantity, category, event) {
+        exports.addItem = function (ticket, category, event) {
             var item = {
-                quantity: quantity,
+                quantity: 1,
                 category: category,
+                ticket: ticket,
                 event: event,
                 selected: true
             }
 
-            var existingItem = getItemByEventAndCategory(event, category);
+            var existingItem = getItemByTicketId(ticket.id);
 
             if (existingItem) {
-                existingItem.quantity += quantity;
+                console.log("Throw error");
             } else {
-                cart.push(item);
+                var url = '/api/tickets/reserve/' + ticket.id;
+                $http.get(url)
+                    .success(function () {
+                        cart.push(item);
+                    });
             }
 
             updateCartCookie(cart);
@@ -166,8 +171,8 @@ define(['app'], function (app) {
         };
 
         var setCredentials = function(isLoggedIn, authenticated) {
-             exports.isLoggedIn = isLoggedIn;
-             exports.username = authenticated;
+            exports.isLoggedIn = isLoggedIn;
+            exports.username = authenticated;
         };
 
         checkAuthenticationState();

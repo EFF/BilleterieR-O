@@ -5,6 +5,7 @@ import ca.ulaval.glo4003.dataaccessobjects.TicketDao;
 import ca.ulaval.glo4003.exceptions.RecordNotFoundException;
 import ca.ulaval.glo4003.models.Ticket;
 import ca.ulaval.glo4003.models.TicketSearchCriteria;
+import ca.ulaval.glo4003.models.TicketState;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ListMultimap;
 import com.google.inject.Inject;
@@ -27,6 +28,7 @@ public class Tickets extends Controller {
         final String eventId = request().getQueryString("eventId");
         final String sectionName = request().getQueryString("sectionName");
         final String categoryId = request().getQueryString("categoryId");
+        final String stringStates = request().getQueryString("states");
 
         TicketSearchCriteria ticketSearchCriteria = new TicketSearchCriteria();
         if (eventId != null) {
@@ -36,11 +38,29 @@ public class Tickets extends Controller {
             ticketSearchCriteria.setCategoryId(Long.parseLong(categoryId));
         }
         ticketSearchCriteria.setSectionName(sectionName);
+        String states[] = stringStates.split(",");
+        for (String stringState : states) {
+            TicketState state = TicketState.valueOf(stringState);
+            if (state != null) {
+                ticketSearchCriteria.addState(state);
+            }
+        }
 
         try {
             return ok(Json.toJson(ticketDao.search(ticketSearchCriteria)));
         } catch (Exception e) {
             return internalServerError(e.getMessage());
+        }
+    }
+
+    public Result reserve(long id) {
+        try {
+            Ticket ticket = ticketDao.read(id);
+            ticket.setState(TicketState.RESERVED);
+            ticketDao.update(ticket);
+            return ok();
+        } catch (RecordNotFoundException e) {
+            return notFound();
         }
     }
 
