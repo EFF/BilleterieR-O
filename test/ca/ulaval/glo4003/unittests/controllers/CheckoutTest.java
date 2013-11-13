@@ -13,6 +13,7 @@ import ca.ulaval.glo4003.services.CheckoutService;
 import ca.ulaval.glo4003.unittests.helpers.EventsTestHelper;
 import com.google.inject.Inject;
 import org.codehaus.jackson.node.ObjectNode;
+import org.jukito.JukitoModule;
 import org.jukito.JukitoRunner;
 import org.junit.Before;
 import org.junit.Test;
@@ -139,6 +140,14 @@ public class CheckoutTest extends BaseControllerTest {
         verify(mockedEventDao).decrementEventCategoryNumberOfTickets(anyLong(), anyLong(), anyInt());
         verify(mockedEventDao).decrementEventCategoryNumberOfTickets(eventId1, categoryId1, quantity1);
         verify(mockedCheckoutSvc, never()).fulfillTransaction(any(Transaction.class));
+    }
+
+    public static class TestModule extends JukitoModule {
+
+        @Override
+        protected void configureTest() {
+            forceMock(EventDao.class);
+        }
     }
 
 }

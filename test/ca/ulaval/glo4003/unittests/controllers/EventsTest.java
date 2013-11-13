@@ -167,4 +167,12 @@ public class EventsTest extends BaseControllerTest {
 
         verify(mockedEventDao).read(firstEvent.getId());
     }
+
+    public static class TestModule extends JukitoModule {
+
+        @Override
+        protected void configureTest() {
+            forceMock(EventDao.class);
+        }
+    }
 }
