@@ -17,7 +17,7 @@ import static play.test.Helpers.*;
 public class CartTest {
 
     private static final int VALID_TICKET_QUANTITY = 10;
-    private static final int EXEEDED_TICKET_QUANTITY = 30000;
+    private static final int EXCEEDED_TICKET_QUANTITY = 30000;
     private static final String EMAIL = "user1@example.com";
     private static final String PASSWORD = "secret";
     private static final int FIRST_ITEM_INDEX = 0;
@@ -240,7 +240,6 @@ public class CartTest {
                 goToCartPage(cartPage, 1);
                 cartPage.modifyNumberOfTicketsForItem(0, VALID_TICKET_QUANTITY);
 
-                browser.getDriver().navigate().refresh();
                 cartPage.waitUntilItemsHasSize(1);
                 assertEquals(cartPage.getQuantityForItem(0), VALID_TICKET_QUANTITY);
             }
@@ -258,7 +257,7 @@ public class CartTest {
 
                 eventPage1.addTicketsToCartForCategory(0, 1);
                 goToCartPage(cartPage, 1);
-                cartPage.modifyNumberOfTicketsForItem(0, EXEEDED_TICKET_QUANTITY);
+                cartPage.modifyNumberOfTicketsForItem(0, EXCEEDED_TICKET_QUANTITY);
 
                 assertTrue(cartPage.isWarningMessageDisplayed());
             }
@@ -276,9 +275,9 @@ public class CartTest {
 
                 eventPage1.addTicketsToCartForCategory(0, 1);
                 goToCartPage(cartPage, 1);
-                cartPage.modifyNumberOfTicketsForItem(0, EXEEDED_TICKET_QUANTITY);
+                cartPage.modifyNumberOfTicketsForItem(0, EXCEEDED_TICKET_QUANTITY);
 
-                assertThat(cartPage.getQuantityForItem(0)).isNotEqualTo(EXEEDED_TICKET_QUANTITY);
+                assertThat(cartPage.getQuantityForItem(0)).isNotEqualTo(EXCEEDED_TICKET_QUANTITY);
             }
         });
     }

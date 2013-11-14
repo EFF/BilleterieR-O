@@ -2,22 +2,27 @@ package ca.ulaval.glo4003;
 
 import ca.ulaval.glo4003.dataaccessobjects.EventDao;
 import ca.ulaval.glo4003.dataaccessobjects.SportDao;
+import ca.ulaval.glo4003.dataaccessobjects.TicketDao;
 import ca.ulaval.glo4003.dataaccessobjects.UserDao;
 import ca.ulaval.glo4003.models.*;
 import com.google.inject.Inject;
 import org.joda.time.LocalDateTime;
+
+import java.util.Random;
 
 public class TestBootstrapper implements Bootstrapper {
 
     private final EventDao eventDao;
     private final SportDao sportDao;
     private final UserDao userDao;
+    private final TicketDao ticketDao;
 
     @Inject
-    public TestBootstrapper(EventDao eventDao, SportDao sportDao, UserDao userDao) {
+    public TestBootstrapper(EventDao eventDao, SportDao sportDao, UserDao userDao, TicketDao ticketDao) {
         this.eventDao = eventDao;
         this.sportDao = sportDao;
         this.userDao = userDao;
+        this.ticketDao = ticketDao;
     }
 
     @Override
@@ -45,6 +50,7 @@ public class TestBootstrapper implements Bootstrapper {
         event2.addCategory(category4);
 
         eventDao.create(event2);
+        initTicket();
 
         for (int i = 0; i < 5; i++) {
             User user = new User();
@@ -59,5 +65,29 @@ public class TestBootstrapper implements Bootstrapper {
         eventDao.deleteAll();
         sportDao.deleteAll();
         userDao.deleteAll();
+        ticketDao.deleteAll();
+    }
+
+    private void initTicket() {
+        for (Event event : eventDao.list()) {
+            for (Category category : event.getCategories()) {
+                int numberOfTickets = category.getNumberOfTickets();
+                while (numberOfTickets > 0) {
+                    String strSection = "";
+                    int seat = -1;
+                    if (category.getType() == CategoryType.SEAT) {
+                        strSection = "Niveau " + (new Random().nextInt(2) + 1) * 100;
+                        seat = numberOfTickets;
+                    }
+                    Ticket ticket = new Ticket(event.getId(),
+                            category.getId(),
+                            strSection,
+                            seat);
+
+                    ticketDao.create(ticket);
+                    numberOfTickets--;
+                }
+            }
+        }
     }
 }

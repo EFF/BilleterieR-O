@@ -29,7 +29,7 @@
         </td>
         <td>{{item.category.price}}$</td>
         <td class="col-md-2">
-            <input id="input_quantity{{$index}}" class="form-control" type="number" required step="1" ng-model="item.quantity" ng-change="updateItemQuantity($index, item.quantity, item.category.numberOfTickets)" ng-init="item.quantity" max="{{item.category.numberOfTickets}}">
+            <input id="input_quantity{{$index}}" class="form-control category-quantity" type="number" required step="1" ng-model="item.quantity" ng-change="updateItemQuantity($index, item.quantity, item.category.numberOfTickets)" ng-init="item.quantity" max="{{item.category.numberOfTickets}}">
         </td>
         <td>{{item.quantity * item.category.price}}$</td>
         <td>

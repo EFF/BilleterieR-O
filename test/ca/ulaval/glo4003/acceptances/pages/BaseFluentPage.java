@@ -15,6 +15,11 @@ public abstract class BaseFluentPage extends FluentPage {
     }
 
     public int getCartSize() {
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }
         return Integer.parseInt(find(".navbar").find(".cart-size").getText());
     }
 
