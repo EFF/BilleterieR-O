@@ -72,7 +72,6 @@ public class StagingBootstrapper implements Bootstrapper {
                     Category category = new Category(price, numberOfTickets, j, type);
                     event.addCategory(category);
                 }
-                //TODO add opponents (local team and visitor team) of this event. Will probably need a TeamDao...
                 eventDao.create(event);
             }
         }
@@ -94,17 +93,20 @@ public class StagingBootstrapper implements Bootstrapper {
     private void initTicket() {
         for (Event event : eventDao.list()) {
             for (Category category : event.getCategories()) {
-                if (category.getType() != CategoryType.GENERAL_ADMISSION) {
-                    int numberOfTickets = category.getNumberOfTickets();
-                    while (numberOfTickets > 0) {
-                        int section = (new Random().nextInt(2) + 1) * 100;
-                        Ticket ticket = new Ticket(event.getId(),
-                                category.getId(),
-                                "Niveau " + section,
-                                numberOfTickets);
-                        ticketDao.create(ticket);
-                        numberOfTickets--;
+                int numberOfTickets = category.getNumberOfTickets();
+                while (numberOfTickets > 0) {
+                    String strSection = "";
+                    int seat = -1;
+                    if (category.getType() == CategoryType.SEAT) {
+                        strSection = "Niveau " + (new Random().nextInt(2) + 1) * 100;
+                        seat = numberOfTickets;
                     }
+                    Ticket ticket = new Ticket(event.getId(),
+                            category.getId(),
+                            strSection,
+                            seat);
+                    ticketDao.create(ticket);
+                    numberOfTickets--;
                 }
             }
         }
