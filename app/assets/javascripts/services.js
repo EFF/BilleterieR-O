@@ -148,7 +148,7 @@ define(['app'], function (app) {
             for (var index in cart) {
                 for (var i in cart[index].tickets) {
                     url += cart[index].tickets[i].id;
-                    if (i < cart[index].tickets.length - 1)
+                    if (index < cart.length - 1)
                         url += ',';
                 }
             }
