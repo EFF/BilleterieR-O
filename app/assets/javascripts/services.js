@@ -38,13 +38,10 @@ define(['app'], function (app) {
             for (var index in cart) {
                 var item = cart[index];
                 if (item.selected) {
-                    var ticketId = null;
-                    if (item.ticket)
-                        ticketId = item.ticket.id;
                     var checkoutItem = {
                         eventId: item.event.id,
                         categoryId: item.category.id,
-                        ticketId: ticketId,
+                        tickets: item.tickets,
                         quantity: item.quantity
                     };
                     checkoutList.push(checkoutItem);

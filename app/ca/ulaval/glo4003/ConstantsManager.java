@@ -16,7 +16,6 @@ public class ConstantsManager {
 
     public final static String EVENT_ID_FIELD_NAME = "eventId";
     public final static String CATEGORY_ID_FIELD_NAME = "categoryId";
-    public final static String TICKET_ID_FIELD_NAME = "ticketId";
     public final static String QUANTITY_FIELD_NAME = "quantity";
 
     public final static String FACET_SPORT = "sport";
