@@ -10,7 +10,6 @@ import ca.ulaval.glo4003.models.Ticket;
 import ca.ulaval.glo4003.models.TicketSearchCriteria;
 import ca.ulaval.glo4003.models.TicketState;
 import com.google.common.collect.ArrayListMultimap;
-import com.google.common.collect.LinkedHashMultimap;
 import com.google.common.collect.ListMultimap;
 import com.google.common.collect.Multimap;
 import com.google.inject.Inject;
@@ -149,7 +148,7 @@ public class Tickets extends Controller {
     }
 
     private Map<String, Collection<Long>> regroupByEventAndCategory(List<Long> ids) {
-        Multimap<String, Long> idsByEventDotCategory = LinkedHashMultimap.create();
+        Multimap<String, Long> idsByEventDotCategory = ArrayListMultimap.create();
         for (Long id : ids) {
             try {
                 Ticket ticket = ticketDao.read(id);
