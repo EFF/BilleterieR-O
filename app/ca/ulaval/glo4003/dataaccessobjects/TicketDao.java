@@ -35,6 +35,8 @@ public class TicketDao extends PersistedDao<Ticket> {
             results = filterByStates(criteria.getStates(), results);
         }
 
+        if (criteria.getQuantity() > 0)
+            return results.toList().subList(0, criteria.getQuantity());
         return results.toList();
     }
 
@@ -70,7 +72,7 @@ public class TicketDao extends PersistedDao<Ticket> {
         return results.filter(new Predicate<Ticket>() {
             @Override
             public boolean apply(Ticket input) {
-                return states != null || states.contains(input.getState());
+                return states != null && states.contains(input.getState());
             }
         });
     }

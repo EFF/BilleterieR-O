@@ -58,17 +58,18 @@ define(['app'], function (app) {
                 var url = '/api/tickets/' + ticketId;
                 $http.get(url)
                     .success(function (ticket) {
-                        Cart.addItem(ticket, category, $scope.event, quantity);
+                        Cart.addItem(ticket, category, $scope.event);
                         refreshTicketsList(eventId, category.id, ticket.section);
-                        FlashMessage.send("success", "L'item a été ajouté au panier");
                     });
             } else {
-                if (quantity > category.numberOfTickets) {
-                    FlashMessage.send('error', 'Le nombre de billets ajoutés au panier excède le nombre de billets restants');
-                } else {
-                    Cart.addItem(null, category, $scope.event, quantity);
-                    FlashMessage.send("success", "L'item a été ajouté au panier");
-                }
+                var url = '/api/tickets?eventId=' + eventId + '&categoryId=' + category.id + '&states=AVAILABLE,RESALE' + '&quantity=' + quantity;
+                $http.get(url)
+                    .success(function (tickets) {
+                        Cart.addItems(tickets, category, $scope.event);
+                    })
+                    .error(function() {
+                        FlashMessage.send('error', 'Le nombre de billets ajoutés au panier excède le nombre de billets restants.');
+                    });
             }
         };
 

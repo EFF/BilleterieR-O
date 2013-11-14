@@ -63,6 +63,12 @@ public class EventDao extends PersistedDao<Event> {
         category.decrementNumberOfTickets(numberOfTickets);
     }
 
+    public void incrementEventCategoryNumberOfTickets(Long eventId, Long categoryId, int numberOfTickets)
+            throws RecordNotFoundException {
+        Category category = findCategory(eventId, categoryId);
+        category.incrementNumberOfTickets(numberOfTickets);
+    }
+
     private FluentIterable<Event> filterByDateStart(final LocalDateTime dateStart, FluentIterable<Event> results) {
         return results.filter(new Predicate<Event>() {
             @Override

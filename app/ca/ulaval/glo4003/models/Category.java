@@ -31,6 +31,10 @@ public class Category implements Serializable {
         numberOfTickets -= decrementNumber;
     }
 
+    public synchronized void incrementNumberOfTickets(int incrementNumber) {
+        numberOfTickets += incrementNumber;
+    }
+
     public long getId() {
         return id;
     }

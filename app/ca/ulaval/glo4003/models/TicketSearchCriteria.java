@@ -9,9 +9,11 @@ public class TicketSearchCriteria {
     private Long categoryId;
     private String sectionName;
     private List<TicketState> states;
+    private int quantity;
 
     public TicketSearchCriteria() {
         states = new ArrayList<>();
+        quantity = -1;
     }
 
     public Long getEventId() {
@@ -44,5 +46,13 @@ public class TicketSearchCriteria {
 
     public void addState(TicketState state) {
         this.states.add(state);
+    }
+
+    public void setQuantity(int quantity) {
+        this.quantity = quantity;
+    }
+
+    public int getQuantity() {
+        return quantity;
     }
 }

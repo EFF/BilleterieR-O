@@ -1,6 +1,7 @@
 define(['app'], function (app) {
-    app.factory('Cart', ['$cookieStore', '$http', function ($cookieStore, $http) {
+    app.factory('Cart', ['$cookieStore', '$http', 'FlashMessage', function ($cookieStore, $http, FlashMessage) {
         var exports = {};
+        $cookieStore.put('cart', [])
         var cart = $cookieStore.get('cart');
         if (!cart) {
             cart = [];
@@ -21,6 +22,17 @@ define(['app'], function (app) {
             return null;
         };
 
+        var getItemByEventIdAndCategoryId = function (eventId, categoryId) {
+            for (var index in cart) {
+                var item = cart[index];
+
+                if (item.event.id == eventId && item.category.id == categoryId) {
+                    return item;
+                }
+            }
+            return null;
+        };
+
         var getCheckoutList = function () {
             var checkoutList = [];
             for (var index in cart) {
@@ -29,6 +41,7 @@ define(['app'], function (app) {
                     var checkoutItem = {
                         eventId: item.event.id,
                         categoryId: item.category.id,
+                        tickets: item.tickets,
                         quantity: item.quantity
                     };
                     checkoutList.push(checkoutItem);
@@ -49,42 +62,102 @@ define(['app'], function (app) {
             return removeAllSelectedItems(index, cart);
         };
 
-        exports.addItem = function (ticket, category, event, quantity) {
+        exports.addItem = function (ticket, category, event) {
             var item = {
-                quantity: quantity,
+                quantity: 1,
                 category: category,
-                ticket: ticket,
+                tickets: [ticket],
                 event: event,
                 selected: true
             }
 
-
-            if (ticket) {
-                var existingItem = getItemByTicketId(ticket.id);
-                if (existingItem) {
-                    console.log("Throw error");
-                } else {
-                    var url = '/api/tickets/reserve/' + ticket.id;
-                    $http.get(url)
-                        .success(function () {
-                            cart.push(item);
-                        });
-                }
+            var existingItem = getItemByTicketId(ticket.id);
+            if (existingItem) {
+                console.log("Throw error");
             } else {
-                cart.push(item);
+                var url = '/api/tickets/reserve/' + ticket.id;
+                $http.post(url)
+                    .success(function () {
+                        cart.push(item);
+                        updateCartCookie(cart);
+                        FlashMessage.send("success", "L'item a été ajouté au panier");
+                    })
+                    .error(function() {
+                        FlashMessage.send('error', 'L\'item n\'a pu être ajouté au panier. Une erreur est survenue.')
+                    });
+            }
+        };
+
+        exports.addItems = function (tickets, category, event) {
+            var item = {
+                quantity: tickets.length,
+                category: category,
+                tickets: tickets,
+                event: event,
+                selected: true
             }
 
-            updateCartCookie(cart);
+            var existingItem = getItemByEventIdAndCategoryId(event.id, category.id);
+
+            var url = '/api/tickets/reserve/';
+            for (var i in tickets) {
+                url += tickets[i].id;
+                if (i < tickets.length - 1)
+                    url += ',';
+            }
+            $http.post(url)
+                .success(function () {
+                    if (existingItem) {
+                        existingItem.tickets.concat(tickets);
+                        existingItem.quantity += tickets.length;
+                    } else {
+                        cart.push(item);
+                    }
+                    updateCartCookie(cart);
+                    FlashMessage.send("success", "Les billets ont été ajoutés au panier.");
+                })
+                .error(function() {
+                    FlashMessage.send('error', 'Les billets n\'ont pu être ajoutés au panier. Une erreur est survenue.')
+                });
         };
 
         exports.removeItem = function (index) {
-            cart.splice(index, 1);
-            updateCartCookie(cart);
+            var url = '/api/tickets/free/';
+
+            for (var i in cart[index].tickets) {
+                url += cart[index].tickets[i].id;
+                if (i < cart[index].tickets.length - 1)
+                    url += ',';
+            }
+
+            $http.post(url)
+                .success(function () {
+                    cart.splice(index, 1);
+                    updateCartCookie(cart);
+                })
+                .error(function () {
+                    FlashMessage.send('error', 'L\'item n\'a pu être retiré du panier. Une erreur est survenue.');
+                });
         };
 
         exports.removeAllItem = function () {
-            cart.splice(0, cart.length);
-            updateCartCookie(cart);
+            var url = '/api/tickets/free/';
+            for (var index in cart) {
+                for (var i in cart[index].tickets) {
+                    url += cart[index].tickets[i].id;
+                    if (i < cart[index].tickets.length - 1)
+                        url += ',';
+                }
+            }
+
+            $http.post(url)
+                .success(function () {
+                    cart.splice(0, cart.length);
+                    updateCartCookie(cart);
+                })
+                .error(function () {
+                    FlashMessage.send('error', 'Le panier n\'a pu être vidé. Une erreur est survenue.');
+                });
         };
 
         exports.getItems = function () {
@@ -128,19 +201,26 @@ define(['app'], function (app) {
         };
 
         exports.checkout = function (successCallback, errorCallback) {
-            var itemsToCheckout = getCheckoutList()
-            removeAllSelectedItems(0, cart);
-            var config = {
-                method: 'POST',
-                url: '/api/checkout',
-                data: itemsToCheckout
-            };
-            $http(config)
-                .success(successCallback)
+            var overrideSuccessCallback = function() {
+                removeAllSelectedItems(0, cart);
+                successCallback();
+            }
+            var itemsToCheckout = getCheckoutList();
+            var url = '/api/tickets/checkout/';
+            for (var index in itemsToCheckout) {
+                for (var i in itemsToCheckout[index].tickets) {
+                    url += itemsToCheckout[index].tickets[i].id;
+                    if (i < itemsToCheckout[index].tickets.length - 1)
+                        url += ',';
+                }
+            }
+            $http.post(url)
+                .success(overrideSuccessCallback)
                 .error(errorCallback);
         };
 
-        exports.updateItemQuantity = function(index, newQuantity){
+        exports.updateItemQuantity = function(index, newQuantity) {
+            //TODO: Find first 'newQuantity' tickets of the category and reserve them.
             cart[index].quantity = newQuantity
             updateCartCookie(cart);
         };
