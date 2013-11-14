@@ -65,6 +65,7 @@ define(['app'], function (app) {
         exports.addItem = function (ticket, category, event) {
             var item = {
                 quantity: 1,
+                newQuantity: 1,
                 category: category,
                 tickets: [ticket],
                 event: event,
@@ -91,6 +92,7 @@ define(['app'], function (app) {
         exports.addItems = function (tickets, category, event) {
             var item = {
                 quantity: tickets.length,
+                newQuantity: tickets.length,
                 category: category,
                 tickets: tickets,
                 event: event,
@@ -110,6 +112,7 @@ define(['app'], function (app) {
                     if (existingItem) {
                         existingItem.tickets.concat(tickets);
                         existingItem.quantity += tickets.length;
+                        existingItem.newQuantity += tickets.length;
                     } else {
                         cart.push(item);
                     }
@@ -145,7 +148,7 @@ define(['app'], function (app) {
             for (var index in cart) {
                 for (var i in cart[index].tickets) {
                     url += cart[index].tickets[i].id;
-                    if (i < cart[index].tickets.length - 1)
+                    if (index < cart.length - 1)
                         url += ',';
                 }
             }
@@ -219,10 +222,32 @@ define(['app'], function (app) {
                 .error(errorCallback);
         };
 
-        exports.updateItemQuantity = function(index, newQuantity) {
+        exports.updateItemQuantity = function(item) {
             //TODO: Find first 'newQuantity' tickets of the category and reserve them.
-            cart[index].quantity = newQuantity
-            updateCartCookie(cart);
+            if (!item) {
+                return;
+            }
+            var quantityToReserve = item.newQuantity - item.quantity;
+            if (!quantityToReserve || quantityToReserve == 0) {
+                return;
+            }
+            var url = '/api/tickets?eventId='
+                + item.event.id + '&categoryId='
+                + item.category.id + '&states=AVAILABLE,RESALE'
+                + '&quantity=' + quantityToReserve;
+            $http.get(url)
+                .success(function (tickets) {
+                    if (tickets.length > 0) {
+                        //exports.addItems(tickets, tickets[0].category, tickets[0].event);
+                        item.tickets.concat(tickets);
+                        item.quantity += tickets.length;
+                        item.newQuantity = item.quantity;
+                        updateCartCookie(cart);
+                    }
+                })
+                .error(function() {
+                    FlashMessage.send('error', 'Le nombre de billets ajoutés au panier excède le nombre de billets restants.');
+                });
         };
 
         return exports;
