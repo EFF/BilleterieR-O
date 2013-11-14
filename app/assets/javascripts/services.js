@@ -210,7 +210,7 @@ define(['app'], function (app) {
             for (var index in itemsToCheckout) {
                 for (var i in itemsToCheckout[index].tickets) {
                     url += itemsToCheckout[index].tickets[i].id;
-                    if (i < itemsToCheckout[index].tickets.length - 1)
+                    if (index < itemsToCheckout.length - 1)
                         url += ',';
                 }
             }
