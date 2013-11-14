@@ -10,6 +10,7 @@ import ca.ulaval.glo4003.models.Ticket;
 import ca.ulaval.glo4003.models.TicketSearchCriteria;
 import ca.ulaval.glo4003.models.TicketState;
 import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.LinkedHashMultimap;
 import com.google.common.collect.ListMultimap;
 import com.google.common.collect.Multimap;
 import com.google.inject.Inject;
@@ -18,9 +19,7 @@ import play.mvc.Controller;
 import play.mvc.Result;
 import play.mvc.Security;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 public class Tickets extends Controller {
     private final EventDao eventDao;
@@ -134,30 +133,31 @@ public class Tickets extends Controller {
     }
 
     private void decrementCategories(List<Long> ids) throws RecordNotFoundException, MaximumExceededException {
-        Multimap<String, Long> idsByEventDotCategory = regroupByEventAndCategory(ids);
-        for (String key : idsByEventDotCategory.keys()) {
-            String splittedKey[] = key.split("\\.");
-            eventDao.decrementEventCategoryNumberOfTickets(Long.parseLong(splittedKey[0]), Long.parseLong(splittedKey[1]), idsByEventDotCategory.get(key).size());
+        Map<String, Collection<Long>> idsByEventDotCategory = regroupByEventAndCategory(ids);
+        for (Map.Entry<String, Collection<Long>> entry : idsByEventDotCategory.entrySet()) {
+            String splittedKey[] = entry.getKey().split("\\.");
+            eventDao.decrementEventCategoryNumberOfTickets(Long.parseLong(splittedKey[0]), Long.parseLong(splittedKey[1]), entry.getValue().size());
         }
     }
 
     private void incrementCategories(List<Long> ids) throws RecordNotFoundException {
-        Multimap<String, Long> idsByEventDotCategory = regroupByEventAndCategory(ids);
-        for (String key : idsByEventDotCategory.keys()) {
-            String splittedKey[] = key.split("\\.");
-            eventDao.incrementEventCategoryNumberOfTickets(Long.parseLong(splittedKey[0]), Long.parseLong(splittedKey[1]), idsByEventDotCategory.get(key).size());
+        Map<String, Collection<Long>> idsByEventDotCategory = regroupByEventAndCategory(ids);
+        for (Map.Entry<String, Collection<Long>> entry : idsByEventDotCategory.entrySet()) {
+            String splittedKey[] = entry.getKey().split("\\.");
+            eventDao.incrementEventCategoryNumberOfTickets(Long.parseLong(splittedKey[0]), Long.parseLong(splittedKey[1]), entry.getValue().size());
         }
     }
 
-    private Multimap<String, Long> regroupByEventAndCategory(List<Long> ids) {
-        Multimap<String, Long> idsByEventDotCategory = ArrayListMultimap.create();
+    private Map<String, Collection<Long>> regroupByEventAndCategory(List<Long> ids) {
+        Multimap<String, Long> idsByEventDotCategory = LinkedHashMultimap.create();
         for (Long id : ids) {
             try {
                 Ticket ticket = ticketDao.read(id);
-                idsByEventDotCategory.put(String.valueOf(ticket.getEventId()) + "." + String.valueOf(ticket.getCategoryId()), id);
+                String key = String.valueOf(ticket.getEventId()) + "." + String.valueOf(ticket.getCategoryId());
+                idsByEventDotCategory.put(key, id);
             } catch (RecordNotFoundException e) {}
         }
-        return idsByEventDotCategory;
+        return idsByEventDotCategory.asMap();
     }
 
     private List<Long> convertStringIdsToArrayLong(String strIds) {
