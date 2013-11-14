@@ -222,32 +222,65 @@ define(['app'], function (app) {
                 .error(errorCallback);
         };
 
-        exports.updateItemQuantity = function(item) {
-            //TODO: Find first 'newQuantity' tickets of the category and reserve them.
-            if (!item) {
-                return;
-            }
+        exports.updateItemQuantity = function(index) {
+            var item = cart[index];
             var quantityToReserve = item.newQuantity - item.quantity;
-            if (!quantityToReserve || quantityToReserve == 0) {
+            if (!quantityToReserve) {
                 return;
-            }
-            var url = '/api/tickets?eventId='
-                + item.event.id + '&categoryId='
-                + item.category.id + '&states=AVAILABLE,RESALE'
-                + '&quantity=' + quantityToReserve;
-            $http.get(url)
-                .success(function (tickets) {
-                    if (tickets.length > 0) {
-                        //exports.addItems(tickets, tickets[0].category, tickets[0].event);
-                        item.tickets.concat(tickets);
-                        item.quantity += tickets.length;
+            } else if (item.newQuantity == 0) {
+                exports.removeItem(index);
+            } else if (quantityToReserve > 0) {
+                var url = '/api/tickets?eventId='
+                    + item.event.id + '&categoryId='
+                    + item.category.id + '&states=AVAILABLE,RESALE'
+                    + '&quantity=' + quantityToReserve;
+                $http.get(url)
+                    .success(function (tickets) {
+                        if (tickets.length > 0) {
+                            var url = '/api/tickets/reserve/';
+                            for (var i in tickets) {
+                                url += tickets[i].id;
+                                if (i < tickets.length -1) {
+                                    url += ',';
+                                }
+                            }
+                            $http.post(url)
+                                .success(function () {
+                                    item.tickets.concat(tickets);
+                                    item.quantity += tickets.length;
+                                    item.newQuantity = item.quantity;
+                                    updateCartCookie(cart);
+                                })
+                                .error(function() {
+                                    FlashMessage.send('error', 'Le nombre de billets ajoutés au panier excède le nombre de billets restants.');
+                                });
+                        }
+                    })
+                    .error(function() {
+                        FlashMessage.send('error', 'Le nombre de billets ajoutés au panier excède le nombre de billets restants.');
+                    });
+            } else {
+                var quantityToFree = -quantityToReserve;
+                var url = '/api/tickets/free/';
+                var i = 0;
+                while (i != quantityToFree) {
+                    url += item.tickets[i].id;
+                    if (i < quantityToFree - 1) {
+                        url += ',';
+                    }
+                    i += 1;
+                }
+                $http.post(url)
+                    .success(function () {
+                        item.tickets.splice(0, quantityToFree);
+                        item.quantity -= quantityToFree;
                         item.newQuantity = item.quantity;
                         updateCartCookie(cart);
-                    }
-                })
-                .error(function() {
-                    FlashMessage.send('error', 'Le nombre de billets ajoutés au panier excède le nombre de billets restants.');
-                });
+                    })
+                    .error(function () {
+                        FlashMessage.send('error', 'Les billets n\'ont pu être libérés.');
+                    });
+            }
         };
 
         return exports;
