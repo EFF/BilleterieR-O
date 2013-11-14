@@ -224,8 +224,11 @@ define(['app'], function (app) {
 
         exports.updateItemQuantity = function(item) {
             //TODO: Find first 'newQuantity' tickets of the category and reserve them.
+            if (!item) {
+                return;
+            }
             var quantityToReserve = item.newQuantity - item.quantity;
-            if (quantityToReserve == 0) {
+            if (!quantityToReserve || quantityToReserve == 0) {
                 return;
             }
             var url = '/api/tickets?eventId='
@@ -235,7 +238,11 @@ define(['app'], function (app) {
             $http.get(url)
                 .success(function (tickets) {
                     if (tickets.length > 0) {
-                        exports.addItems(tickets, tickets[0].category, tickets[0].event);
+                        //exports.addItems(tickets, tickets[0].category, tickets[0].event);
+                        item.tickets.concat(tickets);
+                        item.quantity += tickets.length;
+                        item.newQuantity = item.quantity;
+                        updateCartCookie(cart);
                     }
                 })
                 .error(function() {
