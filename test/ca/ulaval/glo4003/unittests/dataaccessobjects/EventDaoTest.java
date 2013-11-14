@@ -5,6 +5,7 @@ import ca.ulaval.glo4003.dataaccessobjects.UniqueConstraintValidator;
 import ca.ulaval.glo4003.exceptions.MaximumExceededException;
 import ca.ulaval.glo4003.exceptions.RecordNotFoundException;
 import ca.ulaval.glo4003.models.Category;
+import ca.ulaval.glo4003.models.CategoryType;
 import ca.ulaval.glo4003.models.Event;
 import ca.ulaval.glo4003.models.EventSearchCriteria;
 import ca.ulaval.glo4003.services.InMemoryDaoPersistenceService;
@@ -243,7 +244,7 @@ public class EventDaoTest {
     @Test(expected = MaximumExceededException.class)
     public void decrementEventCategoryNumberOfTicketsThrowsExceptionWhenNoneAvailable() throws RecordNotFoundException, MaximumExceededException {
         Category category = new Category(EventsTestHelper.A_DOUBLE, EventsTestHelper.AN_INT,
-                EventsTestHelper.A_CATEGORY_ID);
+                EventsTestHelper.A_CATEGORY_ID, CategoryType.GENERAL_ADMISSION);
         Event event = EventsTestHelper.createRandomEventGivenACategory(category);
         eventDao.create(event);
 
@@ -254,7 +255,7 @@ public class EventDaoTest {
     public void decrementEventCategoryNumberOfTicketsDecrements() throws MaximumExceededException,
             RecordNotFoundException {
         Category category = new Category(EventsTestHelper.A_DOUBLE, EventsTestHelper.AN_INT,
-                EventsTestHelper.A_CATEGORY_ID);
+                EventsTestHelper.A_CATEGORY_ID, CategoryType.GENERAL_ADMISSION);
         Event event = EventsTestHelper.createRandomEventGivenACategory(category);
         eventDao.create(event);
 

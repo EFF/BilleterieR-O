@@ -18,8 +18,8 @@ public class EventsTestHelper {
     public static Event createRandomEventtWithCategoryGivenSport(String sport) {
         Sport sport1 = new Sport(sport);
         Event event1 = new Event(sport1, Gender.MALE);
-        Category category1 = new Category(A_DOUBLE, AN_INT, A_CATEGORY_ID);
-        Category category2 = new Category(A_DOUBLE, AN_INT, A_CATEGORY_ID + 1);
+        Category category1 = new Category(A_DOUBLE, AN_INT, A_CATEGORY_ID,CategoryType.GENERAL_ADMISSION);
+        Category category2 = new Category(A_DOUBLE, AN_INT, A_CATEGORY_ID + 1, CategoryType.GENERAL_ADMISSION);
 
         event1.addCategory(category1);
         event1.addCategory(category2);

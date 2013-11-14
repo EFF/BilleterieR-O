@@ -29,8 +29,8 @@ public class TestBootstrapper implements Bootstrapper {
 
         Event event1 = new Event(soccer, Gender.MALE);
         event1.setDate(new LocalDateTime());
-        Category category1 = new Category(12.0, 120, 1);
-        Category category2 = new Category(8.0, 1200, 2);
+        Category category1 = new Category(12.0, 120, 1, CategoryType.GENERAL_ADMISSION);
+        Category category2 = new Category(8.0, 1200, 2, CategoryType.GENERAL_ADMISSION);
 
         event1.addCategory(category1);
         event1.addCategory(category2);
@@ -38,8 +38,8 @@ public class TestBootstrapper implements Bootstrapper {
 
         Event event2 = new Event(soccer, Gender.FEMALE);
         event2.setDate(new LocalDateTime());
-        Category category3 = new Category(12.0, 120, 3);
-        Category category4 = new Category(8.0, 1200, 4);
+        Category category3 = new Category(12.0, 120, 3, CategoryType.GENERAL_ADMISSION);
+        Category category4 = new Category(8.0, 1200, 4, CategoryType.SEAT);
 
         event2.addCategory(category3);
         event2.addCategory(category4);

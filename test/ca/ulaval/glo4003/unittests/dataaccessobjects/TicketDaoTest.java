@@ -1,6 +1,7 @@
 package ca.ulaval.glo4003.unittests.dataaccessobjects;
 
 import ca.ulaval.glo4003.dataaccessobjects.TicketDao;
+import ca.ulaval.glo4003.dataaccessobjects.UniqueConstraintValidator;
 import ca.ulaval.glo4003.models.Ticket;
 import ca.ulaval.glo4003.models.TicketSearchCriteria;
 import ca.ulaval.glo4003.services.DaoPersistenceService;
@@ -26,7 +27,7 @@ public class TicketDaoTest {
     public void setUp() {
         daoPersistenceService = mock(DaoPersistenceService.class);
 
-        ticketDao = new TicketDao(daoPersistenceService);
+        ticketDao = new TicketDao(daoPersistenceService, new UniqueConstraintValidator<Ticket>());
 
         ticket1 = new Ticket(1, 0, "Section 100", 10);
         ticket2 = new Ticket(1, 1, "Section 200", 11);

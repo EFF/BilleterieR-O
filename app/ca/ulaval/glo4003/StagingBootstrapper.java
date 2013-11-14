@@ -46,7 +46,7 @@ public class StagingBootstrapper implements Bootstrapper {
 
     private void initEvents() {
         for (Sport sport : sportDao.list()) {
-            int nbEvents = new Random().nextInt(19) + 1;
+            int nbEvents = new Random().nextInt(5) + 1;
             for (int i = 0; i < nbEvents; i++) {
                 Gender gender = (i % 2 == 0) ? Gender.MALE : Gender.FEMALE;
 

@@ -28,7 +28,7 @@
 
         <td>
             <input type="number" step="1" ng-model="quantity[category.id]" ng-init="quantity[category.id]=1"
-                   class="form-control" min="1" max="{{category.numberOfTickets}}"
+                   class="form-control category-quantity" min="1" max="{{category.numberOfTickets}}"
                    ng-hide="category.type == 'SEAT'"
                    ng-disabled="category.numberOfTickets == 0">
             <select id="{{sectionsByCategories[category.id].name}}"
