@@ -6,6 +6,7 @@ import com.google.inject.Inject;
 
 public class SportDao extends PersistedDao<Sport> {
 
+    // Even if empty, needed with Guice.
     @Inject
     public SportDao(DaoPersistenceService persistenceService, UniqueConstraintValidator<Sport>
             uniqueConstraintValidator) {
