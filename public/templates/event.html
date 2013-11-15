@@ -22,8 +22,7 @@
         <td class="price">{{category.price}}$</td>
         <td class="numberOfTickets">{{category.numberOfTickets}}</td>
         <td>
-            <p ng-hide="category.type == 'GENERAL_ADMISSION'">Siège réservé</p>
-            <p ng-hide="category.type == 'SEAT'">Admission Générale</p>
+            <p>{{category.type | categoryType}}</p>
         </td>
 
         <td>

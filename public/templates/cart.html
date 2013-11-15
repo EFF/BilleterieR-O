@@ -11,7 +11,8 @@
             <input id="check-all" ng-change="toggleAll(selectAll)" ng-model="selectAll" type="checkbox" checked>
             Sélection
         </th>
-        <th>Billets</th>
+        <th>Type</th>
+        <th>Description</th>
         <th>Prix unitaire</th>
         <th>Quantité</th>
         <th>Prix total</th>
@@ -24,8 +25,15 @@
             <input ng-click="updateSelectAll()" id="itemCheck" type="checkbox" ng-model="item.selected">
         </td>
         <td>
-            <a href="/#!/events/{{item.event.id}}">{{item.event.sport.name}} {{item.event.gender | gender}}
+            <p>{{item.category.type | categoryType}}</p>
+        </td>
+        <td>
+            <a href="/#!/events/{{item.event.id}}" ng-hide="item.category.type == 'SEAT'">
+                {{item.event.sport.name}} {{item.event.gender | gender}}
                 {{item.event.dateAsString | date:'dd-MM-yyyy HH:mm'}}</a>
+            <a href="/#!/tickets/{{item.tickets[0].id}}" ng-hide="item.category.type == 'GENERAL_ADMISSION'">
+                {{item.event.sport.name}} {{item.event.gender | gender}}
+                {{item.event.dateAsString | date:'dd-MM-yyyy HH:mm'}} {{item.tickets[0].section}} Siège {{item.tickets[0].seat}}</a>
         </td>
         <td>{{item.category.price}}$</td>
         <td class="col-md-2">
@@ -36,7 +44,8 @@
                    ng-model="item.newQuantity"
                    ng-change="updateItemQuantity($index)"
                    ng-init="item.newQuantity"
-                   max="{{item.category.numberOfTickets}}">
+                   max="{{item.category.numberOfTickets}}"
+                   ng-disabled="item.category.type == 'SEAT'">
         </td>
         <td>{{item.quantity * item.category.price}}$</td>
         <td>
@@ -44,7 +53,7 @@
         </td>
     </tr>
     <tr class="active">
-        <td colspan="3">Total</td>
+        <td colspan="4">Total</td>
         <td>{{getTotalSelectedQuantity()}}</td>
         <td colspan="2">{{getTotalPrice()}}$</td>
     </tr>
