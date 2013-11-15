@@ -14,14 +14,14 @@ import static junit.framework.Assert.assertEquals;
 public class TransactionTest {
 
     @Test
-    public void ctor_setsTime() {
+    public void setsTimeOnInitialization() {
         Transaction transaction = new Transaction(new User());
 
         assertAboutSameDateTime(new LocalDateTime(), transaction.getStartedOn());
     }
 
     @Test
-    public void ctor_setsUser() {
+    public void setsUserOnInitialization() {
         User user = new User();
 
         Transaction transaction = new Transaction(user);
@@ -30,14 +30,14 @@ public class TransactionTest {
     }
 
     @Test
-    public void ctor_isUnfulfilled() {
+    public void isUnfulfilledOnInitialization() {
         Transaction transaction = new Transaction(new User());
 
         assertEquals(TransactionState.Unfulfilled, transaction.getState());
     }
 
     @Test
-    public void fulfill_changesStateToFulfilled() {
+    public void fulfillChangesStateToFulfilled() {
         Transaction transaction = new Transaction(new User());
 
         transaction.fulfill();
@@ -46,7 +46,7 @@ public class TransactionTest {
     }
 
     @Test
-    public void fail_changesStateToFailed() {
+    public void failChangesStateToFailed() {
         Transaction transaction = new Transaction(new User());
 
         transaction.fail();
@@ -55,7 +55,7 @@ public class TransactionTest {
     }
 
     @Test
-    public void fulfill_UpdatesDate() {
+    public void fulfillUpdatesDate() {
         Transaction transaction = new Transaction(new User());
 
         transaction.fulfill();
@@ -64,7 +64,7 @@ public class TransactionTest {
     }
 
     @Test
-    public void fail_UpdatesDate() {
+    public void failUpdatesDate() {
         Transaction transaction = new Transaction(new User());
 
         transaction.fail();
