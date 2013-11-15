@@ -1,6 +1,9 @@
 define(['app'], function (app) {
     app.factory('Cart', ['$cookieStore', '$http', function ($cookieStore, $http) {
-        var exports = {};
+        var exports = {
+            transactionId: null
+        };
+
         var cart = $cookieStore.get('cart');
         if (!cart) {
             cart = [];

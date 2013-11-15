@@ -15,7 +15,7 @@ GET     /api/facets                     @ca.ulaval.glo4003.controllers.Facets.in
 POST    /api/user/password              @ca.ulaval.glo4003.controllers.UserProfile.updatePassword()
 POST    /api/user/email                 @ca.ulaval.glo4003.controllers.UserProfile.updateEmail()
 GET     /bootstrap                      @ca.ulaval.glo4003.controllers.Bootstrap.index()
-POST    /api/checkout                   @ca.ulaval.glo4003.controllers.Events.decrementCategoryCounter()
+POST    /api/checkout                   @ca.ulaval.glo4003.controllers.Checkout.index()
 GET     /login                          @ca.ulaval.glo4003.controllers.Authentication.index()
 POST    /login                          @ca.ulaval.glo4003.controllers.Authentication.login()
 POST    /logout                         @ca.ulaval.glo4003.controllers.Authentication.logout()
