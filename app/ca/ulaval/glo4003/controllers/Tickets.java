@@ -76,7 +76,7 @@ public class Tickets extends Controller {
     public Result checkout() {
         try {
             List<Long> ids = getListTicketIds();
-            Result recordsExist = checkIfRecordsExist(ids, true);
+            Result recordsExist = checkIfRecordsExist(ids);
             if (((PlainResult)recordsExist.getWrappedResult()).header().status() == NOT_FOUND) {
                 return notFound();
             }
