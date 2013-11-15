@@ -10,7 +10,6 @@ import com.google.common.collect.FluentIterable;
 import com.google.inject.Inject;
 import org.apache.commons.lang3.StringUtils;
 
-import java.security.InvalidParameterException;
 import java.util.List;
 
 public class TicketDao extends PersistedDao<Ticket> {
@@ -21,7 +20,7 @@ public class TicketDao extends PersistedDao<Ticket> {
         super(persistenceService, uniqueConstraintValidator);
     }
 
-    public List<Ticket> search(final TicketSearchCriteria criteria) throws InvalidParameterException {
+    public List<Ticket> search(final TicketSearchCriteria criteria) {
         FluentIterable<Ticket> results = FluentIterable.from(this.list());
 
         results = filterBySectionName(criteria.getSectionName(), results);

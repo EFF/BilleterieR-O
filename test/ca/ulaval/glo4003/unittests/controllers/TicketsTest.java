@@ -69,7 +69,7 @@ public class TicketsTest extends BaseControllerTest {
         when(mockedRequest.getQueryString(ConstantsManager.EVENT_ID_FIELD_NAME)).thenReturn(String.valueOf(AN_EVENT_ID));
         when(mockedRequest.getQueryString(ConstantsManager.CATEGORY_ID_FIELD_NAME)).thenReturn(String.valueOf(A_CATEGORY_ID));
         when(mockedRequest.getQueryString(ConstantsManager.TICKET_STATE_FIELD_NAME)).thenReturn(String.valueOf(TicketState.AVAILABLE));
-
+        when(mockedRequest.getQueryString(ConstantsManager.QUERY_STRING_STATE_PARAM_NAME)).thenReturn(TicketState.AVAILABLE.toString());
         Result result = tickets.index();
 
         assertEquals(Helpers.OK, Helpers.status(result));
@@ -235,7 +235,7 @@ public class TicketsTest extends BaseControllerTest {
     }
 
     @Test
-    public void showEventTicketSectionsWhenTicketExists(TicketDao mockedTicketDao, EventDao mockedEventDao) throws RecordNotFoundException {
+     public void showEventTicketSectionsWhenTicketExists(TicketDao mockedTicketDao, EventDao mockedEventDao) throws RecordNotFoundException {
         ticketSearchCriteria.setEventId(firstTicket.getEventId());
         ticketSearchCriteria.setCategoryId(firstTicket.getCategoryId());
         List<Ticket> tempTicketList = new ArrayList<>();
