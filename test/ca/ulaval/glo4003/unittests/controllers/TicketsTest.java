@@ -4,6 +4,7 @@ import ca.ulaval.glo4003.ConstantsManager;
 import ca.ulaval.glo4003.controllers.Tickets;
 import ca.ulaval.glo4003.dataaccessobjects.EventDao;
 import ca.ulaval.glo4003.dataaccessobjects.TicketDao;
+import ca.ulaval.glo4003.exceptions.MaximumExceededException;
 import ca.ulaval.glo4003.exceptions.RecordNotFoundException;
 import ca.ulaval.glo4003.models.*;
 import com.google.inject.Inject;
@@ -16,6 +17,7 @@ import org.junit.runner.RunWith;
 import play.libs.Json;
 import play.mvc.Result;
 import play.test.Helpers;
+import scala.Array;
 
 import java.security.InvalidParameterException;
 import java.util.ArrayList;
@@ -24,8 +26,7 @@ import java.util.List;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.refEq;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @RunWith(JukitoRunner.class)
 public class TicketsTest extends BaseControllerTest {
@@ -144,7 +145,69 @@ public class TicketsTest extends BaseControllerTest {
                         CategoryType.GENERAL_ADMISSION));
         Result result = tickets.free(String.valueOf(firstTicket.getId()));
         assertEquals(Helpers.OK, Helpers.status(result));
-        //verify(mockedEventDao).decrementEventCategoryNumberOfTickets(firstTicket.getEventId(),firstTicket.getCategoryId(),);
+        verify(mockedEventDao).incrementEventCategoryNumberOfTickets(
+                firstTicket.getEventId(),
+                firstTicket.getCategoryId(), 1);
+    }
+
+    @Test
+    public void freeTicketWhenWrongIdThenReturnsNotFound(TicketDao mockedTicketDao, EventDao mockedEventDao) throws RecordNotFoundException {
+        when(mockedTicketDao.read(firstTicket.getId() + 1)).thenThrow(new RecordNotFoundException());
+
+        Result result = tickets.free(String.valueOf(firstTicket.getId() + 1));
+        assertEquals(Helpers.NOT_FOUND, Helpers.status(result));
+        assertEquals(null, Helpers.contentType(result));
+        verify(mockedTicketDao, times(3)).read(firstTicket.getId() + 1);
+    }
+
+    @Test
+    public void reserveTicketWhenExists(TicketDao mockedTicketDao, EventDao mockedEventDao) throws RecordNotFoundException, MaximumExceededException {
+        when(mockedTicketDao.read(firstTicket.getId())).thenReturn(firstTicket);
+        when(mockedEventDao.findCategory(firstTicket.getEventId(), firstTicket.getCategoryId()))
+                .thenReturn(new Category(TICKET_PRICE, TICKET_NUMBER, A_CATEGORY_ID,
+                        CategoryType.GENERAL_ADMISSION));
+
+        Result result = tickets.reserve(String.valueOf(firstTicket.getId()));
+        assertEquals(Helpers.OK, Helpers.status(result));
+        verify(mockedEventDao).decrementEventCategoryNumberOfTickets(
+                firstTicket.getEventId(),
+                firstTicket.getCategoryId(), 1);
+    }
+
+    @Test
+     public void reserveTicketWhenDoesNotExistsThenReturnsNotFound(TicketDao mockedTicketDao, EventDao mockedEventDao) throws RecordNotFoundException {
+        when(mockedTicketDao.read(firstTicket.getId())).thenThrow(new RecordNotFoundException());
+        Result result = tickets.reserve(String.valueOf(firstTicket.getId()));
+
+        assertEquals(Helpers.NOT_FOUND, Helpers.status(result));
+    }
+
+    @Test
+    public void reserveTooMuchTicketsWhenExistsThenReturnsException(TicketDao mockedTicketDao, EventDao mockedEventDao) throws RecordNotFoundException, MaximumExceededException {
+        when(mockedTicketDao.read(firstTicket.getId())).thenReturn(firstTicket);
+        when(mockedEventDao.findCategory(firstTicket.getEventId(), firstTicket.getCategoryId()))
+                .thenReturn(new Category(TICKET_PRICE, TICKET_NUMBER, A_CATEGORY_ID,
+                        CategoryType.GENERAL_ADMISSION));
+        doThrow(new MaximumExceededException()).when(mockedEventDao).decrementEventCategoryNumberOfTickets(
+                firstTicket.getEventId(), firstTicket.getCategoryId(), 1);
+
+        Result result = tickets.reserve(String.valueOf(firstTicket.getId()));
+
+        assertEquals(Helpers.BAD_REQUEST, Helpers.status(result));
+    }
+
+    @Test
+    public void showEventTicketSectionsWhenTicketExists(TicketDao mockedTicketDao, EventDao mockedEventDao) throws RecordNotFoundException {
+        ticketSearchCriteria.setEventId(firstTicket.getEventId());
+        ticketSearchCriteria.setCategoryId(firstTicket.getCategoryId());
+        List<Ticket> tempTicketList = new ArrayList<>();
+        tempTicketList.add(firstTicket);
+        when(mockedTicketDao.search(refEq(ticketSearchCriteria))).thenReturn(tempTicketList);
+
+        Result result = tickets.showEventTicketSections(firstTicket.getEventId());
+
+        assertEquals(Helpers.OK, Helpers.status(result));
+        assertEquals("application/json", Helpers.contentType(result));
     }
 //    @Test
 //    public void decrementCategoryCounterDoNothingWhenThereIsNoItems(EventDao mockedEventDao) throws RecordNotFoundException, MaximumExceededException {
