@@ -1,7 +1,6 @@
 define(['app'], function (app) {
     app.factory('Cart', ['$cookieStore', '$http', 'FlashMessage', function ($cookieStore, $http, FlashMessage) {
         var exports = {};
-        $cookieStore.put('cart', [])
         var cart = $cookieStore.get('cart');
         if (!cart) {
             cart = [];
@@ -222,18 +221,16 @@ define(['app'], function (app) {
                 .error(errorCallback);
         };
 
-        exports.updateItemQuantity = function(index) {
+        exports.updateItemQuantity = function(index, deltaQuantity) {
             var item = cart[index];
-            var quantityToReserve = item.newQuantity - item.quantity;
-            if (!quantityToReserve) {
+            if (deltaQuantity == 0) {
+                item.newQuantity = item.quantity;
                 return;
-            } else if (item.newQuantity == 0) {
-                exports.removeItem(index);
-            } else if (quantityToReserve > 0) {
+            } else if (deltaQuantity > 0) {
                 var url = '/api/tickets?eventId='
                     + item.event.id + '&categoryId='
                     + item.category.id + '&states=AVAILABLE,RESALE'
-                    + '&quantity=' + quantityToReserve;
+                    + '&quantity=' + deltaQuantity;
                 $http.get(url)
                     .success(function (tickets) {
                         if (tickets.length > 0) {
@@ -260,7 +257,7 @@ define(['app'], function (app) {
                         FlashMessage.send('error', 'Le nombre de billets ajoutés au panier excède le nombre de billets restants.');
                     });
             } else {
-                var quantityToFree = -quantityToReserve;
+                var quantityToFree = -deltaQuantity;
                 var url = '/api/tickets/free/';
                 var i = 0;
                 while (i != quantityToFree) {
