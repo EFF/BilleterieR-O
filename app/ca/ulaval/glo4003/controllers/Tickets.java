@@ -48,11 +48,14 @@ public class Tickets extends Controller {
             ticketSearchCriteria.setQuantity(Integer.parseInt(strQuantity));
         }
         ticketSearchCriteria.setSectionName(sectionName);
-        String states[] = stringStates.split(",");
-        for (String stringState : states) {
-            TicketState state = TicketState.valueOf(stringState);
-            if (state != null) {
-                ticketSearchCriteria.addState(state);
+
+        if (stringStates != null) {
+            String states[] = stringStates.split(",");
+            for (String stringState : states) {
+                TicketState state = TicketState.valueOf(stringState);
+                if (state != null) {
+                    ticketSearchCriteria.addState(state);
+                }
             }
         }
 
@@ -114,7 +117,7 @@ public class Tickets extends Controller {
         }
     }
 
-    public Result showEventTicketSections(long eventId){
+    public Result showEventTicketSections(long eventId) {
         TicketSearchCriteria ticketSearchCriteria = new TicketSearchCriteria();
         ticketSearchCriteria.setEventId(eventId);
         List<Ticket> tickets = ticketDao.search(ticketSearchCriteria);
@@ -154,7 +157,8 @@ public class Tickets extends Controller {
                 Ticket ticket = ticketDao.read(id);
                 String key = String.valueOf(ticket.getEventId()) + "." + String.valueOf(ticket.getCategoryId());
                 idsByEventDotCategory.put(key, id);
-            } catch (RecordNotFoundException e) {}
+            } catch (RecordNotFoundException e) {
+            }
         }
         return idsByEventDotCategory.asMap();
     }
@@ -183,7 +187,6 @@ public class Tickets extends Controller {
     private Result checkIfRecordsExist(List<Long> ids) {
         return checkIfRecordsExist(ids, false);
     }
-
 
     private Result checkIfRecordsExist(List<Long> ids, boolean checkInEventDao) {
         try {

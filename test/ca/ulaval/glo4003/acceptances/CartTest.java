@@ -211,18 +211,11 @@ public class CartTest {
                 CartPage cartPage = new CartPage(browser.getDriver());
 
                 goToEventPage(eventPage1);
-
                 eventPage1.addTicketsToCartForCategory(0, 1);
 
                 goToCartPage(cartPage, 1);
-
                 cartPage.payWithCreditCard();
-
-//                String message = cartPage.waitAndGetAlert().getText();
-//                String expectedMessage = "Vous devez vous connecter avant de procéder au paiement";
-//                System.out.println("message " + message);
                 cartPage.waitTillInfoShowsUp();
-                //assertEquals(expectedMessage, message);
             }
         });
     }

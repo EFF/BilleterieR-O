@@ -23,4 +23,5 @@ public class ConstantsManager {
 
     public final static String PERSISTENCE_DIRECTORY = "data";
     public final static String PERSISTENCE_FILE_EXTENSION = ".ser";
+    public static final String TICKET_STATE_FIELD_NAME = "states";
 }
