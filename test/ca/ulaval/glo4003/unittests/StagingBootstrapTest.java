@@ -4,6 +4,7 @@ import ca.ulaval.glo4003.StagingBootstrapper;
 import ca.ulaval.glo4003.dataaccessobjects.*;
 import ca.ulaval.glo4003.models.Event;
 import ca.ulaval.glo4003.models.Sport;
+import ca.ulaval.glo4003.models.Team;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -36,28 +37,27 @@ public class StagingBootstrapTest {
 
     @Test
     public void initDataShouldAddItems() {
-        //Arrange
         List<Sport> sports = new ArrayList<>();
         sports.add(mock(Sport.class));
         when(sportDao.list()).thenReturn(sports);
 
-        //Act
+        List<Team> teams = new ArrayList<>();
+        teams.add(mock(Team.class));
+        teams.add(mock(Team.class));
+        when(teamDao.list()).thenReturn(teams);
+
         bootstrap.initData();
 
-        //Assert
         verify(eventDao, atLeastOnce()).create(any(Event.class));
         verify(sportDao, atLeastOnce()).create(any(Sport.class));
     }
 
     @Test
     public void deleteDataShouldRemoveAllItems() {
-        //Arrange
         bootstrap.initData();
 
-        //Act
         bootstrap.deleteAll();
 
-        //Assert
         verify(eventDao, times(1)).deleteAll();
         verify(sportDao, times(1)).deleteAll();
     }

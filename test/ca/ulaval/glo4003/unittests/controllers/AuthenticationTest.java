@@ -35,6 +35,7 @@ public class AuthenticationTest extends BaseControllerTest {
     public void setup() {
         mockedUser = mock(User.class);
         when(mockedUser.getEmail()).thenReturn(email);
+        when(mockedUser.getPassword()).thenReturn(password);
 
         ObjectNode json = Json.newObject();
         json.put(ConstantsManager.USERNAME_FIELD_NAME, email);
@@ -100,14 +101,14 @@ public class AuthenticationTest extends BaseControllerTest {
 
     @Test
     public void loginWithRegisteredUser(UserDao mockedUserDao) throws RecordNotFoundException {
-        when(mockedUserDao.findByEmailAndPassword(email, password))
+        when(mockedUserDao.findByEmail(email))
                 .thenReturn(mockedUser);
 
         Result result = authentication.login();
 
         verify(mockedBody).asJson();
         verify(mockedRequest).body();
-        verify(mockedUserDao).findByEmailAndPassword(anyString(), anyString());
+        verify(mockedUserDao).findByEmail(anyString());
         verify(mockedUser).getEmail();
 
         InOrder inOrder = inOrder(mockedSession);
@@ -119,14 +120,14 @@ public class AuthenticationTest extends BaseControllerTest {
 
     @Test
     public void loginWithUnregisteredUser(UserDao mockedUserDao) throws RecordNotFoundException {
-        when(mockedUserDao.findByEmailAndPassword(anyString(), anyString()))
+        when(mockedUserDao.findByEmail(anyString()))
                 .thenThrow(new RecordNotFoundException());
 
         Result result = authentication.login();
 
         verify(mockedBody).asJson();
         verify(mockedRequest).body();
-        verify(mockedUserDao).findByEmailAndPassword(anyString(), anyString());
+        verify(mockedUserDao).findByEmail(anyString());
         verify(mockedUser, never()).getEmail();
 
         verify(mockedSession, never()).clear();
@@ -143,7 +144,7 @@ public class AuthenticationTest extends BaseControllerTest {
 
         verify(mockedBody).asJson();
         verify(mockedRequest).body();
-        verify(mockedUserDao, never()).findByEmailAndPassword(anyString(), anyString());
+        verify(mockedUserDao, never()).findByEmail(anyString());
         verify(mockedUser, never()).getEmail();
 
         verify(mockedSession, never()).clear();

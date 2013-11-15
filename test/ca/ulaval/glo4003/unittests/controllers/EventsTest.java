@@ -11,7 +11,6 @@ import ca.ulaval.glo4003.models.Gender;
 import ca.ulaval.glo4003.unittests.helpers.EventsTestHelper;
 import com.google.inject.Inject;
 import org.codehaus.jackson.JsonNode;
-import org.codehaus.jackson.node.ObjectNode;
 import org.joda.time.LocalDateTime;
 import org.jukito.JukitoModule;
 import org.jukito.JukitoRunner;
@@ -28,10 +27,9 @@ import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.anyInt;
-import static org.mockito.Matchers.anyLong;
 import static org.mockito.Matchers.refEq;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(JukitoRunner.class)
 public class EventsTest extends BaseControllerTest {
