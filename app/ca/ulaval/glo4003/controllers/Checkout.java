@@ -33,15 +33,15 @@ public class Checkout extends Controller {
         try {
             String userEmail = session().get(ConstantsManager.COOKIE_SESSION_FIELD_NAME);
             User user = userDao.findByEmail(userEmail);
-            Transaction transaction = this.checkoutService.startNewTransaction(user);
+            Transaction transaction = checkoutService.startNewTransaction(user);
 
-            Result ticketsResult = this.tickets.checkout();
+            Result ticketsResult = tickets.checkout();
             if (((PlainResult)ticketsResult.getWrappedResult()).header().status() != OK) {
                 transaction.fail();
                 return ticketsResult;
             }
 
-            this.checkoutService.fulfillTransaction(transaction);
+            checkoutService.fulfillTransaction(transaction);
 
             ObjectNode result = Json.newObject();
             result.put(ConstantsManager.TRANSACTION_ID_FIELD_NAME, transaction.getId());

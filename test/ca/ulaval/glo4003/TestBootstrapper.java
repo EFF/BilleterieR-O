@@ -78,7 +78,7 @@ public class TestBootstrapper implements Bootstrapper {
                 int numberOfTickets = category.getNumberOfTickets();
                 while (numberOfTickets > 0) {
                     String strSection = "";
-                    int seat = -1;
+                    int seat = ConstantsManager.TICKET_INVALID_SEAT_NUMBER;
                     if (category.getType() == CategoryType.SEAT) {
                         strSection = "Niveau " + (new Random().nextInt(2) + 1) * 100;
                         seat = numberOfTickets;

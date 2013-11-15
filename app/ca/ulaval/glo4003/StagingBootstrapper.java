@@ -12,7 +12,7 @@ import java.util.Random;
 
 public class StagingBootstrapper implements Bootstrapper {
 
-    //public static final String ROUGE_ET_OR = "Rouge et Or";
+    public static final String ROUGE_ET_OR = "Rouge et Or";
     public static final String VERT_ET_OR = "Vert et Or";
     private final EventDao eventDao;
     private final SportDao sportDao;
@@ -20,6 +20,8 @@ public class StagingBootstrapper implements Bootstrapper {
     private final TicketDao ticketDao;
     private final TeamDao teamDao;
     private final TransactionDao transactionDao;
+
+    private final int MAX_NUMBER_OF_EVENTS = 5;
 
     @Inject
     public StagingBootstrapper(EventDao eventDao, SportDao sportDao, UserDao userDao, TicketDao ticketDao, TeamDao teamDao, TransactionDao transactionDao) {
@@ -41,7 +43,7 @@ public class StagingBootstrapper implements Bootstrapper {
     }
 
     private void initTeams() {
-        Team ulaval = new Team("Rouge et Or");
+        Team ulaval = new Team(ROUGE_ET_OR);
         Team sherbrooke = new Team(VERT_ET_OR);
 
         teamDao.create(ulaval);
@@ -50,7 +52,7 @@ public class StagingBootstrapper implements Bootstrapper {
 
     private void initEvents() {
         for (Sport sport : sportDao.list()) {
-            int nbEvents = new Random().nextInt(5) + 1;
+            int nbEvents = new Random().nextInt(MAX_NUMBER_OF_EVENTS) + 1;
             for (int i = 0; i < nbEvents; i++) {
                 Gender gender = (i % 2 == 0) ? Gender.MALE : Gender.FEMALE;
 
@@ -100,7 +102,7 @@ public class StagingBootstrapper implements Bootstrapper {
                 int numberOfTickets = category.getNumberOfTickets();
                 while (numberOfTickets > 0) {
                     String strSection = "";
-                    int seat = -1;
+                    int seat = ConstantsManager.TICKET_INVALID_SEAT_NUMBER;
                     if (category.getType() == CategoryType.SEAT) {
                         strSection = "Niveau " + (new Random().nextInt(2) + 1) * 100;
                         seat = numberOfTickets;

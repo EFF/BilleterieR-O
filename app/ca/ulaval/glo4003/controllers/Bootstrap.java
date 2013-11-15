@@ -19,7 +19,6 @@ public class Bootstrap extends Controller {
             return unauthorized();
         }
 
-
         bootstrapper.deleteAll();
         bootstrapper.initData();
 
