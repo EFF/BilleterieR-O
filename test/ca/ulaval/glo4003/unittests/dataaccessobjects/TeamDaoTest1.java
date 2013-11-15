@@ -11,7 +11,7 @@ import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertNotNull;
 import static org.mockito.Mockito.mock;
 
-public class TeamDaoTest {
+public class TeamDaoTest1 {
     private static final String A_TEAM_NAME = "Rouge et Or";
     private DaoPersistenceService daoPersistenceService;
 
