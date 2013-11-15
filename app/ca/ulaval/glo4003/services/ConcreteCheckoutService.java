@@ -29,7 +29,7 @@ public class ConcreteCheckoutService implements CheckoutService {
     @Override
     public void fulfillTransaction(Transaction transaction) {
         transaction.fulfill();
-        emailService.SendEmail(transaction.getUser().getEmail(), "noreply@glo4003.com",
-            ConstantsManager.CHECKOUT_CONFIRMATION_EMAIL + transaction.getId());
+        emailService.sendEmail(transaction.getUser().getEmail(), "noreply@glo4003.com",
+                ConstantsManager.CHECKOUT_CONFIRMATION_EMAIL + transaction.getId());
     }
 }

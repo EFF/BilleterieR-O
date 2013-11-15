@@ -18,13 +18,13 @@ public class ApplicationModule extends AbstractModule {
 
     @Override
     protected void configure() {
-		bind(EmailService.class).to(ConcreteEmailService.class);
+        bind(EmailService.class).to(LocalSMTPEmailService.class);
         bind(CheckoutService.class).to(ConcreteCheckoutService.class);
-		
+
         bind(EventDao.class).asEagerSingleton();
         bind(SportDao.class).asEagerSingleton();
         bind(UserDao.class).asEagerSingleton();
-		bind(TransactionDao.class).asEagerSingleton();
+        bind(TransactionDao.class).asEagerSingleton();
     }
 
     @Provides

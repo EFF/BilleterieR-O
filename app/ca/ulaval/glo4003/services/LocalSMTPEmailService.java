@@ -11,7 +11,7 @@ import java.util.Properties;
 
 public class LocalSMTPEmailService implements EmailService {
     @Override
-    public void SendEmail(String to, String from, String message) {
+    public void sendEmail(String to, String from, String message) {
         Properties props = new Properties();
         Session session = Session.getDefaultInstance(props, null);
 

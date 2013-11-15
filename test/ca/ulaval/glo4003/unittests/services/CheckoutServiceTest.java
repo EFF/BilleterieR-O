@@ -75,7 +75,7 @@ public class CheckoutServiceTest {
 
         ArgumentCaptor<String> emailCaptor = ArgumentCaptor.forClass(String.class);
         ArgumentCaptor<String> messageCaptor = ArgumentCaptor.forClass(String.class);
-        verify(emailService, times(1)).SendEmail(emailCaptor.capture(), any(String.class), messageCaptor.capture());
+        verify(emailService, times(1)).sendEmail(emailCaptor.capture(), any(String.class), messageCaptor.capture());
         assert(emailCaptor.getValue()).contains(user.getEmail());
         assert(messageCaptor.getValue()).contains(String.valueOf(transactionId));
     }
