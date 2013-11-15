@@ -33,25 +33,23 @@ public class CartTest {
                 CartPage cartPage = new CartPage(browser.getDriver());
 
                 goToEventPage(eventPage1);
-                // Buy two tickets from events/1, category 0
+
                 eventPage1.addTicketsToCartForCategory(0, 2);
                 assertEquals(2, eventPage1.getCartSize());
-                // Buy five tickets from events/1, category 1
+
                 eventPage1.addTicketsToCartForCategory(1, 5);
                 assertEquals(7, eventPage1.getCartSize());
-                // Buy one ticket from event #2, category 0
+
                 goToEventPage(eventPage2);
                 eventPage2.addTicketsToCartForCategory(0, 1);
                 assertEquals(8, eventPage2.getCartSize());
 
                 goToCartPage(cartPage, 3);
 
-                // Remove one item
                 cartPage.removeItem(FIRST_ITEM_INDEX);
                 cartPage.waitUntilItemsHasSize(2);
                 assertEquals(6, cartPage.getCartSize());
 
-                // Remove all items
                 cartPage.removeAllItems();
                 cartPage.waitUntilItemsHasSize(0);
                 assertEquals(0, eventPage1.getCartSize());
@@ -98,7 +96,6 @@ public class CartTest {
                 int firstCategoryTicketCount = eventPage1.getTicketNumberForCategory(0);
 
                 eventPage1.addTicketsToCartForCategory(0, 2);
-//                eventPage1.addTicketsToCartForCategory(1, 1);
                 assertEquals(2, eventPage1.getCartSize());
 
                 goToCartPage(cartPage, 1);

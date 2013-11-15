@@ -49,9 +49,6 @@ public class CartPage extends BaseFluentPage {
         return null;
     }
 
-    public void waitTillInfoShowsUp(){
-        await().atMost(TIMEOUT).until(".alert-info").isPresent();
-    }
     public void removeItem(int itemIndex) {
         find(".item-remove", itemIndex).click();
     }

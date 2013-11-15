@@ -59,7 +59,7 @@ public class TicketDaoTest {
         assertNotNull(results);
         assertEquals(2, results.size());
         for (int i = 0; i < results.size(); i++) {
-            assertEquals(eventId, results.get(0).getEventId());
+            assertEquals(eventId, results.get(i).getEventId());
         }
     }
 
@@ -86,7 +86,7 @@ public class TicketDaoTest {
         assertNotNull(results);
         assertEquals(2, results.size());
         for (int i = 0; i < results.size(); i++) {
-            assertEquals(categoryId, results.get(0).getCategoryId());
+            assertEquals(categoryId, results.get(i).getCategoryId());
         }
     }
 
@@ -113,8 +113,59 @@ public class TicketDaoTest {
         assertNotNull(results);
         assertEquals(2, results.size());
         for (int i = 0; i < results.size(); i++) {
-            assertEquals(section, results.get(0).getSection());
+            assertEquals(section, results.get(i).getSection());
         }
+    }
+
+    @Test
+    public void searchSectionAndCategoryThenReturnsFilteredResults() {
+        TicketSearchCriteria ticketSearchCriteria = new TicketSearchCriteria();
+        String section = ticket1.getSection();
+        long categoryId = ticket1.getCategoryId();
+        ticketSearchCriteria.setSectionName(section);
+        ticketSearchCriteria.setCategoryId(categoryId);
+
+        List<Ticket> results = ticketDao.search(ticketSearchCriteria);
+
+        assertNotNull(results);
+        assertEquals(2, results.size());
+        for (int i = 0; i < results.size(); i++) {
+            assertEquals(section, results.get(i).getSection());
+            assertEquals(categoryId, results.get(i).getCategoryId());
+        }
+    }
+
+    @Test
+    public void searchSectionAndCategoryThenReturnsFirstFilteredResults() {
+        TicketSearchCriteria ticketSearchCriteria = new TicketSearchCriteria();
+        String section = ticket1.getSection();
+        long categoryId = ticket1.getCategoryId();
+        int quantity = 1;
+        ticketSearchCriteria.setSectionName(section);
+        ticketSearchCriteria.setCategoryId(categoryId);
+        ticketSearchCriteria.setQuantity(quantity);
+
+        List<Ticket> results = ticketDao.search(ticketSearchCriteria);
+
+        assertNotNull(results);
+        assertEquals(1, results.size());
+
+        assertEquals(section, results.get(0).getSection());
+        assertEquals(categoryId, results.get(0).getCategoryId());
+    }
+
+    @Test
+    public void searchWrongSectionAndGoodCategoryThenReturnsEmptyResults() {
+        TicketSearchCriteria ticketSearchCriteria = new TicketSearchCriteria();
+        String section = "bad";
+        long categoryId = ticket1.getCategoryId();
+        ticketSearchCriteria.setSectionName(section);
+        ticketSearchCriteria.setCategoryId(categoryId);
+
+        List<Ticket> results = ticketDao.search(ticketSearchCriteria);
+
+        assertNotNull(results);
+        assertEquals(0, results.size());
     }
 
     @Test
@@ -128,6 +179,4 @@ public class TicketDaoTest {
         assertNotNull(results);
         assertEquals(0, results.size());
     }
-
-    //Test with multiple criteria. (Every mix possible) Event-Cat, Event-Sec, Cat-Sec, Event-Ca-Sec.
 }

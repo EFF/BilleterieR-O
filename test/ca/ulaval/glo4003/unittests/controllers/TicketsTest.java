@@ -17,7 +17,6 @@ import org.junit.runner.RunWith;
 import play.libs.Json;
 import play.mvc.Result;
 import play.test.Helpers;
-import scala.Array;
 
 import java.security.InvalidParameterException;
 import java.util.ArrayList;
@@ -34,14 +33,15 @@ public class TicketsTest extends BaseControllerTest {
     private static final long A_SEAT = 55;
     private static final long AN_EVENT_ID = 1;
     private static final long A_CATEGORY_ID = 1;
-    private static final double TICKET_PRICE = 11.00;
-    private static final int TICKET_NUMBER = 77;
+    private static final double A_TICKET_PRICE = 11.00;
+    private static final int A_TICKET_NUMBER = 77;
     private Ticket firstTicket;
     private Ticket secondTicket;
     private TicketSearchCriteria ticketSearchCriteria;
     private List<Ticket> tempTicketsList;
+
     @Inject
-    private Tickets tickets;
+    private Tickets tickets = null;
 
     @Before
     public void setup(TicketDao mockedTicketDao) {
@@ -130,7 +130,7 @@ public class TicketsTest extends BaseControllerTest {
     public void checkoutTicketWhenItExists(TicketDao mockedTicketDao, EventDao mockedEventDao) throws RecordNotFoundException {
         when(mockedTicketDao.read(firstTicket.getId())).thenReturn(firstTicket);
         when(mockedEventDao.findCategory(firstTicket.getEventId(), firstTicket.getCategoryId()))
-                .thenReturn(new Category(TICKET_PRICE, TICKET_NUMBER, A_CATEGORY_ID,
+                .thenReturn(new Category(A_TICKET_PRICE, A_TICKET_NUMBER, A_CATEGORY_ID,
                         CategoryType.GENERAL_ADMISSION));
         Result result = tickets.checkout(String.valueOf(firstTicket.getId()));
 
@@ -141,9 +141,11 @@ public class TicketsTest extends BaseControllerTest {
     public void freeTicketWhenIsCheckedOut(TicketDao mockedTicketDao, EventDao mockedEventDao) throws RecordNotFoundException {
         when(mockedTicketDao.read(firstTicket.getId())).thenReturn(firstTicket);
         when(mockedEventDao.findCategory(firstTicket.getEventId(), firstTicket.getCategoryId()))
-                .thenReturn(new Category(TICKET_PRICE, TICKET_NUMBER, A_CATEGORY_ID,
+                .thenReturn(new Category(A_TICKET_PRICE, A_TICKET_NUMBER, A_CATEGORY_ID,
                         CategoryType.GENERAL_ADMISSION));
+
         Result result = tickets.free(String.valueOf(firstTicket.getId()));
+
         assertEquals(Helpers.OK, Helpers.status(result));
         verify(mockedEventDao).incrementEventCategoryNumberOfTickets(
                 firstTicket.getEventId(),
@@ -155,6 +157,7 @@ public class TicketsTest extends BaseControllerTest {
         when(mockedTicketDao.read(firstTicket.getId() + 1)).thenThrow(new RecordNotFoundException());
 
         Result result = tickets.free(String.valueOf(firstTicket.getId() + 1));
+
         assertEquals(Helpers.NOT_FOUND, Helpers.status(result));
         assertEquals(null, Helpers.contentType(result));
         verify(mockedTicketDao, times(3)).read(firstTicket.getId() + 1);
@@ -164,10 +167,11 @@ public class TicketsTest extends BaseControllerTest {
     public void reserveTicketWhenExists(TicketDao mockedTicketDao, EventDao mockedEventDao) throws RecordNotFoundException, MaximumExceededException {
         when(mockedTicketDao.read(firstTicket.getId())).thenReturn(firstTicket);
         when(mockedEventDao.findCategory(firstTicket.getEventId(), firstTicket.getCategoryId()))
-                .thenReturn(new Category(TICKET_PRICE, TICKET_NUMBER, A_CATEGORY_ID,
+                .thenReturn(new Category(A_TICKET_PRICE, A_TICKET_NUMBER, A_CATEGORY_ID,
                         CategoryType.GENERAL_ADMISSION));
 
         Result result = tickets.reserve(String.valueOf(firstTicket.getId()));
+
         assertEquals(Helpers.OK, Helpers.status(result));
         verify(mockedEventDao).decrementEventCategoryNumberOfTickets(
                 firstTicket.getEventId(),
@@ -175,7 +179,7 @@ public class TicketsTest extends BaseControllerTest {
     }
 
     @Test
-     public void reserveTicketWhenDoesNotExistsThenReturnsNotFound(TicketDao mockedTicketDao, EventDao mockedEventDao) throws RecordNotFoundException {
+    public void reserveTicketWhenDoesNotExistsThenReturnsNotFound(TicketDao mockedTicketDao, EventDao mockedEventDao) throws RecordNotFoundException {
         when(mockedTicketDao.read(firstTicket.getId())).thenThrow(new RecordNotFoundException());
         Result result = tickets.reserve(String.valueOf(firstTicket.getId()));
 
@@ -186,7 +190,7 @@ public class TicketsTest extends BaseControllerTest {
     public void reserveTooMuchTicketsWhenExistsThenReturnsException(TicketDao mockedTicketDao, EventDao mockedEventDao) throws RecordNotFoundException, MaximumExceededException {
         when(mockedTicketDao.read(firstTicket.getId())).thenReturn(firstTicket);
         when(mockedEventDao.findCategory(firstTicket.getEventId(), firstTicket.getCategoryId()))
-                .thenReturn(new Category(TICKET_PRICE, TICKET_NUMBER, A_CATEGORY_ID,
+                .thenReturn(new Category(A_TICKET_PRICE, A_TICKET_NUMBER, A_CATEGORY_ID,
                         CategoryType.GENERAL_ADMISSION));
         doThrow(new MaximumExceededException()).when(mockedEventDao).decrementEventCategoryNumberOfTickets(
                 firstTicket.getEventId(), firstTicket.getCategoryId(), 1);
@@ -209,95 +213,6 @@ public class TicketsTest extends BaseControllerTest {
         assertEquals(Helpers.OK, Helpers.status(result));
         assertEquals("application/json", Helpers.contentType(result));
     }
-//    @Test
-//    public void decrementCategoryCounterDoNothingWhenThereIsNoItems(EventDao mockedEventDao) throws RecordNotFoundException, MaximumExceededException {
-//        doThrow(new RecordNotFoundException()).when(mockedEventDao).decrementEventCategoryNumberOfTickets(anyLong(), anyLong(), anyInt());
-//
-//        Result result = tickets.decrementCategory();
-//
-//        assertEquals(Helpers.OK, Helpers.status(result));
-//        verify(mockedEventDao, never()).decrementEventCategoryNumberOfTickets(anyLong(), anyLong(), anyInt());
-//    }
-
-//@Test
-//public void decrementCategoryCounterWithSeveralItems(EventDao mockedEventDao) throws RecordNotFoundException, MaximumExceededException {
-//    long eventId1 = 1;
-//    long categoryId1 = 1;
-//    int quantity1 = 10;
-//    long eventId2 = eventId1 + 1;
-//    long categoryId2 = categoryId1 + 1;
-//    int quantity2 = quantity1 * 2;
-//
-//    ObjectNode jsonMaster = Json.newObject();
-//    ObjectNode json1 = Json.newObject();
-//    ObjectNode json2 = Json.newObject();
-//    json1.put(ConstantsManager.EVENT_ID_FIELD_NAME, eventId1);
-//    json1.put(ConstantsManager.CATEGORY_ID_FIELD_NAME, categoryId1);
-//    json1.put(ConstantsManager.QUANTITY_FIELD_NAME, quantity1);
-//    jsonMaster.put("1", json1);
-//    doNothing().when(mockedEventDao).decrementEventCategoryNumberOfTickets(eventId1, categoryId1, quantity1);
-//    json2.put(ConstantsManager.EVENT_ID_FIELD_NAME, eventId2);
-//    json2.put(ConstantsManager.CATEGORY_ID_FIELD_NAME, categoryId2);
-//    json2.put(ConstantsManager.QUANTITY_FIELD_NAME, quantity2);
-//    jsonMaster.put("2", json2);
-//    doNothing().when(mockedEventDao).decrementEventCategoryNumberOfTickets(eventId2, categoryId2, quantity2);
-//
-//    when(mockedBody.asJson()).thenReturn(jsonMaster);
-//
-//    Result result = events.decrementCategoryCounter();
-//
-//    assertEquals(Helpers.OK, Helpers.status(result));
-//    verify(mockedEventDao, times(2)).decrementEventCategoryNumberOfTickets(anyLong(), anyLong(), anyInt());
-//    verify(mockedEventDao).decrementEventCategoryNumberOfTickets(eventId1, categoryId1, quantity1);
-//    verify(mockedEventDao).decrementEventCategoryNumberOfTickets(eventId2, categoryId2, quantity2);
-//}
-//
-//    @Test
-//    public void decrementCategoryCounterWhenMaximumIsExceeded(EventDao mockedEventDao) throws RecordNotFoundException, MaximumExceededException {
-//        long eventId1 = 1;
-//        long categoryId1 = 1;
-//        int quantity1 = 10;
-//
-//        ObjectNode jsonMaster = Json.newObject();
-//        ObjectNode json1 = Json.newObject();
-//        json1.put(ConstantsManager.EVENT_ID_FIELD_NAME, eventId1);
-//        json1.put(ConstantsManager.CATEGORY_ID_FIELD_NAME, categoryId1);
-//        json1.put(ConstantsManager.QUANTITY_FIELD_NAME, quantity1);
-//        jsonMaster.put("1", json1);
-//        doThrow(new MaximumExceededException()).when(mockedEventDao).decrementEventCategoryNumberOfTickets(eventId1, categoryId1, quantity1);
-//
-//        when(mockedBody.asJson()).thenReturn(jsonMaster);
-//
-//        Result result = events.decrementCategoryCounter();
-//
-//        assertEquals(Helpers.BAD_REQUEST, Helpers.status(result));
-//        verify(mockedEventDao).decrementEventCategoryNumberOfTickets(anyLong(), anyLong(), anyInt());
-//        verify(mockedEventDao).decrementEventCategoryNumberOfTickets(eventId1, categoryId1, quantity1);
-//    }
-//
-//    @Test
-//    public void decrementCategoryCounterWhenRecordNotFoundExceptionIsThrown(EventDao mockedEventDao) throws RecordNotFoundException, MaximumExceededException {
-//        reset(mockedEventDao);
-//        long eventId1 = 1;
-//        long categoryId1 = 1;
-//        int quantity1 = 10;
-//
-//        ObjectNode jsonMaster = Json.newObject();
-//        ObjectNode json1 = Json.newObject();
-//        json1.put(ConstantsManager.EVENT_ID_FIELD_NAME, eventId1);
-//        json1.put(ConstantsManager.CATEGORY_ID_FIELD_NAME, categoryId1);
-//        json1.put(ConstantsManager.QUANTITY_FIELD_NAME, quantity1);
-//        jsonMaster.put("1", json1);
-//        doThrow(new RecordNotFoundException()).when(mockedEventDao).decrementEventCategoryNumberOfTickets(eventId1, categoryId1, quantity1);
-//
-//        when(mockedBody.asJson()).thenReturn(jsonMaster);
-//
-//        Result result = events.decrementCategoryCounter();
-//
-//        assertEquals(Helpers.NOT_FOUND, Helpers.status(result));
-//        verify(mockedEventDao).decrementEventCategoryNumberOfTickets(anyLong(), anyLong(), anyInt());
-//        verify(mockedEventDao).decrementEventCategoryNumberOfTickets(eventId1, categoryId1, quantity1);
-//    }
 
     public static class TestModule extends JukitoModule {
 

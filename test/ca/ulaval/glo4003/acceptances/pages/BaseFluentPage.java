@@ -13,11 +13,7 @@ public abstract class BaseFluentPage extends FluentPage {
     }
 
     public int getCartSize() {
-        try {
-            Thread.sleep(1000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-        }
+        sleepTime(1000);
         return Integer.parseInt(find(".navbar").find(".cart-size").getText());
     }
 
@@ -52,5 +48,13 @@ public abstract class BaseFluentPage extends FluentPage {
     public boolean isWarningMessageDisplayed() {
         waitForWarningMessageToDisplay();
         return find(".alertContainer .alert-warning").size() >= 1;
+    }
+
+    private void sleepTime(int mili) {
+        try {
+            Thread.sleep(mili);
+        } catch (InterruptedException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }
     }
 }
