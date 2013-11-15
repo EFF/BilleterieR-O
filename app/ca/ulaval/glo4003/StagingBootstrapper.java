@@ -21,6 +21,8 @@ public class StagingBootstrapper implements Bootstrapper {
     private final TeamDao teamDao;
     private final TransactionDao transactionDao;
 
+    private final int MAX_NUMBER_OF_EVENTS = 5;
+
     @Inject
     public StagingBootstrapper(EventDao eventDao, SportDao sportDao, UserDao userDao, TicketDao ticketDao, TeamDao teamDao, TransactionDao transactionDao) {
         this.eventDao = eventDao;
@@ -50,7 +52,7 @@ public class StagingBootstrapper implements Bootstrapper {
 
     private void initEvents() {
         for (Sport sport : sportDao.list()) {
-            int nbEvents = new Random().nextInt(5) + 1;
+            int nbEvents = new Random().nextInt(MAX_NUMBER_OF_EVENTS) + 1;
             for (int i = 0; i < nbEvents; i++) {
                 Gender gender = (i % 2 == 0) ? Gender.MALE : Gender.FEMALE;
 
