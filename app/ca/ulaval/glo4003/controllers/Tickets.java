@@ -17,6 +17,7 @@ import com.google.inject.Inject;
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.type.TypeReference;
+import play.api.mvc.PlainResult;
 import play.libs.Json;
 import play.mvc.Controller;
 import play.mvc.Result;
@@ -76,7 +77,7 @@ public class Tickets extends Controller {
         try {
             List<Long> ids = getListTicketIds();
             Result recordsExist = checkIfRecordsExist(ids, true);
-            if (recordsExist == notFound()) {
+            if (((PlainResult)recordsExist.getWrappedResult()).header().status() == NOT_FOUND) {
                 return notFound();
             }
             return updateTicketsState(ids, TicketState.SOLD);
@@ -89,7 +90,7 @@ public class Tickets extends Controller {
         try {
             List<Long> ids = getListTicketIds();
             Result recordsExist = checkIfRecordsExist(ids, true);
-            if (recordsExist == notFound()) {
+            if (((PlainResult)recordsExist.getWrappedResult()).header().status() == NOT_FOUND) {
                 return notFound();
             }
 
@@ -106,7 +107,7 @@ public class Tickets extends Controller {
         try {
             List<Long> ids = getListTicketIds();
             Result recordsExist = checkIfRecordsExist(ids, true);
-            if (recordsExist == notFound()) {
+            if (((PlainResult)recordsExist.getWrappedResult()).header().status() == NOT_FOUND) {
                 return notFound();
             }
 
@@ -184,14 +185,6 @@ public class Tickets extends Controller {
             }
         }
         return idsByEventDotCategory.asMap();
-    }
-
-    private List<Long> convertStringIdsToArrayLong(String strIds) {
-        List<Long> ids = new ArrayList<>();
-        for (String strId : strIds.split(",")) {
-            ids.add(Long.valueOf(strId).longValue());
-        }
-        return ids;
     }
 
     private Result updateTicketsState(List<Long> ids, TicketState state) {

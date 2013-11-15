@@ -1,5 +1,7 @@
 package ca.ulaval.glo4003;
 
+import ca.ulaval.glo4003.dataaccessobjects.TransactionDao;
+
 import ca.ulaval.glo4003.dataaccessobjects.*;
 import ca.ulaval.glo4003.models.*;
 import com.google.inject.Inject;
@@ -17,14 +19,16 @@ public class StagingBootstrapper implements Bootstrapper {
     private final UserDao userDao;
     private final TicketDao ticketDao;
     private final TeamDao teamDao;
+    private final TransactionDao transactionDao;
 
     @Inject
-    public StagingBootstrapper(EventDao eventDao, SportDao sportDao, UserDao userDao, TicketDao ticketDao, TeamDao teamDao) {
+    public StagingBootstrapper(EventDao eventDao, SportDao sportDao, UserDao userDao, TicketDao ticketDao, TeamDao teamDao, TransactionDao transactionDao) {
         this.eventDao = eventDao;
         this.sportDao = sportDao;
         this.userDao = userDao;
         this.ticketDao = ticketDao;
         this.teamDao = teamDao;
+        this.transactionDao = transactionDao;
     }
 
     @Override
@@ -127,6 +131,7 @@ public class StagingBootstrapper implements Bootstrapper {
         sportDao.deleteAll();
         ticketDao.deleteAll();
         userDao.deleteAll();
+        transactionDao.deleteAll();
         teamDao.deleteAll();
     }
 }

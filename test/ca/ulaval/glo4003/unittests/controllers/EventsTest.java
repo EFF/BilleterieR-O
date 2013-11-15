@@ -1,6 +1,7 @@
 package ca.ulaval.glo4003.unittests.controllers;
 
 import ca.ulaval.glo4003.ConstantsManager;
+import ca.ulaval.glo4003.controllers.Checkout;
 import ca.ulaval.glo4003.controllers.Events;
 import ca.ulaval.glo4003.dataaccessobjects.EventDao;
 import ca.ulaval.glo4003.exceptions.MaximumExceededException;
@@ -164,10 +165,6 @@ public class EventsTest extends BaseControllerTest {
 
         verify(mockedEventDao).read(firstEvent.getId());
     }
-
-
-
-
 
     public static class TestModule extends JukitoModule {
 

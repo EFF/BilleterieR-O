@@ -1,6 +1,9 @@
 define(['app'], function (app) {
     app.factory('Cart', ['$cookieStore', '$http', 'FlashMessage', function ($cookieStore, $http, FlashMessage) {
-        var exports = {};
+        var exports = {
+            transactionId: null
+        };
+
         var cart = $cookieStore.get('cart');
         if (!cart) {
             cart = [];
@@ -20,7 +23,7 @@ define(['app'], function (app) {
         }
 
         var checkoutTickets = function(tickets, successCallback, errorCallback) {
-            updateTicketState(tickets, successCallback, errorCallback, '/api/tickets/checkout');
+            updateTicketState(tickets, successCallback, errorCallback, '/api/checkout');
         };
 
         var freeTickets = function(tickets, successCallback, errorCallback) {

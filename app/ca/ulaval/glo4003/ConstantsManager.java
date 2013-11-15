@@ -9,6 +9,8 @@ public class ConstantsManager {
     public final static String ACTUAL_PASSWORD_FIELD_NAME = "actualPassword";
     public final static String PASSWORD_FIELD_NAME = "password";
 
+    public final static String TRANSACTION_ID_FIELD_NAME = "transactionId";
+
     public final static String QUERY_STRING_SPORT_PARAM_NAME = "sport";
     public final static String QUERY_STRING_DATE_START_PARAM_NAME = "dateStart";
     public final static String QUERY_STRING_DATE_END_PARAM_NAME = "dateEnd";
@@ -27,4 +29,9 @@ public class ConstantsManager {
     public static final String TICKET_STATE_FIELD_NAME = "states";
 
     public static final String TICKET_IDS_FIELD_NAME = "ticketIds";
+
+    public final static String CHECKOUT_CONFIRMATION_EMAIL = "Votre transaction c'est bien effectuée sur le système." +
+            " Votre numéro de confirmation est le: ";
+
+    public final static int SERVICE_OPERATION_TIMEOUT = 5000;
 }

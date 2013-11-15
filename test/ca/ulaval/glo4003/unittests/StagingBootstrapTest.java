@@ -5,6 +5,11 @@ import ca.ulaval.glo4003.dataaccessobjects.*;
 import ca.ulaval.glo4003.models.Event;
 import ca.ulaval.glo4003.models.Sport;
 import ca.ulaval.glo4003.models.Team;
+import ca.ulaval.glo4003.models.User;
+import ca.ulaval.glo4003.dataaccessobjects.EventDao;
+import ca.ulaval.glo4003.dataaccessobjects.SportDao;
+import ca.ulaval.glo4003.dataaccessobjects.TransactionDao;
+import ca.ulaval.glo4003.dataaccessobjects.UserDao;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -21,6 +26,7 @@ public class StagingBootstrapTest {
     private TicketDao ticketDao;
     private TeamDao teamDao;
     private UserDao userDao;
+    private TransactionDao transactionDao;
     private StagingBootstrapper bootstrap;
 
     //TODO add tests on userDao and ticketDao.
@@ -32,7 +38,8 @@ public class StagingBootstrapTest {
         ticketDao = mock(TicketDao.class);
         teamDao = mock(TeamDao.class);
         userDao = mock(UserDao.class);
-        bootstrap = new StagingBootstrapper(eventDao, sportDao, userDao, ticketDao, teamDao);
+        transactionDao = mock(TransactionDao.class);
+        bootstrap = new StagingBootstrapper(eventDao, sportDao, userDao, ticketDao, teamDao, transactionDao);
     }
 
     @Test
@@ -50,6 +57,7 @@ public class StagingBootstrapTest {
 
         verify(eventDao, atLeastOnce()).create(any(Event.class));
         verify(sportDao, atLeastOnce()).create(any(Sport.class));
+        verify(userDao, atLeastOnce()).create(any(User.class));
     }
 
     @Test
@@ -60,5 +68,7 @@ public class StagingBootstrapTest {
 
         verify(eventDao, times(1)).deleteAll();
         verify(sportDao, times(1)).deleteAll();
+        verify(userDao, times(1)).deleteAll();
+        verify(transactionDao, times(1)).deleteAll();
     }
 }

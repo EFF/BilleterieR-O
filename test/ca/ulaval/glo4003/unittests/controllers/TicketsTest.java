@@ -178,7 +178,7 @@ public class TicketsTest extends BaseControllerTest {
 
         assertEquals(Helpers.NOT_FOUND, Helpers.status(result));
         assertEquals(null, Helpers.contentType(result));
-        verify(mockedTicketDao, times(3)).read(anyLong());
+        verify(mockedTicketDao, times(1)).read(anyLong());
     }
 
     @Test
@@ -212,7 +212,7 @@ public class TicketsTest extends BaseControllerTest {
         Result result = tickets.reserve();
 
         assertEquals(Helpers.NOT_FOUND, Helpers.status(result));
-        verify(mockedTicketDao, times(3)).read(anyLong());
+        verify(mockedTicketDao, times(1)).read(anyLong());
     }
 
     @Test

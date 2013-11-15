@@ -72,7 +72,6 @@ public class UserProfile extends Controller {
         try {
             User user = userDao.findByEmail(email);
 
-
             if (!user.getPassword().equals(actualPassword)) {
                 return unauthorized(WRONG_ACTUAL_PASSWORD);
             }

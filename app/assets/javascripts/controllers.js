@@ -140,6 +140,11 @@ define(['app'], function (app) {
         $scope.apiCall();
     }]);
 
+    app.controller('ThanksController', ['$scope', 'Cart',
+        function ($scope, Cart) {
+            $scope.getTransactionId = function() { return Cart.transactionId; }
+        }]);
+
     app.controller('CartController', ['$scope', 'FlashMessage', 'Cart', '$location', 'Login',
         function ($scope, FlashMessage, Cart, $location, Login) {
             $scope.selectAll = true;
@@ -199,7 +204,8 @@ define(['app'], function (app) {
                 FlashMessage.send('info','Vous devez vous connecter avant de procéder au paiement');
             };
 
-            var checkoutSuccess = function () {
+            var checkoutSuccess = function (data) {
+                Cart.transactionId = data.transactionId;
                 FlashMessage.send("success", "La transaction a été complétée");
                 $location.path("/thanks");
             };
