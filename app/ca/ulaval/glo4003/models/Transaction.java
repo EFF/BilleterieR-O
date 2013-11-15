@@ -5,11 +5,8 @@ import org.joda.time.LocalDateTime;
 public class Transaction extends Record {
 
     private User user;
-
     private LocalDateTime startedOn;
-
     private LocalDateTime endedOn;
-
     private TransactionState state;
 
     public Transaction(User user) {
