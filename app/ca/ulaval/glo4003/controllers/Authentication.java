@@ -48,7 +48,6 @@ public class Authentication extends Controller {
             }
             session().clear();
             session().put(ConstantsManager.COOKIE_SESSION_FIELD_NAME, user.getEmail());
-            session().put(ConstantsManager.USER_SESSION_FIELD_NAME, String.valueOf(user.getId()));
 
             return ok("Authenticated");
         } catch (RecordNotFoundException e) {

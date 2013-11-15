@@ -44,7 +44,7 @@ public class CheckoutTest extends BaseControllerTest {
         user.setId(USER_ID);
         user.setEmail(USER_EMAIL);
 
-        when(mockedSession.get(ConstantsManager.USER_SESSION_FIELD_NAME)).thenReturn(String.valueOf(USER_ID));
+        when(mockedSession.get(ConstantsManager.COOKIE_SESSION_FIELD_NAME)).thenReturn(String.valueOf(USER_EMAIL));
         when(userDao.read(USER_ID)).thenReturn(user);
         when(mockedCheckoutSvc.startNewTransaction(user)).thenReturn(new Transaction(user));
     }

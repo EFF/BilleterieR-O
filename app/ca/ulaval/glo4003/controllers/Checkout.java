@@ -36,8 +36,8 @@ public class Checkout extends Controller {
         JsonNode items = request().body().asJson();
         Iterator<JsonNode> jsonNodeIterator = items.iterator();
 
-        Long userId = Long.parseLong(session().get(ConstantsManager.USER_SESSION_FIELD_NAME));
-        Transaction transaction = this.checkoutService.startNewTransaction(userDao.read(userId));
+        String userEmail = session().get(ConstantsManager.COOKIE_SESSION_FIELD_NAME);
+        Transaction transaction = this.checkoutService.startNewTransaction(userDao.findByEmail(userEmail));
 
         try {
             while (jsonNodeIterator.hasNext()) {
