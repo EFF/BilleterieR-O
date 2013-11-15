@@ -21,7 +21,7 @@ public class ConcreteCheckoutService implements CheckoutService {
     public Transaction startNewTransaction(User user) {
         Transaction transaction = new Transaction(user);
 
-        this.transactionDao.create(transaction);
+        transactionDao.create(transaction);
 
         return transaction;
     }
