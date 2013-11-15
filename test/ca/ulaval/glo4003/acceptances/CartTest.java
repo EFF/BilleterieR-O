@@ -92,7 +92,6 @@ public class CartTest {
                 goToLoginPage(loginPage);
 
                 loginPage.performLogin(EMAIL, PASSWORD);
-                loginPage.waitUntilLoginIsDone();
 
                 goToEventPage(eventPage1);
 
@@ -128,7 +127,6 @@ public class CartTest {
                 goToLoginPage(loginPage);
 
                 loginPage.performLogin(EMAIL, PASSWORD);
-                loginPage.waitUntilLoginIsDone();
 
                 goToEventPage(eventPage1);
 
@@ -215,7 +213,7 @@ public class CartTest {
 
                 goToCartPage(cartPage, 1);
                 cartPage.payWithCreditCard();
-                cartPage.waitTillInfoShowsUp();
+                cartPage.waitForInfoMessageToDisplay();
             }
         });
     }
