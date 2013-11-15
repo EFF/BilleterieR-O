@@ -50,7 +50,7 @@ public class CheckoutTest extends BaseControllerTest {
     }
 
     @Test
-    public void checkoutDoNothingWhenThereIsNoItems(EventDao mockedEventDao) throws RecordNotFoundException, MaximumExceededException {
+    public void checkoutDoNothingWhenThereAreNoItems(EventDao mockedEventDao) throws RecordNotFoundException, MaximumExceededException {
         doThrow(new RecordNotFoundException()).when(mockedEventDao).decrementEventCategoryNumberOfTickets(anyLong(), anyLong(), anyInt());
 
         Result result = checkout.index();
