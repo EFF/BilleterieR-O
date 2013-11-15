@@ -4,7 +4,9 @@ import ca.ulaval.glo4003.dataaccessobjects.TicketDao;
 import ca.ulaval.glo4003.dataaccessobjects.UniqueConstraintValidator;
 import ca.ulaval.glo4003.models.Ticket;
 import ca.ulaval.glo4003.models.TicketSearchCriteria;
+import ca.ulaval.glo4003.models.TicketState;
 import ca.ulaval.glo4003.services.DaoPersistenceService;
+import junit.framework.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -29,10 +31,10 @@ public class TicketDaoTest {
 
         ticketDao = new TicketDao(daoPersistenceService, new UniqueConstraintValidator<Ticket>());
 
-        ticket1 = new Ticket(1, 0, "Section 100", 10);
+        ticket1 = new Ticket(1, 0, "Section 100", 10, TicketState.SOLD);
         ticket2 = new Ticket(1, 1, "Section 200", 11);
         ticket3 = new Ticket(2, 0, "Section 100", 12);
-        ticket4 = new Ticket(2, 1, "Section 200", 13);
+        ticket4 = new Ticket(2, 1, "Section 200", 13, TicketState.RESERVED);
 
         ticketDao.create(ticket1);
         ticketDao.create(ticket2);
@@ -178,5 +180,26 @@ public class TicketDaoTest {
 
         assertNotNull(results);
         assertEquals(0, results.size());
+    }
+
+    @Test
+    public void searchStatesThatDoExistsThenReturnsFilteredResults() {
+        TicketSearchCriteria ticketSearchCriteria = new TicketSearchCriteria();
+        ticketSearchCriteria.addState(TicketState.SOLD);
+        ticketSearchCriteria.addState(TicketState.RESERVED);
+
+        List<Ticket> results = ticketDao.search(ticketSearchCriteria);
+        assertNotNull(results);
+        assertEquals(2, results.size());
+        Assert.assertEquals(ticket1.getCategoryId(), results.get(0).getCategoryId());
+        Assert.assertEquals(ticket1.getEventId(), results.get(0).getEventId());
+        Assert.assertEquals(ticket1.getSection(), results.get(0).getSection());
+        Assert.assertEquals(ticket1.getSeat(), results.get(0).getSeat());
+        Assert.assertEquals(ticket1.getState(), results.get(0).getState());
+        Assert.assertEquals(ticket4.getCategoryId(), results.get(1).getCategoryId());
+        Assert.assertEquals(ticket4.getEventId(), results.get(1).getEventId());
+        Assert.assertEquals(ticket4.getSection(), results.get(1).getSection());
+        Assert.assertEquals(ticket4.getSeat(), results.get(1).getSeat());
+        Assert.assertEquals(ticket4.getState(), results.get(1).getState());
     }
 }
