@@ -131,7 +131,7 @@ public class Tickets extends Controller {
         }
     }
 
-    public Result showEventTicketSections(long eventId) {
+    public Result showEventSections(long eventId) {
         TicketSearchCriteria ticketSearchCriteria = new TicketSearchCriteria();
         ticketSearchCriteria.setEventId(eventId);
         List<Ticket> tickets = ticketDao.search(ticketSearchCriteria);

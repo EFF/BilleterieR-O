@@ -126,7 +126,7 @@ define(['app'], function (app) {
                 .error(apiCallErrorCallback);
         };
 
-        $http.get('/api/tickets/sections/' + eventId )
+        $http.get('/api/events/' + eventId + '/sections')
             .success(function (sections) {
                 for (var categoryId in sections) {
                     $scope.sectionsByCategories.push({
