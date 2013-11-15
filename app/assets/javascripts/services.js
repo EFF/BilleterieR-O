@@ -69,7 +69,7 @@ define(['app'], function (app) {
                         eventId: item.event.id,
                         categoryId: item.category.id,
                         tickets: item.tickets,
-                        quantity: item.quantity
+                        quantity: item.reservedQuantity
                     };
                     checkoutList.push(checkoutItem);
                 }
@@ -91,8 +91,8 @@ define(['app'], function (app) {
 
         exports.addItem = function (ticket, category, event) {
             var item = {
-                quantity: 1,
-                newQuantity: 1,
+                reservedQuantity: 1,
+                desiredQuantity: 1,
                 category: category,
                 tickets: [ticket],
                 event: event,
@@ -101,7 +101,7 @@ define(['app'], function (app) {
 
             var existingItem = getItemByTicketId(ticket.id);
             if (existingItem) {
-                console.log("Throw error");
+                FlashMessage.send('error', 'Le billet existe déjà dans le panier.')
             } else {
                 var successCallback = function () {
                     cart.push(item);
@@ -117,8 +117,8 @@ define(['app'], function (app) {
 
         exports.addItems = function (tickets, category, event) {
             var item = {
-                quantity: tickets.length,
-                newQuantity: tickets.length,
+                reservedQuantity: tickets.length,
+                desiredQuantity: tickets.length,
                 category: category,
                 tickets: tickets,
                 event: event,
@@ -130,8 +130,8 @@ define(['app'], function (app) {
             var successCallback = function () {
                 if (existingItem) {
                     existingItem.tickets.concat(tickets);
-                    existingItem.quantity += tickets.length;
-                    existingItem.newQuantity += tickets.length;
+                    existingItem.reservedQuantity += tickets.length;
+                    existingItem.desiredQuantity += tickets.length;
                 } else {
                     cart.push(item);
                 }
@@ -185,14 +185,14 @@ define(['app'], function (app) {
 
         exports.getTotalQuantity = function () {
             return cart.reduce(function (a, item) {
-                return a + item.quantity;
+                return a + item.reservedQuantity;
             }, 0);
         };
 
         exports.getTotalSelectedQuantity = function () {
             return cart.reduce(function (a, item) {
                 if (item.selected) {
-                    a += item.quantity;
+                    a += item.reservedQuantity;
                 }
                 return a;
             }, 0);
@@ -201,7 +201,7 @@ define(['app'], function (app) {
         exports.getTotalPrice = function () {
             return cart.reduce(function (a, item) {
                 if (item.selected) {
-                    a += item.quantity * item.category.price;
+                    a += item.reservedQuantity * item.category.price;
                 }
                 return a;
             }, 0);
@@ -228,7 +228,7 @@ define(['app'], function (app) {
         exports.updateItemQuantity = function(index, deltaQuantity) {
             var item = cart[index];
             if (deltaQuantity == 0) {
-                item.newQuantity = item.quantity;
+                item.desiredQuantity = item.reservedQuantity;
                 return;
             } else if (deltaQuantity > 0) {
                 var url = '/api/tickets?eventId='
@@ -239,8 +239,8 @@ define(['app'], function (app) {
                     .success(function (tickets) {
                         var successCallback = function () {
                             item.tickets.concat(tickets);
-                            item.quantity += tickets.length;
-                            item.newQuantity = item.quantity;
+                            item.reservedQuantity += tickets.length;
+                            item.desiredQuantity = item.reservedQuantity;
                             updateCartCookie(cart);
                         };
                         var errorCallback = function() {
@@ -262,8 +262,8 @@ define(['app'], function (app) {
 
                 var successCallback = function () {
                     item.tickets.splice(0, quantityToFree);
-                    item.quantity -= quantityToFree;
-                    item.newQuantity = item.quantity;
+                    item.reservedQuantity -= quantityToFree;
+                    item.desiredQuantity = item.reservedQuantity;
                     updateCartCookie(cart);
                 };
                 var errorCallback = function () {

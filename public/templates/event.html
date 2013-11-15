@@ -33,8 +33,8 @@
             <select id="{{sectionsByCategories[category.id].name}}"
                     class="form-control"
                     ng-change="apiCall()"
-                    ng-model="sectionsByCategories[category.id].value"
-                    ng-options="s for s in sectionsByCategories[category.id].values"
+                    ng-model="sectionsByCategories[category.id].selectedValue"
+                    ng-options="s for s in sectionsByCategories[category.id].options"
                     ng-hide="category.type == 'GENERAL_ADMISSION'">
                 <option value="">Section...</option>
             </select>
@@ -43,11 +43,11 @@
         <td>
             <select id="{{ticketsByCategories[category.id].name}}"
                     class="form-control"
-                    ng-model="ticketsByCategories[category.id].value"
+                    ng-model="ticketsByCategories[category.id].selectedValue"
                     ng-hide="category.type == 'GENERAL_ADMISSION'">
                 <option value="">Siège disponible...</option>
                 <option value="{{ticket.id}}"
-                        ng-repeat="ticket in ticketsByCategories[category.id].values">
+                        ng-repeat="ticket in ticketsByCategories[category.id].options">
                     {{ticket.seat}}
                 </option>
             </select>
@@ -55,13 +55,13 @@
 
         <td>
             <button class="btn btn-success category-add"
-                    ng-click="addToCart(ticketsByCategories[category.id].value, category, quantity[category.id])"
+                    ng-click="addToCart(ticketsByCategories[category.id].selectedValue, category, quantity[category.id])"
                     ng-hide="category.numberOfTickets == 0"
-                    ng-disabled="!ticketsByCategories[category.id].value && category.type == 'SEAT'">
+                    ng-disabled="!ticketsByCategories[category.id].selectedValue && category.type == 'SEAT'">
                 Ajouter au panier
             </button>
-            <a href="/#!/tickets/{{ticketsByCategories[category.id].value}}"
-               ng-disabled="!ticketsByCategories[category.id].value && category.type == 'SEAT'"
+            <a href="/#!/tickets/{{ticketsByCategories[category.id].selectedValue}}"
+               ng-disabled="!ticketsByCategories[category.id].selectedValue && category.type == 'SEAT'"
                ng-hide="category.type == 'GENERAL_ADMISSION'"
                class="btn btn-info">
                 Détails

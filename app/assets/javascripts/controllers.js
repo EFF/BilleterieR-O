@@ -78,11 +78,11 @@ define(['app'], function (app) {
             var emptyTicketList = {
                 type : 'select',
                 name : 'ticketList' + categoryId,
-                value : '',
-                values : []
+                selectedValue : '',
+                options : []
             };
 
-            if (sectionName == null || sectionName == '') {
+            if (!sectionName) {
                 $scope.ticketsByCategories[categoryId] = emptyTicketList;
                 return;
             }
@@ -97,8 +97,8 @@ define(['app'], function (app) {
                             categoryId = ticket.categoryId;
                             $scope.ticketsByCategories[categoryId] = emptyTicketList;
                         }
-                        $scope.ticketsByCategories[categoryId].value = '';
-                        $scope.ticketsByCategories[categoryId].values.push(ticket);
+                        $scope.ticketsByCategories[categoryId].selectedValue = '';
+                        $scope.ticketsByCategories[categoryId].options.push(ticket);
                     }
                 });
         };
@@ -111,14 +111,14 @@ define(['app'], function (app) {
             //TODO emit error event and handle it in a directive
             $scope.event = null;
             for (var categoryId in $scope.sectionsByCategories) {
-                $scope.sectionsByCategories[categoryId].value = null;
+                $scope.sectionsByCategories[categoryId].selectedValue = null;
             }
             $scope.ticketsByCategories = [];
         };
 
         $scope.apiCall = function () {
             for (var categoryId in $scope.sectionsByCategories) {
-                var sectionName = $scope.sectionsByCategories[categoryId].value;
+                var sectionName = $scope.sectionsByCategories[categoryId].selectedValue;
                 refreshTicketsList(eventId, categoryId, sectionName);
             }
             $http.get('/api/events/' + eventId)
@@ -132,8 +132,8 @@ define(['app'], function (app) {
                     $scope.sectionsByCategories.push({
                         type : 'select',
                         name : 'sectionList' + categoryId,
-                        value : null,
-                        values : sections[categoryId]
+                        selectedValue : null,
+                        options : sections[categoryId]
                     });
                 }});
 
@@ -160,11 +160,11 @@ define(['app'], function (app) {
             $scope.updateItemQuantity = function (index) {
                 var item = $scope.cart[index];
                 var maxQuantity = item.category.numberOfTickets;
-                var deltaQuantity = item.newQuantity - item.quantity;
-                if (item.newQuantity == 0) {
+                var deltaQuantity = item.desiredQuantity - item.quantity;
+                if (item.desiredQuantity == 0) {
                     Cart.removeItem(index);
                 } else {
-                    if (item.newQuantity > maxQuantity) {
+                    if (item.desiredQuantity > maxQuantity) {
                         FlashMessage.send("warning", "Le nombre de billet maximum est de " + maxQuantity.toString());
                         deltaQuantity = maxQuantity - item.quantity;
                     }
