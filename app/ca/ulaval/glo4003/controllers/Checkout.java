@@ -65,3 +65,4 @@ public class Checkout extends Controller {
         return ok(result);
     }
 }
+
