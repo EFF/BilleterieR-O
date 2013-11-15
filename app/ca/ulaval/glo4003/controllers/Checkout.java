@@ -39,33 +39,27 @@ public class Checkout extends Controller {
         String userEmail = session().get(ConstantsManager.COOKIE_SESSION_FIELD_NAME);
         Transaction transaction = this.checkoutService.startNewTransaction(userDao.findByEmail(userEmail));
 
-        try {
-            while (jsonNodeIterator.hasNext()) {
-                JsonNode item = jsonNodeIterator.next();
+        while (jsonNodeIterator.hasNext()) {
+            JsonNode item = jsonNodeIterator.next();
 
-                Long eventId = item.get(ConstantsManager.EVENT_ID_FIELD_NAME).asLong();
-                Long categoryId = item.get(ConstantsManager.CATEGORY_ID_FIELD_NAME).asLong();
-                int quantity = item.get(ConstantsManager.QUANTITY_FIELD_NAME).asInt();
+            long eventId = item.get(ConstantsManager.EVENT_ID_FIELD_NAME).asLong();
+            long categoryId = item.get(ConstantsManager.CATEGORY_ID_FIELD_NAME).asLong();
+            int quantity = item.get(ConstantsManager.QUANTITY_FIELD_NAME).asInt();
 
-                try {
-                    eventDao.decrementEventCategoryNumberOfTickets(eventId, categoryId, quantity);
-                } catch (RecordNotFoundException e) {
-                    transaction.fail();
-                    return notFound(String.format("Couldn't find that ticket (%s, %s).", eventId, categoryId));
-                } catch (MaximumExceededException e) {
-                    transaction.fail();
-                    return badRequest("Not enough tickets in category.");
-                }
+            try {
+                eventDao.decrementEventCategoryNumberOfTickets(eventId, categoryId, quantity);
+            } catch (RecordNotFoundException e) {
+                transaction.fail();
+                return notFound(String.format("Couldn't find that ticket (%s, %s).", eventId, categoryId));
+            } catch (MaximumExceededException e) {
+                transaction.fail();
+                return badRequest("Not enough tickets in category.");
             }
-
-            this.checkoutService.fulfillTransaction(transaction);
-        } catch (Exception e) {
-            transaction.fail();
-            return internalServerError("Unexpected error while checking out.");
         }
 
-        ObjectNode result = Json.newObject();
+        this.checkoutService.fulfillTransaction(transaction);
 
+        ObjectNode result = Json.newObject();
         result.put(ConstantsManager.TRANSACTION_ID_FIELD_NAME, transaction.getId());
 
         return ok(result);
