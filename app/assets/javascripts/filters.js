@@ -4,4 +4,9 @@ define(['app'], function (app) {
             return (input == "MALE") ? "Masculin" : "Féminin";
         }
     })
+    app.filter('categoryType', function () {
+            return function (input) {
+                return (input == "SEAT") ? "Siège réservé" : "Admission Générale";
+            }
+        })
 });

@@ -9,9 +9,20 @@
 
 <h2>Billet</h2>
 
-<p>EventId: {{event.id}}</p>
-<p>TicketId: {{ticket.id}}</p>
-<p>Seat: {{ticket.seat}}</p>
-<p>Section: {{ticket.section}}</p>
-<p>Category: {{ticket.categoryId}}</p>
-<p>State: {{ticket.state}}</p>
+<table class="table" id="ticket">
+    <thead>
+        <tr>
+            <th>Propriété</th>
+            <th>Valeur</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr><td>Siège</td>                  <td>{{ticket.seat}}</td></tr>
+        <tr><td>Section</td>                <td>{{ticket.section}}</td></tr>
+        <tr><td>Catégorie</td>              <td>{{ticket.categoryId}}</td></tr>
+        <tr><td>Équipe Hôte</td>            <td>{{event.homeTeam.name}}</td></tr>
+        <tr><td>Équipe Visiteur</td>        <td>{{event.visitorTeam.name}}</td></tr>
+        <tr><td>Prix</td>                   <td>{{event.categories[ticket.categoryId].price}}$</td></tr>
+        <tr><td>Type</td>                   <td>{{event.categories[ticket.categoryId].type | categoryType}}</td></tr>
+    </tbody>
+  </table>
