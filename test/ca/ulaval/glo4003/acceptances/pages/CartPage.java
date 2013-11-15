@@ -96,6 +96,11 @@ public class CartPage extends BaseFluentPage {
 
     public void modifyNumberOfTicketsForItem(int i, Integer quantity) {
         fill("input", withId("input_quantity" + i)).with(quantity.toString());
+        try {
+            Thread.sleep(100);
+        } catch (InterruptedException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }
     }
 
     public int getQuantityForItem(int i) {
