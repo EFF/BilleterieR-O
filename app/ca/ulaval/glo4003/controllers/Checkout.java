@@ -51,10 +51,10 @@ public class Checkout extends Controller {
                     eventDao.decrementEventCategoryNumberOfTickets(eventId, categoryId, quantity);
                 } catch (RecordNotFoundException e) {
                     transaction.fail();
-                    return notFound();
+                    return notFound(String.format("Couldn't find that ticket (%s, %s).", eventId, categoryId));
                 } catch (MaximumExceededException e) {
                     transaction.fail();
-                    return badRequest("Il n'y a pas assez de billets disponibles dans la catégorie" + categoryId.toString());
+                    return badRequest("Not enough tickets in category.");
                 }
             }
 
