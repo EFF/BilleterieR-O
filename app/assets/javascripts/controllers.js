@@ -152,15 +152,18 @@ define(['app'], function (app) {
             $scope.monthOfYear = ['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12'];
             $scope.expirationYears = [];
 
-            $scope.updateItemQuantity = function (index, newQuantity, maxQuantity) {
-                if (newQuantity <= 0) {
+            $scope.updateItemQuantity = function (index) {
+                var item = $scope.cart[index];
+                var maxQuantity = item.category.numberOfTickets;
+                var deltaQuantity = item.newQuantity - item.quantity;
+                if (item.newQuantity == 0) {
                     Cart.removeItem(index);
                 } else {
-                    if (newQuantity > maxQuantity) {
+                    if (item.newQuantity > maxQuantity) {
                         FlashMessage.send("warning", "Le nombre de billet maximum est de " + maxQuantity.toString());
-                        newQuantity = maxQuantity;
+                        deltaQuantity = maxQuantity - item.quantity;
                     }
-                    Cart.updateItemQuantity(index, newQuantity);
+                    Cart.updateItemQuantity(index, deltaQuantity);
                 }
             };
 

@@ -34,7 +34,7 @@
                    type="number"
                    required step="1"
                    ng-model="item.newQuantity"
-                   ng-change="updateItemQuantity(item)"
+                   ng-change="updateItemQuantity($index)"
                    ng-init="item.newQuantity"
                    max="{{item.category.numberOfTickets}}">
         </td>

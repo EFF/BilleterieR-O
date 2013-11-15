@@ -1,7 +1,6 @@
 define(['app'], function (app) {
     app.factory('Cart', ['$cookieStore', '$http', 'FlashMessage', function ($cookieStore, $http, FlashMessage) {
         var exports = {};
-        $cookieStore.put('cart', [])
         var cart = $cookieStore.get('cart');
         if (!cart) {
             cart = [];
@@ -222,32 +221,63 @@ define(['app'], function (app) {
                 .error(errorCallback);
         };
 
-        exports.updateItemQuantity = function(item) {
-            //TODO: Find first 'newQuantity' tickets of the category and reserve them.
-            if (!item) {
+        exports.updateItemQuantity = function(index, deltaQuantity) {
+            var item = cart[index];
+            if (deltaQuantity == 0) {
+                item.newQuantity = item.quantity;
                 return;
-            }
-            var quantityToReserve = item.newQuantity - item.quantity;
-            if (!quantityToReserve || quantityToReserve == 0) {
-                return;
-            }
-            var url = '/api/tickets?eventId='
-                + item.event.id + '&categoryId='
-                + item.category.id + '&states=AVAILABLE,RESALE'
-                + '&quantity=' + quantityToReserve;
-            $http.get(url)
-                .success(function (tickets) {
-                    if (tickets.length > 0) {
-                        //exports.addItems(tickets, tickets[0].category, tickets[0].event);
-                        item.tickets.concat(tickets);
-                        item.quantity += tickets.length;
+            } else if (deltaQuantity > 0) {
+                var url = '/api/tickets?eventId='
+                    + item.event.id + '&categoryId='
+                    + item.category.id + '&states=AVAILABLE,RESALE'
+                    + '&quantity=' + deltaQuantity;
+                $http.get(url)
+                    .success(function (tickets) {
+                        if (tickets.length > 0) {
+                            var url = '/api/tickets/reserve/';
+                            for (var i in tickets) {
+                                url += tickets[i].id;
+                                if (i < tickets.length -1) {
+                                    url += ',';
+                                }
+                            }
+                            $http.post(url)
+                                .success(function () {
+                                    item.tickets.concat(tickets);
+                                    item.quantity += tickets.length;
+                                    item.newQuantity = item.quantity;
+                                    updateCartCookie(cart);
+                                })
+                                .error(function() {
+                                    FlashMessage.send('error', 'Le nombre de billets ajoutés au panier excède le nombre de billets restants.');
+                                });
+                        }
+                    })
+                    .error(function() {
+                        FlashMessage.send('error', 'Le nombre de billets ajoutés au panier excède le nombre de billets restants.');
+                    });
+            } else {
+                var quantityToFree = -deltaQuantity;
+                var url = '/api/tickets/free/';
+                var i = 0;
+                while (i != quantityToFree) {
+                    url += item.tickets[i].id;
+                    if (i < quantityToFree - 1) {
+                        url += ',';
+                    }
+                    i += 1;
+                }
+                $http.post(url)
+                    .success(function () {
+                        item.tickets.splice(0, quantityToFree);
+                        item.quantity -= quantityToFree;
                         item.newQuantity = item.quantity;
                         updateCartCookie(cart);
-                    }
-                })
-                .error(function() {
-                    FlashMessage.send('error', 'Le nombre de billets ajoutés au panier excède le nombre de billets restants.');
-                });
+                    })
+                    .error(function () {
+                        FlashMessage.send('error', 'Les billets n\'ont pu être libérés.');
+                    });
+            }
         };
 
         return exports;
