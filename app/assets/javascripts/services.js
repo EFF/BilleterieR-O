@@ -213,9 +213,9 @@ define(['app'], function (app) {
         };
 
         exports.checkout = function (successCallback, errorCallback) {
-            var overrideSuccessCallback = function() {
+            var overrideSuccessCallback = function(data) {
                 removeAllSelectedItems(0, cart);
-                successCallback();
+                successCallback(data);
             }
             var itemsToCheckout = getCheckoutList();
             var tickets = [];
