@@ -4,7 +4,32 @@ define(['app'], function (app) {
         var cart = $cookieStore.get('cart');
         if (!cart) {
             cart = [];
+        };
+
+        var updateTicketState = function(tickets, successCallback, errorCallback, url) {
+            if (tickets.length <= 0) {
+                return;
+            }
+            var ticketIds = [];
+            for (var i in tickets) {
+                ticketIds.push(tickets[i].id);
+            }
+            $http.post(url, {ticketIds: ticketIds})
+                .success(successCallback)
+                .error(errorCallback);
         }
+
+        var checkoutTickets = function(tickets, successCallback, errorCallback) {
+            updateTicketState(tickets, successCallback, errorCallback, '/api/tickets/checkout');
+        };
+
+        var freeTickets = function(tickets, successCallback, errorCallback) {
+            updateTicketState(tickets, successCallback, errorCallback, '/api/tickets/free');
+        };
+
+        var reserveTickets = function(tickets, successCallback, errorCallback) {
+            updateTicketState(tickets, successCallback, errorCallback, '/api/tickets/reserve');
+        };
 
         var updateCartCookie = function (cart) {
             $cookieStore.put('cart', cart)
@@ -75,16 +100,15 @@ define(['app'], function (app) {
             if (existingItem) {
                 console.log("Throw error");
             } else {
-                var url = '/api/tickets/reserve/' + ticket.id;
-                $http.post(url)
-                    .success(function () {
-                        cart.push(item);
-                        updateCartCookie(cart);
-                        FlashMessage.send("success", "L'item a été ajouté au panier");
-                    })
-                    .error(function() {
-                        FlashMessage.send('error', 'L\'item n\'a pu être ajouté au panier. Une erreur est survenue.')
-                    });
+                var successCallback = function () {
+                    cart.push(item);
+                    updateCartCookie(cart);
+                    FlashMessage.send("success", "L'item a été ajouté au panier");
+                };
+                var errorCallback = function() {
+                    FlashMessage.send('error', 'L\'item n\'a pu être ajouté au panier. Une erreur est survenue.')
+                };
+                reserveTickets([ticket], successCallback, errorCallback)
             }
         };
 
@@ -100,66 +124,49 @@ define(['app'], function (app) {
 
             var existingItem = getItemByEventIdAndCategoryId(event.id, category.id);
 
-            var url = '/api/tickets/reserve/';
-            for (var i in tickets) {
-                url += tickets[i].id;
-                if (i < tickets.length - 1)
-                    url += ',';
-            }
-            $http.post(url)
-                .success(function () {
-                    if (existingItem) {
-                        existingItem.tickets.concat(tickets);
-                        existingItem.quantity += tickets.length;
-                        existingItem.newQuantity += tickets.length;
-                    } else {
-                        cart.push(item);
-                    }
-                    updateCartCookie(cart);
-                    FlashMessage.send("success", "Les billets ont été ajoutés au panier.");
-                })
-                .error(function() {
-                    FlashMessage.send('error', 'Les billets n\'ont pu être ajoutés au panier. Une erreur est survenue.')
-                });
+            var successCallback = function () {
+                if (existingItem) {
+                    existingItem.tickets.concat(tickets);
+                    existingItem.quantity += tickets.length;
+                    existingItem.newQuantity += tickets.length;
+                } else {
+                    cart.push(item);
+                }
+                updateCartCookie(cart);
+                FlashMessage.send("success", "Les billets ont été ajoutés au panier.");
+            };
+            var errorCallback = function() {
+                FlashMessage.send('error', 'Les billets n\'ont pu être ajoutés au panier. Une erreur est survenue.')
+            };
+
+            reserveTickets(tickets, successCallback, errorCallback);
         };
 
         exports.removeItem = function (index) {
-            var url = '/api/tickets/free/';
+            var successCallback = function () {
+                cart.splice(index, 1);
+                updateCartCookie(cart);
+            };
+            var errorCallback = function () {
+                FlashMessage.send('error', 'L\'item n\'a pu être retiré du panier. Une erreur est survenue.');
+            };
 
-            for (var i in cart[index].tickets) {
-                url += cart[index].tickets[i].id;
-                if (i < cart[index].tickets.length - 1)
-                    url += ',';
-            }
-
-            $http.post(url)
-                .success(function () {
-                    cart.splice(index, 1);
-                    updateCartCookie(cart);
-                })
-                .error(function () {
-                    FlashMessage.send('error', 'L\'item n\'a pu être retiré du panier. Une erreur est survenue.');
-                });
+            freeTickets(cart[index].tickets, successCallback, errorCallback);
         };
 
         exports.removeAllItem = function () {
-            var url = '/api/tickets/free/';
-            for (var index in cart) {
-                for (var i in cart[index].tickets) {
-                    url += cart[index].tickets[i].id;
-                    if (index < cart.length - 1)
-                        url += ',';
-                }
+            var successCallback = function () {
+                cart.splice(0, cart.length);
+                updateCartCookie(cart);
+            };
+            var errorCallback = function () {
+                FlashMessage.send('error', 'Le panier n\'a pu être vidé. Une erreur est survenue.');
+            };
+            var tickets = [];
+            for (var i in cart) {
+                tickets = tickets.concat(cart[i].tickets)
             }
-
-            $http.post(url)
-                .success(function () {
-                    cart.splice(0, cart.length);
-                    updateCartCookie(cart);
-                })
-                .error(function () {
-                    FlashMessage.send('error', 'Le panier n\'a pu être vidé. Une erreur est survenue.');
-                });
+            freeTickets(tickets, successCallback, errorCallback);
         };
 
         exports.getItems = function () {
@@ -208,17 +215,11 @@ define(['app'], function (app) {
                 successCallback();
             }
             var itemsToCheckout = getCheckoutList();
-            var url = '/api/tickets/checkout/';
-            for (var index in itemsToCheckout) {
-                for (var i in itemsToCheckout[index].tickets) {
-                    url += itemsToCheckout[index].tickets[i].id;
-                    if (index < itemsToCheckout.length - 1)
-                        url += ',';
-                }
+            var tickets = [];
+            for (var i in itemsToCheckout) {
+                tickets = tickets.concat(itemsToCheckout[i].tickets);
             }
-            $http.post(url)
-                .success(overrideSuccessCallback)
-                .error(errorCallback);
+            checkoutTickets(tickets, overrideSuccessCallback, errorCallback);
         };
 
         exports.updateItemQuantity = function(index, deltaQuantity) {
@@ -233,50 +234,40 @@ define(['app'], function (app) {
                     + '&quantity=' + deltaQuantity;
                 $http.get(url)
                     .success(function (tickets) {
-                        if (tickets.length > 0) {
-                            var url = '/api/tickets/reserve/';
-                            for (var i in tickets) {
-                                url += tickets[i].id;
-                                if (i < tickets.length -1) {
-                                    url += ',';
-                                }
-                            }
-                            $http.post(url)
-                                .success(function () {
-                                    item.tickets.concat(tickets);
-                                    item.quantity += tickets.length;
-                                    item.newQuantity = item.quantity;
-                                    updateCartCookie(cart);
-                                })
-                                .error(function() {
-                                    FlashMessage.send('error', 'Le nombre de billets ajoutés au panier excède le nombre de billets restants.');
-                                });
-                        }
+                        var successCallback = function () {
+                            item.tickets.concat(tickets);
+                            item.quantity += tickets.length;
+                            item.newQuantity = item.quantity;
+                            updateCartCookie(cart);
+                        };
+                        var errorCallback = function() {
+                            FlashMessage.send('error', 'Le nombre de billets ajoutés au panier excède le nombre de billets restants.');
+                        };
+                        reserveTickets(tickets, successCallback, errorCallback);
                     })
                     .error(function() {
                         FlashMessage.send('error', 'Le nombre de billets ajoutés au panier excède le nombre de billets restants.');
                     });
             } else {
                 var quantityToFree = -deltaQuantity;
-                var url = '/api/tickets/free/';
+
+                var tickets = []
                 var i = 0;
                 while (i != quantityToFree) {
-                    url += item.tickets[i].id;
-                    if (i < quantityToFree - 1) {
-                        url += ',';
-                    }
-                    i += 1;
+                    tickets.push(item.tickets[i]);
                 }
-                $http.post(url)
-                    .success(function () {
-                        item.tickets.splice(0, quantityToFree);
-                        item.quantity -= quantityToFree;
-                        item.newQuantity = item.quantity;
-                        updateCartCookie(cart);
-                    })
-                    .error(function () {
-                        FlashMessage.send('error', 'Les billets n\'ont pu être libérés.');
-                    });
+
+                var successCallback = function () {
+                    item.tickets.splice(0, quantityToFree);
+                    item.quantity -= quantityToFree;
+                    item.newQuantity = item.quantity;
+                    updateCartCookie(cart);
+                };
+                var errorCallback = function () {
+                    FlashMessage.send('error', 'Les billets n\'ont pu être libérés.');
+                };
+
+                freeTickets(tickets, successCallback, errorCallback);
             }
         };
 

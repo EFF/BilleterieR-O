@@ -1,6 +1,7 @@
 package ca.ulaval.glo4003.controllers;
 
 
+import ca.ulaval.glo4003.ConstantsManager;
 import ca.ulaval.glo4003.Secured;
 import ca.ulaval.glo4003.dataaccessobjects.EventDao;
 import ca.ulaval.glo4003.dataaccessobjects.TicketDao;
@@ -13,11 +14,15 @@ import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ListMultimap;
 import com.google.common.collect.Multimap;
 import com.google.inject.Inject;
+import org.codehaus.jackson.JsonNode;
+import org.codehaus.jackson.map.ObjectMapper;
+import org.codehaus.jackson.type.TypeReference;
 import play.libs.Json;
 import play.mvc.Controller;
 import play.mvc.Result;
 import play.mvc.Security;
 
+import java.io.IOException;
 import java.util.*;
 
 public class Tickets extends Controller {
@@ -67,45 +72,53 @@ public class Tickets extends Controller {
     }
 
     @Security.Authenticated(Secured.class)
-    public Result checkout(String strIds) {
-        List<Long> ids = convertStringIdsToArrayLong(strIds);
-        Result recordsExist = checkIfRecordsExist(ids);
-        if (recordsExist == notFound()) {
-            return notFound();
+    public Result checkout() {
+        try {
+            List<Long> ids = getListTicketIds();
+            Result recordsExist = checkIfRecordsExist(ids, true);
+            if (recordsExist == notFound()) {
+                return notFound();
+            }
+            return updateTicketsState(ids, TicketState.SOLD);
+        } catch (IOException e) {
+            return internalServerError();
         }
-        return updateTicketsState(ids, TicketState.SOLD);
     }
 
-    public Result free(String strIds) {
-        List<Long> ids = convertStringIdsToArrayLong(strIds);
-        Result recordsExist = checkIfRecordsExist(ids, true);
-        if (recordsExist == notFound()) {
-            return notFound();
-        }
-
+    public Result free() {
         try {
+            List<Long> ids = getListTicketIds();
+            Result recordsExist = checkIfRecordsExist(ids, true);
+            if (recordsExist == notFound()) {
+                return notFound();
+            }
+
             incrementCategories(ids);
-        } catch (RecordNotFoundException e) {
+            return updateTicketsState(ids, TicketState.AVAILABLE);
+        } catch (IOException e) {
+            return internalServerError();
+        } catch (RecordNotFoundException re) {
             return notFound();
         }
-        return updateTicketsState(ids, TicketState.AVAILABLE);
     }
 
-    public Result reserve(String strIds) {
-        List<Long> ids = convertStringIdsToArrayLong(strIds);
-        Result recordsExist = checkIfRecordsExist(ids, true);
-        if (recordsExist == notFound()) {
-            return notFound();
-        }
-
+    public Result reserve() {
         try {
+            List<Long> ids = getListTicketIds();
+            Result recordsExist = checkIfRecordsExist(ids, true);
+            if (recordsExist == notFound()) {
+                return notFound();
+            }
+
             decrementCategories(ids);
-        } catch (RecordNotFoundException e) {
+            return updateTicketsState(ids, TicketState.RESERVED);
+        } catch (IOException e) {
+            return internalServerError();
+        } catch (RecordNotFoundException re) {
             return notFound();
         } catch (MaximumExceededException e) {
             return badRequest("Il n'y a pas assez de billets disponibles dans l'une des catégories.");
         }
-        return updateTicketsState(ids, TicketState.RESERVED);
     }
 
     public Result show(long id) {
@@ -132,6 +145,16 @@ public class Tickets extends Controller {
             Collections.sort(sections.get(i));
         }
         return ok(Json.toJson(sections.asMap()));
+    }
+
+    private List<Long> getListTicketIds() throws IOException {
+        JsonNode json = request().body().asJson();
+        JsonNode node = json.get(ConstantsManager.TICKET_IDS_FIELD_NAME);
+
+        ObjectMapper mapper = new ObjectMapper();
+        TypeReference<List<Long>> typeRef = new TypeReference<List<Long>>(){};
+
+        return mapper.readValue(node.traverse(), typeRef);
     }
 
     private void decrementCategories(List<Long> ids) throws RecordNotFoundException, MaximumExceededException {
