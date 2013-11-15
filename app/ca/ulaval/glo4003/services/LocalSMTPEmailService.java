@@ -9,7 +9,7 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 import java.util.Properties;
 
-public class ConcreteEmailService implements EmailService {
+public class LocalSMTPEmailService implements EmailService {
     @Override
     public void SendEmail(String to, String from, String message) {
         Properties props = new Properties();
