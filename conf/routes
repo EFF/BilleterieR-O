@@ -14,7 +14,7 @@ GET     /api/events/:id                 @ca.ulaval.glo4003.controllers.Events.sh
 GET     /api/facets                     @ca.ulaval.glo4003.controllers.Facets.index()
 GET     /api/tickets                    @ca.ulaval.glo4003.controllers.Tickets.index()
 GET     /api/tickets/:id                @ca.ulaval.glo4003.controllers.Tickets.show(id: Long)
-GET     /api/tickets/sections/:eventId  @ca.ulaval.glo4003.controllers.Tickets.showEventTicketSections(eventId: Long)
+GET     /api/events/:eventId/sections   @ca.ulaval.glo4003.controllers.Tickets.showEventSections(eventId: Long)
 POST    /api/tickets/reserve            @ca.ulaval.glo4003.controllers.Tickets.reserve()
 POST    /api/tickets/free               @ca.ulaval.glo4003.controllers.Tickets.free()
 POST    /api/user/password              @ca.ulaval.glo4003.controllers.UserProfile.updatePassword()

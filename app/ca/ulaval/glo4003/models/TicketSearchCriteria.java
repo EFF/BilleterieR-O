@@ -11,9 +11,11 @@ public class TicketSearchCriteria {
     private List<TicketState> states;
     private int quantity;
 
+    private int INVALID_QUANTITY = -1;
+
     public TicketSearchCriteria() {
         states = new ArrayList<>();
-        quantity = -1;
+        quantity = INVALID_QUANTITY;
     }
 
     public Long getEventId() {
