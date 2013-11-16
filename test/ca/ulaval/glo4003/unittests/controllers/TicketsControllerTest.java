@@ -1,7 +1,7 @@
 package ca.ulaval.glo4003.unittests.controllers;
 
 import ca.ulaval.glo4003.ConstantsManager;
-import ca.ulaval.glo4003.controllers.Tickets;
+import ca.ulaval.glo4003.controllers.TicketsController;
 import ca.ulaval.glo4003.dataaccessobjects.EventDao;
 import ca.ulaval.glo4003.dataaccessobjects.TicketDao;
 import ca.ulaval.glo4003.exceptions.MaximumExceededException;
@@ -30,7 +30,7 @@ import static org.mockito.Matchers.refEq;
 import static org.mockito.Mockito.*;
 
 @RunWith(JukitoRunner.class)
-public class TicketsTest extends BaseControllerTest {
+public class TicketsControllerTest extends BaseControllerTest {
     private static final String A_SECTION = "section 100";
     private static final long A_SEAT = 55;
     private static final long AN_EVENT_ID = 1;
@@ -43,7 +43,7 @@ public class TicketsTest extends BaseControllerTest {
     private List<Ticket> tempTicketsList;
 
     @Inject
-    private Tickets tickets = null;
+    private TicketsController ticketsController = null;
 
     @Before
     public void setup(TicketDao mockedTicketDao) {
@@ -70,7 +70,7 @@ public class TicketsTest extends BaseControllerTest {
         when(mockedRequest.getQueryString(ConstantsManager.CATEGORY_ID_FIELD_NAME)).thenReturn(String.valueOf(A_CATEGORY_ID));
         when(mockedRequest.getQueryString(ConstantsManager.TICKET_STATE_FIELD_NAME)).thenReturn(String.valueOf(TicketState.AVAILABLE));
         when(mockedRequest.getQueryString(ConstantsManager.QUERY_STRING_STATE_PARAM_NAME)).thenReturn(TicketState.AVAILABLE.toString());
-        Result result = tickets.index();
+        Result result = ticketsController.index();
 
         assertEquals(Helpers.OK, Helpers.status(result));
         assertEquals("application/json", Helpers.contentType(result));
@@ -96,7 +96,7 @@ public class TicketsTest extends BaseControllerTest {
         when(mockedRequest.getQueryString(ConstantsManager.EVENT_ID_FIELD_NAME)).thenReturn(String.valueOf(AN_EVENT_ID));
         when(mockedRequest.getQueryString(ConstantsManager.CATEGORY_ID_FIELD_NAME)).thenReturn(String.valueOf(A_CATEGORY_ID + 1));
 
-        Result result = tickets.index();
+        Result result = ticketsController.index();
 
         assertEquals(Helpers.INTERNAL_SERVER_ERROR, Helpers.status(result));
         verify(mockedTicketDao).search(refEq(ticketSearchCriteria));
@@ -106,7 +106,7 @@ public class TicketsTest extends BaseControllerTest {
     public void showReturnsATicket(TicketDao mockedTicketDao) throws RecordNotFoundException {
         when(mockedTicketDao.read(firstTicket.getId())).thenReturn(firstTicket);
 
-        Result result = tickets.show(firstTicket.getId());
+        Result result = ticketsController.show(firstTicket.getId());
         assertEquals(Helpers.OK, Helpers.status(result));
         assertEquals("application/json", Helpers.contentType(result));
 
@@ -121,7 +121,7 @@ public class TicketsTest extends BaseControllerTest {
     public void showReturnsNotFoundWhenRecordNotFound(TicketDao mockedTicketDao) throws RecordNotFoundException {
         when(mockedTicketDao.read(firstTicket.getId())).thenThrow(new RecordNotFoundException());
 
-        Result result = tickets.show(firstTicket.getId());
+        Result result = ticketsController.show(firstTicket.getId());
         assertEquals(Helpers.NOT_FOUND, Helpers.status(result));
         assertEquals(null, Helpers.contentType(result));
 
@@ -140,7 +140,7 @@ public class TicketsTest extends BaseControllerTest {
         node.add(firstTicket.getId());
         when(mockedBody.asJson()).thenReturn(json);
 
-        Result result = tickets.checkout();
+        Result result = ticketsController.checkout();
 
         assertEquals(Helpers.OK, Helpers.status(result));
     }
@@ -157,7 +157,7 @@ public class TicketsTest extends BaseControllerTest {
         node.add(firstTicket.getId());
         when(mockedBody.asJson()).thenReturn(json);
 
-        Result result = tickets.free();
+        Result result = ticketsController.free();
 
         assertEquals(Helpers.OK, Helpers.status(result));
         verify(mockedEventDao).incrementEventCategoryNumberOfTickets(
@@ -174,7 +174,7 @@ public class TicketsTest extends BaseControllerTest {
         node.add(0L);
         when(mockedBody.asJson()).thenReturn(json);
 
-        Result result = tickets.free();
+        Result result = ticketsController.free();
 
         assertEquals(Helpers.NOT_FOUND, Helpers.status(result));
         assertEquals(null, Helpers.contentType(result));
@@ -193,7 +193,7 @@ public class TicketsTest extends BaseControllerTest {
         node.add(firstTicket.getId());
         when(mockedBody.asJson()).thenReturn(json);
 
-        Result result = tickets.reserve();
+        Result result = ticketsController.reserve();
 
         assertEquals(Helpers.OK, Helpers.status(result));
         verify(mockedEventDao).decrementEventCategoryNumberOfTickets(
@@ -209,7 +209,7 @@ public class TicketsTest extends BaseControllerTest {
         node.add(0L);
         when(mockedBody.asJson()).thenReturn(json);
 
-        Result result = tickets.reserve();
+        Result result = ticketsController.reserve();
 
         assertEquals(Helpers.NOT_FOUND, Helpers.status(result));
         verify(mockedTicketDao, times(1)).read(anyLong());
@@ -229,20 +229,20 @@ public class TicketsTest extends BaseControllerTest {
         node.add(firstTicket.getId());
         when(mockedBody.asJson()).thenReturn(json);
 
-        Result result = tickets.reserve();
+        Result result = ticketsController.reserve();
 
         assertEquals(Helpers.BAD_REQUEST, Helpers.status(result));
     }
 
     @Test
-     public void showEventTicketSectionsWhenTicketExists(TicketDao mockedTicketDao, EventDao mockedEventDao) throws RecordNotFoundException {
+     public void showEventTicketSectionsWhenTicketExists(TicketDao mockedTicketDao) throws RecordNotFoundException {
         ticketSearchCriteria.setEventId(firstTicket.getEventId());
         ticketSearchCriteria.setCategoryId(firstTicket.getCategoryId());
         List<Ticket> tempTicketList = new ArrayList<>();
         tempTicketList.add(firstTicket);
         when(mockedTicketDao.search(refEq(ticketSearchCriteria))).thenReturn(tempTicketList);
 
-        Result result = tickets.showEventTicketSections(firstTicket.getEventId());
+        Result result = ticketsController.showEventSections(firstTicket.getEventId());
 
         assertEquals(Helpers.OK, Helpers.status(result));
         assertEquals("application/json", Helpers.contentType(result));

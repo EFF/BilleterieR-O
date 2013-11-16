@@ -13,12 +13,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class Facets extends Controller {
+public class FacetsController extends Controller {
 
     private final SportDao sportDao;
 
     @Inject
-    public Facets(SportDao sportDao) {
+    public FacetsController(SportDao sportDao) {
         this.sportDao = sportDao;
     }
 

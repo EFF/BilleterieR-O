@@ -1,7 +1,7 @@
 package ca.ulaval.glo4003.unittests.controllers;
 
 import ca.ulaval.glo4003.ConstantsManager;
-import ca.ulaval.glo4003.controllers.Facets;
+import ca.ulaval.glo4003.controllers.FacetsController;
 import ca.ulaval.glo4003.dataaccessobjects.SportDao;
 import ca.ulaval.glo4003.models.Gender;
 import ca.ulaval.glo4003.models.Sport;
@@ -24,10 +24,10 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(JukitoRunner.class)
-public class FacetsTest extends BaseControllerTest {
+public class FacetsControllerTest extends BaseControllerTest {
 
     @Inject
-    private Facets facets;
+    private FacetsController facetsController;
 
     private List<Sport> tempList;
 
@@ -46,7 +46,7 @@ public class FacetsTest extends BaseControllerTest {
 
     @Test
     public void indexReturnsAllFacets(SportDao mockedSportDao) throws Exception {
-        Result result = facets.index();
+        Result result = facetsController.index();
         String json = Helpers.contentAsString(result);
         JsonNode jsonNode = Json.parse(json);
 

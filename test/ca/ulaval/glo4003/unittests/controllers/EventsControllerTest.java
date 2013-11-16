@@ -1,8 +1,7 @@
 package ca.ulaval.glo4003.unittests.controllers;
 
 import ca.ulaval.glo4003.ConstantsManager;
-import ca.ulaval.glo4003.controllers.Checkout;
-import ca.ulaval.glo4003.controllers.Events;
+import ca.ulaval.glo4003.controllers.EventsController;
 import ca.ulaval.glo4003.dataaccessobjects.EventDao;
 import ca.ulaval.glo4003.exceptions.MaximumExceededException;
 import ca.ulaval.glo4003.exceptions.RecordNotFoundException;
@@ -33,10 +32,10 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(JukitoRunner.class)
-public class EventsTest extends BaseControllerTest {
+public class EventsControllerTest extends BaseControllerTest {
 
     @Inject
-    private Events events;
+    private EventsController eventsController;
 
     private Event firstEvent;
     private Event secondEvent;
@@ -59,7 +58,7 @@ public class EventsTest extends BaseControllerTest {
 
     @Test
     public void indexReturnsAllEventsWhenNoParameters(EventDao mockedEventDao) {
-        Result result = events.index();
+        Result result = eventsController.index();
 
         assertEquals(Helpers.OK, Helpers.status(result));
         assertEquals("application/json", Helpers.contentType(result));
@@ -102,7 +101,7 @@ public class EventsTest extends BaseControllerTest {
         when(mockedRequest.getQueryString(ConstantsManager.QUERY_STRING_TEAM_PARAM_NAME)).thenReturn(teamName);
         when(mockedRequest.getQueryString(ConstantsManager.QUERY_STRING_GENDER_PARAM_NAME)).thenReturn(Gender.MALE.toString());
 
-        Result result = events.index();
+        Result result = eventsController.index();
 
         assertEquals(Helpers.OK, Helpers.status(result));
         assertEquals("application/json", Helpers.contentType(result));
@@ -132,7 +131,7 @@ public class EventsTest extends BaseControllerTest {
         when(mockedRequest.getQueryString(ConstantsManager.QUERY_STRING_DATE_START_PARAM_NAME)).thenReturn(dateStart.toString());
         when(mockedRequest.getQueryString(ConstantsManager.QUERY_STRING_DATE_END_PARAM_NAME)).thenReturn(dateEnd.toString());
 
-        Result result = events.index();
+        Result result = eventsController.index();
 
         assertEquals(Helpers.INTERNAL_SERVER_ERROR, Helpers.status(result));
 
@@ -143,7 +142,7 @@ public class EventsTest extends BaseControllerTest {
     public void showReturnsAnEvent(EventDao mockedEventDao) throws RecordNotFoundException {
         when(mockedEventDao.read(firstEvent.getId())).thenReturn(firstEvent);
 
-        Result result = events.show(firstEvent.getId());
+        Result result = eventsController.show(firstEvent.getId());
         assertEquals(Helpers.OK, Helpers.status(result));
         assertEquals("application/json", Helpers.contentType(result));
 
@@ -159,7 +158,7 @@ public class EventsTest extends BaseControllerTest {
     public void showReturnNotFoundWhenRecordNotFoundExceptionIsCatched(EventDao mockedEventDao) throws RecordNotFoundException {
         when(mockedEventDao.read(firstEvent.getId())).thenThrow(new RecordNotFoundException());
 
-        Result result = events.show(firstEvent.getId());
+        Result result = eventsController.show(firstEvent.getId());
         assertEquals(Helpers.NOT_FOUND, Helpers.status(result));
         assertEquals(null, Helpers.contentType(result));
 

@@ -26,12 +26,12 @@ import play.mvc.Security;
 import java.io.IOException;
 import java.util.*;
 
-public class Tickets extends Controller {
+public class TicketsController extends Controller {
     private final EventDao eventDao;
     private final TicketDao ticketDao;
 
     @Inject
-    public Tickets(EventDao eventDao, TicketDao ticketDao) {
+    public TicketsController(EventDao eventDao, TicketDao ticketDao) {
         this.ticketDao = ticketDao;
         this.eventDao = eventDao;
     }
