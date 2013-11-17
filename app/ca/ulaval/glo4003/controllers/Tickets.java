@@ -17,14 +17,16 @@ import com.google.inject.Inject;
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.type.TypeReference;
-import play.api.mvc.PlainResult;
 import play.libs.Json;
 import play.mvc.Controller;
 import play.mvc.Result;
 import play.mvc.Security;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 
 public class Tickets extends Controller {
     private final EventDao eventDao;
@@ -76,8 +78,8 @@ public class Tickets extends Controller {
     public Result checkout() {
         try {
             List<Long> ids = getListTicketIds();
-            Result recordsExist = checkIfRecordsExist(ids);
-            if (((PlainResult)recordsExist.getWrappedResult()).header().status() == NOT_FOUND) {
+            boolean recordsExist = checkIfRecordsExist(ids);
+            if (!recordsExist) {
                 return notFound();
             }
             return updateTicketsState(ids, TicketState.SOLD);
@@ -89,8 +91,8 @@ public class Tickets extends Controller {
     public Result free() {
         try {
             List<Long> ids = getListTicketIds();
-            Result recordsExist = checkIfRecordsExist(ids, true);
-            if (((PlainResult)recordsExist.getWrappedResult()).header().status() == NOT_FOUND) {
+            boolean recordsExist = checkIfRecordsExist(ids, true);
+            if (!recordsExist) {
                 return notFound();
             }
 
@@ -106,8 +108,8 @@ public class Tickets extends Controller {
     public Result reserve() {
         try {
             List<Long> ids = getListTicketIds();
-            Result recordsExist = checkIfRecordsExist(ids, true);
-            if (((PlainResult)recordsExist.getWrappedResult()).header().status() == NOT_FOUND) {
+            boolean recordsExist = checkIfRecordsExist(ids, true);
+            if (!recordsExist) {
                 return notFound();
             }
 
@@ -200,11 +202,11 @@ public class Tickets extends Controller {
         }
     }
 
-    private Result checkIfRecordsExist(List<Long> ids) {
+    private boolean checkIfRecordsExist(List<Long> ids) {
         return checkIfRecordsExist(ids, false);
     }
 
-    private Result checkIfRecordsExist(List<Long> ids, boolean checkInEventDao) {
+    private boolean checkIfRecordsExist(List<Long> ids, boolean checkInEventDao) {
         try {
             for (Long id : ids) {
                 Ticket ticket = ticketDao.read(id);
@@ -212,9 +214,9 @@ public class Tickets extends Controller {
                     eventDao.findCategory(ticket.getEventId(), ticket.getCategoryId());
                 }
             }
-            return ok();
+            return true;
         } catch (RecordNotFoundException e) {
-            return notFound();
+            return false;
         }
     }
 }

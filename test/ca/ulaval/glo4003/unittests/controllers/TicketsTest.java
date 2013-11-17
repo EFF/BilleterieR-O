@@ -235,14 +235,14 @@ public class TicketsTest extends BaseControllerTest {
     }
 
     @Test
-     public void showEventTicketSectionsWhenTicketExists(TicketDao mockedTicketDao, EventDao mockedEventDao) throws RecordNotFoundException {
+     public void showEventSectionsWhenTicketExists(TicketDao mockedTicketDao, EventDao mockedEventDao) throws RecordNotFoundException {
         ticketSearchCriteria.setEventId(firstTicket.getEventId());
         ticketSearchCriteria.setCategoryId(firstTicket.getCategoryId());
         List<Ticket> tempTicketList = new ArrayList<>();
         tempTicketList.add(firstTicket);
         when(mockedTicketDao.search(refEq(ticketSearchCriteria))).thenReturn(tempTicketList);
 
-        Result result = tickets.showEventTicketSections(firstTicket.getEventId());
+        Result result = tickets.showEventSections(firstTicket.getEventId());
 
         assertEquals(Helpers.OK, Helpers.status(result));
         assertEquals("application/json", Helpers.contentType(result));

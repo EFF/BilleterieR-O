@@ -225,52 +225,58 @@ define(['app'], function (app) {
             checkoutTickets(tickets, overrideSuccessCallback, errorCallback);
         };
 
+        var reserveTicketsToItem = function(quantity, item) {
+            var url = '/api/tickets?eventId='
+                + item.event.id + '&categoryId='
+                + item.category.id + '&states=AVAILABLE,RESALE'
+                + '&quantity=' + quantity;
+            $http.get(url)
+                .success(function (tickets) {
+                    var successCallback = function () {
+                        item.tickets.concat(tickets);
+                        item.reservedQuantity += tickets.length;
+                        item.desiredQuantity = item.reservedQuantity;
+                        updateCartCookie(cart);
+                    };
+                    var errorCallback = function() {
+                        FlashMessage.send('error', 'Le nombre de billets ajoutés au panier excède le nombre de billets restants.');
+                    };
+                    reserveTickets(tickets, successCallback, errorCallback);
+                })
+                .error(function() {
+                    FlashMessage.send('error', 'Le nombre de billets ajoutés au panier excède le nombre de billets restants.');
+                });
+        };
+
+        var freeTicketsFromItem = function(quantity, item) {
+            var tickets = [];
+            var i = 0;
+            while (i != quantity) {
+                tickets.push(item.tickets[i]);
+            }
+
+            var successCallback = function () {
+                item.tickets.splice(0, quantity);
+                item.reservedQuantity -= quantity;
+                item.desiredQuantity = item.reservedQuantity;
+                updateCartCookie(cart);
+            };
+            var errorCallback = function () {
+                FlashMessage.send('error', 'Les billets n\'ont pu être libérés.');
+            };
+
+            freeTickets(tickets, successCallback, errorCallback);
+        };
+
         exports.updateItemQuantity = function(index, deltaQuantity) {
             var item = cart[index];
             if (deltaQuantity == 0) {
                 item.desiredQuantity = item.reservedQuantity;
                 return;
             } else if (deltaQuantity > 0) {
-                var url = '/api/tickets?eventId='
-                    + item.event.id + '&categoryId='
-                    + item.category.id + '&states=AVAILABLE,RESALE'
-                    + '&quantity=' + deltaQuantity;
-                $http.get(url)
-                    .success(function (tickets) {
-                        var successCallback = function () {
-                            item.tickets.concat(tickets);
-                            item.reservedQuantity += tickets.length;
-                            item.desiredQuantity = item.reservedQuantity;
-                            updateCartCookie(cart);
-                        };
-                        var errorCallback = function() {
-                            FlashMessage.send('error', 'Le nombre de billets ajoutés au panier excède le nombre de billets restants.');
-                        };
-                        reserveTickets(tickets, successCallback, errorCallback);
-                    })
-                    .error(function() {
-                        FlashMessage.send('error', 'Le nombre de billets ajoutés au panier excède le nombre de billets restants.');
-                    });
+                reserveTicketsToItem(deltaQuantity, item);
             } else {
-                var quantityToFree = -deltaQuantity;
-
-                var tickets = []
-                var i = 0;
-                while (i != quantityToFree) {
-                    tickets.push(item.tickets[i]);
-                }
-
-                var successCallback = function () {
-                    item.tickets.splice(0, quantityToFree);
-                    item.reservedQuantity -= quantityToFree;
-                    item.desiredQuantity = item.reservedQuantity;
-                    updateCartCookie(cart);
-                };
-                var errorCallback = function () {
-                    FlashMessage.send('error', 'Les billets n\'ont pu être libérés.');
-                };
-
-                freeTickets(tickets, successCallback, errorCallback);
+                freeTicketsFromItem(-deltaQuantity, item);
             }
         };
 
