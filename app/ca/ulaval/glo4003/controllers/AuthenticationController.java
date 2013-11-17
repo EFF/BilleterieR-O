@@ -2,7 +2,9 @@ package ca.ulaval.glo4003.controllers;
 
 import ca.ulaval.glo4003.ConstantsManager;
 import ca.ulaval.glo4003.dataaccessobjects.UserDao;
-import ca.ulaval.glo4003.exceptions.RecordNotFoundException;
+import ca.ulaval.glo4003.exceptions.AuthenticationException;
+import ca.ulaval.glo4003.interactors.AuthenticationInteractor;
+import ca.ulaval.glo4003.models.Credentials;
 import ca.ulaval.glo4003.models.User;
 import com.google.inject.Inject;
 import org.apache.commons.lang3.StringUtils;
@@ -14,11 +16,16 @@ import play.mvc.Result;
 
 public class AuthenticationController extends Controller {
 
+    public final static String BAD_CREDENTIALS_MESSAGE = "Mauvaise combinaison email/mot de passe";
+    public final static String AUTHENTICATION_SUCCESS_MESSAGE = "Authentification réussitte";
+    public final static String WRONG_AUTHENTIFICATION_PARAMETERS = "Expected username and password";
     private final UserDao userDao;
+    private final AuthenticationInteractor authenticationInteractor;
 
     @Inject
-    public AuthenticationController(UserDao userDao) {
+    public AuthenticationController(UserDao userDao, AuthenticationInteractor authenticationInteractor) {
         this.userDao = userDao;
+        this.authenticationInteractor = authenticationInteractor;
     }
 
     public Result index() {
@@ -32,27 +39,32 @@ public class AuthenticationController extends Controller {
     }
 
     public Result login() {
-        JsonNode json = request().body().asJson();
+        JsonNode jsonBody = request().body().asJson();
 
-        if (!validateLoginParameters(json)) {
-            return badRequest("Expected username and password");
+        if (jsonBody != null && !validateLoginParameters(jsonBody)) {
+            return badRequest(WRONG_AUTHENTIFICATION_PARAMETERS);
         }
 
-        String username = json.get(ConstantsManager.USERNAME_FIELD_NAME).asText();
-        String password = json.get(ConstantsManager.PASSWORD_FIELD_NAME).asText();
+        Credentials credentials = extractCredentialsFromRequest(jsonBody);
 
         try {
-            User user = userDao.findByEmail(username);
-            if (!user.getPassword().equals(password)) {
-                return unauthorized("Bad username/password.");
-            }
+            User user = authenticationInteractor.authenticate(credentials);
             session().clear();
             session().put(ConstantsManager.COOKIE_SESSION_FIELD_NAME, user.getEmail());
-
-            return ok("Authenticated");
-        } catch (RecordNotFoundException e) {
-            return unauthorized("Bad username/password.");
+            return ok(AUTHENTICATION_SUCCESS_MESSAGE);
+        } catch (AuthenticationException ignored) {
+            return unauthorized(BAD_CREDENTIALS_MESSAGE);
         }
+    }
+
+    private Credentials extractCredentialsFromRequest(JsonNode jsonBody) {
+        String username = jsonBody.get(ConstantsManager.USERNAME_FIELD_NAME).asText();
+        String password = jsonBody.get(ConstantsManager.PASSWORD_FIELD_NAME).asText();
+
+        Credentials credentials = new Credentials();
+        credentials.setEmail(username);
+        credentials.setPassword(password);
+        return credentials;
     }
 
     public Result logout() {

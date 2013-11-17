@@ -1,7 +1,7 @@
 package ca.ulaval.glo4003.controllers;
 
 import ca.ulaval.glo4003.ConstantsManager;
-import ca.ulaval.glo4003.Secured;
+import ca.ulaval.glo4003.actions.SecureAction;
 import ca.ulaval.glo4003.dataaccessobjects.UniqueValidationException;
 import ca.ulaval.glo4003.dataaccessobjects.UserDao;
 import ca.ulaval.glo4003.exceptions.RecordNotFoundException;
@@ -31,7 +31,7 @@ public class UsersController extends Controller {
         this.userDao = userDao;
     }
 
-    @Security.Authenticated(Secured.class)
+    @Security.Authenticated(SecureAction.class)
     public Result updateEmail() {
         JsonNode json = request().body().asJson();
 
@@ -57,7 +57,7 @@ public class UsersController extends Controller {
         }
     }
 
-    @Security.Authenticated(Secured.class)
+    @Security.Authenticated(SecureAction.class)
     public Result updatePassword() {
         JsonNode json = request().body().asJson();
 

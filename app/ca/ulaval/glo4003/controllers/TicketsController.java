@@ -2,7 +2,7 @@ package ca.ulaval.glo4003.controllers;
 
 
 import ca.ulaval.glo4003.ConstantsManager;
-import ca.ulaval.glo4003.Secured;
+import ca.ulaval.glo4003.actions.SecureAction;
 import ca.ulaval.glo4003.dataaccessobjects.EventDao;
 import ca.ulaval.glo4003.dataaccessobjects.TicketDao;
 import ca.ulaval.glo4003.exceptions.MaximumExceededException;
@@ -72,7 +72,7 @@ public class TicketsController extends Controller {
         }
     }
 
-    @Security.Authenticated(Secured.class)
+    @Security.Authenticated(SecureAction.class)
     public Result checkout() {
         try {
             List<Long> ids = getListTicketIds();
