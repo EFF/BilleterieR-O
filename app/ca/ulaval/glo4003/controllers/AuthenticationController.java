@@ -19,12 +19,10 @@ public class AuthenticationController extends Controller {
     public final static String BAD_CREDENTIALS_MESSAGE = "Mauvaise combinaison email/mot de passe";
     public final static String AUTHENTICATION_SUCCESS_MESSAGE = "Authentification réussitte";
     public final static String WRONG_AUTHENTIFICATION_PARAMETERS = "Expected username and password";
-    private final UserDao userDao;
     private final AuthenticationInteractor authenticationInteractor;
 
     @Inject
-    public AuthenticationController(UserDao userDao, AuthenticationInteractor authenticationInteractor) {
-        this.userDao = userDao;
+    public AuthenticationController(AuthenticationInteractor authenticationInteractor) {
         this.authenticationInteractor = authenticationInteractor;
     }
 
