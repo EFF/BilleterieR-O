@@ -45,7 +45,7 @@ public class FacetsControllerTest extends BaseControllerTest {
         tempList.add(sport1);
 
         when(mockedFacetsInteractor.sports()).thenReturn(tempList);
-        when(mockedFacetsInteractor.genders()).thenReturn(Arrays.asList(Gender.values()));
+        when(mockedFacetsInteractor.genders()).thenCallRealMethod();
     }
 
     @Test
