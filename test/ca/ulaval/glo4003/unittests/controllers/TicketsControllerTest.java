@@ -90,11 +90,11 @@ public class TicketsControllerTest extends BaseControllerTest {
     @Test
     public void indexThrowsExceptionWithInvalidParameters(TicketDao mockedTicketDao) {
         ticketSearchCriteria.setEventId(AN_EVENT_ID);
-        ticketSearchCriteria.setCategoryId(A_CATEGORY_ID + 1);
+        ticketSearchCriteria.setCategoryId(A_CATEGORY_ID);
         when(mockedTicketDao.search(refEq(ticketSearchCriteria))).thenThrow(new InvalidParameterException("Test"));
 
         when(mockedRequest.getQueryString(ConstantsManager.EVENT_ID_FIELD_NAME)).thenReturn(String.valueOf(AN_EVENT_ID));
-        when(mockedRequest.getQueryString(ConstantsManager.CATEGORY_ID_FIELD_NAME)).thenReturn(String.valueOf(A_CATEGORY_ID + 1));
+        when(mockedRequest.getQueryString(ConstantsManager.CATEGORY_ID_FIELD_NAME)).thenReturn(String.valueOf(A_CATEGORY_ID));
 
         Result result = ticketsController.index();
 
@@ -235,7 +235,7 @@ public class TicketsControllerTest extends BaseControllerTest {
     }
 
     @Test
-     public void showEventTicketSectionsWhenTicketExists(TicketDao mockedTicketDao) throws RecordNotFoundException {
+     public void showEventSectionsWhenTicketExists(TicketDao mockedTicketDao) throws RecordNotFoundException {
         ticketSearchCriteria.setEventId(firstTicket.getEventId());
         ticketSearchCriteria.setCategoryId(firstTicket.getCategoryId());
         List<Ticket> tempTicketList = new ArrayList<>();
