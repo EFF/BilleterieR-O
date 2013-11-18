@@ -1,5 +1,7 @@
 package ca.ulaval.glo4003.models;
 
+import ca.ulaval.glo4003.ConstantsManager;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,11 +13,9 @@ public class TicketSearchCriteria {
     private List<TicketState> states;
     private int quantity;
 
-    private int INVALID_QUANTITY = -1;
-
     public TicketSearchCriteria() {
         states = new ArrayList<>();
-        quantity = INVALID_QUANTITY;
+        quantity = ConstantsManager.TICKET_SEARCH_CRITERIA_INVALID_QUANTITY;
     }
 
     public Long getEventId() {

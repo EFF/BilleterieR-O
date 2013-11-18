@@ -13,18 +13,22 @@ import ca.ulaval.glo4003.models.TicketState;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ListMultimap;
 import com.google.common.collect.Multimap;
+import com.google.common.primitives.Ints;
+import com.google.common.primitives.Longs;
 import com.google.inject.Inject;
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.type.TypeReference;
-import play.api.mvc.PlainResult;
 import play.libs.Json;
 import play.mvc.Controller;
 import play.mvc.Result;
 import play.mvc.Security;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 
 public class TicketsController extends Controller {
     private final EventDao eventDao;
@@ -37,22 +41,35 @@ public class TicketsController extends Controller {
     }
 
     public Result index() {
-        final String eventId = request().getQueryString("eventId");
+        final String strEventId = request().getQueryString("eventId");
         final String sectionName = request().getQueryString("sectionName");
-        final String categoryId = request().getQueryString("categoryId");
+        final String strCategoryId = request().getQueryString("categoryId");
         final String stringStates = request().getQueryString("states");
         final String strQuantity = request().getQueryString("quantity");
 
-        TicketSearchCriteria ticketSearchCriteria = new TicketSearchCriteria();
-        if (eventId != null) {
-            ticketSearchCriteria.setEventId(Long.parseLong(eventId));
+        Long eventId = null;
+        Long categoryId = null;
+        int quantity = ConstantsManager.TICKET_SEARCH_CRITERIA_INVALID_QUANTITY;
+
+        if (strEventId != null) {
+            eventId = Longs.tryParse(strEventId);
         }
-        if (categoryId != null) {
-            ticketSearchCriteria.setCategoryId(Long.parseLong(categoryId));
+        if (strCategoryId != null) {
+            categoryId = Longs.tryParse(strCategoryId);
         }
         if (strQuantity != null) {
-            ticketSearchCriteria.setQuantity(Integer.parseInt(strQuantity));
+            quantity = Ints.tryParse(strQuantity);
         }
+        if ((strEventId != null && eventId == null)
+                || (strCategoryId != null && categoryId == null)
+                || (strQuantity != null && quantity == ConstantsManager.TICKET_SEARCH_CRITERIA_INVALID_QUANTITY)) {
+            return badRequest();
+        }
+
+        TicketSearchCriteria ticketSearchCriteria = new TicketSearchCriteria();
+        ticketSearchCriteria.setEventId(eventId);
+        ticketSearchCriteria.setCategoryId(categoryId);
+        ticketSearchCriteria.setQuantity(quantity);
         ticketSearchCriteria.setSectionName(sectionName);
 
         if (stringStates != null) {
@@ -76,8 +93,8 @@ public class TicketsController extends Controller {
     public Result checkout() {
         try {
             List<Long> ids = getListTicketIds();
-            Result recordsExist = checkIfRecordsExist(ids);
-            if (((PlainResult)recordsExist.getWrappedResult()).header().status() == NOT_FOUND) {
+            boolean recordsExist = checkIfRecordsExist(ids);
+            if (!recordsExist) {
                 return notFound();
             }
             return updateTicketsState(ids, TicketState.SOLD);
@@ -89,8 +106,8 @@ public class TicketsController extends Controller {
     public Result free() {
         try {
             List<Long> ids = getListTicketIds();
-            Result recordsExist = checkIfRecordsExist(ids, true);
-            if (((PlainResult)recordsExist.getWrappedResult()).header().status() == NOT_FOUND) {
+            boolean recordsExist = checkIfRecordsExist(ids, true);
+            if (!recordsExist) {
                 return notFound();
             }
 
@@ -106,8 +123,8 @@ public class TicketsController extends Controller {
     public Result reserve() {
         try {
             List<Long> ids = getListTicketIds();
-            Result recordsExist = checkIfRecordsExist(ids, true);
-            if (((PlainResult)recordsExist.getWrappedResult()).header().status() == NOT_FOUND) {
+            boolean recordsExist = checkIfRecordsExist(ids, true);
+            if (!recordsExist) {
                 return notFound();
             }
 
@@ -162,7 +179,9 @@ public class TicketsController extends Controller {
         Map<String, Collection<Long>> idsByEventDotCategory = regroupByEventAndCategory(ids);
         for (Map.Entry<String, Collection<Long>> entry : idsByEventDotCategory.entrySet()) {
             String splittedKey[] = entry.getKey().split("\\.");
-            eventDao.decrementEventCategoryNumberOfTickets(Long.parseLong(splittedKey[0]), Long.parseLong(splittedKey[1]), entry.getValue().size());
+            Long eventId = Long.parseLong(splittedKey[0]);
+            Long categoryId = Long.parseLong(splittedKey[1]);
+            eventDao.decrementEventCategoryNumberOfTickets(eventId, categoryId, entry.getValue().size());
         }
     }
 
@@ -170,7 +189,9 @@ public class TicketsController extends Controller {
         Map<String, Collection<Long>> idsByEventDotCategory = regroupByEventAndCategory(ids);
         for (Map.Entry<String, Collection<Long>> entry : idsByEventDotCategory.entrySet()) {
             String splittedKey[] = entry.getKey().split("\\.");
-            eventDao.incrementEventCategoryNumberOfTickets(Long.parseLong(splittedKey[0]), Long.parseLong(splittedKey[1]), entry.getValue().size());
+            Long eventId = Long.parseLong(splittedKey[0]);
+            Long categoryId = Long.parseLong(splittedKey[1]);
+            eventDao.incrementEventCategoryNumberOfTickets(eventId, categoryId, entry.getValue().size());
         }
     }
 
@@ -200,11 +221,11 @@ public class TicketsController extends Controller {
         }
     }
 
-    private Result checkIfRecordsExist(List<Long> ids) {
+    private boolean checkIfRecordsExist(List<Long> ids) {
         return checkIfRecordsExist(ids, false);
     }
 
-    private Result checkIfRecordsExist(List<Long> ids, boolean checkInEventDao) {
+    private boolean checkIfRecordsExist(List<Long> ids, boolean checkInEventDao) {
         try {
             for (Long id : ids) {
                 Ticket ticket = ticketDao.read(id);
@@ -212,9 +233,9 @@ public class TicketsController extends Controller {
                     eventDao.findCategory(ticket.getEventId(), ticket.getCategoryId());
                 }
             }
-            return ok();
+            return true;
         } catch (RecordNotFoundException e) {
-            return notFound();
+            return false;
         }
     }
 }

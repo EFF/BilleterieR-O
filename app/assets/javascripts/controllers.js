@@ -160,13 +160,13 @@ define(['app'], function (app) {
             $scope.updateItemQuantity = function (index) {
                 var item = $scope.cart[index];
                 var maxQuantity = item.category.numberOfTickets;
-                var deltaQuantity = item.desiredQuantity - item.quantity;
+                var deltaQuantity = item.desiredQuantity - item.reservedQuantity;
                 if (item.desiredQuantity == 0) {
                     Cart.removeItem(index);
                 } else {
                     if (item.desiredQuantity > maxQuantity) {
                         FlashMessage.send("warning", "Le nombre de billet maximum est de " + maxQuantity.toString());
-                        deltaQuantity = maxQuantity - item.quantity;
+                        deltaQuantity = maxQuantity - item.reservedQuantity;
                     }
                     Cart.updateItemQuantity(index, deltaQuantity);
                 }
