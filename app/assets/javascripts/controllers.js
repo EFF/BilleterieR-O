@@ -59,7 +59,7 @@ define(['app'], function (app) {
                 $http.get(url)
                     .success(function (ticket) {
                         var successCallback = function () {
-                            refreshTicketsList(eventId, category.id, ticket.section);
+                            refreshTicketsCall(eventId, category.id, ticket.section);
                         }
                         Cart.addItem(ticket, category, $scope.event, successCallback);
                     });
@@ -75,7 +75,21 @@ define(['app'], function (app) {
             }
         };
 
-        var refreshTicketsList = function(eventId, categoryId, sectionName) {
+        var refreshTicketsSuccessCallback = function(tickets) {
+            var categoryId = null;
+
+            for (var i in tickets) {
+                var ticket = tickets[i];
+                if (categoryId == null || ticket.categoryId != categoryId) {
+                    categoryId = ticket.categoryId;
+                    $scope.ticketsByCategories[categoryId] = emptyTicketList;
+                }
+                $scope.ticketsByCategories[categoryId].selectedValue = '';
+                $scope.ticketsByCategories[categoryId].options.push(ticket);
+            }
+        };
+
+        var refreshTicketsCall = function(eventId, categoryId, sectionName) {
             var url = '/api/tickets?eventId=' + eventId + '&categoryId=' + categoryId + '&states=AVAILABLE,RESALE';
             var emptyTicketList = {
                 type : 'select',
@@ -90,19 +104,7 @@ define(['app'], function (app) {
             }
             url += '&sectionName=' + encodeURIComponent(sectionName);
             $http.get(url)
-                .success(function (tickets) {
-                    var categoryId = null;
-
-                    for (var i in tickets) {
-                        var ticket = tickets[i];
-                        if (categoryId == null || ticket.categoryId != categoryId) {
-                            categoryId = ticket.categoryId;
-                            $scope.ticketsByCategories[categoryId] = emptyTicketList;
-                        }
-                        $scope.ticketsByCategories[categoryId].selectedValue = '';
-                        $scope.ticketsByCategories[categoryId].options.push(ticket);
-                    }
-                });
+                .success(refreshTicketsSuccessCallback);
         };
 
         var apiCallSuccessCallback = function (result) {
@@ -121,7 +123,7 @@ define(['app'], function (app) {
         $scope.apiCall = function () {
             for (var categoryId in $scope.sectionsByCategories) {
                 var sectionName = $scope.sectionsByCategories[categoryId].selectedValue;
-                refreshTicketsList(eventId, categoryId, sectionName);
+                refreshTicketsCall(eventId, categoryId, sectionName);
             }
             $http.get('/api/events/' + eventId)
                 .success(apiCallSuccessCallback)

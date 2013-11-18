@@ -273,7 +273,7 @@ define(['app'], function (app) {
 
         exports.updateItemQuantity = function(index, deltaQuantity) {
             var item = cart[index];
-            if (isNaN(deltaQuantity) || deltaQuantity == 0) {
+            if (deltaQuantity == 0) {
                 item.desiredQuantity = item.reservedQuantity;
                 return;
             } else if (deltaQuantity > 0) {
