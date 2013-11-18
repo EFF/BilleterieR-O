@@ -12,7 +12,7 @@ import org.joda.time.LocalDateTime;
 import java.util.List;
 import java.util.Random;
 
-public class StagingBootstrapperInteractor implements AuthenticationInteractor.Bootstrapper {
+public class StagingBootstrapperInteractor implements BootstrapperInteractor {
 
     public static final String ROUGE_ET_OR = "Rouge et Or";
     public static final String VERT_ET_OR = "Vert et Or";

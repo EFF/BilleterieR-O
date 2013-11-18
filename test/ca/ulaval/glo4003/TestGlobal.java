@@ -1,6 +1,6 @@
 package ca.ulaval.glo4003;
 
-import ca.ulaval.glo4003.interactors.AuthenticationInteractor;
+import ca.ulaval.glo4003.interactors.BootstrapperInteractor;
 import ca.ulaval.glo4003.modules.TestModule;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
@@ -21,7 +21,7 @@ public class TestGlobal extends GlobalSettings {
     public void onStart(Application application) {
         super.onStart(application);
 
-        AuthenticationInteractor.Bootstrapper bootstrapper = INJECTOR.getInstance(AuthenticationInteractor.Bootstrapper.class);
+        BootstrapperInteractor bootstrapper = INJECTOR.getInstance(BootstrapperInteractor.class);
         bootstrapper.initData();
     }
 
@@ -29,7 +29,7 @@ public class TestGlobal extends GlobalSettings {
     public void onStop(Application application) {
         super.onStop(application);
 
-        AuthenticationInteractor.Bootstrapper bootstrapper = INJECTOR.getInstance(AuthenticationInteractor.Bootstrapper.class);
+        BootstrapperInteractor bootstrapper = INJECTOR.getInstance(BootstrapperInteractor.class);
         bootstrapper.deleteAll();
     }
 

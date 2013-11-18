@@ -47,7 +47,6 @@ public class EventsInteractorTest {
         eventsInteractor.search(mockedEventSearchCriteria);
 
         verify(mockedEventDao, times(1)).search(mockedEventSearchCriteria);
-
     }
 
     public static class TestModule extends JukitoModule {

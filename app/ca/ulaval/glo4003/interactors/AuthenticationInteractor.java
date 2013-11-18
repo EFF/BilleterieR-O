@@ -26,11 +26,4 @@ public class AuthenticationInteractor {
         }
         throw new AuthenticationException();
     }
-
-    public static interface Bootstrapper {
-
-        void initData();
-
-        void deleteAll();
-    }
 }
