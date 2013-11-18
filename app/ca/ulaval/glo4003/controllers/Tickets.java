@@ -13,6 +13,8 @@ import ca.ulaval.glo4003.models.TicketState;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ListMultimap;
 import com.google.common.collect.Multimap;
+import com.google.common.primitives.Ints;
+import com.google.common.primitives.Longs;
 import com.google.inject.Inject;
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.map.ObjectMapper;
@@ -39,22 +41,23 @@ public class Tickets extends Controller {
     }
 
     public Result index() {
-        final String eventId = request().getQueryString("eventId");
+        final String strEventId = request().getQueryString("eventId");
         final String sectionName = request().getQueryString("sectionName");
-        final String categoryId = request().getQueryString("categoryId");
+        final String strCategoryId = request().getQueryString("categoryId");
         final String stringStates = request().getQueryString("states");
         final String strQuantity = request().getQueryString("quantity");
 
+        Long eventId = Longs.tryParse(strEventId);
+        Long categoryId = Longs.tryParse(strCategoryId);
+        Integer quantity = Ints.tryParse(strQuantity);
+        if (eventId == null || categoryId == null || quantity == null) {
+            return badRequest();
+        }
+
         TicketSearchCriteria ticketSearchCriteria = new TicketSearchCriteria();
-        if (eventId != null) {
-            ticketSearchCriteria.setEventId(Long.parseLong(eventId));
-        }
-        if (categoryId != null) {
-            ticketSearchCriteria.setCategoryId(Long.parseLong(categoryId));
-        }
-        if (strQuantity != null) {
-            ticketSearchCriteria.setQuantity(Integer.parseInt(strQuantity));
-        }
+        ticketSearchCriteria.setEventId(eventId);
+        ticketSearchCriteria.setCategoryId(categoryId);
+        ticketSearchCriteria.setQuantity(quantity);
         ticketSearchCriteria.setSectionName(sectionName);
 
         if (stringStates != null) {
@@ -164,7 +167,9 @@ public class Tickets extends Controller {
         Map<String, Collection<Long>> idsByEventDotCategory = regroupByEventAndCategory(ids);
         for (Map.Entry<String, Collection<Long>> entry : idsByEventDotCategory.entrySet()) {
             String splittedKey[] = entry.getKey().split("\\.");
-            eventDao.decrementEventCategoryNumberOfTickets(Long.parseLong(splittedKey[0]), Long.parseLong(splittedKey[1]), entry.getValue().size());
+            Long eventId = Long.parseLong(splittedKey[0]);
+            Long categoryId = Long.parseLong(splittedKey[1]);
+            eventDao.decrementEventCategoryNumberOfTickets(eventId, categoryId, entry.getValue().size());
         }
     }
 
@@ -172,7 +177,9 @@ public class Tickets extends Controller {
         Map<String, Collection<Long>> idsByEventDotCategory = regroupByEventAndCategory(ids);
         for (Map.Entry<String, Collection<Long>> entry : idsByEventDotCategory.entrySet()) {
             String splittedKey[] = entry.getKey().split("\\.");
-            eventDao.incrementEventCategoryNumberOfTickets(Long.parseLong(splittedKey[0]), Long.parseLong(splittedKey[1]), entry.getValue().size());
+            Long eventId = Long.parseLong(splittedKey[0]);
+            Long categoryId = Long.parseLong(splittedKey[1]);
+            eventDao.incrementEventCategoryNumberOfTickets(eventId, categoryId, entry.getValue().size());
         }
     }
 
