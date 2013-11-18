@@ -49,7 +49,7 @@ public class TicketsController extends Controller {
 
         Long eventId = null;
         Long categoryId = null;
-        int quantity = ConstantsManager.TICKET_SEARCH_CRITERIA_INVALID_QUANTITY;
+        Integer quantity = null;
 
         if (strEventId != null) {
             eventId = Longs.tryParse(strEventId);
@@ -62,7 +62,7 @@ public class TicketsController extends Controller {
         }
         if ((strEventId != null && eventId == null)
                 || (strCategoryId != null && categoryId == null)
-                || (strQuantity != null && quantity == ConstantsManager.TICKET_SEARCH_CRITERIA_INVALID_QUANTITY)) {
+                || (strQuantity != null && quantity == null)) {
             return badRequest();
         }
 
