@@ -30,12 +30,12 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-public class Tickets extends Controller {
+public class TicketsController extends Controller {
     private final EventDao eventDao;
     private final TicketDao ticketDao;
 
     @Inject
-    public Tickets(EventDao eventDao, TicketDao ticketDao) {
+    public TicketsController(EventDao eventDao, TicketDao ticketDao) {
         this.ticketDao = ticketDao;
         this.eventDao = eventDao;
     }

@@ -5,12 +5,12 @@ import com.google.inject.Inject;
 import play.mvc.Controller;
 import play.mvc.Result;
 
-public class Bootstrap extends Controller {
+public class BootstrapController extends Controller {
 
     private final Bootstrapper bootstrapper;
 
     @Inject
-    public Bootstrap(Bootstrapper bootstrapper) {
+    public BootstrapController(Bootstrapper bootstrapper) {
         this.bootstrapper = bootstrapper;
     }
 
