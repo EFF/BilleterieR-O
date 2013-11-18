@@ -20,7 +20,7 @@ define(['app'], function (app) {
             $http.post(url, {ticketIds: ticketIds})
                 .success(successCallback)
                 .error(errorCallback);
-        }
+        };
 
         var checkoutTickets = function(tickets, successCallback, errorCallback) {
             updateTicketState(tickets, successCallback, errorCallback, '/api/checkout');
@@ -251,8 +251,10 @@ define(['app'], function (app) {
         var freeTicketsFromItem = function(quantity, item) {
             var tickets = [];
             var i = 0;
+
             while (i != quantity) {
                 tickets.push(item.tickets[i]);
+                i++;
             }
 
             var successCallback = function () {
@@ -270,7 +272,7 @@ define(['app'], function (app) {
 
         exports.updateItemQuantity = function(index, deltaQuantity) {
             var item = cart[index];
-            if (deltaQuantity == 0) {
+            if (isNaN(deltaQuantity) || deltaQuantity == 0) {
                 item.desiredQuantity = item.reservedQuantity;
                 return;
             } else if (deltaQuantity > 0) {
