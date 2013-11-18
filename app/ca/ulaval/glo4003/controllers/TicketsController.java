@@ -188,7 +188,8 @@ public class TicketsController extends Controller {
         JsonNode node = json.get(ConstantsManager.TICKET_IDS_FIELD_NAME);
 
         ObjectMapper mapper = new ObjectMapper();
-        TypeReference<List<Long>> typeRef = new TypeReference<List<Long>>(){};
+        TypeReference<List<Long>> typeRef = new TypeReference<List<Long>>() {
+        };
 
         return mapper.readValue(node.traverse(), typeRef);
     }
