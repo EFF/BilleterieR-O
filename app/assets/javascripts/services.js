@@ -110,7 +110,7 @@ define(['app'], function (app) {
                     FlashMessage.send("success", "L'item a été ajouté au panier");
                 };
                 var errorCallback = function() {
-                    FlashMessage.send('error', 'L\'item n\'a pu être ajouté au panier. Une erreur est survenue.')
+                    FlashMessage.send('error', "L'item n'a pu être ajouté au panier. Une erreur est survenue.");
                 };
                 reserveTickets([ticket], successCallback, errorCallback)
             }
@@ -140,7 +140,7 @@ define(['app'], function (app) {
                 FlashMessage.send("success", "Les billets ont été ajoutés au panier.");
             };
             var errorCallback = function() {
-                FlashMessage.send('error', 'Les billets n\'ont pu être ajoutés au panier. Une erreur est survenue.')
+                FlashMessage.send('error', "Les billets n'ont pu être ajoutés au panier. Une erreur est survenue.");
             };
 
             reserveTickets(tickets, successCallback, errorCallback);
@@ -152,7 +152,7 @@ define(['app'], function (app) {
                 updateCartCookie(cart);
             };
             var errorCallback = function () {
-                FlashMessage.send('error', 'L\'item n\'a pu être retiré du panier. Une erreur est survenue.');
+                FlashMessage.send('error', "L'item n'a pu être retiré du panier. Une erreur est survenue.");
             };
 
             freeTickets(cart[index].tickets, successCallback, errorCallback);
@@ -164,7 +164,7 @@ define(['app'], function (app) {
                 updateCartCookie(cart);
             };
             var errorCallback = function () {
-                FlashMessage.send('error', 'Le panier n\'a pu être vidé. Une erreur est survenue.');
+                FlashMessage.send('error', "Le panier n'a pu être vidé. Une erreur est survenue.");
             };
             var tickets = [];
             for (var i in cart) {
@@ -253,7 +253,7 @@ define(['app'], function (app) {
             var tickets = [];
             var i = 0;
 
-            while (i != quantity) {
+            while (i < quantity) {
                 tickets.push(item.tickets[i]);
                 i++;
             }
@@ -265,7 +265,7 @@ define(['app'], function (app) {
                 updateCartCookie(cart);
             };
             var errorCallback = function () {
-                FlashMessage.send('error', 'Les billets n\'ont pu être libérés.');
+                FlashMessage.send('error', "Les billets n'ont pu être libérés.");
             };
 
             freeTickets(tickets, successCallback, errorCallback);
