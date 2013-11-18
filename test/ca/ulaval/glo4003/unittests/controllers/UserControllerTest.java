@@ -1,7 +1,7 @@
 package ca.ulaval.glo4003.unittests.controllers;
 
 import ca.ulaval.glo4003.ConstantsManager;
-import ca.ulaval.glo4003.controllers.UserProfile;
+import ca.ulaval.glo4003.controllers.UsersController;
 import ca.ulaval.glo4003.dataaccessobjects.UniqueValidationException;
 import ca.ulaval.glo4003.dataaccessobjects.UserDao;
 import ca.ulaval.glo4003.exceptions.RecordNotFoundException;
@@ -25,7 +25,7 @@ import static play.test.Helpers.contentAsString;
 import static play.test.Helpers.status;
 
 @RunWith(JukitoRunner.class)
-public class UserProfileTest extends BaseControllerTest {
+public class UserControllerTest extends BaseControllerTest {
 
     private static final String A_PASSWORD = "secret";
     private static final String ANOTHER_PASSWORD = "secret2";
@@ -34,7 +34,7 @@ public class UserProfileTest extends BaseControllerTest {
     private static final String INVALID_EMAIL = "invalid";
 
     @Inject
-    private UserProfile userProfile;
+    private UsersController usersController;
     @Inject
     private UserDao mockedUserDao;
 
@@ -43,10 +43,10 @@ public class UserProfileTest extends BaseControllerTest {
         addEmailBody(AN_EMAIL);
         when(mockedUserDao.findByEmail(anyString())).thenThrow(RecordNotFoundException.class);
 
-        Result result = userProfile.updateEmail();
+        Result result = usersController.updateEmail();
 
         assertEquals(Http.Status.UNAUTHORIZED, status(result));
-        assertEquals(UserProfile.BAD_SESSION_WRONG_USERNAME, contentAsString(result));
+        assertEquals(UsersController.BAD_SESSION_WRONG_USERNAME, contentAsString(result));
         verify(mockedUserDao, never()).update(any(User.class));
     }
 
@@ -56,7 +56,7 @@ public class UserProfileTest extends BaseControllerTest {
         addEmailBody(AN_EMAIL);
         when(mockedUserDao.findByEmail(anyString())).thenReturn(mockedUser);
 
-        Result result = userProfile.updateEmail();
+        Result result = usersController.updateEmail();
 
         assertEquals(Http.Status.OK, status(result));
         verify(mockedUser, times(1)).setEmail(AN_EMAIL);
@@ -68,10 +68,10 @@ public class UserProfileTest extends BaseControllerTest {
         addEmailBody(AN_EMAIL);
         when(mockedUserDao.findByEmail(anyString())).thenThrow(UniqueValidationException.class);
 
-        Result result = userProfile.updateEmail();
+        Result result = usersController.updateEmail();
 
         assertEquals(Http.Status.UNAUTHORIZED, status(result));
-        assertEquals(UserProfile.EMAIL_SHOULD_BE_UNIQUE, contentAsString(result));
+        assertEquals(UsersController.EMAIL_SHOULD_BE_UNIQUE, contentAsString(result));
         verify(mockedUserDao, never()).update(any(User.class));
     }
 
@@ -80,10 +80,10 @@ public class UserProfileTest extends BaseControllerTest {
         addEmailBody(INVALID_EMAIL);
         when(mockedUserDao.findByEmail(anyString())).thenThrow(ConstraintViolationException.class);
 
-        Result result = userProfile.updateEmail();
+        Result result = usersController.updateEmail();
 
         assertEquals(Http.Status.UNAUTHORIZED, status(result));
-        assertEquals(UserProfile.EMAIL_IS_INVALID, contentAsString(result));
+        assertEquals(UsersController.EMAIL_IS_INVALID, contentAsString(result));
         verify(mockedUserDao, never()).update(any(User.class));
     }
 
@@ -91,10 +91,10 @@ public class UserProfileTest extends BaseControllerTest {
     public void updateEmailWithWrongRequestParameters() throws RecordNotFoundException {
         when(mockedBody.asJson()).thenReturn(Json.newObject());
 
-        Result result = userProfile.updateEmail();
+        Result result = usersController.updateEmail();
 
         assertEquals(Http.Status.BAD_REQUEST, status(result));
-        assertEquals(UserProfile.EMAIL_EXPECTED, contentAsString(result));
+        assertEquals(UsersController.EMAIL_EXPECTED, contentAsString(result));
         verify(mockedUserDao, never()).update(any(User.class));
     }
 
@@ -103,10 +103,10 @@ public class UserProfileTest extends BaseControllerTest {
         addPasswordBody(A_PASSWORD, NEW_PASSWORD);
         when(mockedUserDao.findByEmail(anyString())).thenThrow(RecordNotFoundException.class);
 
-        Result result = userProfile.updatePassword();
+        Result result = usersController.updatePassword();
 
         assertEquals(Http.Status.UNAUTHORIZED, status(result));
-        assertEquals(UserProfile.BAD_SESSION_WRONG_USERNAME, contentAsString(result));
+        assertEquals(UsersController.BAD_SESSION_WRONG_USERNAME, contentAsString(result));
         verify(mockedUserDao, never()).update(any(User.class));
     }
 
@@ -117,7 +117,7 @@ public class UserProfileTest extends BaseControllerTest {
         when(mockedUser.getPassword()).thenReturn(A_PASSWORD);
         when(mockedUserDao.findByEmail(anyString())).thenReturn(mockedUser);
 
-        Result result = userProfile.updatePassword();
+        Result result = usersController.updatePassword();
 
         assertEquals(Http.Status.OK, status(result));
         verify(mockedUserDao, times(1)).update(any(User.class));
@@ -131,10 +131,10 @@ public class UserProfileTest extends BaseControllerTest {
         when(mockedUser.getPassword()).thenReturn(ANOTHER_PASSWORD);
         when(mockedUserDao.findByEmail(anyString())).thenReturn(mockedUser);
 
-        Result result = userProfile.updatePassword();
+        Result result = usersController.updatePassword();
 
         assertEquals(Http.Status.UNAUTHORIZED, status(result));
-        assertEquals(UserProfile.WRONG_ACTUAL_PASSWORD, contentAsString(result));
+        assertEquals(UsersController.WRONG_ACTUAL_PASSWORD, contentAsString(result));
         verify(mockedUserDao, never()).update(any(User.class));
     }
 
@@ -142,10 +142,10 @@ public class UserProfileTest extends BaseControllerTest {
     public void updatePasswordWithWrongRequestParameters() throws RecordNotFoundException {
         when(mockedBody.asJson()).thenReturn(Json.newObject());
 
-        Result result = userProfile.updatePassword();
+        Result result = usersController.updatePassword();
 
         assertEquals(Http.Status.BAD_REQUEST, status(result));
-        assertEquals(UserProfile.ACTUAL_AND_NEW_PASSWORD_EXPECTED, contentAsString(result));
+        assertEquals(UsersController.ACTUAL_AND_NEW_PASSWORD_EXPECTED, contentAsString(result));
         verify(mockedUserDao, never()).update(any(User.class));
     }
 

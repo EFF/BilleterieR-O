@@ -15,17 +15,17 @@ import play.mvc.Controller;
 import play.mvc.Result;
 import play.mvc.Security;
 
-public class Checkout extends Controller {
+public class CheckoutController extends Controller {
 
     private final CheckoutService checkoutService;
     private final UserDao userDao;
-    private final Tickets tickets;
+    private final TicketsController ticketsController;
 
     @Inject
-    public Checkout(Tickets tickets, CheckoutService checkoutService, UserDao userDao) {
+    public CheckoutController(TicketsController ticketsController, CheckoutService checkoutService, UserDao userDao) {
         this.checkoutService = checkoutService;
         this.userDao = userDao;
-        this.tickets = tickets;
+        this.ticketsController = ticketsController;
     }
 
     @Security.Authenticated(Secured.class)
@@ -35,7 +35,7 @@ public class Checkout extends Controller {
             User user = userDao.findByEmail(userEmail);
             Transaction transaction = checkoutService.startNewTransaction(user);
 
-            Result ticketsResult = tickets.checkout();
+            Result ticketsResult = ticketsController.checkout();
             if (((PlainResult)ticketsResult.getWrappedResult()).header().status() != OK) {
                 transaction.fail();
                 return ticketsResult;

@@ -12,12 +12,12 @@ import play.libs.Json;
 import play.mvc.Controller;
 import play.mvc.Result;
 
-public class Events extends Controller {
+public class EventsController extends Controller {
 
     private final EventDao eventDao;
 
     @Inject
-    public Events(EventDao eventDao) {
+    public EventsController(EventDao eventDao) {
         this.eventDao = eventDao;
     }
 

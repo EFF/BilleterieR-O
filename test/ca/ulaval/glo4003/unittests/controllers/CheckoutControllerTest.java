@@ -1,8 +1,8 @@
 package ca.ulaval.glo4003.unittests.controllers;
 
 import ca.ulaval.glo4003.ConstantsManager;
-import ca.ulaval.glo4003.controllers.Checkout;
-import ca.ulaval.glo4003.controllers.Tickets;
+import ca.ulaval.glo4003.controllers.CheckoutController;
+import ca.ulaval.glo4003.controllers.TicketsController;
 import ca.ulaval.glo4003.dataaccessobjects.EventDao;
 import ca.ulaval.glo4003.dataaccessobjects.UserDao;
 import ca.ulaval.glo4003.exceptions.RecordNotFoundException;
@@ -23,13 +23,13 @@ import static org.mockito.Mockito.*;
 import static play.mvc.Results.*;
 
 @RunWith(JukitoRunner.class)
-public class CheckoutTest extends BaseControllerTest {
+public class CheckoutControllerTest extends BaseControllerTest {
 
     private static String USER_EMAIL = "user@email.com";
     private static Long USER_ID = 666L;
 
     @Inject
-    private Checkout checkout;
+    private CheckoutController checkoutController;
 
     @Before
     public void setup(CheckoutService mockedCheckoutSvc, UserDao userDao) throws RecordNotFoundException {
@@ -44,32 +44,32 @@ public class CheckoutTest extends BaseControllerTest {
     }
 
     @Test
-    public void checkoutWhenTicketsCheckoutReturnsNotFound(Tickets mockedTickets, CheckoutService mockedCheckoutSvc) throws RecordNotFoundException {
-        when(mockedTickets.checkout()).thenReturn(notFound());
+    public void checkoutWhenTicketsCheckoutReturnsNotFound(TicketsController mockedTicketsController, CheckoutService mockedCheckoutSvc) throws RecordNotFoundException {
+        when(mockedTicketsController.checkout()).thenReturn(notFound());
 
-        Result result = checkout.index();
+        Result result = checkoutController.index();
 
         assertEquals(Helpers.NOT_FOUND, Helpers.status(result));
-        verify(mockedTickets).checkout();
+        verify(mockedTicketsController).checkout();
         verify(mockedCheckoutSvc, never()).fulfillTransaction(any(Transaction.class));
     }
 
     @Test
-    public void checkoutWhenTicketsCheckoutReturnsOk(Tickets mockedTickets, CheckoutService mockedCheckoutSvc) throws RecordNotFoundException {
-        when(mockedTickets.checkout()).thenReturn(ok());
+    public void checkoutWhenTicketsCheckoutReturnsOk(TicketsController mockedTicketsController, CheckoutService mockedCheckoutSvc) throws RecordNotFoundException {
+        when(mockedTicketsController.checkout()).thenReturn(ok());
 
-        Result result = checkout.index();
+        Result result = checkoutController.index();
 
         assertEquals(Helpers.OK, Helpers.status(result));
-        verify(mockedTickets).checkout();
+        verify(mockedTicketsController).checkout();
         verify(mockedCheckoutSvc).fulfillTransaction(any(Transaction.class));
     }
 
     @Test
-    public void checkoutWhenTicketsCheckoutReturnInternalServerError(Tickets mockedTickets, CheckoutService mockedCheckoutSvc) throws RecordNotFoundException {
-        when(mockedTickets.checkout()).thenReturn(internalServerError());
+    public void checkoutWhenTicketsCheckoutReturnInternalServerError(TicketsController mockedTicketsController, CheckoutService mockedCheckoutSvc) throws RecordNotFoundException {
+        when(mockedTicketsController.checkout()).thenReturn(internalServerError());
 
-        Result result = checkout.index();
+        Result result = checkoutController.index();
 
         assertEquals(Helpers.INTERNAL_SERVER_ERROR, Helpers.status(result));
         verify(mockedCheckoutSvc, never()).fulfillTransaction(any(Transaction.class));
@@ -81,7 +81,7 @@ public class CheckoutTest extends BaseControllerTest {
 
         when(mockedSession.get(ConstantsManager.COOKIE_SESSION_FIELD_NAME)).thenReturn(USER_EMAIL);
 
-        Result result = checkout.index();
+        Result result = checkoutController.index();
 
         assertEquals(Helpers.NOT_FOUND, Helpers.status(result));
         verify(mockedUserDao).findByEmail(anyString());
@@ -94,7 +94,7 @@ public class CheckoutTest extends BaseControllerTest {
         protected void configureTest() {
             forceMock(EventDao.class);
             forceMock(UserDao.class);
-            forceMock(Tickets.class);
+            forceMock(TicketsController.class);
         }
     }
 
