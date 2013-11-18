@@ -32,7 +32,7 @@ import static org.mockito.Mockito.*;
 @RunWith(JukitoRunner.class)
 public class TicketsControllerTest extends BaseControllerTest {
     private static final String A_SECTION = "section 100";
-    private static final long A_SEAT = 55;
+    private static final int A_SEAT = 55;
     private static final long AN_EVENT_ID = 1;
     private static final long A_CATEGORY_ID = 1;
     private static final double A_TICKET_PRICE = 11.00;
@@ -151,6 +151,31 @@ public class TicketsControllerTest extends BaseControllerTest {
     }
 
     @Test
+    public void checkoutReturnInternalServerErrorWhenOneTicketIsNotReserved(TicketDao mockedTicketDao) throws RecordNotFoundException {
+        Ticket reservedTicket = new Ticket(AN_EVENT_ID, A_CATEGORY_ID, A_SECTION, A_SEAT);
+        reservedTicket.setId(A_TICKET_ID);
+        Ticket notReservedTicket = new Ticket(AN_EVENT_ID, A_CATEGORY_ID, A_SECTION, A_SEAT + 1);
+        notReservedTicket.setId(ANOTHER_TICKET_ID);
+        reservedTicket.setState(TicketState.RESERVED);
+        notReservedTicket.setState(TicketState.AVAILABLE);
+
+        when(mockedTicketDao.read(reservedTicket.getId())).thenReturn(reservedTicket);
+        when(mockedTicketDao.read(notReservedTicket.getId())).thenReturn(notReservedTicket);
+
+        ObjectNode json = Json.newObject();
+        ArrayNode node = json.putArray(ConstantsManager.TICKET_IDS_FIELD_NAME);
+        node.add(A_TICKET_ID);
+        node.add(ANOTHER_TICKET_ID);
+        when(mockedBody.asJson()).thenReturn(json);
+
+        Result result = ticketsController.checkout();
+
+        assertEquals(Helpers.INTERNAL_SERVER_ERROR, Helpers.status(result));
+        verify(mockedTicketDao, times(2)).read(A_TICKET_ID);
+        verify(mockedTicketDao, times(2)).read(ANOTHER_TICKET_ID);
+    }
+
+    @Test
     public void freeTicketWhenExists(TicketDao mockedTicketDao, EventDao mockedEventDao) throws RecordNotFoundException {
         when(mockedTicketDao.read(firstTicket.getId())).thenReturn(firstTicket);
         when(mockedEventDao.findCategory(firstTicket.getEventId(), firstTicket.getCategoryId()))
@@ -251,31 +276,6 @@ public class TicketsControllerTest extends BaseControllerTest {
 
         assertEquals(Helpers.OK, Helpers.status(result));
         assertEquals("application/json", Helpers.contentType(result));
-    }
-
-    @Test
-    public void checkoutReturnInternalServerErrorWhenOneTicketIsNotReserved(TicketDao mockedTicketDao) throws RecordNotFoundException {
-        Ticket reservedTicket = new Ticket(AN_EVENT_ID, A_CATEGORY_ID, A_SECTION, A_SEAT);
-        reservedTicket.setId(A_TICKET_ID);
-        Ticket notReservedTicket = new Ticket(AN_EVENT_ID, A_CATEGORY_ID, A_SECTION, A_SEAT + 1);
-        notReservedTicket.setId(ANOTHER_TICKET_ID);
-        reservedTicket.setState(TicketState.RESERVED);
-        notReservedTicket.setState(TicketState.AVAILABLE);
-
-        when(mockedTicketDao.read(reservedTicket.getId())).thenReturn(reservedTicket);
-        when(mockedTicketDao.read(notReservedTicket.getId())).thenReturn(notReservedTicket);
-
-        ObjectNode json = Json.newObject();
-        ArrayNode node = json.putArray(ConstantsManager.TICKET_IDS_FIELD_NAME);
-        node.add(A_TICKET_ID);
-        node.add(ANOTHER_TICKET_ID);
-        when(mockedBody.asJson()).thenReturn(json);
-
-        Result result = ticketsController.checkout();
-
-        assertEquals(Helpers.INTERNAL_SERVER_ERROR, Helpers.status(result));
-        verify(mockedTicketDao, times(2)).read(A_TICKET_ID);
-        verify(mockedTicketDao, times(2)).read(ANOTHER_TICKET_ID);
     }
 
     public static class TestModule extends JukitoModule {
