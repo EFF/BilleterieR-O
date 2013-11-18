@@ -16,7 +16,7 @@ public class AuthenticationInteractor {
         this.userDao = userDao;
     }
 
-    public User authenticate(Credentials credentials) throws AuthenticationException {
+    public User authenticate(final Credentials credentials) throws AuthenticationException {
         try {
             User user = userDao.findByEmail(credentials.getEmail());
             if (user.getPassword().equals(credentials.getPassword())) {
@@ -25,5 +25,12 @@ public class AuthenticationInteractor {
         } catch (RecordNotFoundException ignored) {
         }
         throw new AuthenticationException();
+    }
+
+    public static interface Bootstrapper {
+
+        void initData();
+
+        void deleteAll();
     }
 }

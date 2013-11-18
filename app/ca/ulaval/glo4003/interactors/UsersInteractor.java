@@ -18,15 +18,15 @@ public class UsersInteractor {
         this.userDao = userDao;
     }
 
-    public void updateEmail(String actualEmail, String newEmail) throws RecordNotFoundException,
+    public void updateEmail(final String actualEmail, final String newEmail) throws RecordNotFoundException,
             UniqueValidationException, ConstraintViolationException {
         User user = userDao.findByEmail(actualEmail);
         user.setEmail(newEmail);
         userDao.update(user);
     }
 
-    public void updatePassword(String email, String actualPassword, String newPassword) throws RecordNotFoundException,
-            InvalidActualPasswordException {
+    public void updatePassword(final String email, final String actualPassword, final String newPassword)
+            throws RecordNotFoundException, InvalidActualPasswordException {
         User user = userDao.findByEmail(email);
 
         if (!user.getPassword().equals(actualPassword)) {

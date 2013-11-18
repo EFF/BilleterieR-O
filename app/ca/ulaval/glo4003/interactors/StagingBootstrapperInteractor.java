@@ -1,8 +1,10 @@
-package ca.ulaval.glo4003;
+package ca.ulaval.glo4003.interactors;
 
+import ca.ulaval.glo4003.ConstantsManager;
 import ca.ulaval.glo4003.dataaccessobjects.TransactionDao;
 
 import ca.ulaval.glo4003.dataaccessobjects.*;
+import ca.ulaval.glo4003.interactors.AuthenticationInteractor;
 import ca.ulaval.glo4003.models.*;
 import com.google.inject.Inject;
 import org.joda.time.LocalDateTime;
@@ -10,7 +12,7 @@ import org.joda.time.LocalDateTime;
 import java.util.List;
 import java.util.Random;
 
-public class StagingBootstrapper implements Bootstrapper {
+public class StagingBootstrapperInteractor implements AuthenticationInteractor.Bootstrapper {
 
     public static final String ROUGE_ET_OR = "Rouge et Or";
     public static final String VERT_ET_OR = "Vert et Or";
@@ -24,7 +26,7 @@ public class StagingBootstrapper implements Bootstrapper {
     private final int MAX_NUMBER_OF_EVENTS = 5;
 
     @Inject
-    public StagingBootstrapper(EventDao eventDao, SportDao sportDao, UserDao userDao, TicketDao ticketDao, TeamDao teamDao, TransactionDao transactionDao) {
+    public StagingBootstrapperInteractor(EventDao eventDao, SportDao sportDao, UserDao userDao, TicketDao ticketDao, TeamDao teamDao, TransactionDao transactionDao) {
         this.eventDao = eventDao;
         this.sportDao = sportDao;
         this.userDao = userDao;

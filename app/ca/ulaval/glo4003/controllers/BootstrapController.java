@@ -1,26 +1,22 @@
 package ca.ulaval.glo4003.controllers;
 
-import ca.ulaval.glo4003.Bootstrapper;
+import ca.ulaval.glo4003.interactors.BootstrapperInteractor;
 import com.google.inject.Inject;
 import play.mvc.Controller;
 import play.mvc.Result;
 
 public class BootstrapController extends Controller {
 
-    private final Bootstrapper bootstrapper;
+    private final BootstrapperInteractor bootstrapperInteractor;
 
     @Inject
-    public BootstrapController(Bootstrapper bootstrapper) {
-        this.bootstrapper = bootstrapper;
+    public BootstrapController(BootstrapperInteractor bootstrapperInteractor) {
+        this.bootstrapperInteractor = bootstrapperInteractor;
     }
 
     public Result index() {
-        if (!play.Play.isDev()) {
-            return unauthorized();
-        }
-
-        bootstrapper.deleteAll();
-        bootstrapper.initData();
+        bootstrapperInteractor.deleteAll();
+        bootstrapperInteractor.initData();
 
         return ok("Bootstrapped!");
     }

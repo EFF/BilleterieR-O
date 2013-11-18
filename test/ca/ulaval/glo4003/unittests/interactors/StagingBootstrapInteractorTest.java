@@ -1,6 +1,6 @@
-package ca.ulaval.glo4003.unittests;
+package ca.ulaval.glo4003.unittests.interactors;
 
-import ca.ulaval.glo4003.StagingBootstrapper;
+import ca.ulaval.glo4003.interactors.StagingBootstrapperInteractor;
 import ca.ulaval.glo4003.dataaccessobjects.*;
 import ca.ulaval.glo4003.models.Event;
 import ca.ulaval.glo4003.models.Sport;
@@ -19,7 +19,7 @@ import java.util.List;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
 
-public class StagingBootstrapTest {
+public class StagingBootstrapInteractorTest {
 
     private EventDao eventDao;
     private SportDao sportDao;
@@ -27,7 +27,7 @@ public class StagingBootstrapTest {
     private TeamDao teamDao;
     private UserDao userDao;
     private TransactionDao transactionDao;
-    private StagingBootstrapper bootstrap;
+    private StagingBootstrapperInteractor bootstrap;
 
     //TODO add tests on userDao and ticketDao.
 
@@ -39,7 +39,7 @@ public class StagingBootstrapTest {
         teamDao = mock(TeamDao.class);
         userDao = mock(UserDao.class);
         transactionDao = mock(TransactionDao.class);
-        bootstrap = new StagingBootstrapper(eventDao, sportDao, userDao, ticketDao, teamDao, transactionDao);
+        bootstrap = new StagingBootstrapperInteractor(eventDao, sportDao, userDao, ticketDao, teamDao, transactionDao);
     }
 
     @Test
