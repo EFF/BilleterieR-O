@@ -93,7 +93,7 @@ public class TicketsController extends Controller {
     public Result checkout() {
         try {
             List<Long> ids = getListTicketIds();
-            boolean recordsExist = checkIfRecordsExist(ids);
+            boolean recordsExist = checkIfTicketsExist(ids);
             if (!recordsExist) {
                 return notFound();
             }
@@ -124,7 +124,7 @@ public class TicketsController extends Controller {
     public Result free() {
         try {
             List<Long> ids = getListTicketIds();
-            boolean recordsExist = checkIfRecordsExist(ids, true);
+            boolean recordsExist = checkIfTicketsExist(ids, true);
             if (!recordsExist) {
                 return notFound();
             }
@@ -141,7 +141,7 @@ public class TicketsController extends Controller {
     public Result reserve() {
         try {
             List<Long> ids = getListTicketIds();
-            boolean recordsExist = checkIfRecordsExist(ids, true);
+            boolean recordsExist = checkIfTicketsExist(ids, true);
             if (!recordsExist) {
                 return notFound();
             }
@@ -240,15 +240,15 @@ public class TicketsController extends Controller {
         }
     }
 
-    private boolean checkIfRecordsExist(List<Long> ids) {
-        return checkIfRecordsExist(ids, false);
+    private boolean checkIfTicketsExist(List<Long> ids) {
+        return checkIfTicketsExist(ids, false);
     }
 
-    private boolean checkIfRecordsExist(List<Long> ids, boolean checkInEventDao) {
+    private boolean checkIfTicketsExist(List<Long> ids, boolean checkIfTicketsEventIdsExist) {
         try {
             for (Long id : ids) {
                 Ticket ticket = ticketDao.read(id);
-                if (checkInEventDao) {
+                if (checkIfTicketsEventIdsExist) {
                     eventDao.findCategory(ticket.getEventId(), ticket.getCategoryId());
                 }
             }
