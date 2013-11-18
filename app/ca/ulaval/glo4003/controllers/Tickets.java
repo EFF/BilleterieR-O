@@ -47,10 +47,22 @@ public class Tickets extends Controller {
         final String stringStates = request().getQueryString("states");
         final String strQuantity = request().getQueryString("quantity");
 
-        Long eventId = Longs.tryParse(strEventId);
-        Long categoryId = Longs.tryParse(strCategoryId);
-        Integer quantity = Ints.tryParse(strQuantity);
-        if (eventId == null || categoryId == null || quantity == null) {
+        Long eventId = null;
+        Long categoryId = null;
+        int quantity = ConstantsManager.TICKET_SEARCH_CRITERIA_INVALID_QUANTITY;
+
+        if (strEventId != null) {
+            eventId = Longs.tryParse(strEventId);
+        }
+        if (strCategoryId != null) {
+            categoryId = Longs.tryParse(strCategoryId);
+        }
+        if (strQuantity != null) {
+            quantity = Ints.tryParse(strQuantity);
+        }
+        if ((strEventId != null && eventId == null)
+                || (strCategoryId != null && categoryId == null)
+                || (strQuantity != null && quantity == ConstantsManager.TICKET_SEARCH_CRITERIA_INVALID_QUANTITY)) {
             return badRequest();
         }
 

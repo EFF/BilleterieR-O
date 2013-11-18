@@ -90,11 +90,11 @@ public class TicketsTest extends BaseControllerTest {
     @Test
     public void indexThrowsExceptionWithInvalidParameters(TicketDao mockedTicketDao) {
         ticketSearchCriteria.setEventId(AN_EVENT_ID);
-        ticketSearchCriteria.setCategoryId(A_CATEGORY_ID + 1);
+        ticketSearchCriteria.setCategoryId(A_CATEGORY_ID);
         when(mockedTicketDao.search(refEq(ticketSearchCriteria))).thenThrow(new InvalidParameterException("Test"));
 
         when(mockedRequest.getQueryString(ConstantsManager.EVENT_ID_FIELD_NAME)).thenReturn(String.valueOf(AN_EVENT_ID));
-        when(mockedRequest.getQueryString(ConstantsManager.CATEGORY_ID_FIELD_NAME)).thenReturn(String.valueOf(A_CATEGORY_ID + 1));
+        when(mockedRequest.getQueryString(ConstantsManager.CATEGORY_ID_FIELD_NAME)).thenReturn(String.valueOf(A_CATEGORY_ID));
 
         Result result = tickets.index();
 

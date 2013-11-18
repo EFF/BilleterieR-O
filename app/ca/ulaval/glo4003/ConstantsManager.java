@@ -31,6 +31,8 @@ public class ConstantsManager {
     public static final String TICKET_STATE_FIELD_NAME = "states";
     public static final String TICKET_IDS_FIELD_NAME = "ticketIds";
     public static final int TICKET_INVALID_SEAT_NUMBER = -1;
+    public static final int TICKET_SEARCH_CRITERIA_INVALID_QUANTITY = -1;
+
 
     public final static String CHECKOUT_CONFIRMATION_EMAIL = "Votre transaction c'est bien effectuée sur le système." +
             " Votre numéro de confirmation est le: ";
