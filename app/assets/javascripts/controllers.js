@@ -58,8 +58,10 @@ define(['app'], function (app) {
                 var url = '/api/tickets/' + ticketId;
                 $http.get(url)
                     .success(function (ticket) {
-                        Cart.addItem(ticket, category, $scope.event);
-                        refreshTicketsList(eventId, category.id, ticket.section);
+                        var successCallback = function () {
+                            refreshTicketsList(eventId, category.id, ticket.section);
+                        }
+                        Cart.addItem(ticket, category, $scope.event, successCallback);
                     });
             } else {
                 var url = '/api/tickets?eventId=' + eventId + '&categoryId=' + category.id + '&states=AVAILABLE,RESALE' + '&quantity=' + quantity;

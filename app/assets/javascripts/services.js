@@ -89,7 +89,7 @@ define(['app'], function (app) {
             return removeAllSelectedItems(index, cart);
         };
 
-        exports.addItem = function (ticket, category, event) {
+        exports.addItem = function (ticket, category, event, preSuccessCallback) {
             var item = {
                 reservedQuantity: 1,
                 desiredQuantity: 1,
@@ -104,6 +104,7 @@ define(['app'], function (app) {
                 FlashMessage.send('error', 'Le billet existe déjà dans le panier.')
             } else {
                 var successCallback = function () {
+                    preSuccessCallback();
                     cart.push(item);
                     updateCartCookie(cart);
                     FlashMessage.send("success", "L'item a été ajouté au panier");
