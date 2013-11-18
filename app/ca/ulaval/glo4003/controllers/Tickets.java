@@ -97,9 +97,27 @@ public class Tickets extends Controller {
             if (!recordsExist) {
                 return notFound();
             }
+            boolean ticketsAreReserved = checkIfTicketsAreReserved(ids);
+            if (!ticketsAreReserved) {
+                return internalServerError();
+            }
             return updateTicketsState(ids, TicketState.SOLD);
         } catch (IOException e) {
             return internalServerError();
+        }
+    }
+
+    private boolean checkIfTicketsAreReserved(List<Long> ids) {
+        try {
+            for (Long id : ids) {
+                Ticket ticket = ticketDao.read(id);
+                if (ticket.getState() != TicketState.RESERVED) {
+                    return false;
+                }
+            }
+            return true;
+        } catch (RecordNotFoundException e) {
+            return false;
         }
     }
 
