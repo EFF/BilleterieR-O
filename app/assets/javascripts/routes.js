@@ -1,4 +1,4 @@
-define(['app', 'controllers', 'filters', 'services', 'directives'], function (app) {
+define(['app'], function (app) {
     return app.config(['$routeProvider', '$locationProvider', function (routeProvider, locationProvider) {
         locationProvider.hashPrefix('!');
 
