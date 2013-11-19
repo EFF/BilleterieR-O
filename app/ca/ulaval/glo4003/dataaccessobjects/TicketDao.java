@@ -10,9 +10,20 @@ import com.google.common.collect.FluentIterable;
 import com.google.inject.Inject;
 import org.apache.commons.lang3.StringUtils;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 public class TicketDao extends PersistedDao<Ticket> {
+
+    Comparator<Ticket> comparatorBySeat = new Comparator<Ticket>() {
+        public int compare(Ticket ticket1, Ticket ticket2) {
+            Integer seat1 = ticket1.getSeat();
+            Integer seat2 = ticket2.getSeat();
+            return seat1.compareTo(seat2);
+        }
+    };
 
     @Inject
     public TicketDao(DaoPersistenceService persistenceService, UniqueConstraintValidator<Ticket>
@@ -34,9 +45,13 @@ public class TicketDao extends PersistedDao<Ticket> {
             results = filterByStates(criteria.getStates(), results);
         }
 
-        if (criteria.getQuantity() > 0)
-            return results.toList().subList(0, criteria.getQuantity());
-        return results.toList();
+        List<Ticket> listResults = new ArrayList<>(results.toList());
+
+        if (criteria.getQuantity() != null && criteria.getQuantity() > 0) {
+            listResults = listResults.subList(0, criteria.getQuantity());
+        }
+        Collections.sort(listResults, comparatorBySeat);
+        return listResults;
     }
 
     private FluentIterable<Ticket> filterBySectionName(final String sectionName, FluentIterable<Ticket> results) {

@@ -49,7 +49,7 @@ public class TicketsController extends Controller {
 
         Long eventId = null;
         Long categoryId = null;
-        int quantity = ConstantsManager.TICKET_SEARCH_CRITERIA_INVALID_QUANTITY;
+        Integer quantity = null;
 
         if (strEventId != null) {
             eventId = Longs.tryParse(strEventId);
@@ -62,7 +62,7 @@ public class TicketsController extends Controller {
         }
         if ((strEventId != null && eventId == null)
                 || (strCategoryId != null && categoryId == null)
-                || (strQuantity != null && quantity == ConstantsManager.TICKET_SEARCH_CRITERIA_INVALID_QUANTITY)) {
+                || (strQuantity != null && quantity == null)) {
             return badRequest();
         }
 
@@ -93,9 +93,13 @@ public class TicketsController extends Controller {
     public Result checkout() {
         try {
             List<Long> ids = getListTicketIds();
-            boolean recordsExist = checkIfRecordsExist(ids);
+            boolean recordsExist = checkIfTicketsExist(ids);
             if (!recordsExist) {
                 return notFound();
+            }
+            boolean ticketsAreReserved = checkIfTicketsAreReserved(ids);
+            if (!ticketsAreReserved) {
+                return internalServerError();
             }
             return updateTicketsState(ids, TicketState.SOLD);
         } catch (IOException e) {
@@ -103,10 +107,24 @@ public class TicketsController extends Controller {
         }
     }
 
+    private boolean checkIfTicketsAreReserved(List<Long> ids) {
+        try {
+            for (Long id : ids) {
+                Ticket ticket = ticketDao.read(id);
+                if (ticket.getState() != TicketState.RESERVED) {
+                    return false;
+                }
+            }
+            return true;
+        } catch (RecordNotFoundException e) {
+            return false;
+        }
+    }
+
     public Result free() {
         try {
             List<Long> ids = getListTicketIds();
-            boolean recordsExist = checkIfRecordsExist(ids, true);
+            boolean recordsExist = checkIfTicketsExist(ids, true);
             if (!recordsExist) {
                 return notFound();
             }
@@ -123,7 +141,7 @@ public class TicketsController extends Controller {
     public Result reserve() {
         try {
             List<Long> ids = getListTicketIds();
-            boolean recordsExist = checkIfRecordsExist(ids, true);
+            boolean recordsExist = checkIfTicketsExist(ids, true);
             if (!recordsExist) {
                 return notFound();
             }
@@ -170,7 +188,8 @@ public class TicketsController extends Controller {
         JsonNode node = json.get(ConstantsManager.TICKET_IDS_FIELD_NAME);
 
         ObjectMapper mapper = new ObjectMapper();
-        TypeReference<List<Long>> typeRef = new TypeReference<List<Long>>(){};
+        TypeReference<List<Long>> typeRef = new TypeReference<List<Long>>() {
+        };
 
         return mapper.readValue(node.traverse(), typeRef);
     }
@@ -221,15 +240,15 @@ public class TicketsController extends Controller {
         }
     }
 
-    private boolean checkIfRecordsExist(List<Long> ids) {
-        return checkIfRecordsExist(ids, false);
+    private boolean checkIfTicketsExist(List<Long> ids) {
+        return checkIfTicketsExist(ids, false);
     }
 
-    private boolean checkIfRecordsExist(List<Long> ids, boolean checkInEventDao) {
+    private boolean checkIfTicketsExist(List<Long> ids, boolean checkIfTicketsEventIdsExist) {
         try {
             for (Long id : ids) {
                 Ticket ticket = ticketDao.read(id);
-                if (checkInEventDao) {
+                if (checkIfTicketsEventIdsExist) {
                     eventDao.findCategory(ticket.getEventId(), ticket.getCategoryId());
                 }
             }
