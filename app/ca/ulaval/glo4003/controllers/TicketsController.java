@@ -121,7 +121,7 @@ public class TicketsController extends Controller {
                 return notFound();
             }
 
-            incrementCategories(ids);
+            incrementNumberOfTicketsInCategories(ids);
             return updateTicketsState(ids, TicketState.AVAILABLE);
         } catch (IOException e) {
             return internalServerError();
@@ -138,7 +138,7 @@ public class TicketsController extends Controller {
                 return notFound();
             }
 
-            decrementCategories(ids);
+            decrementNumberOfTicketsInCategories(ids);
             return updateTicketsState(ids, TicketState.RESERVED);
         } catch (IOException e) {
             return internalServerError();
@@ -200,7 +200,7 @@ public class TicketsController extends Controller {
         return mapper.readValue(node.traverse(), typeRef);
     }
 
-    private void decrementCategories(List<Long> ids) throws RecordNotFoundException, MaximumExceededException {
+    private void decrementNumberOfTicketsInCategories(List<Long> ids) throws RecordNotFoundException, MaximumExceededException {
         Map<String, Collection<Long>> idsByEventDotCategory = regroupByEventAndCategory(ids);
         for (Map.Entry<String, Collection<Long>> entry : idsByEventDotCategory.entrySet()) {
             String splittedKey[] = entry.getKey().split("\\.");
@@ -210,7 +210,7 @@ public class TicketsController extends Controller {
         }
     }
 
-    private void incrementCategories(List<Long> ids) throws RecordNotFoundException {
+    private void incrementNumberOfTicketsInCategories(List<Long> ids) throws RecordNotFoundException {
         Map<String, Collection<Long>> idsByEventDotCategory = regroupByEventAndCategory(ids);
         for (Map.Entry<String, Collection<Long>> entry : idsByEventDotCategory.entrySet()) {
             String splittedKey[] = entry.getKey().split("\\.");
