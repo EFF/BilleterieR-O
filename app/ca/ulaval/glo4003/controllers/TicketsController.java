@@ -2,17 +2,13 @@ package ca.ulaval.glo4003.controllers;
 
 
 import ca.ulaval.glo4003.ConstantsManager;
-import ca.ulaval.glo4003.actions.SecureAction;
-import ca.ulaval.glo4003.dataaccessobjects.EventDao;
-import ca.ulaval.glo4003.dataaccessobjects.TicketDao;
-import ca.ulaval.glo4003.exceptions.MaximumExceededException;
 import ca.ulaval.glo4003.exceptions.RecordNotFoundException;
+import ca.ulaval.glo4003.interactors.TicketsInteractor;
 import ca.ulaval.glo4003.models.Ticket;
 import ca.ulaval.glo4003.models.TicketSearchCriteria;
 import ca.ulaval.glo4003.models.TicketState;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ListMultimap;
-import com.google.common.collect.Multimap;
 import com.google.common.primitives.Ints;
 import com.google.common.primitives.Longs;
 import com.google.inject.Inject;
@@ -22,37 +18,95 @@ import org.codehaus.jackson.type.TypeReference;
 import play.libs.Json;
 import play.mvc.Controller;
 import play.mvc.Result;
-import play.mvc.Security;
 
 import java.io.IOException;
 import java.security.InvalidParameterException;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 
 public class TicketsController extends Controller {
-    private final EventDao eventDao;
-    private final TicketDao ticketDao;
+
+    private final TicketsInteractor ticketsInteractor;
 
     @Inject
-    public TicketsController(EventDao eventDao, TicketDao ticketDao) {
-        this.ticketDao = ticketDao;
-        this.eventDao = eventDao;
+    public TicketsController(TicketsInteractor ticketsInteractor) {
+        this.ticketsInteractor = ticketsInteractor;
     }
 
     public Result index() {
-        try{
+        try {
             TicketSearchCriteria ticketSearchCriteria = extractTicketSearchCriteriaFromRequest();
-            List<Ticket> searchResults = ticketDao.search(ticketSearchCriteria);
+            List<Ticket> searchResults = ticketsInteractor.search(ticketSearchCriteria);
             return ok(Json.toJson(searchResults));
-        }
-        catch(InvalidParameterException ignored){
+        } catch (InvalidParameterException ignored) {
             return badRequest();
         }
-        catch (Exception e) {
-            return internalServerError(e.getMessage());
+    }
+
+    public Result free() {
+        try {
+            List<Long> ids = extractTicketsIdsFromRequest();
+            for (Long ticketId : ids) {
+                ticketsInteractor.freeATicket(ticketId);
+            }
+            return ok();
+        } catch (IOException e) {
+            return internalServerError();
+        } catch (RecordNotFoundException re) {
+            return notFound();
         }
+    }
+
+    public Result reserve() {
+        try {
+            List<Long> ids = extractTicketsIdsFromRequest();
+            for (Long ticketId : ids) {
+                ticketsInteractor.reserveATicket(ticketId);
+            }
+            return ok();
+        } catch (IOException e) {
+            return internalServerError();
+        } catch (RecordNotFoundException re) {
+            return notFound();
+        }
+    }
+
+    public Result show(long id) {
+        try {
+            Ticket ticket = ticketsInteractor.getById(id);
+            return ok(Json.toJson(ticket));
+        } catch (RecordNotFoundException e) {
+            return notFound();
+        }
+    }
+
+    //TODO should this be a facet?
+    public Result showEventSections(long eventId) {
+        TicketSearchCriteria ticketSearchCriteria = new TicketSearchCriteria();
+        ticketSearchCriteria.setEventId(eventId);
+        List<Ticket> tickets = ticketsInteractor.search(ticketSearchCriteria);
+
+        ListMultimap<Long, String> sections = ArrayListMultimap.create();
+        for (Ticket ticket : tickets) {
+            if (!sections.get(ticket.getCategoryId()).contains(ticket.getSection()))
+                sections.put(ticket.getCategoryId(), ticket.getSection());
+        }
+
+        for (Long i : sections.keys()) {
+            Collections.sort(sections.get(i));
+        }
+        return ok(Json.toJson(sections.asMap()));
+    }
+
+    private List<Long> extractTicketsIdsFromRequest() throws IOException {
+        JsonNode json = request().body().asJson();
+        JsonNode node = json.get(ConstantsManager.TICKET_IDS_FIELD_NAME);
+
+        ObjectMapper mapper = new ObjectMapper();
+        TypeReference<List<Long>> typeRef = new TypeReference<List<Long>>() {
+        };
+
+        return mapper.readValue(node.traverse(), typeRef);
     }
 
     private TicketSearchCriteria extractTicketSearchCriteriaFromRequest() {
@@ -97,174 +151,5 @@ public class TicketsController extends Controller {
             }
         }
         return ticketSearchCriteria;
-    }
-
-    @Security.Authenticated(SecureAction.class)
-    public Result checkout() {
-        try {
-            List<Long> ids = getListTicketIds();
-            boolean recordsExist = checkIfTicketsExist(ids);
-            if (!recordsExist) {
-                return notFound();
-            }
-            boolean ticketsAreReserved = checkIfTicketsAreReserved(ids);
-            if (!ticketsAreReserved) {
-                return internalServerError();
-            }
-            return updateTicketsState(ids, TicketState.SOLD);
-        } catch (IOException e) {
-            return internalServerError();
-        }
-    }
-
-    private boolean checkIfTicketsAreReserved(List<Long> ids) {
-        try {
-            for (Long id : ids) {
-                Ticket ticket = ticketDao.read(id);
-                if (ticket.getState() != TicketState.RESERVED) {
-                    return false;
-                }
-            }
-            return true;
-        } catch (RecordNotFoundException e) {
-            return false;
-        }
-    }
-
-    public Result free() {
-        try {
-            List<Long> ids = getListTicketIds();
-            boolean recordsExist = checkIfTicketsExist(ids, true);
-            if (!recordsExist) {
-                return notFound();
-            }
-
-            incrementCategories(ids);
-            return updateTicketsState(ids, TicketState.AVAILABLE);
-        } catch (IOException e) {
-            return internalServerError();
-        } catch (RecordNotFoundException re) {
-            return notFound();
-        }
-    }
-
-    public Result reserve() {
-        try {
-            List<Long> ids = getListTicketIds();
-            boolean recordsExist = checkIfTicketsExist(ids, true);
-            if (!recordsExist) {
-                return notFound();
-            }
-
-            decrementCategories(ids);
-            return updateTicketsState(ids, TicketState.RESERVED);
-        } catch (IOException e) {
-            return internalServerError();
-        } catch (RecordNotFoundException re) {
-            return notFound();
-        } catch (MaximumExceededException e) {
-            return badRequest("Il n'y a pas assez de billets disponibles dans l'une des catégories.");
-        }
-    }
-
-    public Result show(long id) {
-        try {
-            Ticket ticket = ticketDao.read(id);
-            return ok(Json.toJson(ticket));
-        } catch (RecordNotFoundException e) {
-            return notFound();
-        }
-    }
-
-    public Result showEventSections(long eventId) {
-        TicketSearchCriteria ticketSearchCriteria = new TicketSearchCriteria();
-        ticketSearchCriteria.setEventId(eventId);
-        List<Ticket> tickets = ticketDao.search(ticketSearchCriteria);
-
-        ListMultimap<Long, String> sections = ArrayListMultimap.create();
-        for (Ticket ticket : tickets) {
-            if (!sections.get(ticket.getCategoryId()).contains(ticket.getSection()))
-                sections.put(ticket.getCategoryId(), ticket.getSection());
-        }
-
-        for (Long i : sections.keys()) {
-            Collections.sort(sections.get(i));
-        }
-        return ok(Json.toJson(sections.asMap()));
-    }
-
-    private List<Long> getListTicketIds() throws IOException {
-        JsonNode json = request().body().asJson();
-        JsonNode node = json.get(ConstantsManager.TICKET_IDS_FIELD_NAME);
-
-        ObjectMapper mapper = new ObjectMapper();
-        TypeReference<List<Long>> typeRef = new TypeReference<List<Long>>() {
-        };
-
-        return mapper.readValue(node.traverse(), typeRef);
-    }
-
-    private void decrementCategories(List<Long> ids) throws RecordNotFoundException, MaximumExceededException {
-        Map<String, Collection<Long>> idsByEventDotCategory = regroupByEventAndCategory(ids);
-        for (Map.Entry<String, Collection<Long>> entry : idsByEventDotCategory.entrySet()) {
-            String splittedKey[] = entry.getKey().split("\\.");
-            Long eventId = Long.parseLong(splittedKey[0]);
-            Long categoryId = Long.parseLong(splittedKey[1]);
-            eventDao.decrementEventCategoryNumberOfTickets(eventId, categoryId, entry.getValue().size());
-        }
-    }
-
-    private void incrementCategories(List<Long> ids) throws RecordNotFoundException {
-        Map<String, Collection<Long>> idsByEventDotCategory = regroupByEventAndCategory(ids);
-        for (Map.Entry<String, Collection<Long>> entry : idsByEventDotCategory.entrySet()) {
-            String splittedKey[] = entry.getKey().split("\\.");
-            Long eventId = Long.parseLong(splittedKey[0]);
-            Long categoryId = Long.parseLong(splittedKey[1]);
-            eventDao.incrementEventCategoryNumberOfTickets(eventId, categoryId, entry.getValue().size());
-        }
-    }
-
-    private Map<String, Collection<Long>> regroupByEventAndCategory(List<Long> ids) {
-        Multimap<String, Long> idsByEventDotCategory = ArrayListMultimap.create();
-        for (Long id : ids) {
-            try {
-                Ticket ticket = ticketDao.read(id);
-                String key = String.valueOf(ticket.getEventId()) + "." + String.valueOf(ticket.getCategoryId());
-                idsByEventDotCategory.put(key, id);
-            } catch (RecordNotFoundException e) {
-            }
-        }
-        return idsByEventDotCategory.asMap();
-    }
-
-    private Result updateTicketsState(List<Long> ids, TicketState state) {
-        try {
-            for (Long id : ids) {
-                Ticket ticket = ticketDao.read(id);
-                ticket.setState(state);
-                ticketDao.update(ticket);
-            }
-            return ok();
-        } catch (RecordNotFoundException e) {
-            return notFound();
-        }
-    }
-
-    private boolean checkIfTicketsExist(List<Long> ids) {
-        return checkIfTicketsExist(ids, false);
-    }
-
-    private boolean checkIfTicketsExist(List<Long> ids, boolean checkIfTicketsEventIdsExist) {
-        try {
-            for (Long id : ids) {
-                Ticket ticket = ticketDao.read(id);
-                if (checkIfTicketsEventIdsExist) {
-                    eventDao.findCategory(ticket.getEventId(), ticket.getCategoryId());
-                }
-            }
-            return true;
-        } catch (RecordNotFoundException e) {
-            return false;
-        }
     }
 }

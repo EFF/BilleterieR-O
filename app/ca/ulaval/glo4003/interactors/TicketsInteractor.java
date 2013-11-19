@@ -27,6 +27,7 @@ public class TicketsInteractor {
     }
 
     public void reserveATicket(long ticketId) throws RecordNotFoundException {
+        //TODO verify availble
         setNewTicketState(ticketId, TicketState.RESERVED);
     }
 
@@ -35,6 +36,7 @@ public class TicketsInteractor {
     }
 
     public void buyATicket(long ticketId) throws RecordNotFoundException {
+        //TODO verfiy reserved
         setNewTicketState(ticketId, TicketState.SOLD);
     }
 
