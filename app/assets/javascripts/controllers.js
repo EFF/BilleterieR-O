@@ -53,6 +53,19 @@ define(['app'], function (app) {
         $scope.ticketsByCategories = [];
         $scope.quantity = [];
 
+        $http.get('/api/events/' + eventId + '/sections')
+            .success(function (sections) {
+                for (var categoryId in sections) {
+                    $scope.sectionsByCategories.push({
+                        type : 'select',
+                        name : 'sectionList' + categoryId,
+                        selectedValue : null,
+                        options : sections[categoryId]
+                    });
+                }
+                $scope.apiCall();
+        });
+
         $scope.addToCart = function (ticketId, category, quantity) {
             if (ticketId) {
                 var url = '/api/tickets/' + ticketId;
@@ -82,6 +95,12 @@ define(['app'], function (app) {
                 var ticket = tickets[i];
                 if (categoryId == null || ticket.categoryId != categoryId) {
                     categoryId = ticket.categoryId;
+                    var emptyTicketList = {
+                                    type : 'select',
+                                    name : 'ticketList' + categoryId,
+                                    selectedValue : '',
+                                    options : []
+                                };
                     $scope.ticketsByCategories[categoryId] = emptyTicketList;
                 }
                 $scope.ticketsByCategories[categoryId].selectedValue = '';
@@ -129,19 +148,6 @@ define(['app'], function (app) {
                 .success(apiCallSuccessCallback)
                 .error(apiCallErrorCallback);
         };
-
-        $http.get('/api/events/' + eventId + '/sections')
-            .success(function (sections) {
-                for (var categoryId in sections) {
-                    $scope.sectionsByCategories.push({
-                        type : 'select',
-                        name : 'sectionList' + categoryId,
-                        selectedValue : null,
-                        options : sections[categoryId]
-                    });
-                }});
-
-        $scope.apiCall();
     }]);
 
     app.controller('ThanksController', ['$scope', 'Cart',

@@ -37,8 +37,8 @@ public class TestBootstrapper implements Bootstrapper {
 
         Event event1 = new Event(soccer, Gender.MALE);
         event1.setDate(new LocalDateTime());
-        Category category1 = new Category(12.0, 120, 1, CategoryType.GENERAL_ADMISSION);
-        Category category2 = new Category(8.0, 1200, 2, CategoryType.GENERAL_ADMISSION);
+        Category category1 = new Category(12.0, 120, 0, CategoryType.GENERAL_ADMISSION);
+        Category category2 = new Category(8.0, 1200, 1, CategoryType.GENERAL_ADMISSION);
 
         event1.addCategory(category1);
         event1.addCategory(category2);
@@ -46,8 +46,8 @@ public class TestBootstrapper implements Bootstrapper {
 
         Event event2 = new Event(soccer, Gender.FEMALE);
         event2.setDate(new LocalDateTime());
-        Category category3 = new Category(12.0, 120, 3, CategoryType.GENERAL_ADMISSION);
-        Category category4 = new Category(8.0, 1200, 4, CategoryType.GENERAL_ADMISSION);
+        Category category3 = new Category(12.0, 120, 0, CategoryType.GENERAL_ADMISSION);
+        Category category4 = new Category(8.0, 1200, 1, CategoryType.SEAT);
 
         event2.addCategory(category3);
         event2.addCategory(category4);
@@ -79,10 +79,12 @@ public class TestBootstrapper implements Bootstrapper {
                 while (numberOfTickets > 0) {
                     String strSection = "";
                     int seat = ConstantsManager.TICKET_INVALID_SEAT_NUMBER;
+
                     if (category.getType() == CategoryType.SEAT) {
-                        strSection = "Niveau " + (new Random().nextInt(2) + 1) * 100;
+                        strSection = (numberOfTickets % 2 == 0) ? "Niveau 100" : "Niveau 200";
                         seat = numberOfTickets;
                     }
+
                     Ticket ticket = new Ticket(event.getId(),
                             category.getId(),
                             strSection,

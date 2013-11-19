@@ -49,13 +49,11 @@
             <ANY ng-switch="category.type">
                 <ANY ng-switch-when="SEAT">
                     <select id="{{ticketsByCategories[category.id].name}}"
-                            class="form-control"
+                            class="form-control ticketSeatsCombo"
                             ng-model="ticketsByCategories[category.id].selectedValue">
                         <option value="">Siège disponible...</option>
                         <option value="{{ticket.id}}"
-                                ng-repeat="ticket in ticketsByCategories[category.id].options">
-                            {{ticket.seat}}
-                        </option>
+                                ng-repeat="ticket in ticketsByCategories[category.id].options">{{ticket.seat}}</option>
                     </select>
                 </ANY>
                 <ANY ng-switch-when="GENERAL_ADMISSION">
@@ -91,7 +89,7 @@
             <a href="/#!/tickets/{{ticketsByCategories[category.id].selectedValue}}"
                ng-disabled="!ticketsByCategories[category.id].selectedValue && category.type == 'SEAT'"
                ng-hide="category.type == 'GENERAL_ADMISSION'"
-               class="btn btn-info">
+               class="btn btn-info btn-details{{category.id}}">
                 Détails
             </a>
         </td>

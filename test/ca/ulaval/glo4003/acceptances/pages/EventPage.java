@@ -4,6 +4,9 @@ import org.fluentlenium.core.domain.FluentList;
 import org.fluentlenium.core.domain.FluentWebElement;
 import org.openqa.selenium.WebDriver;
 
+import static org.fluentlenium.core.filter.FilterConstructor.withId;
+import static org.fluentlenium.core.filter.FilterConstructor.withText;
+
 public class EventPage extends BaseFluentPage {
 
     private final int id;
@@ -48,5 +51,27 @@ public class EventPage extends BaseFluentPage {
     public int getTicketNumberForCategory(int categoryIndex) {
         String text = find(".numberOfTickets", categoryIndex).getText();
         return Integer.parseInt(text);
+    }
+
+    public void selectCombo(String comboName, String value) {
+        try {
+            find("select", withId().equalTo(comboName)).find("option", withText().equalTo(value)).click();
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            System.out.println(e);
+        }
+    }
+
+    public String getComboOptionValue(String comboName, String value){
+         return find("select", withId().equalTo(comboName)).find("option", withText().equalTo(value)).getValue();
+    }
+
+    public void clickOnButton(String clazz) {
+        find(clazz).click();
+        try {
+            Thread.sleep(500);
+        } catch (InterruptedException e) {
+            System.out.println(e);
+        }
     }
 }
