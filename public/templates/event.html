@@ -21,7 +21,7 @@
     <tbody>
     <tr class="category" ng-repeat="category in event.categories">
         <td class="price">{{category.price}}$</td>
-        <td class="numberOfTickets">{{category.numberOfTickets}}</td>
+        <td class="numberOfTickets">{{ticketsByCategories[category.id].numberOfTickets}}</td>
         <td>
             <p>{{category.type | categoryType}}</p>
         </td>

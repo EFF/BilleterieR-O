@@ -13,8 +13,6 @@ import ca.ulaval.glo4003.models.TicketState;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ListMultimap;
 import com.google.common.collect.Multimap;
-import com.google.common.primitives.Ints;
-import com.google.common.primitives.Longs;
 import com.google.inject.Inject;
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.map.ObjectMapper;
@@ -47,30 +45,20 @@ public class TicketsController extends Controller {
         final String stringStates = request().getQueryString("states");
         final String strQuantity = request().getQueryString("quantity");
 
-        Long eventId = null;
-        Long categoryId = null;
-        Integer quantity = null;
+        TicketSearchCriteria ticketSearchCriteria = new TicketSearchCriteria();
 
-        if (strEventId != null) {
-            eventId = Longs.tryParse(strEventId);
-        }
-        if (strCategoryId != null) {
-            categoryId = Longs.tryParse(strCategoryId);
-        }
-        if (strQuantity != null) {
-            quantity = Ints.tryParse(strQuantity);
-        }
-        if ((strEventId != null && eventId == null)
-                || (strCategoryId != null && categoryId == null)
-                || (strQuantity != null && quantity == null)) {
+        try {
+            Long eventId = strEventId == null ? null : Long.parseLong(strEventId);
+            Long categoryId = strCategoryId == null ? null : Long.parseLong(strCategoryId);
+            Integer quantity = strQuantity == null ? null : Integer.parseInt(strQuantity);
+
+            ticketSearchCriteria.setEventId(eventId);
+            ticketSearchCriteria.setCategoryId(categoryId);
+            ticketSearchCriteria.setQuantity(quantity);
+            ticketSearchCriteria.setSectionName(sectionName);
+        } catch (NumberFormatException e) {
             return badRequest();
         }
-
-        TicketSearchCriteria ticketSearchCriteria = new TicketSearchCriteria();
-        ticketSearchCriteria.setEventId(eventId);
-        ticketSearchCriteria.setCategoryId(categoryId);
-        ticketSearchCriteria.setQuantity(quantity);
-        ticketSearchCriteria.setSectionName(sectionName);
 
         if (stringStates != null) {
             String states[] = stringStates.split(",");
@@ -107,17 +95,21 @@ public class TicketsController extends Controller {
         }
     }
 
-    private boolean checkIfTicketsAreReserved(List<Long> ids) {
+    public Result getEventNumberOfTickets(long eventId) {
+        return getEventCategoryNumberOfTickets(eventId, null);
+    }
+
+    public Result getEventCategoryNumberOfTickets(long eventId, Long categoryId) {
+        TicketSearchCriteria ticketSearchCriteria = new TicketSearchCriteria();
+        ticketSearchCriteria.addState(TicketState.AVAILABLE);
+        ticketSearchCriteria.setEventId(eventId);
+        if (categoryId != null) {
+            ticketSearchCriteria.setCategoryId(categoryId);
+        }
         try {
-            for (Long id : ids) {
-                Ticket ticket = ticketDao.read(id);
-                if (ticket.getState() != TicketState.RESERVED) {
-                    return false;
-                }
-            }
-            return true;
-        } catch (RecordNotFoundException e) {
-            return false;
+            return ok(Json.toJson(ticketDao.search(ticketSearchCriteria).size()));
+        } catch (Exception e) {
+            return internalServerError(e.getMessage());
         }
     }
 
@@ -181,6 +173,20 @@ public class TicketsController extends Controller {
             Collections.sort(sections.get(i));
         }
         return ok(Json.toJson(sections.asMap()));
+    }
+
+    private boolean checkIfTicketsAreReserved(List<Long> ids) {
+        try {
+            for (Long id : ids) {
+                Ticket ticket = ticketDao.read(id);
+                if (ticket.getState() != TicketState.RESERVED) {
+                    return false;
+                }
+            }
+            return true;
+        } catch (RecordNotFoundException e) {
+            return false;
+        }
     }
 
     private List<Long> getListTicketIds() throws IOException {
