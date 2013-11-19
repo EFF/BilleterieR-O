@@ -47,7 +47,7 @@ public class TicketDao extends PersistedDao<Ticket> {
 
         List<Ticket> listResults = new ArrayList<>(results.toList());
 
-        if (criteria.getQuantity() > 0) {
+        if (criteria.getQuantity() != null && criteria.getQuantity() > 0) {
             listResults = listResults.subList(0, criteria.getQuantity());
         }
         Collections.sort(listResults, comparatorBySeat);
