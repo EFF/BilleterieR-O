@@ -101,16 +101,18 @@ public class StagingBootstrapper implements Bootstrapper {
             for (Category category : event.getCategories()) {
                 int numberOfTickets = category.getNumberOfTickets();
                 while (numberOfTickets > 0) {
-                    String strSection = "";
-                    int seat = ConstantsManager.TICKET_INVALID_SEAT_NUMBER;
+                    Ticket ticket;
                     if (category.getType() == CategoryType.SEAT) {
-                        strSection = "Niveau " + (new Random().nextInt(2) + 1) * 100;
-                        seat = numberOfTickets;
+                        ticket = TicketFactory.createSeatTicket(
+                                event.getId(),
+                                category.getId(),
+                                "Niveau " + (new Random().nextInt(2) + 1) * 100,
+                                numberOfTickets);
+                    } else {
+                        ticket = TicketFactory.createGeneralAdmissionTicket(
+                                event.getId(),
+                                category.getId());
                     }
-                    Ticket ticket = new Ticket(event.getId(),
-                            category.getId(),
-                            strSection,
-                            seat);
                     ticketDao.create(ticket);
                     numberOfTickets--;
                 }
