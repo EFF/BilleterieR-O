@@ -11,12 +11,14 @@ import org.jukito.JukitoModule;
 import org.jukito.JukitoRunner;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.InOrder;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 import static org.mockito.Mockito.*;
 
 @RunWith(JukitoRunner.class)
@@ -103,6 +105,70 @@ public class TicketsInteractorTest {
         inOrder.verify(mockedTicketDao, times(1)).update(mockedTicket);
     }
 
+    @Test(expected = RecordNotFoundException.class)
+    public void getByIdThrowsRecordNotFoundIfTheTicketDoesNotExist(TicketDao mockedTicketDao) throws
+            RecordNotFoundException {
+        long ticketId = 1;
+        doThrow(new RecordNotFoundException()).when(mockedTicketDao).read(ticketId);
+
+        ticketsInteractor.getById(ticketId);
+    }
+
+    @Test
+    public void getByIdReturnsTheTicket(TicketDao mockedTicketDao) throws
+            RecordNotFoundException {
+        long ticketId = 1;
+        Ticket mockedTicket = mock(Ticket.class);
+        when(mockedTicketDao.read(ticketId)).thenReturn(mockedTicket);
+
+        Ticket ticket = ticketsInteractor.getById(ticketId);
+
+        assertEquals(mockedTicket, ticket);
+    }
+
+    @Test
+    public void numberOfTicketAvailableByEventId(TicketDao mockedTicketDao) {
+        List<Ticket> mockedSearchResult = new ArrayList<>();
+        mockedSearchResult.add(mock(Ticket.class));
+        mockedSearchResult.add(mock(Ticket.class));
+        Long eventId = 1L;
+        when(mockedTicketDao.search(any(TicketSearchCriteria.class))).thenReturn(mockedSearchResult);
+
+        int numberOfTickets = ticketsInteractor.numberOfTicketAvailable(eventId);
+
+        assertEquals(mockedSearchResult.size(), numberOfTickets);
+        ArgumentCaptor<TicketSearchCriteria> argument = ArgumentCaptor.forClass(TicketSearchCriteria.class);
+        verify(mockedTicketDao).search(argument.capture());
+        assertEquals(eventId, argument.getValue().getEventId());
+        assertNull(argument.getValue().getCategoryId());
+        assertNull(argument.getValue().getQuantity());
+        assertNull(argument.getValue().getSectionName());
+        assertEquals(1, argument.getValue().getStates().size());
+        assertEquals(TicketState.AVAILABLE, argument.getValue().getStates().get(0));
+    }
+
+    @Test
+    public void numberOfTicketAvailableByEventIdAndCategoryId(TicketDao mockedTicketDao) {
+        List<Ticket> mockedSearchResult = new ArrayList<>();
+        mockedSearchResult.add(mock(Ticket.class));
+        mockedSearchResult.add(mock(Ticket.class));
+        Long eventId = 1L;
+        Long categoryId = 2L;
+        when(mockedTicketDao.search(any(TicketSearchCriteria.class))).thenReturn(mockedSearchResult);
+
+        int numberOfTickets = ticketsInteractor.numberOfTicketAvailable(eventId, categoryId);
+
+        assertEquals(mockedSearchResult.size(), numberOfTickets);
+        ArgumentCaptor<TicketSearchCriteria> argument = ArgumentCaptor.forClass(TicketSearchCriteria.class);
+        verify(mockedTicketDao).search(argument.capture());
+        assertEquals(eventId, argument.getValue().getEventId());
+        assertEquals(categoryId, argument.getValue().getCategoryId());
+        assertNull(argument.getValue().getQuantity());
+        assertNull(argument.getValue().getSectionName());
+        assertEquals(1, argument.getValue().getStates().size());
+        assertEquals(TicketState.AVAILABLE, argument.getValue().getStates().get(0));
+    }
+
     public static class TestModule extends JukitoModule {
 
         @Override
@@ -110,5 +176,4 @@ public class TicketsInteractorTest {
             forceMock(TicketDao.class);
         }
     }
-
 }

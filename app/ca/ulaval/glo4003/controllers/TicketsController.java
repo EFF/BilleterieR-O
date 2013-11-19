@@ -25,6 +25,7 @@ import play.mvc.Result;
 import play.mvc.Security;
 
 import java.io.IOException;
+import java.security.InvalidParameterException;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -41,6 +42,20 @@ public class TicketsController extends Controller {
     }
 
     public Result index() {
+        try{
+            TicketSearchCriteria ticketSearchCriteria = extractTicketSearchCriteriaFromRequest();
+            List<Ticket> searchResults = ticketDao.search(ticketSearchCriteria);
+            return ok(Json.toJson(searchResults));
+        }
+        catch(InvalidParameterException ignored){
+            return badRequest();
+        }
+        catch (Exception e) {
+            return internalServerError(e.getMessage());
+        }
+    }
+
+    private TicketSearchCriteria extractTicketSearchCriteriaFromRequest() {
         final String strEventId = request().getQueryString("eventId");
         final String sectionName = request().getQueryString("sectionName");
         final String strCategoryId = request().getQueryString("categoryId");
@@ -63,7 +78,7 @@ public class TicketsController extends Controller {
         if ((strEventId != null && eventId == null)
                 || (strCategoryId != null && categoryId == null)
                 || (strQuantity != null && quantity == null)) {
-            return badRequest();
+            throw new InvalidParameterException();
         }
 
         TicketSearchCriteria ticketSearchCriteria = new TicketSearchCriteria();
@@ -81,12 +96,7 @@ public class TicketsController extends Controller {
                 }
             }
         }
-
-        try {
-            return ok(Json.toJson(ticketDao.search(ticketSearchCriteria)));
-        } catch (Exception e) {
-            return internalServerError(e.getMessage());
-        }
+        return ticketSearchCriteria;
     }
 
     @Security.Authenticated(SecureAction.class)

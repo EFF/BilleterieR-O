@@ -22,6 +22,7 @@ public class Event extends Record implements Serializable {
         categories = new ArrayList<>();
     }
 
+    //TODO use TicketsInteractor::numberOfTicketAvailable instead
     public int getTotalNumberOfTickets() {
         int total = 0;
 
