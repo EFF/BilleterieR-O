@@ -106,7 +106,7 @@ public class StagingBootstrapper implements Bootstrapper {
                         ticket = TicketFactory.createAvailableSeatTicket(
                                 event.getId(),
                                 category.getId(),
-                                "Niveau " + (new Random().nextInt(2) + 1) * 100,
+                                (numberOfTickets % 2 == 0) ? "Niveau 100" : "Niveau 200",
                                 numberOfTickets);
                     } else {
                         ticket = TicketFactory.createAvailableGeneralAdmissionTicket(
