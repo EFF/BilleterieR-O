@@ -155,6 +155,31 @@ public class CartTest {
     }
 
     @Test
+    public void confirmPerformsTheTransaction() {
+        running(testServer(3333, fakeApplication(new TestGlobal())), FIREFOX, new F.Callback<TestBrowser>() {
+            @Override
+            public void invoke(TestBrowser browser) {
+                LoginPage loginPage = new LoginPage(browser.getDriver());
+                EventPage eventPage1 = new EventPage(browser.getDriver(), FIRST_EVENT);
+                CartPage cartPage = new CartPage(browser.getDriver());
+                PaymentResultPage resultPage = new PaymentResultPage(browser.getDriver());
+
+                goToLoginPage(loginPage);
+
+                loginPage.performLogin(EMAIL, PASSWORD);
+
+                goToEventPage(eventPage1);
+                eventPage1.addTicketsToCartForCategory(0, 1);
+
+                goToCartPage(cartPage, 1);
+                cartPage.payWithCreditCard();
+                cartPage.confirm(browser.getDriver());
+                assertEquals(0, resultPage.getCartSize());
+            }
+        });
+    }
+
+    @Test
     public void declineDoesntPerformTheTransaction() {
         running(testServer(3333, fakeApplication(new TestGlobal())), FIREFOX, new F.Callback<TestBrowser>() {
             @Override
