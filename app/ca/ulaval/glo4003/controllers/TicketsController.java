@@ -80,6 +80,28 @@ public class TicketsController extends Controller {
         }
     }
 
+    public Result numberOfTickets() {
+        String strEventId = request().getQueryString("strEventId");
+        String strCategoryId = request().getQueryString("strCategoryId");
+        int numberOfTickets;
+        Long eventId = null;
+
+        try {
+            Longs.tryParse(strEventId);
+        } catch (NumberFormatException ignored) {
+            return badRequest();
+        }
+
+        try {
+            Long categoryId = Longs.tryParse(strCategoryId);
+            numberOfTickets = ticketsInteractor.numberOfTicketAvailable(eventId, categoryId);
+        } catch (NumberFormatException ignored) {
+            numberOfTickets = ticketsInteractor.numberOfTicketAvailable(eventId);
+        }
+
+        return ok(Json.toJson(numberOfTickets));
+    }
+
     //TODO should this be a facet?
     public Result showEventSections(long eventId) {
         TicketSearchCriteria ticketSearchCriteria = new TicketSearchCriteria();
