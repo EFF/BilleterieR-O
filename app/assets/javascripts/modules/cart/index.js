@@ -1,4 +1,5 @@
 define([
     './cart-service',
-    './cart-controller'
+    './cart-controller',
+    './thanks-controller'
 ], function () {} );

@@ -11,6 +11,7 @@ define(['./module'], function (CartModule) {
         ;
 
         var updateTicketState = function (tickets, successCallback, errorCallback, url) {
+            console.log(tickets);
             if (tickets.length <= 0) {
                 return;
             }
@@ -149,6 +150,7 @@ define(['./module'], function (CartModule) {
         };
 
         exports.removeItem = function (index) {
+            console.log(index);
             var successCallback = function () {
                 cart.splice(index, 1);
                 updateCartCookie(cart);

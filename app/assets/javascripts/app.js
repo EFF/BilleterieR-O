@@ -1,7 +1,7 @@
 define([
     'angular',
     'angularCookies',
-    './modules/independent_components/index',
+    './modules/commons/index',
     './modules/flash_message/index',
     './modules/cart/index',
     './modules/event/index',

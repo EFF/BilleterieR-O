@@ -38,7 +38,7 @@ define(['./module'], function (CartModule) {
 
             $scope.checkout = function () {
                 if (Cart.isSelectionEmpty()) {
-                    FlashMessage.send('warning', 'La sélection d\'achat est vide');
+                    FlashMessage.send('warning', "La sélection d'achat est vide");
                 }
                 else if (!Login.isLoggedIn) {
                     notifyUserToLogin();
