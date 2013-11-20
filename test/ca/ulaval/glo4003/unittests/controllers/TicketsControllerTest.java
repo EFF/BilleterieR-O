@@ -32,11 +32,13 @@ import static org.mockito.Mockito.*;
 @RunWith(JukitoRunner.class)
 public class TicketsControllerTest extends BaseControllerTest {
     private static final String A_SECTION = "section 100";
-    private static final long A_SEAT = 55;
+    private static final int A_SEAT = 55;
     private static final long AN_EVENT_ID = 1;
     private static final long A_CATEGORY_ID = 1;
     private static final double A_TICKET_PRICE = 11.00;
     private static final int A_TICKET_NUMBER = 77;
+    private static final long A_TICKET_ID = 1;
+    private static final long ANOTHER_TICKET_ID = 2;
     private Ticket firstTicket;
     private Ticket secondTicket;
     private TicketSearchCriteria ticketSearchCriteria;
@@ -48,7 +50,9 @@ public class TicketsControllerTest extends BaseControllerTest {
     @Before
     public void setup(TicketDao mockedTicketDao) {
         firstTicket = new Ticket(AN_EVENT_ID, A_CATEGORY_ID, A_SECTION, A_SEAT);
+        firstTicket.setId(A_TICKET_ID);
         secondTicket = new Ticket(AN_EVENT_ID, A_CATEGORY_ID, A_SECTION, A_SEAT + 1);
+        secondTicket.setId(ANOTHER_TICKET_ID);
         tempTicketsList = new ArrayList<>();
         tempTicketsList.add(firstTicket);
         tempTicketsList.add(secondTicket);
@@ -130,6 +134,7 @@ public class TicketsControllerTest extends BaseControllerTest {
 
     @Test
     public void checkoutTicketWhenItExists(TicketDao mockedTicketDao, EventDao mockedEventDao) throws RecordNotFoundException {
+        firstTicket.setState(TicketState.RESERVED);
         when(mockedTicketDao.read(firstTicket.getId())).thenReturn(firstTicket);
         when(mockedEventDao.findCategory(firstTicket.getEventId(), firstTicket.getCategoryId()))
                 .thenReturn(new Category(A_TICKET_PRICE, A_TICKET_NUMBER, A_CATEGORY_ID,
@@ -143,6 +148,31 @@ public class TicketsControllerTest extends BaseControllerTest {
         Result result = ticketsController.checkout();
 
         assertEquals(Helpers.OK, Helpers.status(result));
+    }
+
+    @Test
+    public void checkoutReturnInternalServerErrorWhenOneTicketIsNotReserved(TicketDao mockedTicketDao) throws RecordNotFoundException {
+        Ticket reservedTicket = new Ticket(AN_EVENT_ID, A_CATEGORY_ID, A_SECTION, A_SEAT);
+        reservedTicket.setId(A_TICKET_ID);
+        Ticket notReservedTicket = new Ticket(AN_EVENT_ID, A_CATEGORY_ID, A_SECTION, A_SEAT + 1);
+        notReservedTicket.setId(ANOTHER_TICKET_ID);
+        reservedTicket.setState(TicketState.RESERVED);
+        notReservedTicket.setState(TicketState.AVAILABLE);
+
+        when(mockedTicketDao.read(reservedTicket.getId())).thenReturn(reservedTicket);
+        when(mockedTicketDao.read(notReservedTicket.getId())).thenReturn(notReservedTicket);
+
+        ObjectNode json = Json.newObject();
+        ArrayNode node = json.putArray(ConstantsManager.TICKET_IDS_FIELD_NAME);
+        node.add(A_TICKET_ID);
+        node.add(ANOTHER_TICKET_ID);
+        when(mockedBody.asJson()).thenReturn(json);
+
+        Result result = ticketsController.checkout();
+
+        assertEquals(Helpers.INTERNAL_SERVER_ERROR, Helpers.status(result));
+        verify(mockedTicketDao, times(2)).read(A_TICKET_ID);
+        verify(mockedTicketDao, times(2)).read(ANOTHER_TICKET_ID);
     }
 
     @Test
@@ -202,7 +232,7 @@ public class TicketsControllerTest extends BaseControllerTest {
     }
 
     @Test
-     public void reserveTicketWhenDoesNotExistsThenReturnsNotFound(TicketDao mockedTicketDao, EventDao mockedEventDao) throws RecordNotFoundException {
+    public void reserveTicketWhenDoesNotExistsThenReturnsNotFound(TicketDao mockedTicketDao, EventDao mockedEventDao) throws RecordNotFoundException {
         when(mockedTicketDao.read(anyLong())).thenThrow(new RecordNotFoundException());
         ObjectNode json = Json.newObject();
         ArrayNode node = json.putArray(ConstantsManager.TICKET_IDS_FIELD_NAME);
@@ -235,7 +265,7 @@ public class TicketsControllerTest extends BaseControllerTest {
     }
 
     @Test
-     public void showEventSectionsWhenTicketExists(TicketDao mockedTicketDao) throws RecordNotFoundException {
+    public void showEventSectionsWhenTicketExists(TicketDao mockedTicketDao) throws RecordNotFoundException {
         ticketSearchCriteria.setEventId(firstTicket.getEventId());
         ticketSearchCriteria.setCategoryId(firstTicket.getCategoryId());
         List<Ticket> tempTicketList = new ArrayList<>();

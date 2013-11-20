@@ -7,14 +7,14 @@ public class Ticket extends Record implements Serializable {
     private long categoryId;
     private long eventId;
     private String section;
-    private long seat;
+    private int seat;
     private TicketState state;
 
-    public Ticket(long eventId, long categoryId, String section, long seat) {
+    public Ticket(long eventId, long categoryId, String section, int seat) {
         this(eventId, categoryId, section, seat, TicketState.AVAILABLE);
     }
 
-    public Ticket(long eventId, long categoryId, String section, long seat, TicketState state) {
+    public Ticket(long eventId, long categoryId, String section, int seat, TicketState state) {
         this.categoryId = categoryId;
         this.eventId = eventId;
         this.section = section;
@@ -34,7 +34,7 @@ public class Ticket extends Record implements Serializable {
         return section;
     }
 
-    public long getSeat() {
+    public int getSeat() {
         return seat;
     }
 
