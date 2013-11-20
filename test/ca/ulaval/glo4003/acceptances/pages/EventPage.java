@@ -54,24 +54,15 @@ public class EventPage extends BaseFluentPage {
     }
 
     public void selectCombo(String comboName, String value) {
-        try {
-            find("select", withId().equalTo(comboName)).find("option", withText().equalTo(value)).click();
-            Thread.sleep(1000);
-        } catch (InterruptedException e) {
-            System.out.println(e);
-        }
+        find("select", withId().equalTo(comboName)).find("option", withText().equalTo(value)).click();
+        await().atMost(TIMEOUT).until('#' + comboName).with(value);
     }
 
     public String getComboOptionValue(String comboName, String value){
-         return find("select", withId().equalTo(comboName)).find("option", withText().equalTo(value)).getValue();
+        return find("select", withId().equalTo(comboName)).find("option", withText().equalTo(value)).getValue();
     }
 
     public void clickOnButton(String clazz) {
         find(clazz).click();
-        try {
-            Thread.sleep(500);
-        } catch (InterruptedException e) {
-            System.out.println(e);
-        }
     }
 }

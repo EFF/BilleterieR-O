@@ -155,31 +155,6 @@ public class CartTest {
     }
 
     @Test
-    public void confirmPerformsTheTransaction() {
-        running(testServer(3333, fakeApplication(new TestGlobal())), FIREFOX, new F.Callback<TestBrowser>() {
-            @Override
-            public void invoke(TestBrowser browser) {
-                LoginPage loginPage = new LoginPage(browser.getDriver());
-                EventPage eventPage1 = new EventPage(browser.getDriver(), FIRST_EVENT);
-                CartPage cartPage = new CartPage(browser.getDriver());
-                PaymentResultPage resultPage = new PaymentResultPage(browser.getDriver());
-
-                goToLoginPage(loginPage);
-
-                loginPage.performLogin(EMAIL, PASSWORD);
-
-                goToEventPage(eventPage1);
-                eventPage1.addTicketsToCartForCategory(0, 1);
-
-                goToCartPage(cartPage, 1);
-                cartPage.payWithCreditCard();
-                cartPage.confirm(browser.getDriver());
-                assertEquals(0, resultPage.getCartSize());
-            }
-        });
-    }
-
-    @Test
     public void declineDoesntPerformTheTransaction() {
         running(testServer(3333, fakeApplication(new TestGlobal())), FIREFOX, new F.Callback<TestBrowser>() {
             @Override
@@ -272,6 +247,7 @@ public class CartTest {
                 eventPage1.addTicketsToCartForCategory(0, 1);
                 goToCartPage(cartPage, 1);
                 cartPage.modifyNumberOfTicketsForItem(0, EXCEEDED_TICKET_QUANTITY);
+                eventPage1.waitForErrorMessageToDisplay();
 
                 assertThat(cartPage.getQuantityForItem(0)).isNotEqualTo(EXCEEDED_TICKET_QUANTITY);
             }
@@ -290,6 +266,7 @@ public class CartTest {
                 eventPage1.addTicketsToCartForCategory(0, 1);
                 goToCartPage(cartPage, 1);
                 cartPage.modifyNumberOfTicketsForItem(0, 0);
+                cartPage.waitUntilItemsHasSize(0);
 
                 assertThat(cartPage.getNumberOfItems()).isEqualTo(0);
             }
