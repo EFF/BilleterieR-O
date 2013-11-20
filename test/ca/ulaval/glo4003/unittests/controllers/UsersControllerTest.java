@@ -4,7 +4,9 @@ import ca.ulaval.glo4003.ConstantsManager;
 import ca.ulaval.glo4003.controllers.UsersController;
 import ca.ulaval.glo4003.dataaccessobjects.UniqueValidationException;
 import ca.ulaval.glo4003.dataaccessobjects.UserDao;
+import ca.ulaval.glo4003.exceptions.InvalidActualPasswordException;
 import ca.ulaval.glo4003.exceptions.RecordNotFoundException;
+import ca.ulaval.glo4003.interactors.UsersInteractor;
 import ca.ulaval.glo4003.models.User;
 import com.google.inject.Inject;
 import org.codehaus.jackson.node.ObjectNode;
@@ -16,7 +18,9 @@ import play.libs.Json;
 import play.mvc.Http;
 import play.mvc.Result;
 
+import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
+import java.util.HashSet;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.anyString;
@@ -25,66 +29,62 @@ import static play.test.Helpers.contentAsString;
 import static play.test.Helpers.status;
 
 @RunWith(JukitoRunner.class)
-public class UserControllerTest extends BaseControllerTest {
+public class UsersControllerTest extends BaseControllerTest {
 
     private static final String A_PASSWORD = "secret";
     private static final String ANOTHER_PASSWORD = "secret2";
     private static final String NEW_PASSWORD = "secret2";
     private static final String AN_EMAIL = "email@test.com";
     private static final String INVALID_EMAIL = "invalid";
-
     @Inject
     private UsersController usersController;
     @Inject
     private UserDao mockedUserDao;
 
     @Test
-    public void updateEmailWithWrongUsernameSession() throws RecordNotFoundException {
+    public void updateEmailWithWrongUsernameSession(UsersInteractor mockedUsersInteractor) throws RecordNotFoundException {
         addEmailBody(AN_EMAIL);
-        when(mockedUserDao.findByEmail(anyString())).thenThrow(RecordNotFoundException.class);
+        doThrow(new RecordNotFoundException()).when(mockedUsersInteractor).updateEmail(anyString(),
+                anyString());
 
         Result result = usersController.updateEmail();
 
         assertEquals(Http.Status.UNAUTHORIZED, status(result));
         assertEquals(UsersController.BAD_SESSION_WRONG_USERNAME, contentAsString(result));
-        verify(mockedUserDao, never()).update(any(User.class));
     }
 
     @Test
     public void updateEmailWithAUniqueEmail() throws RecordNotFoundException {
-        User mockedUser = mock(User.class);
         addEmailBody(AN_EMAIL);
-        when(mockedUserDao.findByEmail(anyString())).thenReturn(mockedUser);
 
         Result result = usersController.updateEmail();
 
         assertEquals(Http.Status.OK, status(result));
-        verify(mockedUser, times(1)).setEmail(AN_EMAIL);
-        verify(mockedUserDao, times(1)).update(mockedUser);
     }
 
     @Test
-    public void updateEmailWithANonUniqueEmail() throws RecordNotFoundException {
+    public void updateEmailWithANonUniqueEmail(UsersInteractor mockedUsersInteractor) throws RecordNotFoundException {
         addEmailBody(AN_EMAIL);
-        when(mockedUserDao.findByEmail(anyString())).thenThrow(UniqueValidationException.class);
+        doThrow(new UniqueValidationException()).when(mockedUsersInteractor).updateEmail(anyString(),
+                anyString());
 
         Result result = usersController.updateEmail();
 
         assertEquals(Http.Status.UNAUTHORIZED, status(result));
         assertEquals(UsersController.EMAIL_SHOULD_BE_UNIQUE, contentAsString(result));
-        verify(mockedUserDao, never()).update(any(User.class));
     }
 
     @Test
-    public void updateEmailWithInvalidEmail() throws RecordNotFoundException {
+    public void updateEmailWithInvalidEmail(UsersInteractor mockedUsersInteractor) throws RecordNotFoundException {
         addEmailBody(INVALID_EMAIL);
-        when(mockedUserDao.findByEmail(anyString())).thenThrow(ConstraintViolationException.class);
+        doThrow(new ConstraintViolationException(new HashSet<ConstraintViolation<?>>())).when(mockedUsersInteractor)
+                .updateEmail(anyString(),
+                        anyString());
 
         Result result = usersController.updateEmail();
 
         assertEquals(Http.Status.UNAUTHORIZED, status(result));
         assertEquals(UsersController.EMAIL_IS_INVALID, contentAsString(result));
-        verify(mockedUserDao, never()).update(any(User.class));
     }
 
     @Test
@@ -95,47 +95,40 @@ public class UserControllerTest extends BaseControllerTest {
 
         assertEquals(Http.Status.BAD_REQUEST, status(result));
         assertEquals(UsersController.EMAIL_EXPECTED, contentAsString(result));
-        verify(mockedUserDao, never()).update(any(User.class));
     }
 
     @Test
-    public void updatePasswordWithWrongUsernameSession() throws RecordNotFoundException {
+    public void updatePasswordWithWrongUsernameSession(UsersInteractor mockedUsersInteractor) throws
+            RecordNotFoundException, InvalidActualPasswordException {
         addPasswordBody(A_PASSWORD, NEW_PASSWORD);
-        when(mockedUserDao.findByEmail(anyString())).thenThrow(RecordNotFoundException.class);
+        doThrow(new RecordNotFoundException()).when(mockedUsersInteractor).updatePassword(anyString(), anyString(), anyString());
 
         Result result = usersController.updatePassword();
 
         assertEquals(Http.Status.UNAUTHORIZED, status(result));
         assertEquals(UsersController.BAD_SESSION_WRONG_USERNAME, contentAsString(result));
-        verify(mockedUserDao, never()).update(any(User.class));
     }
 
     @Test
     public void updatePasswordWithValidActualPassword() throws RecordNotFoundException {
-        User mockedUser = mock(User.class);
         addPasswordBody(A_PASSWORD, NEW_PASSWORD);
-        when(mockedUser.getPassword()).thenReturn(A_PASSWORD);
-        when(mockedUserDao.findByEmail(anyString())).thenReturn(mockedUser);
 
         Result result = usersController.updatePassword();
 
         assertEquals(Http.Status.OK, status(result));
-        verify(mockedUserDao, times(1)).update(any(User.class));
     }
 
     @Test
-    public void updatePasswordWithWrongActualPassword() throws RecordNotFoundException {
-        User mockedUser = mock(User.class);
+    public void updatePasswordWithWrongActualPassword(UsersInteractor mockedUsersInteractor) throws
+            RecordNotFoundException, InvalidActualPasswordException {
         addPasswordBody(A_PASSWORD, NEW_PASSWORD);
 
-        when(mockedUser.getPassword()).thenReturn(ANOTHER_PASSWORD);
-        when(mockedUserDao.findByEmail(anyString())).thenReturn(mockedUser);
+        doThrow(new InvalidActualPasswordException()).when(mockedUsersInteractor).updatePassword(anyString(), anyString(), anyString());
 
         Result result = usersController.updatePassword();
 
         assertEquals(Http.Status.UNAUTHORIZED, status(result));
         assertEquals(UsersController.WRONG_ACTUAL_PASSWORD, contentAsString(result));
-        verify(mockedUserDao, never()).update(any(User.class));
     }
 
     @Test
@@ -167,6 +160,7 @@ public class UserControllerTest extends BaseControllerTest {
         @Override
         protected void configureTest() {
             forceMock(UserDao.class);
+            forceMock(UsersInteractor.class);
         }
     }
 }

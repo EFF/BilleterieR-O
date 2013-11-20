@@ -5,6 +5,7 @@ import ca.ulaval.glo4003.controllers.EventsController;
 import ca.ulaval.glo4003.dataaccessobjects.EventDao;
 import ca.ulaval.glo4003.exceptions.MaximumExceededException;
 import ca.ulaval.glo4003.exceptions.RecordNotFoundException;
+import ca.ulaval.glo4003.interactors.EventsInteractor;
 import ca.ulaval.glo4003.models.Event;
 import ca.ulaval.glo4003.models.EventSearchCriteria;
 import ca.ulaval.glo4003.models.Gender;
@@ -43,7 +44,8 @@ public class EventsControllerTest extends BaseControllerTest {
     private List<Event> tempEventsList;
 
     @Before
-    public void setup(EventDao mockedEventDao) throws RecordNotFoundException, MaximumExceededException {
+    public void setup(EventsInteractor mockedEventsInteractor) throws RecordNotFoundException,
+            MaximumExceededException {
         firstEvent = EventsTestHelper.createRandomEventtWithCategoryGivenSport(EventsTestHelper.FIRST_RANDOM_SPORT);
         firstEvent.setId(1);
         secondEvent = EventsTestHelper.createRandomEventtWithCategoryGivenSport(EventsTestHelper.SECOND_RANDOM_SPORT);
@@ -53,11 +55,11 @@ public class EventsControllerTest extends BaseControllerTest {
         tempEventsList.add(secondEvent);
 
         eventSearchCriteria = new EventSearchCriteria();
-        when(mockedEventDao.search(refEq(eventSearchCriteria))).thenReturn(tempEventsList);
+        when(mockedEventsInteractor.search(refEq(eventSearchCriteria))).thenReturn(tempEventsList);
     }
 
     @Test
-    public void indexReturnsAllEventsWhenNoParameters(EventDao mockedEventDao) {
+    public void indexReturnsAllEventsWhenNoParameters(EventsInteractor mockedEventsInteractor) {
         Result result = eventsController.index();
 
         assertEquals(Helpers.OK, Helpers.status(result));
@@ -78,11 +80,11 @@ public class EventsControllerTest extends BaseControllerTest {
         assertEquals(secondEvent.getId(), event2.get("id").asLong());
         assertEquals(secondEvent.getSport().getName(), event2.get("sport").get("name").asText());
 
-        verify(mockedEventDao).search(refEq(eventSearchCriteria));
+        verify(mockedEventsInteractor).search(refEq(eventSearchCriteria));
     }
 
     @Test
-    public void indexReturnsOnlyEventsCorrespondingToParameters(EventDao mockedEventDao) {
+    public void indexReturnsOnlyEventsCorrespondingToParameters(EventsInteractor mockedEventsInteractor) {
         String teamName = "Test team";
         LocalDateTime dateStart = new LocalDateTime(2013, 10, 19, 0, 0);
         LocalDateTime dateEnd = dateStart.plusMonths(1);
@@ -93,7 +95,7 @@ public class EventsControllerTest extends BaseControllerTest {
         eventSearchCriteria.setDateStart(dateStart);
         eventSearchCriteria.setDateEnd(dateEnd);
         eventSearchCriteria.setGender(Gender.MALE);
-        when(mockedEventDao.search(refEq(eventSearchCriteria))).thenReturn(tempFilteredListEvent);
+        when(mockedEventsInteractor.search(refEq(eventSearchCriteria))).thenReturn(tempFilteredListEvent);
 
         when(mockedRequest.getQueryString(ConstantsManager.QUERY_STRING_SPORT_PARAM_NAME)).thenReturn(firstEvent.getSport().getName());
         when(mockedRequest.getQueryString(ConstantsManager.QUERY_STRING_DATE_START_PARAM_NAME)).thenReturn(dateStart.toString());
@@ -117,16 +119,16 @@ public class EventsControllerTest extends BaseControllerTest {
         assertEquals(firstEvent.getId(), event1.get("id").asLong());
         assertEquals(firstEvent.getSport().getName(), event1.get("sport").get("name").asText());
 
-        verify(mockedEventDao).search(refEq(eventSearchCriteria));
+        verify(mockedEventsInteractor).search(refEq(eventSearchCriteria));
     }
 
     @Test
-    public void indexThrowExceptionWithInvalidParameters(EventDao mockedEventDao) {
+    public void indexThrowExceptionWithInvalidParameters(EventsInteractor mockedEventsInteractor) {
         LocalDateTime dateEnd = new LocalDateTime(2013, 10, 19, 0, 0);
         LocalDateTime dateStart = dateEnd.plusDays(1);
         eventSearchCriteria.setDateEnd(dateEnd);
         eventSearchCriteria.setDateStart(dateStart);
-        when(mockedEventDao.search(refEq(eventSearchCriteria))).thenThrow(new InvalidParameterException("Test"));
+        when(mockedEventsInteractor.search(refEq(eventSearchCriteria))).thenThrow(new InvalidParameterException("Test"));
 
         when(mockedRequest.getQueryString(ConstantsManager.QUERY_STRING_DATE_START_PARAM_NAME)).thenReturn(dateStart.toString());
         when(mockedRequest.getQueryString(ConstantsManager.QUERY_STRING_DATE_END_PARAM_NAME)).thenReturn(dateEnd.toString());
@@ -135,12 +137,12 @@ public class EventsControllerTest extends BaseControllerTest {
 
         assertEquals(Helpers.INTERNAL_SERVER_ERROR, Helpers.status(result));
 
-        verify(mockedEventDao).search(refEq(eventSearchCriteria));
+        verify(mockedEventsInteractor).search(refEq(eventSearchCriteria));
     }
 
     @Test
-    public void showReturnsAnEvent(EventDao mockedEventDao) throws RecordNotFoundException {
-        when(mockedEventDao.read(firstEvent.getId())).thenReturn(firstEvent);
+    public void showReturnsAnEvent(EventsInteractor mockedEventsInteractor) throws RecordNotFoundException {
+        when(mockedEventsInteractor.getById(firstEvent.getId())).thenReturn(firstEvent);
 
         Result result = eventsController.show(firstEvent.getId());
         assertEquals(Helpers.OK, Helpers.status(result));
@@ -151,25 +153,25 @@ public class EventsControllerTest extends BaseControllerTest {
 
         assertEquals(firstEvent.getId(), jsonNode.get("id").asLong());
 
-        verify(mockedEventDao).read(firstEvent.getId());
+        verify(mockedEventsInteractor).getById(firstEvent.getId());
     }
 
     @Test
-    public void showReturnNotFoundWhenRecordNotFoundExceptionIsCatched(EventDao mockedEventDao) throws RecordNotFoundException {
-        when(mockedEventDao.read(firstEvent.getId())).thenThrow(new RecordNotFoundException());
+    public void showReturnNotFoundWhenRecordNotFoundExceptionIsCatched(EventsInteractor mockedEventsInteractor) throws RecordNotFoundException {
+        when(mockedEventsInteractor.getById(firstEvent.getId())).thenThrow(new RecordNotFoundException());
 
         Result result = eventsController.show(firstEvent.getId());
         assertEquals(Helpers.NOT_FOUND, Helpers.status(result));
         assertEquals(null, Helpers.contentType(result));
 
-        verify(mockedEventDao).read(firstEvent.getId());
+        verify(mockedEventsInteractor).getById(firstEvent.getId());
     }
 
     public static class TestModule extends JukitoModule {
 
         @Override
         protected void configureTest() {
-            forceMock(EventDao.class);
+            forceMock(EventsInteractor.class);
         }
     }
 }
