@@ -1,7 +1,7 @@
 package ca.ulaval.glo4003.unittests.controllers;
 
 import ca.ulaval.glo4003.ConstantsManager;
-import ca.ulaval.glo4003.controllers.Authentication;
+import ca.ulaval.glo4003.controllers.AuthenticationController;
 import ca.ulaval.glo4003.dataaccessobjects.UserDao;
 import ca.ulaval.glo4003.exceptions.RecordNotFoundException;
 import ca.ulaval.glo4003.models.User;
@@ -24,9 +24,9 @@ import static org.mockito.Mockito.*;
 import static play.test.Helpers.status;
 
 @RunWith(JukitoRunner.class)
-public class AuthenticationTest extends BaseControllerTest {
+public class AuthenticationControllerTest extends BaseControllerTest {
     @Inject
-    private Authentication authentication;
+    private AuthenticationController authenticationController;
     private User mockedUser;
     private String email = "email@test.com";
     private String password = "password";
@@ -48,7 +48,7 @@ public class AuthenticationTest extends BaseControllerTest {
     public void indexWhenAuthenticated() {
         when(mockedSession.get(ConstantsManager.COOKIE_SESSION_FIELD_NAME)).thenReturn(email);
 
-        Result result = authentication.index();
+        Result result = authenticationController.index();
 
         verify(mockedSession, atLeast(1)).get(ConstantsManager.COOKIE_SESSION_FIELD_NAME);
 
@@ -71,7 +71,7 @@ public class AuthenticationTest extends BaseControllerTest {
     public void indexWhenNotAuthenticated() {
         when(mockedSession.get(ConstantsManager.COOKIE_SESSION_FIELD_NAME)).thenReturn(null);
 
-        Result result = authentication.index();
+        Result result = authenticationController.index();
 
         verify(mockedSession, atLeast(1)).get(ConstantsManager.COOKIE_SESSION_FIELD_NAME);
 
@@ -92,7 +92,7 @@ public class AuthenticationTest extends BaseControllerTest {
 
     @Test
     public void logout() {
-        Result result = authentication.logout();
+        Result result = authenticationController.logout();
 
         verify(mockedSession).clear();
 
@@ -104,7 +104,7 @@ public class AuthenticationTest extends BaseControllerTest {
         when(mockedUserDao.findByEmail(email))
                 .thenReturn(mockedUser);
 
-        Result result = authentication.login();
+        Result result = authenticationController.login();
 
         verify(mockedBody).asJson();
         verify(mockedRequest).body();
@@ -123,7 +123,7 @@ public class AuthenticationTest extends BaseControllerTest {
         when(mockedUserDao.findByEmail(anyString()))
                 .thenThrow(new RecordNotFoundException());
 
-        Result result = authentication.login();
+        Result result = authenticationController.login();
 
         verify(mockedBody).asJson();
         verify(mockedRequest).body();
@@ -140,7 +140,7 @@ public class AuthenticationTest extends BaseControllerTest {
     public void loginWithEmptyBody(UserDao mockedUserDao) throws RecordNotFoundException {
         when(mockedBody.asJson()).thenReturn(Json.newObject());
 
-        Result result = authentication.login();
+        Result result = authenticationController.login();
 
         verify(mockedBody).asJson();
         verify(mockedRequest).body();

@@ -15,7 +15,7 @@ import play.mvc.Security;
 
 import javax.validation.ConstraintViolationException;
 
-public class UserProfile extends Controller {
+public class UsersController extends Controller {
 
     public static final String EMAIL_SHOULD_BE_UNIQUE = "Email should be unique";
     public static final String BAD_SESSION_WRONG_USERNAME = "Bad session, wrong username";
@@ -27,7 +27,7 @@ public class UserProfile extends Controller {
     private final UserDao userDao;
 
     @Inject
-    public UserProfile(UserDao userDao) {
+    public UsersController(UserDao userDao) {
         this.userDao = userDao;
     }
 
@@ -71,7 +71,6 @@ public class UserProfile extends Controller {
 
         try {
             User user = userDao.findByEmail(email);
-
 
             if (!user.getPassword().equals(actualPassword)) {
                 return unauthorized(WRONG_ACTUAL_PASSWORD);

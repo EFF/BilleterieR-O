@@ -2,24 +2,29 @@ package ca.ulaval.glo4003;
 
 import ca.ulaval.glo4003.dataaccessobjects.EventDao;
 import ca.ulaval.glo4003.dataaccessobjects.SportDao;
+import ca.ulaval.glo4003.dataaccessobjects.TicketDao;
 import ca.ulaval.glo4003.dataaccessobjects.TransactionDao;
 import ca.ulaval.glo4003.dataaccessobjects.UserDao;
 import ca.ulaval.glo4003.models.*;
 import com.google.inject.Inject;
 import org.joda.time.LocalDateTime;
 
+import java.util.Random;
+
 public class TestBootstrapper implements Bootstrapper {
 
     private final EventDao eventDao;
     private final SportDao sportDao;
     private final UserDao userDao;
-    private TransactionDao transactionDao;
+    private final TicketDao ticketDao;
+    private final TransactionDao transactionDao;
 
     @Inject
-    public TestBootstrapper(EventDao eventDao, SportDao sportDao, UserDao userDao, TransactionDao transactionDao) {
+    public TestBootstrapper(EventDao eventDao, SportDao sportDao, UserDao userDao, TicketDao ticketDao, TransactionDao transactionDao) {
         this.eventDao = eventDao;
         this.sportDao = sportDao;
         this.userDao = userDao;
+        this.ticketDao = ticketDao;
         this.transactionDao = transactionDao;
     }
 
@@ -32,8 +37,8 @@ public class TestBootstrapper implements Bootstrapper {
 
         Event event1 = new Event(soccer, Gender.MALE);
         event1.setDate(new LocalDateTime());
-        Category category1 = new Category(12.0, 120, 1);
-        Category category2 = new Category(8.0, 1200, 2);
+        Category category1 = new Category(12.0, 120, 0, CategoryType.GENERAL_ADMISSION);
+        Category category2 = new Category(8.0, 1200, 1, CategoryType.GENERAL_ADMISSION);
 
         event1.addCategory(category1);
         event1.addCategory(category2);
@@ -41,13 +46,14 @@ public class TestBootstrapper implements Bootstrapper {
 
         Event event2 = new Event(soccer, Gender.FEMALE);
         event2.setDate(new LocalDateTime());
-        Category category3 = new Category(12.0, 120, 3);
-        Category category4 = new Category(8.0, 1200, 4);
+        Category category3 = new Category(12.0, 120, 0, CategoryType.GENERAL_ADMISSION);
+        Category category4 = new Category(8.0, 1200, 1, CategoryType.SEAT);
 
         event2.addCategory(category3);
         event2.addCategory(category4);
 
         eventDao.create(event2);
+        initTicket();
 
         for (int i = 0; i < 5; i++) {
             User user = new User();
@@ -62,6 +68,31 @@ public class TestBootstrapper implements Bootstrapper {
         eventDao.deleteAll();
         sportDao.deleteAll();
         userDao.deleteAll();
+        ticketDao.deleteAll();
         transactionDao.deleteAll();
+    }
+
+    private void initTicket() {
+        for (Event event : eventDao.list()) {
+            for (Category category : event.getCategories()) {
+                int numberOfTickets = category.getNumberOfTickets();
+                while (numberOfTickets > 0) {
+                    Ticket ticket;
+                    if (category.getType() == CategoryType.SEAT) {
+                        ticket = TicketFactory.createAvailableSeatTicket(
+                                event.getId(),
+                                category.getId(),
+                                (numberOfTickets % 2 == 0) ? "Niveau 100" : "Niveau 200",
+                                numberOfTickets);
+                    } else {
+                        ticket = TicketFactory.createAvailableGeneralAdmissionTicket(
+                                event.getId(),
+                                category.getId());
+                    }
+                    ticketDao.create(ticket);
+                    numberOfTickets--;
+                }
+            }
+        }
     }
 }

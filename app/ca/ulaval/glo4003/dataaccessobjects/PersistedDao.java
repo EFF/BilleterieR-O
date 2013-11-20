@@ -9,10 +9,7 @@ import play.data.validation.Validation;
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 public abstract class PersistedDao<T extends Record> implements DataAccessObject<T>, Serializable {
 

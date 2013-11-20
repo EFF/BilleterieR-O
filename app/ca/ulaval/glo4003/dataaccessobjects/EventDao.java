@@ -63,6 +63,12 @@ public class EventDao extends PersistedDao<Event> {
         category.decrementNumberOfTickets(numberOfTickets);
     }
 
+    public void incrementEventCategoryNumberOfTickets(Long eventId, Long categoryId, int numberOfTickets)
+            throws RecordNotFoundException {
+        Category category = findCategory(eventId, categoryId);
+        category.incrementNumberOfTickets(numberOfTickets);
+    }
+
     private FluentIterable<Event> filterByDateStart(final LocalDateTime dateStart, FluentIterable<Event> results) {
         return results.filter(new Predicate<Event>() {
             @Override
@@ -95,7 +101,7 @@ public class EventDao extends PersistedDao<Event> {
         return results.filter(new Predicate<Event>() {
             @Override
             public boolean apply(Event input) {
-                return StringUtils.isBlank(teamName) || input.getTeam().getName().toLowerCase().equals(teamName
+                return StringUtils.isBlank(teamName) || input.getHomeTeam().getName().toLowerCase().equals(teamName
                         .toLowerCase());
             }
         });

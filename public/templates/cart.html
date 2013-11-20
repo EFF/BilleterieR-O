@@ -11,7 +11,8 @@
             <input id="check-all" ng-change="toggleAll(selectAll)" ng-model="selectAll" type="checkbox" checked>
             Sélection
         </th>
-        <th>Billets</th>
+        <th>Type</th>
+        <th>Description</th>
         <th>Prix unitaire</th>
         <th>Quantité</th>
         <th>Prix total</th>
@@ -24,20 +25,35 @@
             <input ng-click="updateSelectAll()" id="itemCheck" type="checkbox" ng-model="item.selected">
         </td>
         <td>
-            <a href="/#!/events/{{item.event.id}}">{{item.event.sport.name}} {{item.event.gender | gender}}
+            <p>{{item.category.type | categoryType}}</p>
+        </td>
+        <td>
+            <a href="/#!/events/{{item.event.id}}" ng-hide="item.category.type == 'SEAT'">
+                {{item.event.sport.name}} {{item.event.gender | gender}}
                 {{item.event.dateAsString | date:'dd-MM-yyyy HH:mm'}}</a>
+            <a href="/#!/tickets/{{item.tickets[0].id}}" ng-hide="item.category.type == 'GENERAL_ADMISSION'">
+                {{item.event.sport.name}} {{item.event.gender | gender}}
+                {{item.event.dateAsString | date:'dd-MM-yyyy HH:mm'}} {{item.tickets[0].section}} Siège {{item.tickets[0].seat}}</a>
         </td>
         <td>{{item.category.price}}$</td>
         <td class="col-md-2">
-            <input id="input_quantity{{$index}}" class="form-control" type="number" required step="1" ng-model="item.quantity" ng-change="updateItemQuantity($index, item.quantity, item.category.numberOfTickets)" ng-init="item.quantity" max="{{item.category.numberOfTickets}}">
+            <input id="input_quantity{{$index}}"
+                   class="form-control category-quantity"
+                   type="number"
+                   required step="1"
+                   ng-model="item.desiredQuantity"
+                   ng-change="updateItemQuantity($index)"
+                   ng-init="item.desiredQuantity"
+                   max="{{item.category.numberOfTickets}}"
+                   ng-disabled="item.category.type == 'SEAT'">
         </td>
-        <td>{{item.quantity * item.category.price}}$</td>
+        <td>{{item.reservedQuantity * item.category.price}}$</td>
         <td>
             <button class="btn btn-danger item-remove" ng-click="removeItem($index)">x</button>
         </td>
     </tr>
     <tr class="active">
-        <td colspan="3">Total</td>
+        <td colspan="4">Total</td>
         <td>{{getTotalSelectedQuantity()}}</td>
         <td colspan="2">{{getTotalPrice()}}$</td>
     </tr>

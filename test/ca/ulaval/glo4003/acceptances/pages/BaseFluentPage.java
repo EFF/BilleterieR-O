@@ -13,6 +13,7 @@ public abstract class BaseFluentPage extends FluentPage {
     }
 
     public int getCartSize() {
+        await().atMost(TIMEOUT).until(".cart-size").isPresent();
         return Integer.parseInt(find(".navbar").find(".cart-size").getText());
     }
 
@@ -42,6 +43,10 @@ public abstract class BaseFluentPage extends FluentPage {
 
     public void waitForInfoMessageToDisplay() {
         await().atMost(TIMEOUT).until(".alertContainer .alert-info").isPresent();
+    }
+
+    public void waitUnitlCartHasSize(int size) {
+        await().atMost(TIMEOUT).until(".cart-size").hasText(Integer.toString(size));
     }
 
     public boolean isWarningMessageDisplayed() {

@@ -12,12 +12,12 @@ import play.libs.Json;
 import play.mvc.Controller;
 import play.mvc.Result;
 
-public class Authentication extends Controller {
+public class AuthenticationController extends Controller {
 
     private final UserDao userDao;
 
     @Inject
-    public Authentication(UserDao userDao) {
+    public AuthenticationController(UserDao userDao) {
         this.userDao = userDao;
     }
 

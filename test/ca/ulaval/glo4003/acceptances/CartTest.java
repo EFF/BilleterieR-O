@@ -17,7 +17,7 @@ import static play.test.Helpers.*;
 public class CartTest {
 
     private static final int VALID_TICKET_QUANTITY = 10;
-    private static final int EXEEDED_TICKET_QUANTITY = 30000;
+    private static final int EXCEEDED_TICKET_QUANTITY = 30000;
     private static final String EMAIL = "user1@example.com";
     private static final String PASSWORD = "secret";
     private static final int FIRST_ITEM_INDEX = 0;
@@ -33,27 +33,30 @@ public class CartTest {
                 CartPage cartPage = new CartPage(browser.getDriver());
 
                 goToEventPage(eventPage1);
-                // Buy two tickets from events/1, category 0
+
                 eventPage1.addTicketsToCartForCategory(0, 2);
+                eventPage1.waitUnitlCartHasSize(2);
                 assertEquals(2, eventPage1.getCartSize());
-                // Buy five tickets from events/1, category 1
+
                 eventPage1.addTicketsToCartForCategory(1, 5);
+                eventPage1.waitUnitlCartHasSize(7);
                 assertEquals(7, eventPage1.getCartSize());
-                // Buy one ticket from event #2, category 0
+
                 goToEventPage(eventPage2);
                 eventPage2.addTicketsToCartForCategory(0, 1);
+                eventPage2.waitUnitlCartHasSize(8);
                 assertEquals(8, eventPage2.getCartSize());
 
                 goToCartPage(cartPage, 3);
 
-                // Remove one item
                 cartPage.removeItem(FIRST_ITEM_INDEX);
                 cartPage.waitUntilItemsHasSize(2);
+                cartPage.waitUnitlCartHasSize(6);
                 assertEquals(6, cartPage.getCartSize());
 
-                // Remove all items
                 cartPage.removeAllItems();
                 cartPage.waitUntilItemsHasSize(0);
+                cartPage.waitUnitlCartHasSize(0);
                 assertEquals(0, eventPage1.getCartSize());
             }
         });
@@ -97,11 +100,11 @@ public class CartTest {
 
                 int firstCategoryTicketCount = eventPage1.getTicketNumberForCategory(0);
 
-                eventPage1.addTicketsToCartForCategory(0, 1);
-                eventPage1.addTicketsToCartForCategory(1, 1);
+                eventPage1.addTicketsToCartForCategory(0, 2);
+                eventPage1.waitUnitlCartHasSize(2);
                 assertEquals(2, eventPage1.getCartSize());
 
-                goToCartPage(cartPage, 2);
+                goToCartPage(cartPage, 1);
 
                 cartPage.selectItem(0);
                 cartPage.payWithCreditCard();
@@ -109,7 +112,7 @@ public class CartTest {
                 resultPage.isAt();
 
                 goToEventPage(eventPage1);
-                assertEquals(firstCategoryTicketCount - 1, eventPage1.getTicketNumberForCategory(0));
+                assertEquals(firstCategoryTicketCount - 2, eventPage1.getTicketNumberForCategory(0));
             }
         });
     }
@@ -135,6 +138,7 @@ public class CartTest {
 
                 eventPage1.addTicketsToCartForCategory(0, 1);
                 eventPage1.addTicketsToCartForCategory(1, 1);
+                eventPage1.waitUnitlCartHasSize(2);
                 assertEquals(2, eventPage1.getCartSize());
 
                 goToCartPage(cartPage, 2);
@@ -146,31 +150,6 @@ public class CartTest {
                 goToEventPage(eventPage1);
                 assertEquals(cart1TicketNumber - 1, eventPage1.getTicketNumberForCategory(0));
                 assertEquals(cart2TicketNumber - 1, eventPage1.getTicketNumberForCategory(1));
-            }
-        });
-    }
-
-    @Test
-    public void confirmPerformsTheTransaction() {
-        running(testServer(3333, fakeApplication(new TestGlobal())), FIREFOX, new F.Callback<TestBrowser>() {
-            @Override
-            public void invoke(TestBrowser browser) {
-                LoginPage loginPage = new LoginPage(browser.getDriver());
-                EventPage eventPage1 = new EventPage(browser.getDriver(), FIRST_EVENT);
-                CartPage cartPage = new CartPage(browser.getDriver());
-                PaymentResultPage resultPage = new PaymentResultPage(browser.getDriver());
-
-                goToLoginPage(loginPage);
-
-                loginPage.performLogin(EMAIL, PASSWORD);
-
-                goToEventPage(eventPage1);
-                eventPage1.addTicketsToCartForCategory(0, 1);
-
-                goToCartPage(cartPage, 1);
-                cartPage.payWithCreditCard();
-                cartPage.confirm(browser.getDriver());
-                assertEquals(0, resultPage.getCartSize());
             }
         });
     }
@@ -195,6 +174,7 @@ public class CartTest {
                 goToCartPage(cartPage, 1);
                 cartPage.payWithCreditCard();
                 cartPage.dismiss(browser.getDriver());
+                resultPage.waitUnitlCartHasSize(1);
                 assertEquals(1, resultPage.getCartSize());
             }
         });
@@ -209,12 +189,10 @@ public class CartTest {
                 CartPage cartPage = new CartPage(browser.getDriver());
 
                 goToEventPage(eventPage1);
-
                 eventPage1.addTicketsToCartForCategory(0, 1);
 
                 goToCartPage(cartPage, 1);
                 cartPage.payWithCreditCard();
-
                 cartPage.waitForInfoMessageToDisplay();
             }
         });
@@ -233,7 +211,6 @@ public class CartTest {
                 goToCartPage(cartPage, 1);
                 cartPage.modifyNumberOfTicketsForItem(0, VALID_TICKET_QUANTITY);
 
-                browser.getDriver().navigate().refresh();
                 cartPage.waitUntilItemsHasSize(1);
                 assertEquals(cartPage.getQuantityForItem(0), VALID_TICKET_QUANTITY);
             }
@@ -251,7 +228,7 @@ public class CartTest {
 
                 eventPage1.addTicketsToCartForCategory(0, 1);
                 goToCartPage(cartPage, 1);
-                cartPage.modifyNumberOfTicketsForItem(0, EXEEDED_TICKET_QUANTITY);
+                cartPage.modifyNumberOfTicketsForItem(0, EXCEEDED_TICKET_QUANTITY);
 
                 assertTrue(cartPage.isWarningMessageDisplayed());
             }
@@ -269,9 +246,10 @@ public class CartTest {
 
                 eventPage1.addTicketsToCartForCategory(0, 1);
                 goToCartPage(cartPage, 1);
-                cartPage.modifyNumberOfTicketsForItem(0, EXEEDED_TICKET_QUANTITY);
+                cartPage.modifyNumberOfTicketsForItem(0, EXCEEDED_TICKET_QUANTITY);
+                eventPage1.waitForErrorMessageToDisplay();
 
-                assertThat(cartPage.getQuantityForItem(0)).isNotEqualTo(EXEEDED_TICKET_QUANTITY);
+                assertThat(cartPage.getQuantityForItem(0)).isNotEqualTo(EXCEEDED_TICKET_QUANTITY);
             }
         });
     }
@@ -288,6 +266,7 @@ public class CartTest {
                 eventPage1.addTicketsToCartForCategory(0, 1);
                 goToCartPage(cartPage, 1);
                 cartPage.modifyNumberOfTicketsForItem(0, 0);
+                cartPage.waitUntilItemsHasSize(0);
 
                 assertThat(cartPage.getNumberOfItems()).isEqualTo(0);
             }

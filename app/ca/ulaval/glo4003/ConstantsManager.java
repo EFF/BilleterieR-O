@@ -16,16 +16,21 @@ public class ConstantsManager {
     public final static String QUERY_STRING_DATE_END_PARAM_NAME = "dateEnd";
     public final static String QUERY_STRING_TEAM_PARAM_NAME = "team";
     public final static String QUERY_STRING_GENDER_PARAM_NAME = "gender";
+    public static final String QUERY_STRING_STATE_PARAM_NAME = "states";
 
     public final static String EVENT_ID_FIELD_NAME = "eventId";
     public final static String CATEGORY_ID_FIELD_NAME = "categoryId";
-    public final static String QUANTITY_FIELD_NAME = "quantity";
 
     public final static String FACET_SPORT = "sport";
     public final static String FACET_GENDER = "gender";
 
     public final static String PERSISTENCE_DIRECTORY = "data";
     public final static String PERSISTENCE_FILE_EXTENSION = ".ser";
+
+    public static final String TICKET_STATE_FIELD_NAME = "states";
+    public static final String TICKET_IDS_FIELD_NAME = "ticketIds";
+    public static final int TICKET_INVALID_SEAT_NUMBER = -1;
+
 
     public final static String CHECKOUT_CONFIRMATION_EMAIL = "Votre transaction c'est bien effectuée sur le système." +
             " Votre numéro de confirmation est le: ";

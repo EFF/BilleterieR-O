@@ -5,6 +5,7 @@ import ca.ulaval.glo4003.dataaccessobjects.UniqueConstraintValidator;
 import ca.ulaval.glo4003.exceptions.MaximumExceededException;
 import ca.ulaval.glo4003.exceptions.RecordNotFoundException;
 import ca.ulaval.glo4003.models.Category;
+import ca.ulaval.glo4003.models.CategoryType;
 import ca.ulaval.glo4003.models.Event;
 import ca.ulaval.glo4003.models.EventSearchCriteria;
 import ca.ulaval.glo4003.services.InMemoryDaoPersistenceService;
@@ -13,8 +14,9 @@ import org.fest.assertions.Assertions;
 import org.joda.time.LocalDateTime;
 import org.junit.Before;
 import org.junit.Test;
-
 import java.util.List;
+
+import static org.junit.Assert.assertEquals;
 
 public class EventDaoTest {
 
@@ -36,7 +38,7 @@ public class EventDaoTest {
 
         List<Event> result = eventDao.search(new EventSearchCriteria());
 
-        Assertions.assertThat(result.size()).isEqualTo(2);
+        assertEquals(2, result.size());
     }
 
 
@@ -52,7 +54,7 @@ public class EventDaoTest {
 
         List<Event> result = eventDao.search(new EventSearchCriteria());
 
-        Assertions.assertThat(result.size()).isEqualTo(2);
+        assertEquals(2, result.size());
     }
 
     @Test
@@ -84,7 +86,7 @@ public class EventDaoTest {
         List<Event> result = eventDao.search(eventSearchCriteria);
 
         Assertions.assertThat(result.size()).isEqualTo(1);
-        Assertions.assertThat(result.get(0).getTeam().getName()).isEqualTo(EventsTestHelper.A_RANDOM_TEAM_NAME);
+        Assertions.assertThat(result.get(0).getHomeTeam().getName()).isEqualTo(EventsTestHelper.A_RANDOM_TEAM_NAME);
     }
 
     @Test
@@ -230,7 +232,7 @@ public class EventDaoTest {
     }
 
     @Test
-    public void findCategoryRetursTheCategoryWhenExists() throws RecordNotFoundException {
+    public void findCategoryReturnsTheCategoryWhenExists() throws RecordNotFoundException {
         Event event = EventsTestHelper.createRandomEventtWithCategoryGivenSport((EventsTestHelper.FIRST_RANDOM_SPORT));
         eventDao.create(event);
 
@@ -240,10 +242,9 @@ public class EventDaoTest {
     }
 
     @Test(expected = MaximumExceededException.class)
-    public void decrementEventCategoryNumberOfTicketsThrowsExceptionWhenNoneAvailable() throws
-            MaximumExceededException, RecordNotFoundException {
+    public void decrementEventCategoryNumberOfTicketsThrowsExceptionWhenNoneAvailable() throws RecordNotFoundException, MaximumExceededException {
         Category category = new Category(EventsTestHelper.A_DOUBLE, EventsTestHelper.AN_INT,
-                EventsTestHelper.A_CATEGORY_ID);
+                EventsTestHelper.A_CATEGORY_ID, CategoryType.GENERAL_ADMISSION);
         Event event = EventsTestHelper.createRandomEventGivenACategory(category);
         eventDao.create(event);
 
@@ -254,7 +255,7 @@ public class EventDaoTest {
     public void decrementEventCategoryNumberOfTicketsDecrements() throws MaximumExceededException,
             RecordNotFoundException {
         Category category = new Category(EventsTestHelper.A_DOUBLE, EventsTestHelper.AN_INT,
-                EventsTestHelper.A_CATEGORY_ID);
+                EventsTestHelper.A_CATEGORY_ID, CategoryType.GENERAL_ADMISSION);
         Event event = EventsTestHelper.createRandomEventGivenACategory(category);
         eventDao.create(event);
 

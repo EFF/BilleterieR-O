@@ -7,12 +7,13 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-public class Event extends Record  implements Serializable {
+public class Event extends Record implements Serializable {
 
     private List<Category> categories;
     private Sport sport;
     private Gender gender;
-    private Team team;
+    private Team homeTeam;
+    private Team visitorTeam;
     private LocalDateTime date;
 
     public Event(Sport sport, Gender gender) {
@@ -49,12 +50,12 @@ public class Event extends Record  implements Serializable {
         return gender;
     }
 
-    public Team getTeam() {
-        return team;
+    public Team getHomeTeam() {
+        return homeTeam;
     }
 
-    public void setTeam(Team team) {
-        this.team = team;
+    public void setHomeTeam(Team homeTeam) {
+        this.homeTeam = homeTeam;
     }
 
     public LocalDateTime getDate() {
@@ -67,5 +68,13 @@ public class Event extends Record  implements Serializable {
 
     public String getDateAsString() {
         return date == null ? null : date.toString();
+    }
+
+    public Team getVisitorTeam() {
+        return visitorTeam;
+    }
+
+    public void setVisitorTeam(Team visitorTeam) {
+        this.visitorTeam = visitorTeam;
     }
 }
