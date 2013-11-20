@@ -4,7 +4,6 @@ import org.fluentlenium.core.domain.FluentList;
 import org.fluentlenium.core.domain.FluentWebElement;
 import org.openqa.selenium.WebDriver;
 
-import static org.fluentlenium.core.filter.FilterConstructor.withId;
 import static org.fluentlenium.core.filter.FilterConstructor.withText;
 
 public class EventPage extends BaseFluentPage {
@@ -53,13 +52,17 @@ public class EventPage extends BaseFluentPage {
         return Integer.parseInt(text);
     }
 
-    public void selectCombo(String comboName, String value) {
-        find("select", withId().equalTo(comboName)).find("option", withText().equalTo(value)).click();
-        await().atMost(TIMEOUT).until('#' + comboName).with(value);
+    public void waitUntilSelectIsPopulated(String selectId) {
+        selectId = selectId.substring(1);
+        await().atMost(TIMEOUT).until('.' + selectId + "_option").hasSize().greaterThan(1);
     }
 
-    public String getComboOptionValue(String comboName, String value){
-        return find("select", withId().equalTo(comboName)).find("option", withText().equalTo(value)).getValue();
+    public void selectClickOnValue(String selectId, String value) {
+        find(selectId).findFirst("option", withText().equalTo(value)).click();
+    }
+
+    public String getSelectOptionValue(String selectId, String value){
+        return find(selectId).findFirst("option", withText().equalTo(value)).getValue();
     }
 
     public void clickOnButton(String clazz) {

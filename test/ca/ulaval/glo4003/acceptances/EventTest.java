@@ -3,6 +3,7 @@ package ca.ulaval.glo4003.acceptances;
 import ca.ulaval.glo4003.TestGlobal;
 import ca.ulaval.glo4003.acceptances.pages.EventPage;
 import ca.ulaval.glo4003.acceptances.pages.TicketPage;
+import org.fluentlenium.adapter.FluentTest;
 import org.junit.Test;
 import play.libs.F;
 import play.test.TestBrowser;
@@ -11,7 +12,7 @@ import static org.junit.Assert.assertTrue;
 import static play.test.Helpers.*;
 
 
-public class EventTest {
+public class EventTest extends FluentTest {
 
     @Test
     public void returnAnEventWithPricesAndNumberOfTicketsPerCategory() {
@@ -35,26 +36,26 @@ public class EventTest {
             public void invoke(TestBrowser browser) {
                 EventPage eventPage = new EventPage(browser.getDriver(), 2);
                 TicketPage ticketPage = new TicketPage(browser.getDriver(), -1L);
+                String sectionListId = "#sectionList1";
+                String ticketListId = "#ticketList1";
+                String ticketSeatToSelect = "2";
 
                 eventPage.go();
                 eventPage.isAt();
 
                 eventPage.waitUntilCategoriesHasSize(2);
 
-                eventPage.selectCombo("sectionList1", "Niveau 100");
-                try {
-                    Thread.sleep(1000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-                }
-                eventPage.selectCombo("ticketList1", "2");
-                ticketPage.setTicketId(Integer.parseInt(eventPage.getComboOptionValue("ticketList1","2")));
+                eventPage.selectClickOnValue(sectionListId, "Niveau 100");
+                eventPage.waitUntilSelectIsPopulated(ticketListId);
+                eventPage.selectClickOnValue(ticketListId, ticketSeatToSelect);
+                Long ticketId = Long.parseLong(eventPage.getSelectOptionValue(ticketListId, ticketSeatToSelect));
+                ticketPage.setTicketId(ticketId);
 
                 eventPage.clickOnButton(".btn-details1");
                 ticketPage.isAt();
                 assertTrue(browser.url().equals(ticketPage.getUrl()));
 
-                assertTrue(ticketPage.isTdValueExists("2"));
+                assertTrue(ticketPage.isSeat(ticketSeatToSelect));
             }
         });
     }
