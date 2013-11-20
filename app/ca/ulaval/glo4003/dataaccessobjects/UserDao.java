@@ -14,8 +14,8 @@ public class UserDao extends PersistedDao<User> implements DataAccessObject<User
     }
 
     public User findByEmail(final String email) throws RecordNotFoundException {
-        for(User user: list()) {
-            if(user.getEmail().toLowerCase().equals(email.toLowerCase())) {
+        for (User user : list()) {
+            if (user.getEmail().toLowerCase().equals(email.toLowerCase())) {
                 return user;
             }
         }

@@ -24,8 +24,7 @@ public class FileBasedDaoPersistenceService implements DaoPersistenceService {
 
         try {
             serializer.writeObject(dao.list());
-        }
-        finally {
+        } finally {
             serializer.close();
         }
     }
@@ -39,8 +38,7 @@ public class FileBasedDaoPersistenceService implements DaoPersistenceService {
 
         try {
             return (List<T>) serializer.readObject();
-        }
-        finally {
+        } finally {
             serializer.close();
         }
     }
@@ -63,7 +61,7 @@ public class FileBasedDaoPersistenceService implements DaoPersistenceService {
         File baseDir = new File(parent, path);
 
         if (!baseDir.exists()) {
-            if(!baseDir.mkdirs()) {
+            if (!baseDir.mkdirs()) {
                 throw new Exception("Directory " + baseDir.getPath() + " could not be created.");
             }
         }

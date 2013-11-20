@@ -1,10 +1,6 @@
 package ca.ulaval.glo4003.interactors;
 
-import ca.ulaval.glo4003.ConstantsManager;
-import ca.ulaval.glo4003.dataaccessobjects.TransactionDao;
-
 import ca.ulaval.glo4003.dataaccessobjects.*;
-import ca.ulaval.glo4003.interactors.AuthenticationInteractor;
 import ca.ulaval.glo4003.models.*;
 import com.google.inject.Inject;
 import org.joda.time.LocalDateTime;

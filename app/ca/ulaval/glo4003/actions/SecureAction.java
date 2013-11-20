@@ -14,7 +14,7 @@ public class SecureAction extends Security.Authenticator {
 
     @Override
     public Result onUnauthorized(Http.Context ctx) {
-       return unauthorized();
+        return unauthorized();
     }
 
 }

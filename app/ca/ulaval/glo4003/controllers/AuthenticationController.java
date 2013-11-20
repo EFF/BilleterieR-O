@@ -1,7 +1,6 @@
 package ca.ulaval.glo4003.controllers;
 
 import ca.ulaval.glo4003.ConstantsManager;
-import ca.ulaval.glo4003.dataaccessobjects.UserDao;
 import ca.ulaval.glo4003.exceptions.AuthenticationException;
 import ca.ulaval.glo4003.interactors.AuthenticationInteractor;
 import ca.ulaval.glo4003.models.Credentials;

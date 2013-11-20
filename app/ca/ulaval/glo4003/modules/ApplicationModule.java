@@ -1,7 +1,6 @@
 package ca.ulaval.glo4003.modules;
 
 import ca.ulaval.glo4003.dataaccessobjects.*;
-import ca.ulaval.glo4003.services.DaoPersistenceService;
 import ca.ulaval.glo4003.services.*;
 import com.google.inject.AbstractModule;
 import com.google.inject.Provides;

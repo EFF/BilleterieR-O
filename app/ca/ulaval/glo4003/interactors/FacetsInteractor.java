@@ -17,11 +17,11 @@ public class FacetsInteractor {
         this.sportDao = sportDao;
     }
 
-    public List<Sport> sports(){
+    public List<Sport> sports() {
         return sportDao.list();
     }
 
-    public List<Gender> genders(){
+    public List<Gender> genders() {
         return Arrays.asList(Gender.values());
     }
 }

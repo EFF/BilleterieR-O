@@ -13,6 +13,7 @@ import play.mvc.Controller;
 import play.mvc.Result;
 
 import java.security.InvalidParameterException;
+import java.util.List;
 
 public class EventsController extends Controller {
 
@@ -25,10 +26,10 @@ public class EventsController extends Controller {
 
     public Result index() {
         EventSearchCriteria eventSearchCriteria = extractEventSearchCriteriaFromRequest();
-        try{
-            return ok(Json.toJson(eventsInteractor.search(eventSearchCriteria)));
-        }
-        catch (InvalidParameterException ignored){
+        try {
+            List<Event> searchResults = eventsInteractor.search(eventSearchCriteria);
+            return ok(Json.toJson(searchResults));
+        } catch (InvalidParameterException ignored) {
             return internalServerError();
         }
     }
