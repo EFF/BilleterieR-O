@@ -116,7 +116,7 @@ define(['app'], function (app) {
             }
         };
 
-        exports.addItems = function (tickets, category, event) {
+        exports.addItems = function (tickets, category, event, preSuccessCallback) {
             var item = {
                 reservedQuantity: tickets.length,
                 desiredQuantity: tickets.length,
@@ -129,6 +129,7 @@ define(['app'], function (app) {
             var existingItem = getItemByEventIdAndCategoryId(event.id, category.id);
 
             var successCallback = function () {
+                preSuccessCallback();
                 if (existingItem) {
                     existingItem.tickets.concat(tickets);
                     existingItem.reservedQuantity += tickets.length;
@@ -229,7 +230,7 @@ define(['app'], function (app) {
         var reserveTicketsToItem = function(quantity, item) {
             var url = '/api/tickets?eventId='
                 + item.event.id + '&categoryId='
-                + item.category.id + '&states=AVAILABLE,RESALE'
+                + item.category.id + '&states=AVAILABLE'
                 + '&quantity=' + quantity;
             $http.get(url)
                 .success(function (tickets) {

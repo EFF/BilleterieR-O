@@ -35,23 +35,28 @@ public class CartTest {
                 goToEventPage(eventPage1);
 
                 eventPage1.addTicketsToCartForCategory(0, 2);
+                eventPage1.waitUnitlCartHasSize(2);
                 assertEquals(2, eventPage1.getCartSize());
 
                 eventPage1.addTicketsToCartForCategory(1, 5);
+                eventPage1.waitUnitlCartHasSize(7);
                 assertEquals(7, eventPage1.getCartSize());
 
                 goToEventPage(eventPage2);
                 eventPage2.addTicketsToCartForCategory(0, 1);
+                eventPage2.waitUnitlCartHasSize(8);
                 assertEquals(8, eventPage2.getCartSize());
 
                 goToCartPage(cartPage, 3);
 
                 cartPage.removeItem(FIRST_ITEM_INDEX);
                 cartPage.waitUntilItemsHasSize(2);
+                cartPage.waitUnitlCartHasSize(6);
                 assertEquals(6, cartPage.getCartSize());
 
                 cartPage.removeAllItems();
                 cartPage.waitUntilItemsHasSize(0);
+                cartPage.waitUnitlCartHasSize(0);
                 assertEquals(0, eventPage1.getCartSize());
             }
         });
@@ -96,6 +101,7 @@ public class CartTest {
                 int firstCategoryTicketCount = eventPage1.getTicketNumberForCategory(0);
 
                 eventPage1.addTicketsToCartForCategory(0, 2);
+                eventPage1.waitUnitlCartHasSize(2);
                 assertEquals(2, eventPage1.getCartSize());
 
                 goToCartPage(cartPage, 1);
@@ -132,6 +138,7 @@ public class CartTest {
 
                 eventPage1.addTicketsToCartForCategory(0, 1);
                 eventPage1.addTicketsToCartForCategory(1, 1);
+                eventPage1.waitUnitlCartHasSize(2);
                 assertEquals(2, eventPage1.getCartSize());
 
                 goToCartPage(cartPage, 2);
@@ -192,6 +199,7 @@ public class CartTest {
                 goToCartPage(cartPage, 1);
                 cartPage.payWithCreditCard();
                 cartPage.dismiss(browser.getDriver());
+                resultPage.waitUnitlCartHasSize(1);
                 assertEquals(1, resultPage.getCartSize());
             }
         });

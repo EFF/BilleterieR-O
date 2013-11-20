@@ -192,7 +192,7 @@ public class TicketsControllerTest extends BaseControllerTest {
     }
 
     private Ticket createFakeTicket() {
-        return new Ticket(1, 1, "Section A", 100000);
+        return new Ticket(1, 1, TicketState.AVAILABLE, "Section A", 100000);
     }
 
     public static class TestModule extends JukitoModule {
