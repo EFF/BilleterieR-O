@@ -8,7 +8,7 @@ import static org.fluentlenium.core.filter.FilterConstructor.withText;
 public class TicketPage extends BaseFluentPage {
     private long ticketId = 0;
 
-    public TicketPage(WebDriver driver, int id) {
+    public TicketPage(WebDriver driver, Long id) {
         super(driver);
         ticketId = id;
     }
@@ -18,10 +18,10 @@ public class TicketPage extends BaseFluentPage {
         return BASE_URL + "tickets/" + ticketId;
     }
 
-    @Override
-    public void isAt() {
-        await().atMost(TIMEOUT).until(".table").isPresent();
-    }
+//    @Override
+//    public void isAt() {
+//        await().atMost(TIMEOUT).untilPage().isAt();
+//    }
 
     public boolean isTdValueExists(String value) {
         return find("td", withText().contains(value)).size() > 0;
