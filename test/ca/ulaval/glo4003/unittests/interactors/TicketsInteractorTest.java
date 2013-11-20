@@ -2,6 +2,7 @@ package ca.ulaval.glo4003.unittests.interactors;
 
 import ca.ulaval.glo4003.dataaccessobjects.TicketDao;
 import ca.ulaval.glo4003.exceptions.RecordNotFoundException;
+import ca.ulaval.glo4003.exceptions.UpdateTicketStateUnauthorizedException;
 import ca.ulaval.glo4003.interactors.TicketsInteractor;
 import ca.ulaval.glo4003.models.Ticket;
 import ca.ulaval.glo4003.models.TicketSearchCriteria;
@@ -40,17 +41,29 @@ public class TicketsInteractorTest {
     }
 
     @Test(expected = RecordNotFoundException.class)
-    public void buyATicketThrowsRecordNotFoundExceptionIfTheTicketDoesNotExist(TicketDao mockedTicketDao) throws RecordNotFoundException {
+    public void buyATicketThrowsRecordNotFoundExceptionIfTheTicketDoesNotExist(TicketDao mockedTicketDao) throws RecordNotFoundException, UpdateTicketStateUnauthorizedException {
         long ticketId = 1;
         doThrow(new RecordNotFoundException()).when(mockedTicketDao).read(ticketId);
 
         ticketsInteractor.buyATicket(ticketId);
     }
 
-    @Test
-    public void buyATicketUpdateTheTicketStateToSold(TicketDao mockedTicketDao) throws RecordNotFoundException {
+    @Test(expected = UpdateTicketStateUnauthorizedException.class)
+    public void buyATicketThrowsUpdateTIcketStateUnauthorizedExceptionIfTheTicketIsNotReseverd(TicketDao mockedTicketDao)
+            throws RecordNotFoundException, UpdateTicketStateUnauthorizedException {
         long ticketId = 1;
         Ticket mockedTicket = mock(Ticket.class);
+        when(mockedTicket.getState()).thenReturn(TicketState.AVAILABLE);
+        when(mockedTicketDao.read(ticketId)).thenReturn(mockedTicket);
+
+        ticketsInteractor.buyATicket(ticketId);
+    }
+
+    @Test
+    public void buyATicketUpdateTheTicketStateToSold(TicketDao mockedTicketDao) throws RecordNotFoundException, UpdateTicketStateUnauthorizedException {
+        long ticketId = 1;
+        Ticket mockedTicket = mock(Ticket.class);
+        when(mockedTicket.getState()).thenReturn(TicketState.RESERVED);
         when(mockedTicketDao.read(ticketId)).thenReturn(mockedTicket);
 
         ticketsInteractor.buyATicket(ticketId);
@@ -62,17 +75,29 @@ public class TicketsInteractorTest {
 
     @Test(expected = RecordNotFoundException.class)
     public void freeATicketThrowsRecordNotFoundExceptionIfTheTicketDoesNotExist(TicketDao mockedTicketDao) throws
-            RecordNotFoundException {
+            RecordNotFoundException, UpdateTicketStateUnauthorizedException {
         long ticketId = 1;
         doThrow(new RecordNotFoundException()).when(mockedTicketDao).read(ticketId);
 
         ticketsInteractor.freeATicket(ticketId);
     }
 
-    @Test
-    public void freeATicketUpdateTheTicketStateToAvailable(TicketDao mockedTicketDao) throws RecordNotFoundException {
+    @Test(expected = UpdateTicketStateUnauthorizedException.class)
+    public void freeATicketThrowsUpdateTicketStateUnauthorizedExceptionIfTheTicketIsNotResevered(TicketDao mockedTicketDao)
+            throws RecordNotFoundException, UpdateTicketStateUnauthorizedException {
         long ticketId = 1;
         Ticket mockedTicket = mock(Ticket.class);
+        when(mockedTicket.getState()).thenReturn(TicketState.AVAILABLE);
+        when(mockedTicketDao.read(ticketId)).thenReturn(mockedTicket);
+
+        ticketsInteractor.freeATicket(ticketId);
+    }
+
+    @Test
+    public void freeATicketUpdateTheTicketStateToAvailable(TicketDao mockedTicketDao) throws RecordNotFoundException, UpdateTicketStateUnauthorizedException {
+        long ticketId = 1;
+        Ticket mockedTicket = mock(Ticket.class);
+        when(mockedTicket.getState()).thenReturn(TicketState.RESERVED);
         when(mockedTicketDao.read(ticketId)).thenReturn(mockedTicket);
 
         ticketsInteractor.freeATicket(ticketId);
@@ -84,18 +109,30 @@ public class TicketsInteractorTest {
 
     @Test(expected = RecordNotFoundException.class)
     public void reserveATicketThrowsRecordNotFoundExceptionIfTheTicketDoesNotExist(TicketDao mockedTicketDao) throws
-            RecordNotFoundException {
+            RecordNotFoundException, UpdateTicketStateUnauthorizedException {
         long ticketId = 1;
         doThrow(new RecordNotFoundException()).when(mockedTicketDao).read(ticketId);
 
         ticketsInteractor.reserveATicket(ticketId);
     }
 
-    @Test
-    public void reserveATicketUpdateTheTicketStateToReserved(TicketDao mockedTicketDao) throws
-            RecordNotFoundException {
+    @Test(expected = UpdateTicketStateUnauthorizedException.class)
+    public void reserveATicketThrowsUpdateTicketStateUnauthorizedExceptionIfTheTicketIsNotFree(TicketDao mockedTicketDao)
+            throws RecordNotFoundException, UpdateTicketStateUnauthorizedException {
         long ticketId = 1;
         Ticket mockedTicket = mock(Ticket.class);
+        when(mockedTicket.getState()).thenReturn(TicketState.RESERVED);
+        when(mockedTicketDao.read(ticketId)).thenReturn(mockedTicket);
+
+        ticketsInteractor.reserveATicket(ticketId);
+    }
+
+    @Test
+    public void reserveATicketUpdateTheTicketStateToReserved(TicketDao mockedTicketDao) throws
+            RecordNotFoundException, UpdateTicketStateUnauthorizedException {
+        long ticketId = 1;
+        Ticket mockedTicket = mock(Ticket.class);
+        when(mockedTicket.getState()).thenReturn(TicketState.AVAILABLE);
         when(mockedTicketDao.read(ticketId)).thenReturn(mockedTicket);
 
         ticketsInteractor.reserveATicket(ticketId);

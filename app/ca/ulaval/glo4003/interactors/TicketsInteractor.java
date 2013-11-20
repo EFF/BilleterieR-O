@@ -2,6 +2,7 @@ package ca.ulaval.glo4003.interactors;
 
 import ca.ulaval.glo4003.dataaccessobjects.TicketDao;
 import ca.ulaval.glo4003.exceptions.RecordNotFoundException;
+import ca.ulaval.glo4003.exceptions.UpdateTicketStateUnauthorizedException;
 import ca.ulaval.glo4003.models.Ticket;
 import ca.ulaval.glo4003.models.TicketSearchCriteria;
 import ca.ulaval.glo4003.models.TicketState;
@@ -26,18 +27,33 @@ public class TicketsInteractor {
         return ticketDao.read(id);
     }
 
-    public void reserveATicket(long ticketId) throws RecordNotFoundException {
-        //TODO verify availble
-        setNewTicketState(ticketId, TicketState.RESERVED);
+    public void reserveATicket(long ticketId) throws RecordNotFoundException, UpdateTicketStateUnauthorizedException {
+        Ticket ticket = ticketDao.read(ticketId);
+        if (ticket.getState() == TicketState.AVAILABLE) {
+            setNewTicketState(ticket, TicketState.RESERVED);
+        } else {
+            throw new UpdateTicketStateUnauthorizedException();
+        }
     }
 
-    public void freeATicket(long ticketId) throws RecordNotFoundException {
-        setNewTicketState(ticketId, TicketState.AVAILABLE);
+    public void freeATicket(long ticketId) throws RecordNotFoundException, UpdateTicketStateUnauthorizedException {
+        Ticket ticket = ticketDao.read(ticketId);
+        if (ticket.getState() == TicketState.RESERVED) {
+            setNewTicketState(ticket, TicketState.AVAILABLE);
+        } else {
+            throw new UpdateTicketStateUnauthorizedException();
+        }
+        setNewTicketState(ticket, TicketState.AVAILABLE);
     }
 
-    public void buyATicket(long ticketId) throws RecordNotFoundException {
-        //TODO verfiy reserved
-        setNewTicketState(ticketId, TicketState.SOLD);
+    public void buyATicket(long ticketId) throws RecordNotFoundException, UpdateTicketStateUnauthorizedException {
+        Ticket ticket = ticketDao.read(ticketId);
+        if (ticket.getState() == TicketState.RESERVED) {
+            setNewTicketState(ticket, TicketState.SOLD);
+        } else {
+            throw new UpdateTicketStateUnauthorizedException();
+        }
+
     }
 
     public int numberOfTicketAvailable(long eventId) {
@@ -55,8 +71,7 @@ public class TicketsInteractor {
         return search(ticketSearchCriterias).size();
     }
 
-    private void setNewTicketState(long ticketId, TicketState newTicketState) throws RecordNotFoundException {
-        Ticket ticket = ticketDao.read(ticketId);
+    private void setNewTicketState(Ticket ticket, TicketState newTicketState) throws RecordNotFoundException {
         ticket.setState(newTicketState);
         ticketDao.update(ticket);
     }
