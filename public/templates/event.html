@@ -26,8 +26,8 @@
             <p>{{category.type | categoryType}}</p>
         </td>
         <td>
-            <ANY ng-switch="category.type">
-                <ANY ng-switch-when="SEAT">
+            <div ng-switch="category.type">
+                <span ng-switch-when="SEAT">
                     <select id="{{sectionsByCategories[category.id].name}}"
                             class="form-control"
                             ng-change="apiCall()"
@@ -35,19 +35,19 @@
                             ng-options="s for s in sectionsByCategories[category.id].options">
                         <option value="">Section...</option>
                     </select>
-                </ANY>
-                <ANY ng-switch-when="GENERAL_ADMISSION">
+                </span>
+                <span ng-switch-when="GENERAL_ADMISSION">
                     <select id="generalSection"
                             class="form-control" disabled=true>
                         <option value="">---</option>
                     </select>
-                </ANY>
-                <ANY ng-switch-default>---</ANY>
-            </ANY>
+                </span>
+                <span ng-switch-default>---</span>
+            </div>
         </td>
         <td>
-            <ANY ng-switch="category.type">
-                <ANY ng-switch-when="SEAT">
+            <div ng-switch="category.type">
+                <span ng-switch-when="SEAT">
                     <select id="{{ticketsByCategories[category.id].name}}"
                             class="form-control"
                             ng-model="ticketsByCategories[category.id].selectedValue">
@@ -57,29 +57,29 @@
                             {{ticket.seat}}
                         </option>
                     </select>
-                </ANY>
-                <ANY ng-switch-when="GENERAL_ADMISSION">
+                </span>
+                <span ng-switch-when="GENERAL_ADMISSION">
                     <select id="generalSeat"
                             class="form-control" disabled=true>
                         <option value="">---</option>
                     </select>
-                </ANY>
-                <ANY ng-switch-default>---</ANY>
-            </ANY>
+                </span>
+                <span ng-switch-default>---</span>
+            </div>
         </td>
         <td>
-            <ANY ng-switch="category.type">
-                <ANY ng-switch-when="GENERAL_ADMISSION">
+            <div ng-switch="category.type">
+                <span ng-switch-when="GENERAL_ADMISSION">
                     <input type="number" step="1" ng-model="quantity[category.id]" ng-init="quantity[category.id]=1"
                            class="form-control category-quantity" min="1" max="{{category.numberOfTickets}}"
                            ng-disabled="category.numberOfTickets == 0">
-                </ANY>
-                <ANY ng-switch-when="SEAT">
+                </span>
+                <span ng-switch-when="SEAT">
                     <input type="number"
                            class="form-control category-quantity" value="1" disabled=true />
-                </ANY>
-                <ANY ng-switch-default>---</ANY>
-            </ANY>
+                </span>
+                <span ng-switch-default>---</span>
+            </div>
         </td>
         <td>
             <button class="btn btn-success category-add"

@@ -49,9 +49,9 @@ public class TicketsControllerTest extends BaseControllerTest {
 
     @Before
     public void setup(TicketDao mockedTicketDao) {
-        firstTicket = new Ticket(AN_EVENT_ID, A_CATEGORY_ID, A_SECTION, A_SEAT);
+        firstTicket = new Ticket(AN_EVENT_ID, A_CATEGORY_ID, TicketState.AVAILABLE, A_SECTION, A_SEAT);
         firstTicket.setId(A_TICKET_ID);
-        secondTicket = new Ticket(AN_EVENT_ID, A_CATEGORY_ID, A_SECTION, A_SEAT + 1);
+        secondTicket = new Ticket(AN_EVENT_ID, A_CATEGORY_ID, TicketState.AVAILABLE, A_SECTION, A_SEAT + 1);
         secondTicket.setId(ANOTHER_TICKET_ID);
         tempTicketsList = new ArrayList<>();
         tempTicketsList.add(firstTicket);
@@ -152,12 +152,10 @@ public class TicketsControllerTest extends BaseControllerTest {
 
     @Test
     public void checkoutReturnInternalServerErrorWhenOneTicketIsNotReserved(TicketDao mockedTicketDao) throws RecordNotFoundException {
-        Ticket reservedTicket = new Ticket(AN_EVENT_ID, A_CATEGORY_ID, A_SECTION, A_SEAT);
+        Ticket reservedTicket = new Ticket(AN_EVENT_ID, A_CATEGORY_ID, TicketState.RESERVED, A_SECTION, A_SEAT);
         reservedTicket.setId(A_TICKET_ID);
-        Ticket notReservedTicket = new Ticket(AN_EVENT_ID, A_CATEGORY_ID, A_SECTION, A_SEAT + 1);
+        Ticket notReservedTicket = new Ticket(AN_EVENT_ID, A_CATEGORY_ID, TicketState.AVAILABLE, A_SECTION, A_SEAT + 1);
         notReservedTicket.setId(ANOTHER_TICKET_ID);
-        reservedTicket.setState(TicketState.RESERVED);
-        notReservedTicket.setState(TicketState.AVAILABLE);
 
         when(mockedTicketDao.read(reservedTicket.getId())).thenReturn(reservedTicket);
         when(mockedTicketDao.read(notReservedTicket.getId())).thenReturn(notReservedTicket);

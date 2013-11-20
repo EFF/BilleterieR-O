@@ -103,13 +103,13 @@ public class StagingBootstrapper implements Bootstrapper {
                 while (numberOfTickets > 0) {
                     Ticket ticket;
                     if (category.getType() == CategoryType.SEAT) {
-                        ticket = TicketFactory.createSeatTicket(
+                        ticket = TicketFactory.createAvailableSeatTicket(
                                 event.getId(),
                                 category.getId(),
                                 "Niveau " + (new Random().nextInt(2) + 1) * 100,
                                 numberOfTickets);
                     } else {
-                        ticket = TicketFactory.createGeneralAdmissionTicket(
+                        ticket = TicketFactory.createAvailableGeneralAdmissionTicket(
                                 event.getId(),
                                 category.getId());
                     }

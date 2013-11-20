@@ -31,10 +31,10 @@ public class TicketDaoTest {
 
         ticketDao = new TicketDao(daoPersistenceService, new UniqueConstraintValidator<Ticket>());
 
-        ticket1 = new Ticket(1, 0, "Section 100", 10, TicketState.SOLD);
-        ticket2 = new Ticket(1, 1, "Section 200", 11);
-        ticket3 = new Ticket(2, 0, "Section 100", 12);
-        ticket4 = new Ticket(2, 1, "Section 200", 13, TicketState.RESERVED);
+        ticket1 = new Ticket(1, 0, TicketState.SOLD, "Section 100", 10);
+        ticket2 = new Ticket(1, 1, TicketState.AVAILABLE, "Section 200", 11);
+        ticket3 = new Ticket(2, 0, TicketState.AVAILABLE, "Section 100", 12);
+        ticket4 = new Ticket(2, 1, TicketState.RESERVED, "Section 200", 13);
 
         ticketDao.create(ticket1);
         ticketDao.create(ticket2);
