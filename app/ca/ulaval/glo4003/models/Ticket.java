@@ -10,11 +10,7 @@ public class Ticket extends Record implements Serializable {
     private int seat;
     private TicketState state;
 
-    public Ticket(long eventId, long categoryId, String section, int seat) {
-        this(eventId, categoryId, section, seat, TicketState.AVAILABLE);
-    }
-
-    public Ticket(long eventId, long categoryId, String section, int seat, TicketState state) {
+    public Ticket(long eventId, long categoryId, TicketState state, String section, int seat) {
         this.categoryId = categoryId;
         this.eventId = eventId;
         this.section = section;

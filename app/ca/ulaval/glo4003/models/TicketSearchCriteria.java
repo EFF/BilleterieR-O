@@ -1,7 +1,5 @@
 package ca.ulaval.glo4003.models;
 
-import ca.ulaval.glo4003.ConstantsManager;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,11 +9,11 @@ public class TicketSearchCriteria {
     private Long categoryId;
     private String sectionName;
     private List<TicketState> states;
-    private int quantity;
+    private Integer quantity;
 
     public TicketSearchCriteria() {
         states = new ArrayList<>();
-        quantity = ConstantsManager.TICKET_SEARCH_CRITERIA_INVALID_QUANTITY;
+        quantity = null;
     }
 
     public Long getEventId() {
@@ -50,11 +48,11 @@ public class TicketSearchCriteria {
         this.states.add(state);
     }
 
-    public void setQuantity(int quantity) {
+    public void setQuantity(Integer quantity) {
         this.quantity = quantity;
     }
 
-    public int getQuantity() {
+    public Integer getQuantity() {
         return quantity;
     }
 }
