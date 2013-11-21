@@ -62,6 +62,10 @@ public class EventsPage extends BaseFluentPage {
                 (numberOfTickets));
     }
 
+    public void clickOnButton(String clazz) {
+        find(clazz).click();
+    }
+
     public FluentWebElement getLoadingAlert() {
         return findFirst("#loadingAlert");
     }
