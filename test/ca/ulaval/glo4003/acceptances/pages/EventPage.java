@@ -8,9 +8,9 @@ import static org.fluentlenium.core.filter.FilterConstructor.withText;
 
 public class EventPage extends BaseFluentPage {
 
-    private final int id;
+    private final long id;
 
-    public EventPage(WebDriver driver, int id) {
+    public EventPage(WebDriver driver, long id) {
         super(driver);
         this.id = id;
     }
