@@ -1,12 +1,13 @@
-define(['./module'], function (AppModule) {
-    AppModule.filter('gender', function () {
+define(['./module'], function (CommonModule) {
+    CommonModule.filter('gender', function () {
         return function (input) {
             return (input == "MALE") ? "Masculin" : "Féminin";
         }
     });
-    AppModule.filter('categoryType', function () {
+
+    CommonModule.filter('categoryType', function () {
         return function (input) {
             return (input == "SEAT") ? "Siège réservé" : "Admission Générale";
         }
-    })
+    });
 });

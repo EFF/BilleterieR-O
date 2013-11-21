@@ -11,7 +11,7 @@ define([
 ], function (angular) {
     return angular.module('billetterieRO', [
         'ngCookies',
-        'IndependentModule',
+        'CommonModule',
         'FlashMessageModule',
         'CartModule',
         'EventModule',

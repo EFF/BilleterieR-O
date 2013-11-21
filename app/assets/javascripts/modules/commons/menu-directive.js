@@ -1,5 +1,5 @@
-define(['./module'], function (AppModule) {
-    AppModule.directive('menu', ['Cart', 'Login', function (Cart, Login) {
+define(['./module'], function (CommonModule) {
+    CommonModule.directive('menu', ['Cart', 'Login', function (Cart, Login) {
         return {
             replace: true,
             templateUrl: 'assets/templates/directives/menu.html',
@@ -11,7 +11,7 @@ define(['./module'], function (AppModule) {
                     return Login.isLoggedIn;
                 }, function (isLoggedIn) {
                     $scope.isLoggedIn = isLoggedIn;
-                }, false);
+                });
 
                 $scope.$watch(function () {
                     return Login.username;

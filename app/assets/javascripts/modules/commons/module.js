@@ -1,3 +1,3 @@
 define(['angular'], function (angular) {
-    return angular.module('IndependentModule', []);
+    return angular.module('CommonModule', []);
 });
