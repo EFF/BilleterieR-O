@@ -1,5 +1,5 @@
-define(['app'], function (app) {
-    app.factory('Cart', ['$cookieStore', '$http', 'FlashMessage', function ($cookieStore, $http, FlashMessage) {
+define(['./module'], function (CartModule) {
+    CartModule.factory('Cart', ['$cookieStore', '$http', 'FlashMessage', function ($cookieStore, $http, FlashMessage) {
         var exports = {
             transactionId: null
         };
@@ -9,7 +9,7 @@ define(['app'], function (app) {
             cart = [];
         };
 
-        var updateTicketState = function(tickets, successCallback, errorCallback, url) {
+        var updateTicketState = function (tickets, successCallback, errorCallback, url) {
             if (tickets.length <= 0) {
                 return;
             }
@@ -22,15 +22,15 @@ define(['app'], function (app) {
                 .error(errorCallback);
         };
 
-        var checkoutTickets = function(tickets, successCallback, errorCallback) {
+        var checkoutTickets = function (tickets, successCallback, errorCallback) {
             updateTicketState(tickets, successCallback, errorCallback, '/api/checkout');
         };
 
-        var freeTickets = function(tickets, successCallback, errorCallback) {
+        var freeTickets = function (tickets, successCallback, errorCallback) {
             updateTicketState(tickets, successCallback, errorCallback, '/api/tickets/free');
         };
 
-        var reserveTickets = function(tickets, successCallback, errorCallback) {
+        var reserveTickets = function (tickets, successCallback, errorCallback) {
             updateTicketState(tickets, successCallback, errorCallback, '/api/tickets/reserve');
         };
 
@@ -109,7 +109,7 @@ define(['app'], function (app) {
                     updateCartCookie(cart);
                     FlashMessage.send("success", "L'item a été ajouté au panier");
                 };
-                var errorCallback = function() {
+                var errorCallback = function () {
                     FlashMessage.send('error', "L'item n'a pu être ajouté au panier. Une erreur est survenue.");
                 };
                 reserveTickets([ticket], successCallback, errorCallback)
@@ -140,7 +140,7 @@ define(['app'], function (app) {
                 updateCartCookie(cart);
                 FlashMessage.send("success", "Les billets ont été ajoutés au panier.");
             };
-            var errorCallback = function() {
+            var errorCallback = function () {
                 FlashMessage.send('error', "Les billets n'ont pu être ajoutés au panier. Une erreur est survenue.");
             };
 
@@ -215,7 +215,7 @@ define(['app'], function (app) {
         };
 
         exports.checkout = function (successCallback, errorCallback) {
-            var overrideSuccessCallback = function(data) {
+            var overrideSuccessCallback = function (data) {
                 removeAllSelectedItems(0, cart);
                 successCallback(data);
             }
@@ -227,7 +227,7 @@ define(['app'], function (app) {
             checkoutTickets(tickets, overrideSuccessCallback, errorCallback);
         };
 
-        var reserveTicketsToItem = function(quantity, item) {
+        var reserveTicketsToItem = function (quantity, item) {
             var url = '/api/tickets?eventId='
                 + item.event.id + '&categoryId='
                 + item.category.id + '&states=AVAILABLE'
@@ -240,17 +240,17 @@ define(['app'], function (app) {
                         item.desiredQuantity = item.reservedQuantity;
                         updateCartCookie(cart);
                     };
-                    var errorCallback = function() {
+                    var errorCallback = function () {
                         FlashMessage.send('error', 'Le nombre de billets ajoutés au panier excède le nombre de billets restants.');
                     };
                     reserveTickets(tickets, successCallback, errorCallback);
                 })
-                .error(function() {
+                .error(function () {
                     FlashMessage.send('error', 'Le nombre de billets ajoutés au panier excède le nombre de billets restants.');
                 });
         };
 
-        var freeTicketsFromItem = function(quantity, item) {
+        var freeTicketsFromItem = function (quantity, item) {
             var tickets = [];
             var i = 0;
 
@@ -272,7 +272,7 @@ define(['app'], function (app) {
             freeTickets(tickets, successCallback, errorCallback);
         };
 
-        exports.updateItemQuantity = function(index, deltaQuantity) {
+        exports.updateItemQuantity = function (index, deltaQuantity) {
             var item = cart[index];
             if (deltaQuantity == 0) {
                 item.desiredQuantity = item.reservedQuantity;
@@ -282,70 +282,6 @@ define(['app'], function (app) {
             } else {
                 freeTicketsFromItem(-deltaQuantity, item);
             }
-        };
-
-        return exports;
-    }]);
-
-    app.factory('Login', ['$http', function($http) {
-        var exports = {};
-
-        exports.isLoggedIn = false;
-        exports.username;
-
-        exports.login = function (username, password, successCallback, errorCallback){
-            var data = {username: username, password: password};
-
-            $http.post('/login', data, {})
-                .success(function() {
-                    setCredentials(true, username);
-                    successCallback();
-                })
-                .error(errorCallback);
-        };
-
-        exports.logout = function() {
-            $http.post('/logout', {}, {})
-                .success(function() {
-                    setCredentials(false, null);
-                });
-        };
-
-        var checkAuthenticationState = function() {
-            $http.get('/login')
-                .success(function(data) {
-                    setCredentials(data.authenticated, data.username);
-                });
-        };
-
-        var setCredentials = function(isLoggedIn, authenticated) {
-            exports.isLoggedIn = isLoggedIn;
-            exports.username = authenticated;
-        };
-
-        checkAuthenticationState();
-
-        return exports;
-    }]);
-
-    app.factory('FlashMessage', ['$rootScope', function ($rootScope) {
-        var exports = {};
-
-        var typeAsString = function (type) {
-            if (type == "error") return "Erreur";
-            else if (type == "info") return "Informations";
-            else if (type == "warning") return "Attention";
-            else return "Succès";
-        }
-
-        exports.send = function (type, message) {
-            var message = {
-                type: type,
-                title: typeAsString(type),
-                content: message
-            };
-
-            $rootScope.$broadcast('messageEvent', message);
         };
 
         return exports;
