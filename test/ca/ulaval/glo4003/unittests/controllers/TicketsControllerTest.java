@@ -4,6 +4,7 @@ import ca.ulaval.glo4003.ConstantsManager;
 import ca.ulaval.glo4003.controllers.TicketsController;
 import ca.ulaval.glo4003.exceptions.MaximumExceededException;
 import ca.ulaval.glo4003.exceptions.RecordNotFoundException;
+import ca.ulaval.glo4003.exceptions.UpdateTicketStateUnauthorizedException;
 import ca.ulaval.glo4003.interactors.TicketsInteractor;
 import ca.ulaval.glo4003.models.Ticket;
 import ca.ulaval.glo4003.models.TicketSearchCriteria;
@@ -111,7 +112,7 @@ public class TicketsControllerTest extends BaseControllerTest {
     }
 
     @Test
-    public void freeTicketWhenExists(TicketsInteractor mockedTicketsInteractor) throws RecordNotFoundException {
+    public void freeTicketWhenExists(TicketsInteractor mockedTicketsInteractor) throws RecordNotFoundException, UpdateTicketStateUnauthorizedException {
         long ticketId = 1;
         ObjectNode json = Json.newObject();
         ArrayNode node = json.putArray(ConstantsManager.TICKET_IDS_FIELD_NAME);
@@ -126,7 +127,7 @@ public class TicketsControllerTest extends BaseControllerTest {
 
     @Test
     public void freeTicketWhenDoesNotExistsThenReturnsNotFound(TicketsInteractor mockedTicketsInteractor) throws
-            RecordNotFoundException {
+            RecordNotFoundException, UpdateTicketStateUnauthorizedException {
         long ticketId = 1;
         doThrow(new RecordNotFoundException()).when(mockedTicketsInteractor).freeATicket(ticketId);
 
@@ -141,7 +142,7 @@ public class TicketsControllerTest extends BaseControllerTest {
     }
 
     @Test
-    public void reserveTicketWhenExists(TicketsInteractor mockedTicketsInteractor) throws RecordNotFoundException, MaximumExceededException {
+    public void reserveTicketWhenExists(TicketsInteractor mockedTicketsInteractor) throws RecordNotFoundException, MaximumExceededException, UpdateTicketStateUnauthorizedException {
         long ticketId = 1;
         ObjectNode json = Json.newObject();
         ArrayNode node = json.putArray(ConstantsManager.TICKET_IDS_FIELD_NAME);
@@ -155,7 +156,7 @@ public class TicketsControllerTest extends BaseControllerTest {
     }
 
     @Test
-    public void reserveTicketWhenDoesNotExistsThenReturnsNotFound(TicketsInteractor mockedTicketsInteractor) throws RecordNotFoundException {
+    public void reserveTicketWhenDoesNotExistsThenReturnsNotFound(TicketsInteractor mockedTicketsInteractor) throws RecordNotFoundException, UpdateTicketStateUnauthorizedException {
         long ticketId = 1;
         doThrow(new RecordNotFoundException()).when(mockedTicketsInteractor).reserveATicket(ticketId);
 

@@ -4,6 +4,7 @@ import ca.ulaval.glo4003.ConstantsManager;
 import ca.ulaval.glo4003.actions.SecureAction;
 import ca.ulaval.glo4003.dataaccessobjects.UserDao;
 import ca.ulaval.glo4003.exceptions.RecordNotFoundException;
+import ca.ulaval.glo4003.exceptions.UpdateTicketStateUnauthorizedException;
 import ca.ulaval.glo4003.interactors.TicketsInteractor;
 import ca.ulaval.glo4003.models.Transaction;
 import ca.ulaval.glo4003.models.User;
@@ -34,14 +35,20 @@ public class CheckoutController extends Controller {
 
     @Security.Authenticated(SecureAction.class)
     public Result index() {
-        try {
-            String userEmail = session().get(ConstantsManager.COOKIE_SESSION_FIELD_NAME);
-            User user = userDao.findByEmail(userEmail);
-            Transaction transaction = checkoutService.startNewTransaction(user);
+        String userEmail = session().get(ConstantsManager.COOKIE_SESSION_FIELD_NAME);
+        List<Long> ticketsIds = extractTicketsIdsFromRequest();
 
-            List<Long> ticketsIds = extractTicketsIdsFromRequest();
+        User user;
+        try {
+            user = userDao.findByEmail(userEmail);
+        } catch (RecordNotFoundException ignored) {
+            return notFound();
+        }
+
+        Transaction transaction = checkoutService.startNewTransaction(user);
+
+        try {
             for (Long ticketId : ticketsIds) {
-                //TODO catch error (once verification is done) then transaction.fail on error
                 ticketsInteractor.buyATicket(ticketId);
             }
 
@@ -51,7 +58,11 @@ public class CheckoutController extends Controller {
             result.put(ConstantsManager.TRANSACTION_ID_FIELD_NAME, transaction.getId());
 
             return ok(result);
+        } catch (UpdateTicketStateUnauthorizedException e) {
+            transaction.fail();
+            return unauthorized();
         } catch (RecordNotFoundException e) {
+            transaction.fail();
             return notFound();
         }
     }

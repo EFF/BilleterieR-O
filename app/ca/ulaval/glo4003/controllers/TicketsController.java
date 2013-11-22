@@ -3,6 +3,7 @@ package ca.ulaval.glo4003.controllers;
 
 import ca.ulaval.glo4003.ConstantsManager;
 import ca.ulaval.glo4003.exceptions.RecordNotFoundException;
+import ca.ulaval.glo4003.exceptions.UpdateTicketStateUnauthorizedException;
 import ca.ulaval.glo4003.interactors.TicketsInteractor;
 import ca.ulaval.glo4003.models.Ticket;
 import ca.ulaval.glo4003.models.TicketSearchCriteria;
@@ -54,6 +55,8 @@ public class TicketsController extends Controller {
             return internalServerError();
         } catch (RecordNotFoundException re) {
             return notFound();
+        } catch (UpdateTicketStateUnauthorizedException e) {
+            return unauthorized();
         }
     }
 
@@ -68,6 +71,8 @@ public class TicketsController extends Controller {
             return internalServerError();
         } catch (RecordNotFoundException re) {
             return notFound();
+        } catch (UpdateTicketStateUnauthorizedException e) {
+            return unauthorized();
         }
     }
 
