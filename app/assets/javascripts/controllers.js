@@ -144,7 +144,15 @@ define(['app'], function (app) {
             }
             url += '&sectionName=' + encodeURIComponent(sectionName);
             $http.get(url)
-                .success(refreshTicketsSuccessCallback);
+                  .success(function(tickets){
+                        if(tickets.length == 0){
+                             $scope.ticketsByCategories[categoryId].selectedValue = '';
+                             $scope.ticketsByCategories[categoryId].options = [];
+                        }
+                        else{
+                            refreshTicketsSuccessCallback(tickets);
+                        }
+                  });
         };
 
         var apiCallSuccessCallback = function (result) {

@@ -27,7 +27,7 @@ public class EventsTest {
                 // No filter => 2 results
                 eventsPage.waitUntilEventsHasSize(2);
                 assertTrue(eventsPage.eventHas(0, "Soccer", "Masculin", 1320));
-                assertTrue(eventsPage.eventHas(1, "Soccer", "Féminin", 1320));
+                assertTrue(eventsPage.eventHas(1, "Soccer", "Féminin", 140));
 
                 // Select Golf => no result
                 eventsPage.selectSport("Golf");
@@ -40,7 +40,7 @@ public class EventsTest {
                 eventsPage.waitUntilEventsHasSize(2);
                 assertThat(eventsPage.getEmptyAlert()).isNotDisplayed();
                 assertTrue(eventsPage.eventHas(0, "Soccer", "Masculin", 1320));
-                assertTrue(eventsPage.eventHas(1, "Soccer", "Féminin", 1320));
+                assertTrue(eventsPage.eventHas(1, "Soccer", "Féminin", 140));
 
                 // Select Soccer masculin => 1 result
                 eventsPage.selectGender("MALE");
@@ -63,7 +63,7 @@ public class EventsTest {
                 // No filter => 2 results
                 eventsPage.waitUntilEventsHasSize(2);
                 assertTrue(eventsPage.eventHas(0, "Soccer", "Masculin", 1320));
-                assertTrue(eventsPage.eventHas(1, "Soccer", "Féminin", 1320));
+                assertTrue(eventsPage.eventHas(1, "Soccer", "Féminin", 140));
 
                 // Late date start => 0 results
                 eventsPage.selectDateStart("2015-09-09");
@@ -74,7 +74,7 @@ public class EventsTest {
                 eventsPage.selectDateStart("2011-09-09");
                 eventsPage.waitUntilEventsHasSize(2);
                 assertTrue(eventsPage.eventHas(0, "Soccer", "Masculin", 1320));
-                assertTrue(eventsPage.eventHas(1, "Soccer", "Féminin", 1320));
+                assertTrue(eventsPage.eventHas(1, "Soccer", "Féminin", 140));
 
                 // Early date start, Early date end => 0 results
                 eventsPage.selectDateStart("2011-09-09");
@@ -87,7 +87,7 @@ public class EventsTest {
                 eventsPage.selectDateEnd("2015-09-09");
                 eventsPage.waitUntilEventsHasSize(2);
                 assertTrue(eventsPage.eventHas(0, "Soccer", "Masculin", 1320));
-                assertTrue(eventsPage.eventHas(1, "Soccer", "Féminin", 1320));
+                assertTrue(eventsPage.eventHas(1, "Soccer", "Féminin", 140));
             }
         });
     }

@@ -4,6 +4,8 @@ import org.fluentlenium.core.domain.FluentList;
 import org.fluentlenium.core.domain.FluentWebElement;
 import org.openqa.selenium.WebDriver;
 
+import java.util.List;
+
 import static org.fluentlenium.core.filter.FilterConstructor.withText;
 
 public class EventPage extends BaseFluentPage {
@@ -54,18 +56,31 @@ public class EventPage extends BaseFluentPage {
 
     public void waitUntilSelectIsPopulated(String selectId) {
         selectId = selectId.substring(1);
-        await().atMost(TIMEOUT).until('.' + selectId + "_option").hasSize().greaterThan(1);
+        await().atMost(TIMEOUT).until('.' + selectId + "_option").hasSize().greaterThan(0);
     }
 
     public void selectClickOnValue(String selectId, String value) {
         find(selectId).findFirst("option", withText().equalTo(value)).click();
     }
 
-    public String getSelectOptionValue(String selectId, String value){
+    public String getSelectOptionValue(String selectId, String value) {
         return find(selectId).findFirst("option", withText().equalTo(value)).getValue();
     }
 
     public void clickOnButton(String clazz) {
         find(clazz).click();
+    }
+
+    public void selectClickOnFirstIndexValue(String selectId) {
+        find(selectId).find("option", 1).click();
+    }
+
+    public void clickOnAddButtonForCategory(int categoryIndex) {
+        FluentWebElement categoryLine = getCategories().get(categoryIndex);
+        categoryLine.find(".category-add").click();
+    }
+
+    public int getSelectSize(String selectId) {
+        return find(selectId).find("option").getValues().size();
     }
 }

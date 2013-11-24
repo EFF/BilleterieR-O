@@ -42,7 +42,7 @@ define(['app'], function (app) {
             for (var index in cart) {
                 var item = cart[index];
 
-                if (item.ticket && item.ticket.id == ticketId) {
+                if (item.tickets && item.tickets[0].id == ticketId) {
                     return item;
                 }
             }

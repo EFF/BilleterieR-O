@@ -47,7 +47,7 @@ public class TestBootstrapper implements Bootstrapper {
         Event event2 = new Event(soccer, Gender.FEMALE);
         event2.setDate(new LocalDateTime());
         Category category3 = new Category(12.0, 120, 0, CategoryType.GENERAL_ADMISSION);
-        Category category4 = new Category(8.0, 1200, 1, CategoryType.SEAT);
+        Category category4 = new Category(8.0, 20, 1, CategoryType.SEAT);
 
         event2.addCategory(category3);
         event2.addCategory(category4);
