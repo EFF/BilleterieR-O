@@ -8,8 +8,6 @@ import org.junit.Test;
 import play.libs.F;
 import play.test.TestBrowser;
 
-import java.util.concurrent.TimeUnit;
-
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static play.test.Helpers.*;
@@ -71,7 +69,6 @@ public class EventTest extends FluentTest {
                 EventPage eventPage = new EventPage(browser.getDriver(), 2);
                 String sectionListId = "#sectionList1";
                 String ticketListId = "#ticketList1";
-                final int DEFAULT_OPTION = 1;  // the "siege disponible" item
 
                 eventPage.go();
                 eventPage.isAt();
@@ -81,20 +78,18 @@ public class EventTest extends FluentTest {
                 eventPage.waitUntilSelectIsPopulated(ticketListId);
 
                 int ticketNumber = eventPage.getTicketNumberForCategory(1);
-                int selectSize = eventPage.getSelectSize(ticketListId) - DEFAULT_OPTION;
+                int selectSize = eventPage.getSelectSize(ticketListId);
+                int quantityOfTicketsToBuy = selectSize;
 
-                for (int i = 0; i < selectSize; i++) {
-                    eventPage.waitUntilSelectIsPopulated(ticketListId);
+                while (selectSize > 0) {
                     eventPage.selectClickOnFirstIndexValue(ticketListId);
                     eventPage.clickOnAddButtonForCategory(1);
-                    if (i < (selectSize - 1)) {
-                        eventPage.waitUntilCategoriesHasSize(2);
-                        eventPage.waitUntilSelectIsPopulated(ticketListId);
-                    }
+                    eventPage.waitUntilSelectSizeIs(ticketListId, selectSize - 1);
+                    selectSize = eventPage.getSelectSize(ticketListId);
                 }
-                browser.fluentWait().withTimeout(1, TimeUnit.SECONDS);
-                assertEquals(DEFAULT_OPTION, eventPage.getSelectSize(ticketListId));
-                assertEquals(eventPage.getTicketNumberForCategory(1), ticketNumber - selectSize);
+                //browser.fluentWait().withTimeout(1, TimeUnit.SECONDS);
+                assertEquals(0, eventPage.getSelectSize(ticketListId));
+                assertEquals(eventPage.getTicketNumberForCategory(1), ticketNumber - quantityOfTicketsToBuy);
             }
         });
     }

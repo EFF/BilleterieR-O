@@ -4,8 +4,6 @@ import org.fluentlenium.core.domain.FluentList;
 import org.fluentlenium.core.domain.FluentWebElement;
 import org.openqa.selenium.WebDriver;
 
-import java.util.List;
-
 import static org.fluentlenium.core.filter.FilterConstructor.withText;
 
 public class EventPage extends BaseFluentPage {
@@ -81,6 +79,12 @@ public class EventPage extends BaseFluentPage {
     }
 
     public int getSelectSize(String selectId) {
-        return find(selectId).find("option").getValues().size();
+        String selectClass = '.' + selectId.substring(1);
+        return find(selectId).find(selectClass + "_option").size();
+    }
+
+    public void waitUntilSelectSizeIs(String selectId, int newSize) {
+        selectId = selectId.substring(1);
+        await().atMost(TIMEOUT).until('.' + selectId + "_option").hasSize(newSize);
     }
 }

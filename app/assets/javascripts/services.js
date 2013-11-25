@@ -41,9 +41,10 @@ define(['app'], function (app) {
         var getItemByTicketId = function (ticketId) {
             for (var index in cart) {
                 var item = cart[index];
-
-                if (item.tickets && item.tickets[0].id == ticketId) {
-                    return item;
+                for (var ticket in item.tickets) {
+                    if (ticket.id == ticketId) {
+                        return item;
+                    }
                 }
             }
             return null;

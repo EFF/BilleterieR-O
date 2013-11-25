@@ -64,7 +64,7 @@ define(['app'], function (app) {
                     });
                 }
                 $scope.apiCall();
-        });
+            });
 
         $scope.addToCart = function (ticketId, category, quantity) {
             if (ticketId) {
@@ -103,24 +103,29 @@ define(['app'], function (app) {
         var refreshTicketsSuccessCallback = function (tickets) {
             var categoryId = null;
 
-            for (var i in tickets) {
-                var ticket = tickets[i];
-                if (categoryId == null || ticket.categoryId != categoryId) {
-                    categoryId = ticket.categoryId;
+            if(tickets.length == 0){
+                $scope.ticketsByCategories[categoryId].selectedValue = '';
+                $scope.ticketsByCategories[categoryId].options = [];
+            } else {
+                for (var i in tickets) {
+                    var ticket = tickets[i];
+                    if (categoryId == null || ticket.categoryId != categoryId) {
+                        categoryId = ticket.categoryId;
 
-                    var emptyTicketList = {
-                                    type : 'select',
-                                    name : 'ticketList' + categoryId,
-                                    selectedValue : '',
-                                    options : []
-                                };
-                    $scope.ticketsByCategories[categoryId] = emptyTicketList;
+                        var emptyTicketList = {
+                            type : 'select',
+                            name : 'ticketList' + categoryId,
+                            selectedValue : '',
+                            options : []
+                        };
+                        $scope.ticketsByCategories[categoryId] = emptyTicketList;
 
-                    $scope.ticketsByCategories[categoryId].selectedValue = '';
-                    $scope.ticketsByCategories[categoryId].options = [];
-                    refreshNumberOfAvailableTickets(eventId, categoryId);
+                        $scope.ticketsByCategories[categoryId].selectedValue = '';
+                        $scope.ticketsByCategories[categoryId].options = [];
+                        refreshNumberOfAvailableTickets(eventId, categoryId);
+                    }
+                    $scope.ticketsByCategories[categoryId].options.push(ticket);
                 }
-                $scope.ticketsByCategories[categoryId].options.push(ticket);
             }
         };
 
@@ -144,15 +149,7 @@ define(['app'], function (app) {
             }
             url += '&sectionName=' + encodeURIComponent(sectionName);
             $http.get(url)
-                  .success(function(tickets){
-                        if(tickets.length == 0){
-                             $scope.ticketsByCategories[categoryId].selectedValue = '';
-                             $scope.ticketsByCategories[categoryId].options = [];
-                        }
-                        else{
-                            refreshTicketsSuccessCallback(tickets);
-                        }
-                  });
+                .success(refreshTicketsSuccessCallback);
         };
 
         var apiCallSuccessCallback = function (result) {
