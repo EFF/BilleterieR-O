@@ -1,5 +1,5 @@
 define(['./module'], function (LoginModule) {
-    LoginModule.factory('Login', ['$http', function ($http) {
+    LoginModule.factory('Login', ['$http', 'Cart', function ($http, Cart) {
         var exports = {};
 
         exports.isLoggedIn = false;
@@ -20,6 +20,7 @@ define(['./module'], function (LoginModule) {
             $http.post('/logout', {}, {})
                 .success(function () {
                     setCredentials(false, null);
+                    Cart.removeAllItem();
                 });
         };
 
