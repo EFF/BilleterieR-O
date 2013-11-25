@@ -48,7 +48,7 @@ public class AuthenticationTest {
                 assertTrue(eventsPage.isLogInDisplayed());
 
                 // Act
-                eventsPage.clickLoginButon();
+                eventsPage.clickLoginButton();
 
                 // Assert
                 loginPage.isAt();
@@ -109,7 +109,7 @@ public class AuthenticationTest {
                 assertTrue(loginPage.isLogOutDisplayed());
 
                 // Act
-                eventsPage.clickLoginButon();
+                eventsPage.clickLogoutButton();
 
                 // Assert
                 loginPage.isAt();

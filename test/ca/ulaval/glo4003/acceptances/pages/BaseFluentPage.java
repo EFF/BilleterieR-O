@@ -25,8 +25,12 @@ public abstract class BaseFluentPage extends FluentPage {
         return find(".navbar").find(".login-status").getAttribute("class").contains("login-status-in");
     }
 
-    public void clickLoginButon() {
-        find(".navbar").find(".login-status").click();
+    public void clickLoginButton() {
+        find(".navbar").find(".login-status-out").click();
+    }
+
+    public void clickLogoutButton() {
+        find(".navbar").find(".login-status-in").click();
     }
 
     public void waitForErrorMessageToDisplay() {
@@ -45,7 +49,7 @@ public abstract class BaseFluentPage extends FluentPage {
         await().atMost(TIMEOUT).until(".alertContainer .alert-info").isPresent();
     }
 
-    public void waitUnitlCartHasSize(int size) {
+    public void waitUntilCartHasSize(int size) {
         await().atMost(TIMEOUT).until(".cart-size").hasText(Integer.toString(size));
     }
 
