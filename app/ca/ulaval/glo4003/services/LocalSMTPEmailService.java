@@ -24,8 +24,6 @@ public class LocalSMTPEmailService implements EmailService {
             msg.setText(message);
             Transport.send(msg);
 
-        } catch (AddressException e) {
-            e.printStackTrace();
         } catch (MessagingException e) {
             e.printStackTrace();
         }

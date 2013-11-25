@@ -2,13 +2,13 @@ package ca.ulaval.glo4003.controllers;
 
 import ca.ulaval.glo4003.ConstantsManager;
 import ca.ulaval.glo4003.actions.SecureAction;
-import ca.ulaval.glo4003.dataaccessobjects.UserDao;
 import ca.ulaval.glo4003.exceptions.RecordNotFoundException;
 import ca.ulaval.glo4003.exceptions.UpdateTicketStateUnauthorizedException;
-import ca.ulaval.glo4003.interactors.TicketsInteractor;
+import ca.ulaval.glo4003.interactors.CheckoutInteractor;
+import ca.ulaval.glo4003.interactors.UsersInteractor;
 import ca.ulaval.glo4003.models.Transaction;
+import ca.ulaval.glo4003.models.TransactionState;
 import ca.ulaval.glo4003.models.User;
-import ca.ulaval.glo4003.services.CheckoutService;
 import com.google.inject.Inject;
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.node.ObjectNode;
@@ -22,48 +22,34 @@ import java.util.List;
 
 public class CheckoutController extends Controller {
 
-    private final CheckoutService checkoutService;
-    private final UserDao userDao;
-    private final TicketsInteractor ticketsInteractor;
+    private final CheckoutInteractor checkoutInteractor;
+    private final UsersInteractor usersInteractor;
 
     @Inject
-    public CheckoutController(CheckoutService checkoutService, UserDao userDao, TicketsInteractor ticketsInteractor) {
-        this.checkoutService = checkoutService;
-        this.userDao = userDao;
-        this.ticketsInteractor = ticketsInteractor;
+    public CheckoutController(CheckoutInteractor checkoutInteractor, UsersInteractor usersInteractor) {
+        this.checkoutInteractor = checkoutInteractor;
+        this.usersInteractor = usersInteractor;
     }
 
     @Security.Authenticated(SecureAction.class)
     public Result index() {
-        String userEmail = session().get(ConstantsManager.COOKIE_SESSION_FIELD_NAME);
-        List<Long> ticketsIds = extractTicketsIdsFromRequest();
+        String userEmail = request().username();
+        List<Long> ticketIds = extractTicketsIdsFromRequest();
 
         User user;
         try {
-            user = userDao.findByEmail(userEmail);
+            user = usersInteractor.getByEmail(userEmail);
         } catch (RecordNotFoundException ignored) {
             return notFound();
         }
 
-        Transaction transaction = checkoutService.startNewTransaction(user);
+        Transaction transaction = checkoutInteractor.executeTransaction(user, ticketIds);
 
-        try {
-            for (Long ticketId : ticketsIds) {
-                ticketsInteractor.buyATicket(ticketId);
-            }
-
-            checkoutService.fulfillTransaction(transaction);
-
-            ObjectNode result = Json.newObject();
-            result.put(ConstantsManager.TRANSACTION_ID_FIELD_NAME, transaction.getId());
-
-            return ok(result);
-        } catch (UpdateTicketStateUnauthorizedException e) {
-            transaction.fail();
-            return unauthorized();
-        } catch (RecordNotFoundException e) {
-            transaction.fail();
-            return notFound();
+        if(transaction.getState() == TransactionState.Fulfilled || transaction.getState() == TransactionState.Failed){
+            return ok(Json.toJson(transaction));
+        }
+        else{
+            return internalServerError();
         }
     }
 

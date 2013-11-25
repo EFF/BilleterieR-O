@@ -36,4 +36,8 @@ public class UsersInteractor {
         user.setPassword(newPassword);
         userDao.update(user);
     }
+
+    public User getByEmail(String email) throws RecordNotFoundException {
+        return userDao.findByEmail(email);
+    }
 }
