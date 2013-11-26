@@ -44,7 +44,7 @@ public class EventPage extends BaseFluentPage {
         return find(".category");
     }
 
-    public void addTicketsToCartForCategory(Integer categoryIndex, Integer quantity) {
+    public void addGeneralAdmissionsToCartForCategory(Integer categoryIndex, Integer quantity) {
         FluentWebElement categoryLine = getCategories().get(categoryIndex);
         categoryLine.find(".category-quantity").text(quantity.toString());
         categoryLine.find(".category-add").click();

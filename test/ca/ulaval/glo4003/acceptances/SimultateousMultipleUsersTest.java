@@ -4,6 +4,7 @@ import ca.ulaval.glo4003.TestGlobal;
 import ca.ulaval.glo4003.acceptances.pages.CartPage;
 import ca.ulaval.glo4003.acceptances.pages.EventPage;
 import ca.ulaval.glo4003.acceptances.pages.LoginPage;
+import org.fluentlenium.adapter.FluentTest;
 import org.junit.Test;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
@@ -13,14 +14,14 @@ import play.test.TestBrowser;
 import static org.fest.assertions.Assertions.assertThat;
 import static play.test.Helpers.*;
 
-public class SimultateousMultipleUsersTest {
+public class SimultateousMultipleUsersTest extends FluentTest {
 
-    private static final int EVENT_INDEX = 1;
-    private static final String VALID_USER_EMAIL_1 = "user1@example.com";
-    private static final String VALID_USER_EMAIL_2 = "user2@example.com";
-    private static final String PASSWORD = "secret";
-    private static final int TICKET_CATEGORY_ID = 1;
-    private static final int TICKET_QUANTITY = 1;
+    private final int EVENT_INDEX = 1;
+    private final String VALID_USER_EMAIL_1 = "user1@example.com";
+    private final String VALID_USER_EMAIL_2 = "user2@example.com";
+    private final String PASSWORD = "secret";
+    private final int TICKET_CATEGORY_ID = 1;
+    private final int TICKET_QUANTITY = 1;
 
     @Test
     public void ensureLoginWithTwoUsersAtTheSameTime() {
@@ -109,8 +110,8 @@ public class SimultateousMultipleUsersTest {
     }
 
     private void addTicketsToCartOnBothDrivers(EventPage eventPage1, EventPage eventPage2) {
-        eventPage1.addTicketsToCartForCategory(TICKET_CATEGORY_ID, TICKET_QUANTITY);
-        eventPage2.addTicketsToCartForCategory(TICKET_CATEGORY_ID, TICKET_QUANTITY);
+        eventPage1.addGeneralAdmissionsToCartForCategory(TICKET_CATEGORY_ID, TICKET_QUANTITY);
+        eventPage2.addGeneralAdmissionsToCartForCategory(TICKET_CATEGORY_ID, TICKET_QUANTITY);
     }
 
     private void closeDriver(FirefoxDriver driver) {

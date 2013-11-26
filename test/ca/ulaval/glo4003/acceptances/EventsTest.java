@@ -15,8 +15,8 @@ import static play.test.Helpers.*;
 
 public class EventsTest extends FluentTest {
 
-    public static final int EXPECTED_NUMBER_OF_TICKETS_ON_FIRST_EVENT = 1320;
-    public static final int EXPECTED_NUMBER_OF_TICKETS_ON_SECOND_EVENT = 140;
+    private final int EXPECTED_NUMBER_OF_TICKETS_ON_FIRST_EVENT = 1320;
+    private final int EXPECTED_NUMBER_OF_TICKETS_ON_SECOND_EVENT = 140;
     private final int AN_EVENT_ID = 1;
     private final String SOCCER_SPORT = "Soccer";
     private final String GOLF_SPORT = "Golf";
