@@ -84,6 +84,11 @@ define(['./module'], function (EventModule) {
         var refreshTicketsCall = function (eventId, categoryId, sectionName) {
             var url = '/api/tickets?eventId=' + eventId + '&categoryId=' + categoryId + '&states=AVAILABLE';
 
+            var errorCallback = function() {
+                $scope.ticketsSelectTagsByCategories[categoryId].selectedValue = '';
+                $scope.ticketsSelectTagsByCategories[categoryId].options = [];
+            };
+
             if ($scope.ticketsSelectTagsByCategories[categoryId] == null) {
                 $scope.ticketsSelectTagsByCategories[categoryId] = {
                     type: 'select',
@@ -101,15 +106,8 @@ define(['./module'], function (EventModule) {
             }
             url += '&sectionName=' + encodeURIComponent(sectionName);
             $http.get(url)
-                .success(function(tickets){
-                    if(tickets.length == 0){
-                        $scope.ticketsSelectTagsByCategories[categoryId].selectedValue = '';
-                        $scope.ticketsSelectTagsByCategories[categoryId].options = [];
-                    }
-                    else{
-                        refreshTicketsSuccessCallback(tickets);
-                    }
-                });
+                .success(refreshTicketsSuccessCallback)
+                .error(errorCallback);
         };
 
         var apiCallSuccessCallback = function (result) {
