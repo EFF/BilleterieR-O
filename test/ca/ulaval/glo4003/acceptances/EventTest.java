@@ -38,7 +38,7 @@ public class EventTest extends FluentTest {
     }
 
     @Test
-    public void clickOnDetailsButtonGoToTicketInfoPage() {
+    public void clickOnDetailsButtonGoesToTicketInfoPage() {
         running(testServer(3333, fakeApplication(new TestGlobal())), FIREFOX, new F.Callback<TestBrowser>() {
             public void invoke(TestBrowser browser) {
                 EventPage eventPage = new EventPage(browser.getDriver(), ANOTHER_EVENT_ID);
