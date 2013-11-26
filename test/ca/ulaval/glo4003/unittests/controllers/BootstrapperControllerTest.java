@@ -13,7 +13,6 @@ import play.mvc.Result;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.inOrder;
-import static org.mockito.Mockito.times;
 import static play.test.Helpers.status;
 
 @RunWith(JukitoRunner.class)
@@ -28,8 +27,8 @@ public class BootstrapperControllerTest extends BaseControllerTest {
 
         assertEquals(Http.Status.OK, status(result));
         InOrder inOrder = inOrder(mockedBootstrapperInteractor);
-        inOrder.verify(mockedBootstrapperInteractor, times(1)).deleteAll();
-        inOrder.verify(mockedBootstrapperInteractor, times(1)).initData();
+        inOrder.verify(mockedBootstrapperInteractor).deleteAll();
+        inOrder.verify(mockedBootstrapperInteractor).initData();
     }
 
     public static class TestModule extends JukitoModule {

@@ -2,7 +2,6 @@ package ca.ulaval.glo4003.unittests.controllers;
 
 import ca.ulaval.glo4003.ConstantsManager;
 import ca.ulaval.glo4003.controllers.EventsController;
-import ca.ulaval.glo4003.dataaccessobjects.EventDao;
 import ca.ulaval.glo4003.exceptions.MaximumExceededException;
 import ca.ulaval.glo4003.exceptions.RecordNotFoundException;
 import ca.ulaval.glo4003.interactors.EventsInteractor;

@@ -46,7 +46,7 @@ public class CheckoutInteractorTest {
 
         assertEquals(mockedTransaction, transaction);
         InOrder inOrder = inOrder(mockedCheckoutService, mockedTicketsInteractor);
-        inOrder.verify(mockedCheckoutService, times(1)).startNewTransaction(mockedBuyer);
+        inOrder.verify(mockedCheckoutService).startNewTransaction(mockedBuyer);
         inOrder.verify(mockedTicketsInteractor).buyATicket(fakeId1);
         inOrder.verify(mockedTicketsInteractor).buyATicket(fakeId2);
     }
@@ -68,7 +68,7 @@ public class CheckoutInteractorTest {
 
         assertEquals(mockedTransaction, transaction);
         InOrder inOrder = inOrder(mockedCheckoutService, mockedTicketsInteractor, mockedTransaction);
-        inOrder.verify(mockedCheckoutService, times(1)).startNewTransaction(mockedBuyer);
+        inOrder.verify(mockedCheckoutService).startNewTransaction(mockedBuyer);
         inOrder.verify(mockedTicketsInteractor).buyATicket(fakeId1);
         inOrder.verify(mockedTransaction).fail();
         verify(mockedTicketsInteractor, never()).buyATicket(fakeId2);

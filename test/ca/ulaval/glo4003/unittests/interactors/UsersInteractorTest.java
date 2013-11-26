@@ -68,10 +68,10 @@ public class UsersInteractorTest {
 
         usersInteractor.updateEmail(actualEmail, newEmail);
 
-        verify(mockedUserDao, times(1)).findByEmail(actualEmail);
+        verify(mockedUserDao).findByEmail(actualEmail);
         InOrder inOrder = inOrder(mockedUser, mockedUserDao);
-        inOrder.verify(mockedUser, times(1)).setEmail(newEmail);
-        inOrder.verify(mockedUserDao, times(1)).update(mockedUser);
+        inOrder.verify(mockedUser).setEmail(newEmail);
+        inOrder.verify(mockedUserDao).update(mockedUser);
     }
 
     @Test
@@ -85,10 +85,10 @@ public class UsersInteractorTest {
 
         usersInteractor.updatePassword(email, actualPassword, newPassword);
 
-        verify(mockedUserDao, times(1)).findByEmail(email);
+        verify(mockedUserDao).findByEmail(email);
         InOrder inOrder = inOrder(mockedUser, mockedUserDao);
-        inOrder.verify(mockedUser, times(1)).setPassword(newPassword);
-        inOrder.verify(mockedUserDao, times(1)).update(mockedUser);
+        inOrder.verify(mockedUser).setPassword(newPassword);
+        inOrder.verify(mockedUserDao).update(mockedUser);
     }
 
     @Test(expected = RecordNotFoundException.class)

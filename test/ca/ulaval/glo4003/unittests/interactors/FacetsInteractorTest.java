@@ -14,9 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @RunWith(JukitoRunner.class)
 public class FacetsInteractorTest {
@@ -36,7 +34,7 @@ public class FacetsInteractorTest {
     }
 
     @Test
-    public void gendersFacet(){
+    public void gendersFacet() {
         List<Gender> result = facetsInteractor.genders();
 
         assertEquals(2, result.size());

@@ -122,7 +122,7 @@ public class TicketsControllerTest extends BaseControllerTest {
         Result result = ticketsController.free();
 
         assertEquals(Helpers.OK, Helpers.status(result));
-        verify(mockedTicketsInteractor, times(1)).freeATicket(ticketId);
+        verify(mockedTicketsInteractor).freeATicket(ticketId);
     }
 
     @Test
@@ -152,7 +152,7 @@ public class TicketsControllerTest extends BaseControllerTest {
         Result result = ticketsController.reserve();
 
         assertEquals(Helpers.OK, Helpers.status(result));
-        verify(mockedTicketsInteractor, times(1)).reserveATicket(ticketId);
+        verify(mockedTicketsInteractor).reserveATicket(ticketId);
     }
 
     @Test

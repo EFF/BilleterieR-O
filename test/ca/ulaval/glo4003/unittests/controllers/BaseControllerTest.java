@@ -7,7 +7,6 @@ import play.mvc.Http;
 
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
-import static play.test.Helpers.fakeRequest;
 
 public abstract class BaseControllerTest {
     protected Http.Context mockedContext;

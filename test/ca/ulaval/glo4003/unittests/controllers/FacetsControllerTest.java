@@ -2,7 +2,6 @@ package ca.ulaval.glo4003.unittests.controllers;
 
 import ca.ulaval.glo4003.ConstantsManager;
 import ca.ulaval.glo4003.controllers.FacetsController;
-import ca.ulaval.glo4003.dataaccessobjects.SportDao;
 import ca.ulaval.glo4003.interactors.FacetsInteractor;
 import ca.ulaval.glo4003.models.Gender;
 import ca.ulaval.glo4003.models.Sport;
@@ -17,9 +16,7 @@ import play.libs.Json;
 import play.mvc.Result;
 import play.test.Helpers;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.Assert.*;
@@ -31,7 +28,6 @@ public class FacetsControllerTest extends BaseControllerTest {
 
     @Inject
     private FacetsController facetsController;
-
     private List<Sport> tempList;
 
     @Before
