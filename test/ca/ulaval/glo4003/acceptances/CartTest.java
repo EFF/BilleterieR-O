@@ -174,7 +174,7 @@ public class CartTest {
                 goToCartPage(cartPage, 1);
                 cartPage.payWithCreditCard();
                 cartPage.confirm(browser.getDriver());
-                cartPage.waitUnitlCartHasSize(0);
+                cartPage.waitUntilCartHasSize(0);
                 assertEquals(0, resultPage.getCartSize());
             }
         });

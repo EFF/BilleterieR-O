@@ -8,6 +8,7 @@ import static org.fluentlenium.core.filter.FilterConstructor.withText;
 
 public class EventPage extends BaseFluentPage {
 
+    public static final String TICKET_LIST_ID_1 = "#ticketList1";
     private final long id;
 
     public EventPage(WebDriver driver, long id) {
@@ -52,25 +53,8 @@ public class EventPage extends BaseFluentPage {
         return Integer.parseInt(text);
     }
 
-    public void waitUntilSelectIsPopulated(String selectId) {
-        selectId = selectId.substring(1);
-        await().atMost(TIMEOUT).until('.' + selectId + "_option").hasSize().greaterThan(0);
-    }
-
-    public void selectClickOnValue(String selectId, String value) {
-        find(selectId).findFirst("option", withText().equalTo(value)).click();
-    }
-
-    public String getSelectOptionValue(String selectId, String value) {
-        return find(selectId).findFirst("option", withText().equalTo(value)).getValue();
-    }
-
     public void clickOnButton(String clazz) {
         find(clazz).click();
-    }
-
-    public void selectClickOnFirstIndexValue(String selectId) {
-        find(selectId).find("option", 1).click();
     }
 
     public void clickOnAddButtonForCategory(int categoryIndex) {
@@ -78,13 +62,62 @@ public class EventPage extends BaseFluentPage {
         categoryLine.find(".category-add").click();
     }
 
-    public int getSelectSize(String selectId) {
+    public void clickOnDetailsButton() {
+        clickOnButton(".btn-details1");
+    }
+
+    public void clickOnValueOfFirstSectionSelect(String value) {
+        selectClickOnValue("#sectionList1", value);
+    }
+
+    public void selectSeatOfFirstTicketList(String seatToSelect) {
+        selectClickOnValue(TICKET_LIST_ID_1, seatToSelect);
+    }
+
+    public String getTicketIdOfSeatInFirstTicketSelect(String seat) {
+        return getSelectOptionValue(TICKET_LIST_ID_1, seat);
+    }
+
+    public void waitUntilTicketSelectIsPopulated() {
+        waitUntilSelectIsPopulated(TICKET_LIST_ID_1);
+    }
+
+    private String getSelectOptionValue(String selectId, String value) {
+        return find(selectId).findFirst("option", withText().equalTo(value)).getValue();
+    }
+
+    private int getSelectSize(String selectId) {
         String selectClass = '.' + selectId.substring(1);
         return find(selectId).find(selectClass + "_option").size();
     }
 
-    public void waitUntilSelectSizeIs(String selectId, int newSize) {
+    private void selectClickOnFirstIndexValue(String selectId) {
+        find(selectId).find("option", 1).click();
+    }
+
+    private void selectClickOnValue(String selectId, String value) {
+        find(selectId).findFirst("option", withText().equalTo(value)).click();
+    }
+
+    private void waitUntilSelectIsPopulated(String selectId) {
+        selectId = selectId.substring(1);
+        await().atMost(TIMEOUT).until('.' + selectId + "_option").hasSize().greaterThan(0);
+    }
+
+    private void waitUntilSelectSizeIs(String selectId, int newSize) {
         selectId = selectId.substring(1);
         await().atMost(TIMEOUT).until('.' + selectId + "_option").hasSize(newSize);
+    }
+
+    public int getTicketSelectSize() {
+        return getSelectSize(TICKET_LIST_ID_1);
+    }
+
+    public void clickOnFirstIndexValueOfFirstTicketSelect() {
+        selectClickOnFirstIndexValue(TICKET_LIST_ID_1);
+    }
+
+    public void waitUntilFirstTicketSelectSizeIs(int size) {
+        waitUntilSelectSizeIs(TICKET_LIST_ID_1, size);
     }
 }

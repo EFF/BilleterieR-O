@@ -12,7 +12,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static play.test.Helpers.*;
 
-public class TicketTest  extends FluentTest {
+public class TicketTest extends FluentTest {
 
     @Test
     public void requiredInfosAreDisplayed() {

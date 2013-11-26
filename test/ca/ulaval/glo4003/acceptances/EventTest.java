@@ -37,8 +37,6 @@ public class EventTest extends FluentTest {
             public void invoke(TestBrowser browser) {
                 EventPage eventPage = new EventPage(browser.getDriver(), 2);
                 TicketPage ticketPage = new TicketPage(browser.getDriver(), -1, 2);
-                String sectionListId = "#sectionList1";
-                String ticketListId = "#ticketList1";
                 String ticketSeatToSelect = "2";
 
                 eventPage.go();
@@ -46,13 +44,13 @@ public class EventTest extends FluentTest {
 
                 eventPage.waitUntilCategoriesHasSize(2);
 
-                eventPage.selectClickOnValue(sectionListId, "Niveau 100");
-                eventPage.waitUntilSelectIsPopulated(ticketListId);
-                eventPage.selectClickOnValue(ticketListId, ticketSeatToSelect);
-                Long ticketId = Long.parseLong(eventPage.getSelectOptionValue(ticketListId, ticketSeatToSelect));
+                eventPage.clickOnValueOfFirstSectionSelect("Niveau 100");
+                eventPage.waitUntilTicketSelectIsPopulated();
+                eventPage.selectSeatOfFirstTicketList(ticketSeatToSelect);
+                Long ticketId = Long.parseLong(eventPage.getTicketIdOfSeatInFirstTicketSelect(ticketSeatToSelect));
                 ticketPage.setTicketId(ticketId);
 
-                eventPage.clickOnButton(".btn-details1");
+                eventPage.clickOnDetailsButton();
                 ticketPage.isAt();
 
                 assertEquals(ticketPage.getUrl(), browser.url());
@@ -67,28 +65,25 @@ public class EventTest extends FluentTest {
         running(testServer(3333, fakeApplication(new TestGlobal())), FIREFOX, new F.Callback<TestBrowser>() {
             public void invoke(TestBrowser browser) {
                 EventPage eventPage = new EventPage(browser.getDriver(), 2);
-                String sectionListId = "#sectionList1";
-                String ticketListId = "#ticketList1";
-
 
                 eventPage.go();
                 eventPage.isAt();
                 eventPage.waitUntilCategoriesHasSize(2);
 
-                eventPage.selectClickOnValue(sectionListId, "Niveau 100");
-                eventPage.waitUntilSelectIsPopulated(ticketListId);
+                eventPage.clickOnValueOfFirstSectionSelect("Niveau 100");
+                eventPage.waitUntilTicketSelectIsPopulated();
 
                 int ticketNumber = eventPage.getTicketNumberForCategory(1);
-                int selectSize = eventPage.getSelectSize(ticketListId);
+                int selectSize = eventPage.getTicketSelectSize();
                 int quantityOfTicketsToBuy = selectSize;
 
                 while (selectSize > 0) {
-                    eventPage.selectClickOnFirstIndexValue(ticketListId);
+                    eventPage.clickOnFirstIndexValueOfFirstTicketSelect();
                     eventPage.clickOnAddButtonForCategory(1);
-                    eventPage.waitUntilSelectSizeIs(ticketListId, selectSize - 1);
-                    selectSize = eventPage.getSelectSize(ticketListId);
+                    eventPage.waitUntilFirstTicketSelectSizeIs(selectSize - 1);
+                    selectSize = eventPage.getTicketSelectSize();
                 }
-                assertEquals(0, eventPage.getSelectSize(ticketListId));
+                assertEquals(0, eventPage.getTicketSelectSize());
                 assertEquals(eventPage.getTicketNumberForCategory(1), ticketNumber - quantityOfTicketsToBuy);
             }
         });
