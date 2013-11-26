@@ -60,7 +60,7 @@ public class TransactionTest {
 
         transaction.fulfill();
 
-        assertEquals(new LocalDateTime(), transaction.getEndedOn());
+        assertAboutSameDateTime(new LocalDateTime(), transaction.getEndedOn());
     }
 
     @Test
@@ -69,7 +69,7 @@ public class TransactionTest {
 
         transaction.fail();
 
-        assertEquals(new LocalDateTime(), transaction.getEndedOn());
+        assertAboutSameDateTime(new LocalDateTime(), transaction.getEndedOn());
     }
 
     private void assertAboutSameDateTime(LocalDateTime dt1, LocalDateTime dt2) {
