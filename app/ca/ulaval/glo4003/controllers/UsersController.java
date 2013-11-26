@@ -1,11 +1,11 @@
 package ca.ulaval.glo4003.controllers;
 
 import ca.ulaval.glo4003.ConstantsManager;
-import ca.ulaval.glo4003.Secured;
+import ca.ulaval.glo4003.actions.SecureAction;
 import ca.ulaval.glo4003.dataaccessobjects.UniqueValidationException;
-import ca.ulaval.glo4003.dataaccessobjects.UserDao;
+import ca.ulaval.glo4003.exceptions.InvalidActualPasswordException;
 import ca.ulaval.glo4003.exceptions.RecordNotFoundException;
-import ca.ulaval.glo4003.models.User;
+import ca.ulaval.glo4003.interactors.UsersInteractor;
 import com.google.inject.Inject;
 import org.apache.commons.lang3.StringUtils;
 import org.codehaus.jackson.JsonNode;
@@ -23,15 +23,14 @@ public class UsersController extends Controller {
     public static final String ACTUAL_AND_NEW_PASSWORD_EXPECTED = "Actual and new password expected";
     public static final String WRONG_ACTUAL_PASSWORD = "Wrong actual password";
     public static final String EMAIL_IS_INVALID = "Invalid email";
-
-    private final UserDao userDao;
+    private final UsersInteractor usersInteractor;
 
     @Inject
-    public UsersController(UserDao userDao) {
-        this.userDao = userDao;
+    public UsersController(UsersInteractor usersInteractor) {
+        this.usersInteractor = usersInteractor;
     }
 
-    @Security.Authenticated(Secured.class)
+    @Security.Authenticated(SecureAction.class)
     public Result updateEmail() {
         JsonNode json = request().body().asJson();
 
@@ -43,9 +42,7 @@ public class UsersController extends Controller {
         String newEmail = json.get(ConstantsManager.USERNAME_FIELD_NAME).asText();
 
         try {
-            User user = userDao.findByEmail(actualEmail);
-            user.setEmail(newEmail);
-            userDao.update(user);
+            usersInteractor.updateEmail(actualEmail, newEmail);
             session().put(ConstantsManager.COOKIE_SESSION_FIELD_NAME, newEmail);
             return ok();
         } catch (RecordNotFoundException e) {
@@ -57,7 +54,7 @@ public class UsersController extends Controller {
         }
     }
 
-    @Security.Authenticated(Secured.class)
+    @Security.Authenticated(SecureAction.class)
     public Result updatePassword() {
         JsonNode json = request().body().asJson();
 
@@ -70,17 +67,12 @@ public class UsersController extends Controller {
         String newPassword = json.get(ConstantsManager.PASSWORD_FIELD_NAME).asText();
 
         try {
-            User user = userDao.findByEmail(email);
-
-            if (!user.getPassword().equals(actualPassword)) {
-                return unauthorized(WRONG_ACTUAL_PASSWORD);
-            }
-
-            user.setPassword(newPassword);
-            userDao.update(user);
+            usersInteractor.updatePassword(email, actualPassword, newPassword);
             return ok();
         } catch (RecordNotFoundException e) {
             return unauthorized(BAD_SESSION_WRONG_USERNAME);
+        } catch (InvalidActualPasswordException e) {
+            return unauthorized(WRONG_ACTUAL_PASSWORD);
         }
     }
 

@@ -20,13 +20,9 @@ public class FileBasedDaoPersistenceService implements DaoPersistenceService {
         File objectPath = getDaoPersistencePath(dao);
 
         FileOutputStream fileStream = new FileOutputStream(objectPath);
-        ObjectOutputStream serializer = new ObjectOutputStream(fileStream);
 
-        try {
+        try (ObjectOutputStream serializer = new ObjectOutputStream(fileStream)) {
             serializer.writeObject(dao.list());
-        }
-        finally {
-            serializer.close();
         }
     }
 
@@ -35,13 +31,11 @@ public class FileBasedDaoPersistenceService implements DaoPersistenceService {
         File objectPath = getDaoPersistencePath(dao);
 
         FileInputStream saveFile = new FileInputStream(objectPath);
-        ObjectInputStream serializer = new ObjectInputStream(saveFile);
 
-        try {
-            return (List<T>) serializer.readObject();
-        }
-        finally {
-            serializer.close();
+        try (ObjectInputStream serializer = new ObjectInputStream(saveFile)) {
+            @SuppressWarnings("unchecked")
+            final List<T> entities = (List<T>) serializer.readObject();
+            return entities;
         }
     }
 
@@ -63,7 +57,7 @@ public class FileBasedDaoPersistenceService implements DaoPersistenceService {
         File baseDir = new File(parent, path);
 
         if (!baseDir.exists()) {
-            if(!baseDir.mkdirs()) {
+            if (!baseDir.mkdirs()) {
                 throw new Exception("Directory " + baseDir.getPath() + " could not be created.");
             }
         }
