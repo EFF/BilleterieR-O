@@ -18,7 +18,7 @@ public class TicketTest  extends FluentTest {
     public void requiredInfosAreDisplayed() {
         running(testServer(3333, fakeApplication(new TestGlobal())), FIREFOX, new F.Callback<TestBrowser>() {
             public void invoke(TestBrowser browser) {
-                TicketPage ticketPage = new TicketPage(browser.getDriver(), 1500, 2);
+                TicketPage ticketPage = new TicketPage(browser.getDriver(), 1450, 2);
                 ticketPage.go();
                 ticketPage.isAt();
 
@@ -32,7 +32,7 @@ public class TicketTest  extends FluentTest {
         running(testServer(3333, fakeApplication(new TestGlobal())), FIREFOX, new F.Callback<TestBrowser>() {
             public void invoke(TestBrowser browser) {
                 EventPage eventPage = new EventPage(browser.getDriver(), 2);
-                TicketPage ticketPage = new TicketPage(browser.getDriver(), 1400, 2);
+                TicketPage ticketPage = new TicketPage(browser.getDriver(), 1445, 2);
                 ticketPage.go();
                 ticketPage.isAt();
 
