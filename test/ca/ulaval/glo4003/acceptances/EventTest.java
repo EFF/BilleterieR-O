@@ -15,6 +15,8 @@ import static play.test.Helpers.*;
 
 public class EventTest extends FluentTest {
 
+    private final int A_CATEGORY_ID = 1;
+
     @Test
     public void returnAnEventWithPricesAndNumberOfTicketsPerCategory() {
         running(testServer(3333, fakeApplication(new TestGlobal())), FIREFOX, new F.Callback<TestBrowser>() {
@@ -38,17 +40,16 @@ public class EventTest extends FluentTest {
                 EventPage eventPage = new EventPage(browser.getDriver(), 2);
                 TicketPage ticketPage = new TicketPage(browser.getDriver(), -1, 2);
                 String ticketSeatToSelect = "2";
-                int categoryId = 1;
 
                 eventPage.go();
                 eventPage.isAt();
 
                 eventPage.waitUntilCategoriesHasSize(2);
 
-                eventPage.selectSectionInSectionListForCategory(categoryId, "Niveau 100");
-                eventPage.waitUntilTicketsListIsPopulated(categoryId);
-                eventPage.selectSeatInTicketsListForCategory(categoryId, ticketSeatToSelect);
-                Long ticketId = Long.parseLong(eventPage.getTicketIdOfSeatInTicketsListForCategory(categoryId, ticketSeatToSelect));
+                eventPage.selectSectionInSectionListForCategory(A_CATEGORY_ID, "Niveau 100");
+                eventPage.waitUntilTicketsListIsPopulated(A_CATEGORY_ID);
+                eventPage.selectSeatInTicketsListForCategory(A_CATEGORY_ID, ticketSeatToSelect);
+                Long ticketId = Long.parseLong(eventPage.getTicketIdOfSeatInTicketsListForCategory(A_CATEGORY_ID, ticketSeatToSelect));
                 ticketPage.setTicketId(ticketId);
 
                 eventPage.clickOnDetailsButton();
@@ -66,26 +67,25 @@ public class EventTest extends FluentTest {
         running(testServer(3333, fakeApplication(new TestGlobal())), FIREFOX, new F.Callback<TestBrowser>() {
             public void invoke(TestBrowser browser) {
                 EventPage eventPage = new EventPage(browser.getDriver(), 2);
-                int categoryId = 1;
 
                 eventPage.go();
                 eventPage.isAt();
                 eventPage.waitUntilCategoriesHasSize(2);
 
-                eventPage.selectSectionInSectionListForCategory(categoryId, "Niveau 100");
-                eventPage.waitUntilTicketsListIsPopulated(categoryId);
+                eventPage.selectSectionInSectionListForCategory(A_CATEGORY_ID, "Niveau 100");
+                eventPage.waitUntilTicketsListIsPopulated(A_CATEGORY_ID);
 
-                int ticketNumber = eventPage.getTicketNumberForCategory(categoryId);
-                int selectSize = eventPage.getTicketsListSizeForCategory(categoryId);
+                int ticketNumber = eventPage.getTicketNumberForCategory(A_CATEGORY_ID);
+                int selectSize = eventPage.getTicketsListSizeForCategory(A_CATEGORY_ID);
                 int quantityOfTicketsToBuy = selectSize;
 
                 while (selectSize > 0) {
-                    eventPage.clickOnFirstIndexValueOfTicketsListForCategory(categoryId);
+                    eventPage.clickOnFirstIndexValueOfTicketsListForCategory(A_CATEGORY_ID);
                     eventPage.clickOnAddButtonForCategory(1);
-                    eventPage.waitUntilTicketsListForCategoryHasSize(categoryId, selectSize - 1);
-                    selectSize = eventPage.getTicketsListSizeForCategory(categoryId);
+                    eventPage.waitUntilTicketsListForCategoryHasSize(A_CATEGORY_ID, selectSize - 1);
+                    selectSize = eventPage.getTicketsListSizeForCategory(A_CATEGORY_ID);
                 }
-                assertEquals(0, eventPage.getTicketsListSizeForCategory(categoryId));
+                assertEquals(0, eventPage.getTicketsListSizeForCategory(A_CATEGORY_ID));
                 assertEquals(eventPage.getTicketNumberForCategory(1), ticketNumber - quantityOfTicketsToBuy);
             }
         });

@@ -82,6 +82,18 @@ public class EventPage extends BaseFluentPage {
         waitUntilSelectIsPopulated(TICKET_LIST_ID + categoryId);
     }
 
+    public int getTicketsListSizeForCategory(int categoryId) {
+        return getSelectSize(TICKET_LIST_ID + categoryId);
+    }
+
+    public void clickOnFirstIndexValueOfTicketsListForCategory(int categoryId) {
+        selectClickOnFirstIndexValue(TICKET_LIST_ID + categoryId);
+    }
+
+    public void waitUntilTicketsListForCategoryHasSize(int categoryId, int size) {
+        waitUntilSelectSizeIs(TICKET_LIST_ID + categoryId, size);
+    }
+
     private String getSelectOptionValue(String selectId, String value) {
         return find(selectId).findFirst("option", withText().equalTo(value)).getValue();
     }
@@ -107,17 +119,5 @@ public class EventPage extends BaseFluentPage {
     private void waitUntilSelectSizeIs(String selectId, int newSize) {
         selectId = selectId.substring(1);
         await().atMost(TIMEOUT).until('.' + selectId + "_option").hasSize(newSize);
-    }
-
-    public int getTicketsListSizeForCategory(int categoryId) {
-        return getSelectSize(TICKET_LIST_ID + categoryId);
-    }
-
-    public void clickOnFirstIndexValueOfTicketsListForCategory(int categoryId) {
-        selectClickOnFirstIndexValue(TICKET_LIST_ID + categoryId);
-    }
-
-    public void waitUntilTicketsListForCategoryHasSize(int categoryId, int size) {
-        waitUntilSelectSizeIs(TICKET_LIST_ID + categoryId, size);
     }
 }
