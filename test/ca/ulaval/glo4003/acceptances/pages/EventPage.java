@@ -8,8 +8,9 @@ import static org.fluentlenium.core.filter.FilterConstructor.withText;
 
 public class EventPage extends BaseFluentPage {
 
-    public static final String TICKET_LIST_ID = "#ticketList";
-    public static final String SECTION_LIST_ID = "#sectionList";
+    public static final String TICKET_SELECT_ID = "#ticketList";
+    public static final String SECTION_SELECT_ID = "#sectionList";
+    public static final int QUANTITY_OF_DEFAULT_VALUES_IN_TICKETS_SELECT = 1;
     private final long id;
 
     public EventPage(WebDriver driver, long id) {
@@ -68,31 +69,31 @@ public class EventPage extends BaseFluentPage {
     }
 
     public void selectSectionInSectionListForCategory(int categoryId, String value) {
-        selectClickOnValue(SECTION_LIST_ID + categoryId, value);
+        selectClickOnValue(SECTION_SELECT_ID + categoryId, value);
     }
 
     public void selectSeatInTicketsListForCategory(int categoryId, String seatToSelect) {
-        selectClickOnValue(TICKET_LIST_ID + categoryId, seatToSelect);
+        selectClickOnValue(TICKET_SELECT_ID + categoryId, seatToSelect);
     }
 
     public String getTicketIdOfSeatInTicketsListForCategory(int categoryId, String seat) {
-        return getSelectOptionValue(TICKET_LIST_ID + categoryId, seat);
+        return getSelectOptionValue(TICKET_SELECT_ID + categoryId, seat);
     }
 
     public void waitUntilTicketsListIsPopulated(int categoryId) {
-        waitUntilSelectIsPopulated(TICKET_LIST_ID + categoryId);
+        waitUntilSelectIsPopulated(TICKET_SELECT_ID + categoryId);
     }
 
     public int getTicketsListSizeForCategory(int categoryId) {
-        return getSelectSize(TICKET_LIST_ID + categoryId);
+        return getSelectSize(TICKET_SELECT_ID + categoryId) - QUANTITY_OF_DEFAULT_VALUES_IN_TICKETS_SELECT;
     }
 
     public void clickOnFirstIndexValueOfTicketsListForCategory(int categoryId) {
-        selectClickOnFirstIndexValue(TICKET_LIST_ID + categoryId);
+        selectClickOnFirstIndexValue(TICKET_SELECT_ID + categoryId);
     }
 
     public void waitUntilTicketsListForCategoryHasSize(int categoryId, int size) {
-        waitUntilSelectSizeIs(TICKET_LIST_ID + categoryId, size);
+        waitUntilSelectSizeIs(TICKET_SELECT_ID + categoryId, size + QUANTITY_OF_DEFAULT_VALUES_IN_TICKETS_SELECT);
     }
 
     private String getSelectOptionValue(String selectId, String value) {
@@ -100,7 +101,7 @@ public class EventPage extends BaseFluentPage {
     }
 
     private int getSelectSize(String selectId) {
-        return find(selectId).find(".option").size();
+        return find(selectId).find("option").size();
     }
 
     private void selectClickOnFirstIndexValue(String selectId) {
@@ -112,10 +113,10 @@ public class EventPage extends BaseFluentPage {
     }
 
     private void waitUntilSelectIsPopulated(String selectId) {
-        await().atMost(TIMEOUT).until(selectId + " .option").hasSize().greaterThan(0);
+        await().atMost(TIMEOUT).until(selectId + " option").hasSize().greaterThan(QUANTITY_OF_DEFAULT_VALUES_IN_TICKETS_SELECT);
     }
 
     private void waitUntilSelectSizeIs(String selectId, int newSize) {
-        await().atMost(TIMEOUT).until(selectId + " .option").hasSize(newSize);
+        await().atMost(TIMEOUT).until(selectId + " option").hasSize(newSize);
     }
 }

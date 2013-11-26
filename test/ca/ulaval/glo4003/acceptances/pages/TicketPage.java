@@ -4,6 +4,7 @@ package ca.ulaval.glo4003.acceptances.pages;
 import org.openqa.selenium.WebDriver;
 
 public class TicketPage extends BaseFluentPage {
+
     private long ticketId;
     private long eventId;
 
