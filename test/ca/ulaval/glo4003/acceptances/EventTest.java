@@ -70,6 +70,7 @@ public class EventTest extends FluentTest {
                 String sectionListId = "#sectionList1";
                 String ticketListId = "#ticketList1";
 
+
                 eventPage.go();
                 eventPage.isAt();
                 eventPage.waitUntilCategoriesHasSize(2);
@@ -87,7 +88,6 @@ public class EventTest extends FluentTest {
                     eventPage.waitUntilSelectSizeIs(ticketListId, selectSize - 1);
                     selectSize = eventPage.getSelectSize(ticketListId);
                 }
-                //browser.fluentWait().withTimeout(1, TimeUnit.SECONDS);
                 assertEquals(0, eventPage.getSelectSize(ticketListId));
                 assertEquals(eventPage.getTicketNumberForCategory(1), ticketNumber - quantityOfTicketsToBuy);
             }
