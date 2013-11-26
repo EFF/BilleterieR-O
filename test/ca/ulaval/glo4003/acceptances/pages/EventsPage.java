@@ -63,6 +63,6 @@ public class EventsPage extends BaseFluentPage {
     }
 
     public void clickOnFirstEventButtonDetails() {
-        findFirst(".event").findFirst(".btn-see-event-info").click();
+        findFirst(".event .btn-see-event-info").click();
     }
 }
