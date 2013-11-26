@@ -38,7 +38,7 @@ public class EventTest extends FluentTest {
     }
 
     @Test
-    public void selectASeatThenValidateTicketInfos() {
+    public void clickOnDetailsButtonGoToTicketInfoPage() {
         running(testServer(3333, fakeApplication(new TestGlobal())), FIREFOX, new F.Callback<TestBrowser>() {
             public void invoke(TestBrowser browser) {
                 EventPage eventPage = new EventPage(browser.getDriver(), ANOTHER_EVENT_ID);
@@ -61,8 +61,6 @@ public class EventTest extends FluentTest {
                 ticketPage.isAt();
 
                 assertEquals(ticketPage.getUrl(), browser.url());
-                assertTrue(ticketPage.isSection(A_SECTION_NAME));
-                assertTrue(ticketPage.isSeat(ticketSeatToSelect));
             }
         });
     }
