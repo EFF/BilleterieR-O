@@ -14,9 +14,9 @@ import static play.test.Helpers.*;
 
 public class TicketTest extends FluentTest {
 
-    public static final int A_TICKET_TYPE_SEAT_ID = 1450;
-    public static final int ANOTHER_TICKET_TYPE_SEAT_ID = 1445;
-    public static final int AN_EVENT_ID = 2;
+    private final int A_TICKET_TYPE_SEAT_ID = 1450;
+    private final int ANOTHER_TICKET_TYPE_SEAT_ID = 1445;
+    private final int AN_EVENT_ID = 2;
 
     @Test
     public void requiredInfosAreDisplayed() {
