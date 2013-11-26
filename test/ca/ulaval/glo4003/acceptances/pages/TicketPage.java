@@ -50,6 +50,6 @@ public class TicketPage extends BaseFluentPage {
     }
 
     public void clickEventDetailsButton() {
-        findFirst("#eventDetails").click();
+        findFirst("#event-" + eventId).click();
     }
 }

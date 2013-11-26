@@ -14,11 +14,15 @@ import static play.test.Helpers.*;
 
 public class TicketTest extends FluentTest {
 
+    public static final int A_TICKET_TYPE_SEAT_ID = 1450;
+    public static final int ANOTHER_TICKET_TYPE_SEAT_ID = 1445;
+    public static final int AN_EVENT_ID = 2;
+
     @Test
     public void requiredInfosAreDisplayed() {
         running(testServer(3333, fakeApplication(new TestGlobal())), FIREFOX, new F.Callback<TestBrowser>() {
             public void invoke(TestBrowser browser) {
-                TicketPage ticketPage = new TicketPage(browser.getDriver(), 1450, 2);
+                TicketPage ticketPage = new TicketPage(browser.getDriver(), A_TICKET_TYPE_SEAT_ID, AN_EVENT_ID);
                 ticketPage.go();
                 ticketPage.isAt();
 
@@ -31,8 +35,8 @@ public class TicketTest extends FluentTest {
     public void clickOnEventDetailsShowEventPage() {
         running(testServer(3333, fakeApplication(new TestGlobal())), FIREFOX, new F.Callback<TestBrowser>() {
             public void invoke(TestBrowser browser) {
-                EventPage eventPage = new EventPage(browser.getDriver(), 2);
-                TicketPage ticketPage = new TicketPage(browser.getDriver(), 1445, 2);
+                EventPage eventPage = new EventPage(browser.getDriver(), AN_EVENT_ID);
+                TicketPage ticketPage = new TicketPage(browser.getDriver(), ANOTHER_TICKET_TYPE_SEAT_ID, AN_EVENT_ID);
                 ticketPage.go();
                 ticketPage.isAt();
 
