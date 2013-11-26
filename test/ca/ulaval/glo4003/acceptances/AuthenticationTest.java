@@ -95,7 +95,6 @@ public class AuthenticationTest {
                 loginPage.go();
                 loginPage.isAt();
 
-
                 loginPage.fillUsername(EMAIL);
                 loginPage.fillPassword(PASSWORD);
 
