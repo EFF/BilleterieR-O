@@ -1,7 +1,7 @@
 package ca.ulaval.glo4003.unittests.controllers;
 
-import ca.ulaval.glo4003.controllers.BootstrapController;
-import ca.ulaval.glo4003.interactors.BootstrapperInteractor;
+import ca.ulaval.glo4003.api.bootstrap.BootstrapController;
+import ca.ulaval.glo4003.domain.boostrap.BootstrapperInteractor;
 import com.google.inject.Inject;
 import org.jukito.JukitoModule;
 import org.jukito.JukitoRunner;

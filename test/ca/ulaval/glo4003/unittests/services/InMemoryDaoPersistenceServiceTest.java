@@ -1,7 +1,7 @@
 package ca.ulaval.glo4003.unittests.services;
 
-import ca.ulaval.glo4003.dataaccessobjects.PersistedDao;
-import ca.ulaval.glo4003.services.InMemoryDaoPersistenceService;
+import ca.ulaval.glo4003.persistence.PersistedDao;
+import ca.ulaval.glo4003.persistence.InMemoryDaoPersistenceService;
 import ca.ulaval.glo4003.unittests.dataaccessobjects.PersistedDaoTest;
 import org.junit.Before;
 import org.junit.Test;

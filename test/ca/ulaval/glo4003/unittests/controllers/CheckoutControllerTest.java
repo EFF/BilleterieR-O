@@ -1,13 +1,13 @@
 package ca.ulaval.glo4003.unittests.controllers;
 
 import ca.ulaval.glo4003.ConstantsManager;
-import ca.ulaval.glo4003.controllers.CheckoutController;
-import ca.ulaval.glo4003.exceptions.RecordNotFoundException;
-import ca.ulaval.glo4003.interactors.CheckoutInteractor;
-import ca.ulaval.glo4003.interactors.UsersInteractor;
-import ca.ulaval.glo4003.models.Transaction;
-import ca.ulaval.glo4003.models.TransactionState;
-import ca.ulaval.glo4003.models.User;
+import ca.ulaval.glo4003.api.ticketing.CheckoutController;
+import ca.ulaval.glo4003.domain.RecordNotFoundException;
+import ca.ulaval.glo4003.domain.ticketing.CheckoutInteractor;
+import ca.ulaval.glo4003.domain.user.UsersInteractor;
+import ca.ulaval.glo4003.domain.ticketing.Transaction;
+import ca.ulaval.glo4003.domain.ticketing.TransactionState;
+import ca.ulaval.glo4003.domain.user.User;
 import com.google.inject.Inject;
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.node.ArrayNode;

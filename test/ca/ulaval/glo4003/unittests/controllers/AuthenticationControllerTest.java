@@ -1,10 +1,10 @@
 package ca.ulaval.glo4003.unittests.controllers;
 
 import ca.ulaval.glo4003.ConstantsManager;
-import ca.ulaval.glo4003.controllers.AuthenticationController;
-import ca.ulaval.glo4003.dataaccessobjects.UserDao;
-import ca.ulaval.glo4003.exceptions.RecordNotFoundException;
-import ca.ulaval.glo4003.models.User;
+import ca.ulaval.glo4003.api.user.AuthenticationController;
+import ca.ulaval.glo4003.domain.user.UserDao;
+import ca.ulaval.glo4003.domain.RecordNotFoundException;
+import ca.ulaval.glo4003.domain.user.User;
 import com.google.inject.Inject;
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.node.ObjectNode;

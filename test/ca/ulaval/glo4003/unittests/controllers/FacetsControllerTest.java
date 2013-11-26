@@ -1,10 +1,10 @@
 package ca.ulaval.glo4003.unittests.controllers;
 
 import ca.ulaval.glo4003.ConstantsManager;
-import ca.ulaval.glo4003.controllers.FacetsController;
-import ca.ulaval.glo4003.interactors.FacetsInteractor;
-import ca.ulaval.glo4003.models.Gender;
-import ca.ulaval.glo4003.models.Sport;
+import ca.ulaval.glo4003.api.event.FacetsController;
+import ca.ulaval.glo4003.domain.event.FacetsInteractor;
+import ca.ulaval.glo4003.domain.event.Gender;
+import ca.ulaval.glo4003.domain.event.Sport;
 import com.google.inject.Inject;
 import org.codehaus.jackson.JsonNode;
 import org.jukito.JukitoModule;

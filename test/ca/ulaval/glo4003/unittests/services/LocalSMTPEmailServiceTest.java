@@ -1,7 +1,7 @@
 package ca.ulaval.glo4003.unittests.services;
 
-import ca.ulaval.glo4003.services.EmailService;
-import ca.ulaval.glo4003.services.LocalSMTPEmailService;
+import ca.ulaval.glo4003.domain.EmailService;
+import ca.ulaval.glo4003.email.LocalSMTPEmailService;
 import org.junit.Test;
 
 public class LocalSMTPEmailServiceTest {

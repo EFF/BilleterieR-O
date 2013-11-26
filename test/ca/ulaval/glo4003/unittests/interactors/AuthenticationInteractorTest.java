@@ -1,11 +1,11 @@
 package ca.ulaval.glo4003.unittests.interactors;
 
-import ca.ulaval.glo4003.dataaccessobjects.UserDao;
-import ca.ulaval.glo4003.exceptions.AuthenticationException;
-import ca.ulaval.glo4003.exceptions.RecordNotFoundException;
-import ca.ulaval.glo4003.interactors.AuthenticationInteractor;
-import ca.ulaval.glo4003.models.Credentials;
-import ca.ulaval.glo4003.models.User;
+import ca.ulaval.glo4003.domain.user.UserDao;
+import ca.ulaval.glo4003.domain.user.AuthenticationException;
+import ca.ulaval.glo4003.domain.RecordNotFoundException;
+import ca.ulaval.glo4003.domain.user.AuthenticationInteractor;
+import ca.ulaval.glo4003.domain.user.Credentials;
+import ca.ulaval.glo4003.domain.user.User;
 import com.google.inject.Inject;
 import org.jukito.JukitoModule;
 import org.jukito.JukitoRunner;

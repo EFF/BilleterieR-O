@@ -1,11 +1,11 @@
 package ca.ulaval.glo4003.unittests.dataaccessobjects;
 
-import ca.ulaval.glo4003.dataaccessobjects.PersistedTicketDao;
-import ca.ulaval.glo4003.dataaccessobjects.UniqueConstraintValidator;
-import ca.ulaval.glo4003.models.Ticket;
-import ca.ulaval.glo4003.models.TicketSearchCriteria;
-import ca.ulaval.glo4003.models.TicketState;
-import ca.ulaval.glo4003.services.DaoPersistenceService;
+import ca.ulaval.glo4003.persistence.ticketing.PersistedTicketDao;
+import ca.ulaval.glo4003.persistence.UniqueConstraintValidator;
+import ca.ulaval.glo4003.domain.ticketing.Ticket;
+import ca.ulaval.glo4003.domain.ticketing.TicketSearchCriteria;
+import ca.ulaval.glo4003.domain.ticketing.TicketState;
+import ca.ulaval.glo4003.persistence.DaoPersistenceService;
 import junit.framework.Assert;
 import org.junit.Before;
 import org.junit.Test;

@@ -1,6 +1,6 @@
 package ca.ulaval.glo4003.unittests.services;
 
-import ca.ulaval.glo4003.services.FakeEmailService;
+import ca.ulaval.glo4003.email.FakeEmailService;
 import org.junit.Test;
 
 public class FakeEmailServiceTest {

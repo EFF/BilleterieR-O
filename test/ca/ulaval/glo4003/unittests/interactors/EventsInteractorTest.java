@@ -1,10 +1,10 @@
 package ca.ulaval.glo4003.unittests.interactors;
 
-import ca.ulaval.glo4003.dataaccessobjects.EventDao;
-import ca.ulaval.glo4003.exceptions.RecordNotFoundException;
-import ca.ulaval.glo4003.interactors.EventsInteractor;
-import ca.ulaval.glo4003.models.Event;
-import ca.ulaval.glo4003.models.EventSearchCriteria;
+import ca.ulaval.glo4003.domain.event.EventDao;
+import ca.ulaval.glo4003.domain.RecordNotFoundException;
+import ca.ulaval.glo4003.domain.event.EventsInteractor;
+import ca.ulaval.glo4003.domain.event.Event;
+import ca.ulaval.glo4003.domain.event.EventSearchCriteria;
 import com.google.inject.Inject;
 import org.jukito.JukitoRunner;
 import org.junit.Test;

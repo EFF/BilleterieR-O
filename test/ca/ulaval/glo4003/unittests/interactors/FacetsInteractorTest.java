@@ -1,9 +1,9 @@
 package ca.ulaval.glo4003.unittests.interactors;
 
-import ca.ulaval.glo4003.dataaccessobjects.SportDao;
-import ca.ulaval.glo4003.interactors.FacetsInteractor;
-import ca.ulaval.glo4003.models.Gender;
-import ca.ulaval.glo4003.models.Sport;
+import ca.ulaval.glo4003.domain.event.SportDao;
+import ca.ulaval.glo4003.domain.event.FacetsInteractor;
+import ca.ulaval.glo4003.domain.event.Gender;
+import ca.ulaval.glo4003.domain.event.Sport;
 import com.google.inject.Inject;
 import org.jukito.JukitoModule;
 import org.jukito.JukitoRunner;

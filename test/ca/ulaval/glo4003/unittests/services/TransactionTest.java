@@ -1,9 +1,9 @@
 package ca.ulaval.glo4003.unittests.services;
 
 import ca.ulaval.glo4003.ConstantsManager;
-import ca.ulaval.glo4003.models.Transaction;
-import ca.ulaval.glo4003.models.TransactionState;
-import ca.ulaval.glo4003.models.User;
+import ca.ulaval.glo4003.domain.ticketing.Transaction;
+import ca.ulaval.glo4003.domain.ticketing.TransactionState;
+import ca.ulaval.glo4003.domain.user.User;
 import org.fest.assertions.Assertions;
 import org.joda.time.LocalDateTime;
 import org.joda.time.Period;

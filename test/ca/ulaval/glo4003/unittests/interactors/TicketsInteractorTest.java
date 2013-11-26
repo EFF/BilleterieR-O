@@ -1,12 +1,12 @@
 package ca.ulaval.glo4003.unittests.interactors;
 
-import ca.ulaval.glo4003.dataaccessobjects.TicketDao;
-import ca.ulaval.glo4003.exceptions.RecordNotFoundException;
-import ca.ulaval.glo4003.exceptions.UpdateTicketStateUnauthorizedException;
-import ca.ulaval.glo4003.interactors.TicketsInteractor;
-import ca.ulaval.glo4003.models.Ticket;
-import ca.ulaval.glo4003.models.TicketSearchCriteria;
-import ca.ulaval.glo4003.models.TicketState;
+import ca.ulaval.glo4003.domain.ticketing.TicketDao;
+import ca.ulaval.glo4003.domain.RecordNotFoundException;
+import ca.ulaval.glo4003.domain.ticketing.UpdateTicketStateUnauthorizedException;
+import ca.ulaval.glo4003.domain.ticketing.TicketsInteractor;
+import ca.ulaval.glo4003.domain.ticketing.Ticket;
+import ca.ulaval.glo4003.domain.ticketing.TicketSearchCriteria;
+import ca.ulaval.glo4003.domain.ticketing.TicketState;
 import com.google.inject.Inject;
 import org.jukito.JukitoRunner;
 import org.junit.Test;

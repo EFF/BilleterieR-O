@@ -1,11 +1,11 @@
 package ca.ulaval.glo4003.unittests.dataaccessobjects;
 
-import ca.ulaval.glo4003.dataaccessobjects.PersistedUserDao;
-import ca.ulaval.glo4003.dataaccessobjects.UniqueConstraintValidator;
-import ca.ulaval.glo4003.dataaccessobjects.UserDao;
-import ca.ulaval.glo4003.exceptions.RecordNotFoundException;
-import ca.ulaval.glo4003.models.User;
-import ca.ulaval.glo4003.services.DaoPersistenceService;
+import ca.ulaval.glo4003.persistence.user.PersistedUserDao;
+import ca.ulaval.glo4003.persistence.UniqueConstraintValidator;
+import ca.ulaval.glo4003.domain.user.UserDao;
+import ca.ulaval.glo4003.domain.RecordNotFoundException;
+import ca.ulaval.glo4003.domain.user.User;
+import ca.ulaval.glo4003.persistence.DaoPersistenceService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

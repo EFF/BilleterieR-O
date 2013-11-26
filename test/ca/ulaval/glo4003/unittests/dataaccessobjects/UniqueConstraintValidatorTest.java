@@ -1,7 +1,7 @@
 package ca.ulaval.glo4003.unittests.dataaccessobjects;
 
-import ca.ulaval.glo4003.dataaccessobjects.UniqueConstraintValidator;
-import ca.ulaval.glo4003.models.Record;
+import ca.ulaval.glo4003.persistence.UniqueConstraintValidator;
+import ca.ulaval.glo4003.domain.Record;
 import org.junit.Test;
 
 import javax.persistence.Column;

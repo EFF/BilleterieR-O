@@ -1,13 +1,13 @@
 package ca.ulaval.glo4003.unittests.controllers;
 
 import ca.ulaval.glo4003.ConstantsManager;
-import ca.ulaval.glo4003.controllers.EventsController;
-import ca.ulaval.glo4003.exceptions.MaximumExceededException;
-import ca.ulaval.glo4003.exceptions.RecordNotFoundException;
-import ca.ulaval.glo4003.interactors.EventsInteractor;
-import ca.ulaval.glo4003.models.Event;
-import ca.ulaval.glo4003.models.EventSearchCriteria;
-import ca.ulaval.glo4003.models.Gender;
+import ca.ulaval.glo4003.api.event.EventsController;
+import ca.ulaval.glo4003.domain.RecordNotFoundException;
+import ca.ulaval.glo4003.domain.event.Event;
+import ca.ulaval.glo4003.domain.event.EventSearchCriteria;
+import ca.ulaval.glo4003.domain.event.EventsInteractor;
+import ca.ulaval.glo4003.domain.event.Gender;
+import ca.ulaval.glo4003.domain.ticketing.MaximumExceededException;
 import ca.ulaval.glo4003.unittests.helpers.EventsTestHelper;
 import com.google.inject.Inject;
 import org.codehaus.jackson.JsonNode;
@@ -22,7 +22,7 @@ import play.mvc.Result;
 import play.test.Helpers;
 
 import java.security.InvalidParameterException;
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
@@ -34,24 +34,23 @@ import static org.mockito.Mockito.when;
 @RunWith(JukitoRunner.class)
 public class EventsControllerTest extends BaseControllerTest {
 
+    private static final int FIRST_EVENT_ID = 1;
+    private static final int SECOND_EVENT_ID = 2;
+
     @Inject
     private EventsController eventsController;
-
-    private Event firstEvent;
-    private Event secondEvent;
     private EventSearchCriteria eventSearchCriteria;
     private List<Event> tempEventsList;
+    private Event firstEvent;
 
     @Before
     public void setup(EventsInteractor mockedEventsInteractor) throws RecordNotFoundException,
             MaximumExceededException {
-        firstEvent = EventsTestHelper.createRandomEventtWithCategoryGivenSport(EventsTestHelper.FIRST_RANDOM_SPORT);
-        firstEvent.setId(1);
-        secondEvent = EventsTestHelper.createRandomEventtWithCategoryGivenSport(EventsTestHelper.SECOND_RANDOM_SPORT);
-        secondEvent.setId(2);
-        tempEventsList = new ArrayList<>();
-        tempEventsList.add(firstEvent);
-        tempEventsList.add(secondEvent);
+        firstEvent = EventsTestHelper.createRandomEventWithCategoryGivenSport(EventsTestHelper.FIRST_RANDOM_SPORT);
+        Event secondEvent = EventsTestHelper.createRandomEventWithCategoryGivenSport(EventsTestHelper.SECOND_RANDOM_SPORT);
+        firstEvent.setId(FIRST_EVENT_ID);
+        secondEvent.setId(SECOND_EVENT_ID);
+        tempEventsList = Arrays.asList(firstEvent, secondEvent);
 
         eventSearchCriteria = new EventSearchCriteria();
         when(mockedEventsInteractor.search(refEq(eventSearchCriteria))).thenReturn(tempEventsList);
@@ -68,16 +67,18 @@ public class EventsControllerTest extends BaseControllerTest {
         JsonNode jsonNode = Json.parse(json);
 
         assertTrue(jsonNode.isArray());
-        JsonNode event1 = jsonNode.get(0);
-        JsonNode event2 = jsonNode.get(1);
+        JsonNode eventDto1 = jsonNode.get(0);
+        JsonNode eventDto2 = jsonNode.get(1);
+        JsonNode event1 = eventDto1.get("event");
+        JsonNode event2 = eventDto2.get("event");
 
         assertEquals(tempEventsList.size(), jsonNode.size());
 
-        assertEquals(firstEvent.getId(), event1.get("id").asLong());
-        assertEquals(firstEvent.getSport().getName(), event1.get("sport").get("name").asText());
+        assertEquals(FIRST_EVENT_ID, event1.get("id").asLong());
+        assertEquals(EventsTestHelper.FIRST_RANDOM_SPORT, event1.get("sport").get("name").asText());
 
-        assertEquals(secondEvent.getId(), event2.get("id").asLong());
-        assertEquals(secondEvent.getSport().getName(), event2.get("sport").get("name").asText());
+        assertEquals(SECOND_EVENT_ID, event2.get("id").asLong());
+        assertEquals(EventsTestHelper.SECOND_RANDOM_SPORT, event2.get("sport").get("name").asText());
 
         verify(mockedEventsInteractor).search(refEq(eventSearchCriteria));
     }
@@ -87,16 +88,15 @@ public class EventsControllerTest extends BaseControllerTest {
         String teamName = "Test team";
         LocalDateTime dateStart = new LocalDateTime(2013, 10, 19, 0, 0);
         LocalDateTime dateEnd = dateStart.plusMonths(1);
-        List<Event> tempFilteredListEvent = new ArrayList<>();
-        tempFilteredListEvent.add(firstEvent);
-        eventSearchCriteria.setSportName(firstEvent.getSport().getName());
+        List<Event> tempFilteredListEvent = Arrays.asList(firstEvent);
+        eventSearchCriteria.setSportName(EventsTestHelper.FIRST_RANDOM_SPORT);
         eventSearchCriteria.setTeamName(teamName);
         eventSearchCriteria.setDateStart(dateStart);
         eventSearchCriteria.setDateEnd(dateEnd);
         eventSearchCriteria.setGender(Gender.MALE);
         when(mockedEventsInteractor.search(refEq(eventSearchCriteria))).thenReturn(tempFilteredListEvent);
 
-        when(mockedRequest.getQueryString(ConstantsManager.QUERY_STRING_SPORT_PARAM_NAME)).thenReturn(firstEvent.getSport().getName());
+        when(mockedRequest.getQueryString(ConstantsManager.QUERY_STRING_SPORT_PARAM_NAME)).thenReturn(EventsTestHelper.FIRST_RANDOM_SPORT);
         when(mockedRequest.getQueryString(ConstantsManager.QUERY_STRING_DATE_START_PARAM_NAME)).thenReturn(dateStart.toString());
         when(mockedRequest.getQueryString(ConstantsManager.QUERY_STRING_DATE_END_PARAM_NAME)).thenReturn(dateEnd.toString());
         when(mockedRequest.getQueryString(ConstantsManager.QUERY_STRING_TEAM_PARAM_NAME)).thenReturn(teamName);
@@ -111,12 +111,13 @@ public class EventsControllerTest extends BaseControllerTest {
         JsonNode jsonNode = Json.parse(json);
 
         assertTrue(jsonNode.isArray());
-        JsonNode event1 = jsonNode.get(0);
+        JsonNode eventDto1 = jsonNode.get(0);
+        JsonNode event1 = eventDto1.get("event");
 
         assertEquals(tempFilteredListEvent.size(), jsonNode.size());
 
-        assertEquals(firstEvent.getId(), event1.get("id").asLong());
-        assertEquals(firstEvent.getSport().getName(), event1.get("sport").get("name").asText());
+        assertEquals(FIRST_EVENT_ID, event1.get("id").asLong());
+        assertEquals(EventsTestHelper.FIRST_RANDOM_SPORT, event1.get("sport").get("name").asText());
 
         verify(mockedEventsInteractor).search(refEq(eventSearchCriteria));
     }

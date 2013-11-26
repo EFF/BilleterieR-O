@@ -1,8 +1,11 @@
 package ca.ulaval.glo4003.unittests.interactors;
 
-import ca.ulaval.glo4003.dataaccessobjects.*;
-import ca.ulaval.glo4003.interactors.StagingBootstrapperInteractor;
-import ca.ulaval.glo4003.models.*;
+import ca.ulaval.glo4003.domain.event.*;
+import ca.ulaval.glo4003.domain.boostrap.StagingBootstrapperInteractor;
+import ca.ulaval.glo4003.domain.ticketing.TicketDao;
+import ca.ulaval.glo4003.domain.ticketing.TransactionDao;
+import ca.ulaval.glo4003.domain.user.User;
+import ca.ulaval.glo4003.domain.user.UserDao;
 import com.google.inject.Inject;
 import org.jukito.JukitoModule;
 import org.jukito.JukitoRunner;

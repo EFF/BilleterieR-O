@@ -1,12 +1,9 @@
 package ca.ulaval.glo4003.unittests.interactors;
 
-import ca.ulaval.glo4003.exceptions.RecordNotFoundException;
-import ca.ulaval.glo4003.exceptions.UpdateTicketStateUnauthorizedException;
-import ca.ulaval.glo4003.interactors.CheckoutInteractor;
-import ca.ulaval.glo4003.interactors.TicketsInteractor;
-import ca.ulaval.glo4003.models.Transaction;
-import ca.ulaval.glo4003.models.User;
-import ca.ulaval.glo4003.services.CheckoutService;
+import ca.ulaval.glo4003.domain.RecordNotFoundException;
+import ca.ulaval.glo4003.domain.ticketing.*;
+import ca.ulaval.glo4003.domain.user.User;
+import ca.ulaval.glo4003.domain.EmailService;
 import com.google.inject.Inject;
 import org.jukito.JukitoModule;
 import org.jukito.JukitoRunner;
@@ -27,51 +24,61 @@ public class CheckoutInteractorTest {
 
     private static final long TICKET_ID_1 = 1;
     private static final long TICKET_ID_2 = 123;
+    private static final String AN_EMAIL = "test@example.com";
     @Rule
     public ExpectedException exception;
     @Inject
     private CheckoutInteractor checkoutInteractor;
 
     @Test
-    public void executeTransactionWithExistingUserAndExistingTickets(CheckoutService mockedCheckoutService,
-                                                                     TicketsInteractor mockedTicketsInteractor) throws RecordNotFoundException, UpdateTicketStateUnauthorizedException {
+    public void executeTransactionWithExistingUserAndExistingTickets(TicketsInteractor mockedTicketsInteractor,
+                                                                     TransactionFactory mockedTransactionFactory,
+                                                                     EmailService mockedEmailService)
+            throws RecordNotFoundException, UpdateTicketStateUnauthorizedException {
         User mockedBuyer = mock(User.class);
         List<Long> ticketIds = new ArrayList<>();
         ticketIds.add(TICKET_ID_1);
         ticketIds.add(TICKET_ID_2);
         Transaction mockedTransaction = mock(Transaction.class);
-        when(mockedCheckoutService.startNewTransaction(mockedBuyer)).thenReturn(mockedTransaction);
+        when(mockedTransactionFactory.createTransaction(mockedBuyer)).thenReturn(mockedTransaction);
+        when(mockedTransaction.getUser()).thenReturn(mockedBuyer);
+        when(mockedBuyer.getEmail()).thenReturn(AN_EMAIL);
 
         Transaction transaction = checkoutInteractor.executeTransaction(mockedBuyer, ticketIds);
 
         assertEquals(mockedTransaction, transaction);
-        InOrder inOrder = inOrder(mockedCheckoutService, mockedTicketsInteractor);
-        inOrder.verify(mockedCheckoutService).startNewTransaction(mockedBuyer);
+        InOrder inOrder = inOrder(mockedTicketsInteractor, mockedTransaction, mockedEmailService,
+                mockedTransactionFactory);
+        inOrder.verify(mockedTransactionFactory).createTransaction(mockedBuyer);
         inOrder.verify(mockedTicketsInteractor).buyATicket(TICKET_ID_1);
         inOrder.verify(mockedTicketsInteractor).buyATicket(TICKET_ID_2);
-        inOrder.verify(mockedCheckoutService).fulfillTransaction(transaction);
+        inOrder.verify(mockedTransaction).fulfill();
+        inOrder.verify(mockedEmailService).sendSystemEmail(eq(AN_EMAIL), anyString());
     }
 
     @Test
-    public void executeTransactionFailIfOneTicketIsNotFound(CheckoutService mockedCheckoutService,
-                                                            TicketsInteractor mockedTicketsInteractor) throws RecordNotFoundException, UpdateTicketStateUnauthorizedException {
+    public void executeTransactionFailIfOneTicketIsNotFound(TicketsInteractor mockedTicketsInteractor,
+                                                            TransactionFactory mockedTransactionFactory,
+                                                            EmailService mockedEmailService)
+            throws RecordNotFoundException, UpdateTicketStateUnauthorizedException {
         User mockedBuyer = mock(User.class);
         List<Long> ticketIds = new ArrayList<>();
         ticketIds.add(TICKET_ID_1);
         ticketIds.add(TICKET_ID_2);
         Transaction mockedTransaction = mock(Transaction.class);
-        when(mockedCheckoutService.startNewTransaction(mockedBuyer)).thenReturn(mockedTransaction);
+        when(mockedTransactionFactory.createTransaction(mockedBuyer)).thenReturn(mockedTransaction);
         doThrow(new RecordNotFoundException()).when(mockedTicketsInteractor).buyATicket(TICKET_ID_1);
 
         Transaction transaction = checkoutInteractor.executeTransaction(mockedBuyer, ticketIds);
 
         assertEquals(mockedTransaction, transaction);
-        InOrder inOrder = inOrder(mockedCheckoutService, mockedTicketsInteractor, mockedTransaction);
-        inOrder.verify(mockedCheckoutService).startNewTransaction(mockedBuyer);
+        InOrder inOrder = inOrder(mockedTicketsInteractor, mockedTransaction, mockedEmailService,
+                mockedTransactionFactory);
+        inOrder.verify(mockedTransactionFactory).createTransaction(mockedBuyer);
         inOrder.verify(mockedTicketsInteractor).buyATicket(TICKET_ID_1);
         inOrder.verify(mockedTransaction).fail();
         verify(mockedTicketsInteractor, never()).buyATicket(TICKET_ID_2);
-        verify(mockedCheckoutService, never()).fulfillTransaction(any(Transaction.class));
+        verify(mockedEmailService, never()).sendSystemEmail(anyString(), anyString());
     }
 
     public static class TestModule extends JukitoModule {
@@ -79,6 +86,7 @@ public class CheckoutInteractorTest {
         @Override
         protected void configureTest() {
             forceMock(TicketsInteractor.class);
+            forceMock(TransactionFactory.class);
         }
     }
 }

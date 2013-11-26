@@ -1,14 +1,14 @@
 package ca.ulaval.glo4003.unittests.controllers;
 
 import ca.ulaval.glo4003.ConstantsManager;
-import ca.ulaval.glo4003.controllers.TicketsController;
-import ca.ulaval.glo4003.exceptions.MaximumExceededException;
-import ca.ulaval.glo4003.exceptions.RecordNotFoundException;
-import ca.ulaval.glo4003.exceptions.UpdateTicketStateUnauthorizedException;
-import ca.ulaval.glo4003.interactors.TicketsInteractor;
-import ca.ulaval.glo4003.models.Ticket;
-import ca.ulaval.glo4003.models.TicketSearchCriteria;
-import ca.ulaval.glo4003.models.TicketState;
+import ca.ulaval.glo4003.api.ticketing.TicketsController;
+import ca.ulaval.glo4003.domain.ticketing.MaximumExceededException;
+import ca.ulaval.glo4003.domain.RecordNotFoundException;
+import ca.ulaval.glo4003.domain.ticketing.UpdateTicketStateUnauthorizedException;
+import ca.ulaval.glo4003.domain.ticketing.TicketsInteractor;
+import ca.ulaval.glo4003.domain.ticketing.Ticket;
+import ca.ulaval.glo4003.domain.ticketing.TicketSearchCriteria;
+import ca.ulaval.glo4003.domain.ticketing.TicketState;
 import com.google.inject.Inject;
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.node.ArrayNode;

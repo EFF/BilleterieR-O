@@ -1,7 +1,7 @@
 package ca.ulaval.glo4003.unittests.actions;
 
 import ca.ulaval.glo4003.ConstantsManager;
-import ca.ulaval.glo4003.actions.SecureAction;
+import ca.ulaval.glo4003.api.SecureAction;
 import org.junit.Test;
 import play.mvc.Http;
 import play.mvc.Result;
