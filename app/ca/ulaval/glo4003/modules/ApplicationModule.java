@@ -15,7 +15,8 @@ public class ApplicationModule extends AbstractModule {
 
     @Override
     protected void configure() {
-        bind(EmailService.class).to(LocalSMTPEmailService.class);
+        // TODO: Bind to FakeEmailService in test and staging. Bind to LocalSMTPEmailService in prod
+        bind(EmailService.class).to(FakeEmailService.class);
         bind(CheckoutService.class).to(ConcreteCheckoutService.class);
 
         bind(EventDao.class).asEagerSingleton();

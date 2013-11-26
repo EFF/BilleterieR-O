@@ -27,6 +27,7 @@ public class CheckoutInteractor {
             for (Long ticketId : ticketIds) {
                 ticketsInteractor.buyATicket(ticketId);
             }
+            checkoutService.fulfillTransaction(transaction);
         } catch (RecordNotFoundException | UpdateTicketStateUnauthorizedException ignored) {
             transaction.fail();
         }

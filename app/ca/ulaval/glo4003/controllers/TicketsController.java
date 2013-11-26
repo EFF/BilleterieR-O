@@ -86,19 +86,19 @@ public class TicketsController extends Controller {
     }
 
     public Result numberOfTickets() {
-        String strEventId = request().getQueryString("strEventId");
-        String strCategoryId = request().getQueryString("strCategoryId");
+        String strEventId = request().getQueryString(ConstantsManager.EVENT_ID_FIELD_NAME);
+        String strCategoryId = request().getQueryString(ConstantsManager.CATEGORY_ID_FIELD_NAME);
         int numberOfTickets;
-        Long eventId = null;
+        long eventId;
 
         try {
-            Longs.tryParse(strEventId);
+            eventId = Longs.tryParse(strEventId);
         } catch (NumberFormatException ignored) {
             return badRequest();
         }
 
         try {
-            Long categoryId = Longs.tryParse(strCategoryId);
+            long categoryId = Longs.tryParse(strCategoryId);
             numberOfTickets = ticketsInteractor.numberOfTicketAvailable(eventId, categoryId);
         } catch (NumberFormatException ignored) {
             numberOfTickets = ticketsInteractor.numberOfTicketAvailable(eventId);
