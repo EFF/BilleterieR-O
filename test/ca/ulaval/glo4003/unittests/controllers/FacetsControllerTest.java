@@ -2,7 +2,7 @@ package ca.ulaval.glo4003.unittests.controllers;
 
 import ca.ulaval.glo4003.ConstantsManager;
 import ca.ulaval.glo4003.controllers.FacetsController;
-import ca.ulaval.glo4003.dataaccessobjects.SportDao;
+import ca.ulaval.glo4003.interactors.FacetsInteractor;
 import ca.ulaval.glo4003.models.Gender;
 import ca.ulaval.glo4003.models.Sport;
 import com.google.inject.Inject;
@@ -28,11 +28,10 @@ public class FacetsControllerTest extends BaseControllerTest {
 
     @Inject
     private FacetsController facetsController;
-
     private List<Sport> tempList;
 
     @Before
-    public void setup(SportDao mockedSportDao) {
+    public void setup(FacetsInteractor mockedFacetsInteractor) {
         // Cannot use mocks here because Json.toJson on mocks failed
         Sport sport = new Sport("golf");
         Sport sport1 = new Sport("soccer");
@@ -41,11 +40,12 @@ public class FacetsControllerTest extends BaseControllerTest {
         tempList.add(sport);
         tempList.add(sport1);
 
-        when(mockedSportDao.list()).thenReturn(tempList);
+        when(mockedFacetsInteractor.sports()).thenReturn(tempList);
+        when(mockedFacetsInteractor.genders()).thenCallRealMethod();
     }
 
     @Test
-    public void indexReturnsAllFacets(SportDao mockedSportDao) throws Exception {
+    public void indexReturnsAllFacets(FacetsInteractor mockedFacetsInteractor) throws Exception {
         Result result = facetsController.index();
         String json = Helpers.contentAsString(result);
         JsonNode jsonNode = Json.parse(json);
@@ -64,14 +64,15 @@ public class FacetsControllerTest extends BaseControllerTest {
         assertNotSame(tempList, jsonNode.get(ConstantsManager.FACET_SPORT));
         assertEquals(tempList.size(), jsonNode.get(ConstantsManager.FACET_SPORT).size());
 
-        verify(mockedSportDao).list();
+        verify(mockedFacetsInteractor).sports();
+        verify(mockedFacetsInteractor).genders();
     }
 
     public static class TestModule extends JukitoModule {
 
         @Override
         protected void configureTest() {
-            forceMock(SportDao.class);
+            forceMock(FacetsInteractor.class);
         }
     }
 }

@@ -1,7 +1,6 @@
 package ca.ulaval.glo4003.modules;
 
 import ca.ulaval.glo4003.dataaccessobjects.*;
-import ca.ulaval.glo4003.services.DaoPersistenceService;
 import ca.ulaval.glo4003.services.*;
 import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
@@ -16,7 +15,8 @@ public class ApplicationModule extends AbstractModule {
 
     @Override
     protected void configure() {
-        bind(EmailService.class).to(LocalSMTPEmailService.class);
+        // TODO: Bind to FakeEmailService in test and staging. Bind to LocalSMTPEmailService in prod
+        bind(EmailService.class).to(FakeEmailService.class);
         bind(CheckoutService.class).to(ConcreteCheckoutService.class);
 
         bind(EventDao.class).asEagerSingleton();

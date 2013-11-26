@@ -10,13 +10,13 @@ public class TeamDao extends PersistedDao<Team> {
 
     @Inject
     public TeamDao(DaoPersistenceService persistenceService, UniqueConstraintValidator<Team>
-            uniqueConstraintValidator){
+            uniqueConstraintValidator) {
         super(persistenceService, uniqueConstraintValidator);
     }
 
     public Team read(String name) throws RecordNotFoundException {
-        for(Team team : super.list()){
-            if(team.getName().equals(name)){
+        for (Team team : super.list()) {
+            if (team.getName().equals(name)) {
                 return team;
             }
         }

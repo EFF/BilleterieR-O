@@ -49,8 +49,12 @@ define(['./module'], function (EventModule) {
             var successCallback = function (count) {
                 $scope.ticketsSelectTagsByCategories[categoryId].numberOfTickets = count;
             };
-            $http.get('/api/events/' + eventId + '/categories/' + categoryId + '/numberOfTickets')
-                .success(successCallback);
+            $http.get('api/tickets/number-of-tickets', {
+                params: {
+                    eventId: eventId,
+                    categoryId: categoryId
+                }
+            }).success(successCallback);
         };
 
         var refreshTicketsSuccessCallback = function (tickets) {

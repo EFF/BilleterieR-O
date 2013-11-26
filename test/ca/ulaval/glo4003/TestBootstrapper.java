@@ -1,11 +1,12 @@
 package ca.ulaval.glo4003;
 
 import ca.ulaval.glo4003.dataaccessobjects.*;
+import ca.ulaval.glo4003.interactors.BootstrapperInteractor;
 import ca.ulaval.glo4003.models.*;
 import com.google.inject.Inject;
 import org.joda.time.LocalDateTime;
 
-public class TestBootstrapper implements Bootstrapper {
+public class TestBootstrapper implements BootstrapperInteractor {
 
     public static final int NUMBER_OF_TICKETS_1 = 120;
     public static final int NUMBER_OF_TICKETS_2 = 1200;

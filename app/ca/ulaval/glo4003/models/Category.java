@@ -8,6 +8,7 @@ public class Category implements Serializable {
 
     private long id;
     private double price;
+    //TODO remove deprecated
     private int numberOfTickets;
     private CategoryType type;
 
