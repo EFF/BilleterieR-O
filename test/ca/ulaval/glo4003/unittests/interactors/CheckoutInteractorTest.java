@@ -49,6 +49,7 @@ public class CheckoutInteractorTest {
         inOrder.verify(mockedCheckoutService).startNewTransaction(mockedBuyer);
         inOrder.verify(mockedTicketsInteractor).buyATicket(TICKET_ID_1);
         inOrder.verify(mockedTicketsInteractor).buyATicket(TICKET_ID_2);
+        inOrder.verify(mockedCheckoutService).fulfillTransaction(transaction);
     }
 
     @Test
