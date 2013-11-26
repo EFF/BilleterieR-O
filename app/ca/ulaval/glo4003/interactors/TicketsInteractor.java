@@ -53,7 +53,6 @@ public class TicketsInteractor {
         } else {
             throw new UpdateTicketStateUnauthorizedException();
         }
-
     }
 
     public int numberOfTicketAvailable(long eventId) {

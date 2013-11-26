@@ -16,5 +16,4 @@ public class SecureAction extends Security.Authenticator {
     public Result onUnauthorized(Http.Context ctx) {
         return unauthorized();
     }
-
 }

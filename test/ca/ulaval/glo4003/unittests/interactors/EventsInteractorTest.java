@@ -17,26 +17,25 @@ import static org.mockito.Mockito.*;
 @RunWith(JukitoRunner.class)
 public class EventsInteractorTest {
 
-    private static final long A_EVENT_ID = 1;
+    private static final long AN_EVENT_ID = 1;
     @Inject
     private EventsInteractor eventsInteractor;
 
     @Test
     public void readExistingIdReturnsTheEvent(EventDao mockedEventDao) throws RecordNotFoundException {
         Event mockedEvent = mock(Event.class);
-        when(mockedEventDao.read(A_EVENT_ID)).thenReturn(mockedEvent);
+        when(mockedEventDao.read(AN_EVENT_ID)).thenReturn(mockedEvent);
 
-        Event result = eventsInteractor.getById(A_EVENT_ID);
+        Event result = eventsInteractor.getById(AN_EVENT_ID);
 
         assertEquals(mockedEvent, result);
-        verify(mockedEventDao, times(1)).read(A_EVENT_ID);
     }
 
     @Test(expected = RecordNotFoundException.class)
     public void readNonExistingIdThrowsRecordNotFoundException(EventDao mockedEventDao) throws RecordNotFoundException {
-        doThrow(new RecordNotFoundException()).when(mockedEventDao).read(A_EVENT_ID);
+        doThrow(new RecordNotFoundException()).when(mockedEventDao).read(AN_EVENT_ID);
 
-        eventsInteractor.getById(A_EVENT_ID);
+        eventsInteractor.getById(AN_EVENT_ID);
     }
 
     @Test

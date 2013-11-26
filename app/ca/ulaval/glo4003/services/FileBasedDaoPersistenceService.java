@@ -26,7 +26,6 @@ public class FileBasedDaoPersistenceService implements DaoPersistenceService {
         }
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public <T extends Record, Y extends DataAccessObject> List<T> restore(Y dao) throws IOException, ClassNotFoundException {
         File objectPath = getDaoPersistencePath(dao);
@@ -34,7 +33,9 @@ public class FileBasedDaoPersistenceService implements DaoPersistenceService {
         FileInputStream saveFile = new FileInputStream(objectPath);
 
         try (ObjectInputStream serializer = new ObjectInputStream(saveFile)) {
-            return (List<T>) serializer.readObject();
+            @SuppressWarnings("unchecked")
+            final List<T> entities = (List<T>) serializer.readObject();
+            return entities;
         }
     }
 
