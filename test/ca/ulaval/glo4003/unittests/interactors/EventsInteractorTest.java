@@ -17,27 +17,26 @@ import static org.mockito.Mockito.*;
 @RunWith(JukitoRunner.class)
 public class EventsInteractorTest {
 
+    private static final long A_EVENT_ID = 1;
     @Inject
     private EventsInteractor eventsInteractor;
 
     @Test
     public void readExistingIdReturnsTheEvent(EventDao mockedEventDao) throws RecordNotFoundException {
-        long eventId = 1;
         Event mockedEvent = mock(Event.class);
-        when(mockedEventDao.read(eventId)).thenReturn(mockedEvent);
+        when(mockedEventDao.read(A_EVENT_ID)).thenReturn(mockedEvent);
 
-        Event result = eventsInteractor.getById(eventId);
+        Event result = eventsInteractor.getById(A_EVENT_ID);
 
         assertEquals(mockedEvent, result);
-        verify(mockedEventDao, times(1)).read(eventId);
+        verify(mockedEventDao, times(1)).read(A_EVENT_ID);
     }
 
     @Test(expected = RecordNotFoundException.class)
     public void readNonExistingIdThrowsRecordNotFoundException(EventDao mockedEventDao) throws RecordNotFoundException {
-        long eventId = 1;
-        doThrow(new RecordNotFoundException()).when(mockedEventDao).read(eventId);
+        doThrow(new RecordNotFoundException()).when(mockedEventDao).read(A_EVENT_ID);
 
-        eventsInteractor.getById(eventId);
+        eventsInteractor.getById(A_EVENT_ID);
     }
 
     @Test
@@ -46,7 +45,7 @@ public class EventsInteractorTest {
 
         eventsInteractor.search(mockedEventSearchCriteria);
 
-        verify(mockedEventDao, times(1)).search(mockedEventSearchCriteria);
+        verify(mockedEventDao).search(mockedEventSearchCriteria);
     }
 
     public static class TestModule extends JukitoModule {

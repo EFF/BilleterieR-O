@@ -25,6 +25,10 @@ import static org.mockito.Mockito.*;
 @RunWith(JukitoRunner.class)
 public class TicketsInteractorTest {
 
+    private static final long A_TICKET_ID = 1;
+    private static final Long AN_EVENT_ID = 12L;
+    private static final Long A_CATEGORY_ID = 123L;
+
     @Inject
     private TicketsInteractor ticketsInteractor;
 
@@ -37,36 +41,33 @@ public class TicketsInteractorTest {
         List<Ticket> tickets = ticketsInteractor.search(mockedTicketSearchCriteria);
 
         assertEquals(fakeEmptyList, tickets);
-        verify(mockedTicketDao, times(1)).search(mockedTicketSearchCriteria);
+        verify(mockedTicketDao).search(mockedTicketSearchCriteria);
     }
 
     @Test(expected = RecordNotFoundException.class)
     public void buyATicketThrowsRecordNotFoundExceptionIfTheTicketDoesNotExist(TicketDao mockedTicketDao) throws RecordNotFoundException, UpdateTicketStateUnauthorizedException {
-        long ticketId = 1;
-        doThrow(new RecordNotFoundException()).when(mockedTicketDao).read(ticketId);
+        doThrow(new RecordNotFoundException()).when(mockedTicketDao).read(A_TICKET_ID);
 
-        ticketsInteractor.buyATicket(ticketId);
+        ticketsInteractor.buyATicket(A_TICKET_ID);
     }
 
     @Test(expected = UpdateTicketStateUnauthorizedException.class)
     public void buyATicketThrowsUpdateTIcketStateUnauthorizedExceptionIfTheTicketIsNotReseverd(TicketDao mockedTicketDao)
             throws RecordNotFoundException, UpdateTicketStateUnauthorizedException {
-        long ticketId = 1;
         Ticket mockedTicket = mock(Ticket.class);
         when(mockedTicket.getState()).thenReturn(TicketState.AVAILABLE);
-        when(mockedTicketDao.read(ticketId)).thenReturn(mockedTicket);
+        when(mockedTicketDao.read(A_TICKET_ID)).thenReturn(mockedTicket);
 
-        ticketsInteractor.buyATicket(ticketId);
+        ticketsInteractor.buyATicket(A_TICKET_ID);
     }
 
     @Test
     public void buyATicketUpdateTheTicketStateToSold(TicketDao mockedTicketDao) throws RecordNotFoundException, UpdateTicketStateUnauthorizedException {
-        long ticketId = 1;
         Ticket mockedTicket = mock(Ticket.class);
         when(mockedTicket.getState()).thenReturn(TicketState.RESERVED);
-        when(mockedTicketDao.read(ticketId)).thenReturn(mockedTicket);
+        when(mockedTicketDao.read(A_TICKET_ID)).thenReturn(mockedTicket);
 
-        ticketsInteractor.buyATicket(ticketId);
+        ticketsInteractor.buyATicket(A_TICKET_ID);
 
         InOrder inOrder = inOrder(mockedTicket, mockedTicketDao);
         inOrder.verify(mockedTicket, times(1)).setState(TicketState.SOLD);
@@ -76,89 +77,81 @@ public class TicketsInteractorTest {
     @Test(expected = RecordNotFoundException.class)
     public void freeATicketThrowsRecordNotFoundExceptionIfTheTicketDoesNotExist(TicketDao mockedTicketDao) throws
             RecordNotFoundException, UpdateTicketStateUnauthorizedException {
-        long ticketId = 1;
-        doThrow(new RecordNotFoundException()).when(mockedTicketDao).read(ticketId);
+        doThrow(new RecordNotFoundException()).when(mockedTicketDao).read(A_TICKET_ID);
 
-        ticketsInteractor.freeATicket(ticketId);
+        ticketsInteractor.freeATicket(A_TICKET_ID);
     }
 
     @Test(expected = UpdateTicketStateUnauthorizedException.class)
     public void freeATicketThrowsUpdateTicketStateUnauthorizedExceptionIfTheTicketIsNotResevered(TicketDao mockedTicketDao)
             throws RecordNotFoundException, UpdateTicketStateUnauthorizedException {
-        long ticketId = 1;
         Ticket mockedTicket = mock(Ticket.class);
         when(mockedTicket.getState()).thenReturn(TicketState.AVAILABLE);
-        when(mockedTicketDao.read(ticketId)).thenReturn(mockedTicket);
+        when(mockedTicketDao.read(A_TICKET_ID)).thenReturn(mockedTicket);
 
-        ticketsInteractor.freeATicket(ticketId);
+        ticketsInteractor.freeATicket(A_TICKET_ID);
     }
 
     @Test
     public void freeATicketUpdateTheTicketStateToAvailable(TicketDao mockedTicketDao) throws RecordNotFoundException, UpdateTicketStateUnauthorizedException {
-        long ticketId = 1;
         Ticket mockedTicket = mock(Ticket.class);
         when(mockedTicket.getState()).thenReturn(TicketState.RESERVED);
-        when(mockedTicketDao.read(ticketId)).thenReturn(mockedTicket);
+        when(mockedTicketDao.read(A_TICKET_ID)).thenReturn(mockedTicket);
 
-        ticketsInteractor.freeATicket(ticketId);
+        ticketsInteractor.freeATicket(A_TICKET_ID);
 
         InOrder inOrder = inOrder(mockedTicket, mockedTicketDao);
-        inOrder.verify(mockedTicket, times(1)).setState(TicketState.AVAILABLE);
-        inOrder.verify(mockedTicketDao, times(1)).update(mockedTicket);
+        inOrder.verify(mockedTicket).setState(TicketState.AVAILABLE);
+        inOrder.verify(mockedTicketDao).update(mockedTicket);
     }
 
     @Test(expected = RecordNotFoundException.class)
     public void reserveATicketThrowsRecordNotFoundExceptionIfTheTicketDoesNotExist(TicketDao mockedTicketDao) throws
             RecordNotFoundException, UpdateTicketStateUnauthorizedException {
-        long ticketId = 1;
-        doThrow(new RecordNotFoundException()).when(mockedTicketDao).read(ticketId);
+        doThrow(new RecordNotFoundException()).when(mockedTicketDao).read(A_TICKET_ID);
 
-        ticketsInteractor.reserveATicket(ticketId);
+        ticketsInteractor.reserveATicket(A_TICKET_ID);
     }
 
     @Test(expected = UpdateTicketStateUnauthorizedException.class)
     public void reserveATicketThrowsUpdateTicketStateUnauthorizedExceptionIfTheTicketIsNotFree(TicketDao mockedTicketDao)
             throws RecordNotFoundException, UpdateTicketStateUnauthorizedException {
-        long ticketId = 1;
         Ticket mockedTicket = mock(Ticket.class);
         when(mockedTicket.getState()).thenReturn(TicketState.RESERVED);
-        when(mockedTicketDao.read(ticketId)).thenReturn(mockedTicket);
+        when(mockedTicketDao.read(A_TICKET_ID)).thenReturn(mockedTicket);
 
-        ticketsInteractor.reserveATicket(ticketId);
+        ticketsInteractor.reserveATicket(A_TICKET_ID);
     }
 
     @Test
     public void reserveATicketUpdateTheTicketStateToReserved(TicketDao mockedTicketDao) throws
             RecordNotFoundException, UpdateTicketStateUnauthorizedException {
-        long ticketId = 1;
         Ticket mockedTicket = mock(Ticket.class);
         when(mockedTicket.getState()).thenReturn(TicketState.AVAILABLE);
-        when(mockedTicketDao.read(ticketId)).thenReturn(mockedTicket);
+        when(mockedTicketDao.read(A_TICKET_ID)).thenReturn(mockedTicket);
 
-        ticketsInteractor.reserveATicket(ticketId);
+        ticketsInteractor.reserveATicket(A_TICKET_ID);
 
         InOrder inOrder = inOrder(mockedTicket, mockedTicketDao);
-        inOrder.verify(mockedTicket, times(1)).setState(TicketState.RESERVED);
-        inOrder.verify(mockedTicketDao, times(1)).update(mockedTicket);
+        inOrder.verify(mockedTicket).setState(TicketState.RESERVED);
+        inOrder.verify(mockedTicketDao).update(mockedTicket);
     }
 
     @Test(expected = RecordNotFoundException.class)
     public void getByIdThrowsRecordNotFoundIfTheTicketDoesNotExist(TicketDao mockedTicketDao) throws
             RecordNotFoundException {
-        long ticketId = 1;
-        doThrow(new RecordNotFoundException()).when(mockedTicketDao).read(ticketId);
+        doThrow(new RecordNotFoundException()).when(mockedTicketDao).read(A_TICKET_ID);
 
-        ticketsInteractor.getById(ticketId);
+        ticketsInteractor.getById(A_TICKET_ID);
     }
 
     @Test
     public void getByIdReturnsTheTicket(TicketDao mockedTicketDao) throws
             RecordNotFoundException {
-        long ticketId = 1;
         Ticket mockedTicket = mock(Ticket.class);
-        when(mockedTicketDao.read(ticketId)).thenReturn(mockedTicket);
+        when(mockedTicketDao.read(A_TICKET_ID)).thenReturn(mockedTicket);
 
-        Ticket ticket = ticketsInteractor.getById(ticketId);
+        Ticket ticket = ticketsInteractor.getById(A_TICKET_ID);
 
         assertEquals(mockedTicket, ticket);
     }
@@ -168,15 +161,14 @@ public class TicketsInteractorTest {
         List<Ticket> mockedSearchResult = new ArrayList<>();
         mockedSearchResult.add(mock(Ticket.class));
         mockedSearchResult.add(mock(Ticket.class));
-        Long eventId = 1L;
         when(mockedTicketDao.search(any(TicketSearchCriteria.class))).thenReturn(mockedSearchResult);
 
-        int numberOfTickets = ticketsInteractor.numberOfTicketAvailable(eventId);
+        int numberOfTickets = ticketsInteractor.numberOfTicketAvailable(AN_EVENT_ID);
 
         assertEquals(mockedSearchResult.size(), numberOfTickets);
         ArgumentCaptor<TicketSearchCriteria> argument = ArgumentCaptor.forClass(TicketSearchCriteria.class);
         verify(mockedTicketDao).search(argument.capture());
-        assertEquals(eventId, argument.getValue().getEventId());
+        assertEquals(AN_EVENT_ID, argument.getValue().getEventId());
         assertNull(argument.getValue().getCategoryId());
         assertNull(argument.getValue().getQuantity());
         assertNull(argument.getValue().getSectionName());
@@ -189,17 +181,15 @@ public class TicketsInteractorTest {
         List<Ticket> mockedSearchResult = new ArrayList<>();
         mockedSearchResult.add(mock(Ticket.class));
         mockedSearchResult.add(mock(Ticket.class));
-        Long eventId = 1L;
-        Long categoryId = 2L;
         when(mockedTicketDao.search(any(TicketSearchCriteria.class))).thenReturn(mockedSearchResult);
 
-        int numberOfTickets = ticketsInteractor.numberOfTicketAvailable(eventId, categoryId);
+        int numberOfTickets = ticketsInteractor.numberOfTicketAvailable(AN_EVENT_ID, A_CATEGORY_ID);
 
         assertEquals(mockedSearchResult.size(), numberOfTickets);
         ArgumentCaptor<TicketSearchCriteria> argument = ArgumentCaptor.forClass(TicketSearchCriteria.class);
         verify(mockedTicketDao).search(argument.capture());
-        assertEquals(eventId, argument.getValue().getEventId());
-        assertEquals(categoryId, argument.getValue().getCategoryId());
+        assertEquals(AN_EVENT_ID, argument.getValue().getEventId());
+        assertEquals(A_CATEGORY_ID, argument.getValue().getCategoryId());
         assertNull(argument.getValue().getQuantity());
         assertNull(argument.getValue().getSectionName());
         assertEquals(1, argument.getValue().getStates().size());

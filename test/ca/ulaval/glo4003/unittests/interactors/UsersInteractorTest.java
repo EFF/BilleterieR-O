@@ -22,98 +22,85 @@ import static org.mockito.Mockito.*;
 @RunWith(JukitoRunner.class)
 public class UsersInteractorTest {
 
+    private static final String AN_EMAIL = "user@example.com";
+    private static final String A_NEW_EMAIL = "new-email@example.com";
+    private static final String A_PASSWORD = "secret";
+    private static final String A_NEW_PASSWORD = "new-secret";
+    private static final String A_WRONG_PASSWORD = "wrong-secret";
     @Inject
     private UsersInteractor usersInteractor;
 
     @Test(expected = RecordNotFoundException.class)
     public void updateThrowsRecordNotFoundWhenUserDoesNotExists(UserDao mockedUserDao) throws RecordNotFoundException {
-        String actualEmail = "user@example.com";
-        String newEmail = "new-email@example.com";
-        doThrow(new RecordNotFoundException()).when(mockedUserDao).findByEmail(actualEmail);
+        doThrow(new RecordNotFoundException()).when(mockedUserDao).findByEmail(AN_EMAIL);
 
-        usersInteractor.updateEmail(actualEmail, newEmail);
+        usersInteractor.updateEmail(AN_EMAIL, A_NEW_EMAIL);
     }
 
     @Test(expected = UniqueValidationException.class)
-    public void updateThrowsUniqueValidationExceptionWhenTheNewEmailAlreadyExists(UserDao mockedUserDao) throws
+    public void updateThrowsUniqueValidationExceptionWhenTheNewEmaiAlreadyExists(UserDao mockedUserDao) throws
             RecordNotFoundException {
-        String actualEmail = "user@example.com";
-        String newEmail = "new-email@example.com";
         User mockedUser = mock(User.class);
-        when(mockedUserDao.findByEmail(actualEmail)).thenReturn(mockedUser);
+        when(mockedUserDao.findByEmail(AN_EMAIL)).thenReturn(mockedUser);
         doThrow(new UniqueValidationException()).when(mockedUserDao).update(mockedUser);
 
-        usersInteractor.updateEmail(actualEmail, newEmail);
+        usersInteractor.updateEmail(AN_EMAIL, A_NEW_EMAIL);
     }
 
     @Test(expected = ConstraintViolationException.class)
     public void updateThrowsConstraintViolationExceptionWhenTheNewEmailIsNotValid(UserDao mockedUserDao) throws
             RecordNotFoundException {
-        String actualEmail = "user@example.com";
-        String newEmail = "new-email@example.com";
         User mockedUser = mock(User.class);
-        when(mockedUserDao.findByEmail(actualEmail)).thenReturn(mockedUser);
+        when(mockedUserDao.findByEmail(AN_EMAIL)).thenReturn(mockedUser);
         doThrow(new ConstraintViolationException(new HashSet<ConstraintViolation<?>>())).when(mockedUserDao).update(mockedUser);
 
-        usersInteractor.updateEmail(actualEmail, newEmail);
+        usersInteractor.updateEmail(AN_EMAIL, A_NEW_EMAIL);
     }
 
     @Test()
     public void updateUserWithAValidUniqueEmail(UserDao mockedUserDao) throws
             RecordNotFoundException {
-        String actualEmail = "user@example.com";
-        String newEmail = "new-email@example.com";
         User mockedUser = mock(User.class);
-        when(mockedUserDao.findByEmail(actualEmail)).thenReturn(mockedUser);
+        when(mockedUserDao.findByEmail(AN_EMAIL)).thenReturn(mockedUser);
 
-        usersInteractor.updateEmail(actualEmail, newEmail);
+        usersInteractor.updateEmail(AN_EMAIL, A_NEW_EMAIL);
 
-        verify(mockedUserDao).findByEmail(actualEmail);
+        verify(mockedUserDao).findByEmail(AN_EMAIL);
         InOrder inOrder = inOrder(mockedUser, mockedUserDao);
-        inOrder.verify(mockedUser).setEmail(newEmail);
+        inOrder.verify(mockedUser).setEmail(A_NEW_EMAIL);
         inOrder.verify(mockedUserDao).update(mockedUser);
     }
 
     @Test
     public void updatePasswordWithValidEmailAndActualPassword(UserDao mockedUserDao) throws RecordNotFoundException, InvalidActualPasswordException {
-        String email = "user@example.com";
-        String actualPassword = "secret";
-        String newPassword = "newPassword";
         User mockedUser = mock(User.class);
-        when(mockedUser.getPassword()).thenReturn(actualPassword);
-        when(mockedUserDao.findByEmail(email)).thenReturn(mockedUser);
+        when(mockedUser.getPassword()).thenReturn(A_PASSWORD);
+        when(mockedUserDao.findByEmail(AN_EMAIL)).thenReturn(mockedUser);
 
-        usersInteractor.updatePassword(email, actualPassword, newPassword);
+        usersInteractor.updatePassword(AN_EMAIL, A_PASSWORD, A_NEW_PASSWORD);
 
-        verify(mockedUserDao).findByEmail(email);
+        verify(mockedUserDao).findByEmail(AN_EMAIL);
         InOrder inOrder = inOrder(mockedUser, mockedUserDao);
-        inOrder.verify(mockedUser).setPassword(newPassword);
+        inOrder.verify(mockedUser).setPassword(A_NEW_PASSWORD);
         inOrder.verify(mockedUserDao).update(mockedUser);
     }
 
     @Test(expected = RecordNotFoundException.class)
     public void updatePasswordWithWrongEmail(UserDao mockedUserDao) throws RecordNotFoundException,
             InvalidActualPasswordException {
-        String email = "user@example.com";
-        String actualPassword = "secret";
-        String newPassword = "newPassword";
-        doThrow(new RecordNotFoundException()).when(mockedUserDao).findByEmail(email);
+        doThrow(new RecordNotFoundException()).when(mockedUserDao).findByEmail(AN_EMAIL);
 
-        usersInteractor.updatePassword(email, actualPassword, newPassword);
+        usersInteractor.updatePassword(AN_EMAIL, A_PASSWORD, A_NEW_PASSWORD);
     }
 
     @Test(expected = InvalidActualPasswordException.class)
     public void updatePasswordWithWrongActualPassword(UserDao mockedUserDao) throws RecordNotFoundException,
             InvalidActualPasswordException {
-        String email = "user@example.com";
-        String actualPassword = "secret";
-        String wrongPassword = "wrong";
-        String newPassword = "newPassword";
         User mockedUser = mock(User.class);
-        when(mockedUser.getPassword()).thenReturn(actualPassword);
-        when(mockedUserDao.findByEmail(email)).thenReturn(mockedUser);
+        when(mockedUser.getPassword()).thenReturn(A_PASSWORD);
+        when(mockedUserDao.findByEmail(AN_EMAIL)).thenReturn(mockedUser);
 
-        usersInteractor.updatePassword(email, wrongPassword, newPassword);
+        usersInteractor.updatePassword(AN_EMAIL, A_WRONG_PASSWORD, A_NEW_PASSWORD);
     }
 
     public static class TestModule extends JukitoModule {

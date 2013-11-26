@@ -2,10 +2,7 @@ package ca.ulaval.glo4003.unittests.interactors;
 
 import ca.ulaval.glo4003.dataaccessobjects.*;
 import ca.ulaval.glo4003.interactors.StagingBootstrapperInteractor;
-import ca.ulaval.glo4003.models.Event;
-import ca.ulaval.glo4003.models.Sport;
-import ca.ulaval.glo4003.models.Team;
-import ca.ulaval.glo4003.models.User;
+import ca.ulaval.glo4003.models.*;
 import com.google.inject.Inject;
 import org.jukito.JukitoModule;
 import org.jukito.JukitoRunner;
@@ -24,11 +21,9 @@ public class StagingBootstrapInteractorTest {
     @Inject
     private StagingBootstrapperInteractor staingBootstrapperInteractor;
 
-    //TODO add tests on userDao and ticketDao.
-
     @Test
-    public void initDataShouldAddItems(EventDao mockedEventDao, SportDao mockedSportDao, TeamDao mockedTeamDao,
-                                       UserDao mockedUserDao) {
+    public void initDataShouldAddItems(EventDao mockedEventDao, SportDao mockedSportDao, UserDao mockedUserDao,
+                                       TeamDao mockedTeamDao, TicketDao mockedTicketDao) {
         List<Sport> sports = new ArrayList<>();
         sports.add(mock(Sport.class));
         when(mockedSportDao.list()).thenReturn(sports);
@@ -43,19 +38,24 @@ public class StagingBootstrapInteractorTest {
         verify(mockedEventDao, atLeastOnce()).create(any(Event.class));
         verify(mockedSportDao, atLeastOnce()).create(any(Sport.class));
         verify(mockedUserDao, atLeastOnce()).create(any(User.class));
+        verify(mockedTeamDao, atLeastOnce()).create(any(Team.class));
+        verify(mockedUserDao, atLeastOnce()).create(any(User.class));
     }
 
     @Test
     public void deleteDataShouldRemoveAllItems(EventDao mockedEventDao, SportDao mockedSportDao,
-                                               TransactionDao mockedTransactionDao, UserDao mockedUserDao) {
+                                               TransactionDao mockedTransactionDao, UserDao mockedUserDao,
+                                               TeamDao mockedTeamDao, TicketDao mockedTicketDao) {
         staingBootstrapperInteractor.initData();
 
         staingBootstrapperInteractor.deleteAll();
 
-        verify(mockedEventDao, times(1)).deleteAll();
-        verify(mockedSportDao, times(1)).deleteAll();
-        verify(mockedUserDao, times(1)).deleteAll();
-        verify(mockedTransactionDao, times(1)).deleteAll();
+        verify(mockedEventDao).deleteAll();
+        verify(mockedSportDao).deleteAll();
+        verify(mockedUserDao).deleteAll();
+        verify(mockedTeamDao).deleteAll();
+        verify(mockedTicketDao).deleteAll();
+        verify(mockedTransactionDao).deleteAll();
     }
 
     public static class TestModule extends JukitoModule {

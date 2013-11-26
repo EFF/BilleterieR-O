@@ -25,20 +25,20 @@ import static org.mockito.Mockito.*;
 @RunWith(JukitoRunner.class)
 public class CheckoutInteractorTest {
 
+    private static final long TICKET_ID_1 = 1;
+    private static final long TICKET_ID_2 = 123;
     @Rule
-    public ExpectedException exception = ExpectedException.none();
+    public ExpectedException exception;
     @Inject
     private CheckoutInteractor checkoutInteractor;
 
     @Test
     public void executeTransactionWithExistingUserAndExistingTickets(CheckoutService mockedCheckoutService,
                                                                      TicketsInteractor mockedTicketsInteractor) throws RecordNotFoundException, UpdateTicketStateUnauthorizedException {
-        long fakeId1 = 12;
-        long fakeId2 = 23;
         User mockedBuyer = mock(User.class);
         List<Long> ticketIds = new ArrayList<>();
-        ticketIds.add(fakeId1);
-        ticketIds.add(fakeId2);
+        ticketIds.add(TICKET_ID_1);
+        ticketIds.add(TICKET_ID_2);
         Transaction mockedTransaction = mock(Transaction.class);
         when(mockedCheckoutService.startNewTransaction(mockedBuyer)).thenReturn(mockedTransaction);
 
@@ -47,31 +47,29 @@ public class CheckoutInteractorTest {
         assertEquals(mockedTransaction, transaction);
         InOrder inOrder = inOrder(mockedCheckoutService, mockedTicketsInteractor);
         inOrder.verify(mockedCheckoutService).startNewTransaction(mockedBuyer);
-        inOrder.verify(mockedTicketsInteractor).buyATicket(fakeId1);
-        inOrder.verify(mockedTicketsInteractor).buyATicket(fakeId2);
+        inOrder.verify(mockedTicketsInteractor).buyATicket(TICKET_ID_1);
+        inOrder.verify(mockedTicketsInteractor).buyATicket(TICKET_ID_2);
     }
 
     @Test
     public void executeTransactionFailIfOneTicketIsNotFound(CheckoutService mockedCheckoutService,
                                                             TicketsInteractor mockedTicketsInteractor) throws RecordNotFoundException, UpdateTicketStateUnauthorizedException {
-        long fakeId1 = 12;
-        long fakeId2 = 23;
         User mockedBuyer = mock(User.class);
         List<Long> ticketIds = new ArrayList<>();
-        ticketIds.add(fakeId1);
-        ticketIds.add(fakeId2);
+        ticketIds.add(TICKET_ID_1);
+        ticketIds.add(TICKET_ID_2);
         Transaction mockedTransaction = mock(Transaction.class);
         when(mockedCheckoutService.startNewTransaction(mockedBuyer)).thenReturn(mockedTransaction);
-        doThrow(new RecordNotFoundException()).when(mockedTicketsInteractor).buyATicket(fakeId1);
+        doThrow(new RecordNotFoundException()).when(mockedTicketsInteractor).buyATicket(TICKET_ID_1);
 
         Transaction transaction = checkoutInteractor.executeTransaction(mockedBuyer, ticketIds);
 
         assertEquals(mockedTransaction, transaction);
         InOrder inOrder = inOrder(mockedCheckoutService, mockedTicketsInteractor, mockedTransaction);
         inOrder.verify(mockedCheckoutService).startNewTransaction(mockedBuyer);
-        inOrder.verify(mockedTicketsInteractor).buyATicket(fakeId1);
+        inOrder.verify(mockedTicketsInteractor).buyATicket(TICKET_ID_1);
         inOrder.verify(mockedTransaction).fail();
-        verify(mockedTicketsInteractor, never()).buyATicket(fakeId2);
+        verify(mockedTicketsInteractor, never()).buyATicket(TICKET_ID_2);
         verify(mockedCheckoutService, never()).fulfillTransaction(any(Transaction.class));
     }
 

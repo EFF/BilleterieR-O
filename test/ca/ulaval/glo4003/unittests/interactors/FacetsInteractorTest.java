@@ -30,7 +30,7 @@ public class FacetsInteractorTest {
         List<Sport> result = facetsInteractor.sports();
 
         assertEquals(emptySportList, result);
-        verify(mockedSportDao, times(1)).list();
+        verify(mockedSportDao).list();
     }
 
     @Test
