@@ -37,4 +37,5 @@ public class PersistenceModule extends AbstractModule {
     private DaoPersistenceService providesDaoPersistenceService() {
         return persistenceService;
     }
+
 }

@@ -10,4 +10,5 @@ public class EmailModule extends AbstractModule {
         // TODO: Bind to FakeEmailService in test and staging. Bind to LocalSMTPEmailService in prod
         bind(EmailService.class).to(FakeEmailService.class);
     }
+
 }

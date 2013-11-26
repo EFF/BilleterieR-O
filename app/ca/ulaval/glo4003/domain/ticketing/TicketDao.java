@@ -7,4 +7,5 @@ import java.util.List;
 public interface TicketDao extends Dao<Ticket> {
 
     List<Ticket> search(TicketSearchCriteria criteria);
+
 }

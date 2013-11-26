@@ -11,6 +11,7 @@ import javax.mail.internet.MimeMessage;
 import java.util.Properties;
 
 public class LocalSMTPEmailService extends EmailService {
+
     @Override
     public void sendEmail(String to, String from, String message) {
         Properties props = new Properties();
@@ -29,4 +30,5 @@ public class LocalSMTPEmailService extends EmailService {
             e.printStackTrace();
         }
     }
+
 }
