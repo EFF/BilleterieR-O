@@ -22,8 +22,8 @@ public class ApplicationModule extends AbstractModule {
         bind(EventDao.class).to(PersistedEventDao.class).asEagerSingleton();
         bind(SportDao.class).to(PersistedSportDao.class).asEagerSingleton();
         bind(TeamDao.class).to(PersistedTeamDao.class).asEagerSingleton();
+        bind(TicketDao.class).to(PersistedTicketDao.class).asEagerSingleton();
         bind(UserDao.class).asEagerSingleton();
-        bind(TicketDao.class).asEagerSingleton();
         bind(TransactionDao.class).asEagerSingleton();
     }
 
