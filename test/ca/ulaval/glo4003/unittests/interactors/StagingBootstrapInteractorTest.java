@@ -63,7 +63,6 @@ public class StagingBootstrapInteractorTest {
         @Override
         protected void configureTest() {
             forceMock(UserDao.class);
-            forceMock(TransactionDao.class);
         }
     }
 }
