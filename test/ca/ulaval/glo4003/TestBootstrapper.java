@@ -1,17 +1,10 @@
 package ca.ulaval.glo4003;
 
-import ca.ulaval.glo4003.dataaccessobjects.EventDao;
-import ca.ulaval.glo4003.dataaccessobjects.SportDao;
-import ca.ulaval.glo4003.dataaccessobjects.TicketDao;
-import ca.ulaval.glo4003.dataaccessobjects.TransactionDao;
-import ca.ulaval.glo4003.dataaccessobjects.UserDao;
-import ca.ulaval.glo4003.interactors.AuthenticationInteractor;
+import ca.ulaval.glo4003.dataaccessobjects.*;
 import ca.ulaval.glo4003.interactors.BootstrapperInteractor;
 import ca.ulaval.glo4003.models.*;
 import com.google.inject.Inject;
 import org.joda.time.LocalDateTime;
-
-import java.util.Random;
 
 public class TestBootstrapper implements BootstrapperInteractor {
 

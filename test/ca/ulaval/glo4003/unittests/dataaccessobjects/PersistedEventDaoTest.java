@@ -1,6 +1,6 @@
 package ca.ulaval.glo4003.unittests.dataaccessobjects;
 
-import ca.ulaval.glo4003.dataaccessobjects.EventDao;
+import ca.ulaval.glo4003.dataaccessobjects.PersistedEventDao;
 import ca.ulaval.glo4003.dataaccessobjects.UniqueConstraintValidator;
 import ca.ulaval.glo4003.exceptions.MaximumExceededException;
 import ca.ulaval.glo4003.exceptions.RecordNotFoundException;
@@ -18,13 +18,13 @@ import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 
-public class EventDaoTest {
+public class PersistedEventDaoTest {
 
-    private EventDao eventDao;
+    private PersistedEventDao eventDao;
 
     @Before
     public void setup() {
-        eventDao = new EventDao(new InMemoryDaoPersistenceService(), new UniqueConstraintValidator<Event>());
+        eventDao = new PersistedEventDao(new InMemoryDaoPersistenceService(), new UniqueConstraintValidator<Event>());
     }
 
     @Test

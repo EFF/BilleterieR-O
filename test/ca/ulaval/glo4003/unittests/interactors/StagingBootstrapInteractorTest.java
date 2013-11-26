@@ -62,7 +62,6 @@ public class StagingBootstrapInteractorTest {
 
         @Override
         protected void configureTest() {
-            forceMock(EventDao.class);
             forceMock(SportDao.class);
             forceMock(TicketDao.class);
             forceMock(TeamDao.class);

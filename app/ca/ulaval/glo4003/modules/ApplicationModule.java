@@ -19,7 +19,7 @@ public class ApplicationModule extends AbstractModule {
         bind(EmailService.class).to(FakeEmailService.class);
         bind(CheckoutService.class).to(ConcreteCheckoutService.class);
 
-        bind(EventDao.class).asEagerSingleton();
+        bind(EventDao.class).to(PersistedEventDao.class).asEagerSingleton();
         bind(SportDao.class).asEagerSingleton();
         bind(UserDao.class).asEagerSingleton();
         bind(TicketDao.class).asEagerSingleton();
