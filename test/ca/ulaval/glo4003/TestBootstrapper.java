@@ -9,7 +9,7 @@ import org.joda.time.LocalDateTime;
 public class TestBootstrapper implements BootstrapperInteractor {
 
     private final EventDao eventDao;
-    private final SportDao sportDao;
+    private final DataAccessObject<Sport> sportDao;
     private final UserDao userDao;
     private final TicketDao ticketDao;
     private final TransactionDao transactionDao;

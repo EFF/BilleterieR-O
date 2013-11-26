@@ -19,8 +19,9 @@ public class ApplicationModule extends AbstractModule {
         bind(EmailService.class).to(FakeEmailService.class);
         bind(CheckoutService.class).to(ConcreteCheckoutService.class);
 
+
         bind(EventDao.class).to(PersistedEventDao.class).asEagerSingleton();
-        bind(SportDao.class).asEagerSingleton();
+        bind(SportDao.class).to(PersistedSportDao.class).asEagerSingleton();
         bind(UserDao.class).asEagerSingleton();
         bind(TicketDao.class).asEagerSingleton();
         bind(TeamDao.class).asEagerSingleton();
@@ -28,7 +29,7 @@ public class ApplicationModule extends AbstractModule {
     }
 
     @Provides
-    private DaoPersistenceService provideDaoPersistenceService() {
+    private DaoPersistenceService providesDaoPersistenceService() {
         return persistenceService;
     }
 }
