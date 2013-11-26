@@ -8,7 +8,7 @@ import static org.fluentlenium.core.filter.FilterConstructor.withText;
 
 public class EventPage extends BaseFluentPage {
 
-    public static final String TICKET_LIST_ID_1 = "#ticketList1";
+    public static final String TICKET_LIST_ID = "#ticketList";
     private final long id;
 
     public EventPage(WebDriver driver, long id) {
@@ -66,20 +66,20 @@ public class EventPage extends BaseFluentPage {
         clickOnButton(".btn-details1");
     }
 
-    public void clickOnValueOfFirstSectionSelect(String value) {
-        selectClickOnValue("#sectionList1", value);
+    public void selectSectionInSectionListForCategory(int categoryId, String value) {
+        selectClickOnValue("#sectionList" + categoryId, value);
     }
 
-    public void selectSeatOfFirstTicketList(String seatToSelect) {
-        selectClickOnValue(TICKET_LIST_ID_1, seatToSelect);
+    public void selectSeatInTicketsListForCategory(int categoryId, String seatToSelect) {
+        selectClickOnValue(TICKET_LIST_ID + categoryId, seatToSelect);
     }
 
-    public String getTicketIdOfSeatInFirstTicketSelect(String seat) {
-        return getSelectOptionValue(TICKET_LIST_ID_1, seat);
+    public String getTicketIdOfSeatInTicketsListForCategory(int categoryId, String seat) {
+        return getSelectOptionValue(TICKET_LIST_ID + categoryId, seat);
     }
 
-    public void waitUntilTicketSelectIsPopulated() {
-        waitUntilSelectIsPopulated(TICKET_LIST_ID_1);
+    public void waitUntilTicketsListIsPopulated(int categoryId) {
+        waitUntilSelectIsPopulated(TICKET_LIST_ID + categoryId);
     }
 
     private String getSelectOptionValue(String selectId, String value) {
@@ -109,15 +109,15 @@ public class EventPage extends BaseFluentPage {
         await().atMost(TIMEOUT).until('.' + selectId + "_option").hasSize(newSize);
     }
 
-    public int getTicketSelectSize() {
-        return getSelectSize(TICKET_LIST_ID_1);
+    public int getTicketsListSizeForCategory(int categoryId) {
+        return getSelectSize(TICKET_LIST_ID + categoryId);
     }
 
-    public void clickOnFirstIndexValueOfFirstTicketSelect() {
-        selectClickOnFirstIndexValue(TICKET_LIST_ID_1);
+    public void clickOnFirstIndexValueOfTicketsListForCategory(int categoryId) {
+        selectClickOnFirstIndexValue(TICKET_LIST_ID + categoryId);
     }
 
-    public void waitUntilFirstTicketSelectSizeIs(int size) {
-        waitUntilSelectSizeIs(TICKET_LIST_ID_1, size);
+    public void waitUntilTicketsListForCategoryHasSize(int categoryId, int size) {
+        waitUntilSelectSizeIs(TICKET_LIST_ID + categoryId, size);
     }
 }

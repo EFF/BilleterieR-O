@@ -103,7 +103,7 @@ public class EventsTest {
                 eventsPage.isAt();
 
                 eventsPage.waitUntilEventsHasSize(2);
-                eventsPage.clickOnButton(".seeEvent1");
+                eventsPage.clickOnFirstEventButtonDetails();
                 eventPage.isAt();
 
                 assertTrue(browser.url().equals(eventPage.getUrl()));

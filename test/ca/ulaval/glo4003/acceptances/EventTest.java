@@ -38,16 +38,17 @@ public class EventTest extends FluentTest {
                 EventPage eventPage = new EventPage(browser.getDriver(), 2);
                 TicketPage ticketPage = new TicketPage(browser.getDriver(), -1, 2);
                 String ticketSeatToSelect = "2";
+                int categoryId = 1;
 
                 eventPage.go();
                 eventPage.isAt();
 
                 eventPage.waitUntilCategoriesHasSize(2);
 
-                eventPage.clickOnValueOfFirstSectionSelect("Niveau 100");
-                eventPage.waitUntilTicketSelectIsPopulated();
-                eventPage.selectSeatOfFirstTicketList(ticketSeatToSelect);
-                Long ticketId = Long.parseLong(eventPage.getTicketIdOfSeatInFirstTicketSelect(ticketSeatToSelect));
+                eventPage.selectSectionInSectionListForCategory(categoryId, "Niveau 100");
+                eventPage.waitUntilTicketsListIsPopulated(categoryId);
+                eventPage.selectSeatInTicketsListForCategory(categoryId, ticketSeatToSelect);
+                Long ticketId = Long.parseLong(eventPage.getTicketIdOfSeatInTicketsListForCategory(categoryId, ticketSeatToSelect));
                 ticketPage.setTicketId(ticketId);
 
                 eventPage.clickOnDetailsButton();
@@ -65,25 +66,26 @@ public class EventTest extends FluentTest {
         running(testServer(3333, fakeApplication(new TestGlobal())), FIREFOX, new F.Callback<TestBrowser>() {
             public void invoke(TestBrowser browser) {
                 EventPage eventPage = new EventPage(browser.getDriver(), 2);
+                int categoryId = 1;
 
                 eventPage.go();
                 eventPage.isAt();
                 eventPage.waitUntilCategoriesHasSize(2);
 
-                eventPage.clickOnValueOfFirstSectionSelect("Niveau 100");
-                eventPage.waitUntilTicketSelectIsPopulated();
+                eventPage.selectSectionInSectionListForCategory(categoryId, "Niveau 100");
+                eventPage.waitUntilTicketsListIsPopulated(categoryId);
 
-                int ticketNumber = eventPage.getTicketNumberForCategory(1);
-                int selectSize = eventPage.getTicketSelectSize();
+                int ticketNumber = eventPage.getTicketNumberForCategory(categoryId);
+                int selectSize = eventPage.getTicketsListSizeForCategory(categoryId);
                 int quantityOfTicketsToBuy = selectSize;
 
                 while (selectSize > 0) {
-                    eventPage.clickOnFirstIndexValueOfFirstTicketSelect();
+                    eventPage.clickOnFirstIndexValueOfTicketsListForCategory(categoryId);
                     eventPage.clickOnAddButtonForCategory(1);
-                    eventPage.waitUntilFirstTicketSelectSizeIs(selectSize - 1);
-                    selectSize = eventPage.getTicketSelectSize();
+                    eventPage.waitUntilTicketsListForCategoryHasSize(categoryId, selectSize - 1);
+                    selectSize = eventPage.getTicketsListSizeForCategory(categoryId);
                 }
-                assertEquals(0, eventPage.getTicketSelectSize());
+                assertEquals(0, eventPage.getTicketsListSizeForCategory(categoryId));
                 assertEquals(eventPage.getTicketNumberForCategory(1), ticketNumber - quantityOfTicketsToBuy);
             }
         });

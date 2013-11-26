@@ -66,7 +66,7 @@ public class EventsPage extends BaseFluentPage {
         find(clazz).click();
     }
 
-    public FluentWebElement getLoadingAlert() {
-        return findFirst("#loadingAlert");
+    public void clickOnFirstEventButtonDetails() {
+        clickOnButton(".seeEvent1");
     }
 }
