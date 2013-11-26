@@ -9,6 +9,7 @@ import static org.fluentlenium.core.filter.FilterConstructor.withText;
 public class EventPage extends BaseFluentPage {
 
     public static final String TICKET_LIST_ID = "#ticketList";
+    public static final String SECTION_LIST_ID = "#sectionList";
     private final long id;
 
     public EventPage(WebDriver driver, long id) {
@@ -67,7 +68,7 @@ public class EventPage extends BaseFluentPage {
     }
 
     public void selectSectionInSectionListForCategory(int categoryId, String value) {
-        selectClickOnValue("#sectionList" + categoryId, value);
+        selectClickOnValue(SECTION_LIST_ID + categoryId, value);
     }
 
     public void selectSeatInTicketsListForCategory(int categoryId, String seatToSelect) {
@@ -99,8 +100,7 @@ public class EventPage extends BaseFluentPage {
     }
 
     private int getSelectSize(String selectId) {
-        String selectClass = '.' + selectId.substring(1);
-        return find(selectId).find(selectClass + "_option").size();
+        return find(selectId).find(".option").size();
     }
 
     private void selectClickOnFirstIndexValue(String selectId) {
@@ -112,12 +112,10 @@ public class EventPage extends BaseFluentPage {
     }
 
     private void waitUntilSelectIsPopulated(String selectId) {
-        selectId = selectId.substring(1);
-        await().atMost(TIMEOUT).until('.' + selectId + "_option").hasSize().greaterThan(0);
+        await().atMost(TIMEOUT).until(selectId + " .option").hasSize().greaterThan(0);
     }
 
     private void waitUntilSelectSizeIs(String selectId, int newSize) {
-        selectId = selectId.substring(1);
-        await().atMost(TIMEOUT).until('.' + selectId + "_option").hasSize(newSize);
+        await().atMost(TIMEOUT).until(selectId + " .option").hasSize(newSize);
     }
 }

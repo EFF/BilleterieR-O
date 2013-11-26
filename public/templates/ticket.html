@@ -1,6 +1,6 @@
 <ol class="breadcrumb">
     <li><a href="/#!/events">Événements</a></li>
-    <li><a id="eventDetails" href="/#!/events/{{event.id}}">Détails de l'évènement</a></li>
+    <li><a id="event-{{event.id}}" class=".btn-see-event-info" href="/#!/events/{{event.id}}">Détails de l'évènement</a></li>
     <li class="active">Détails du billet</li>
 </ol>
 
@@ -11,12 +11,12 @@
 
 <table class="table" id="ticket">
     <tbody>
-    <tr><td>Siège</td>                  <td id="seat">{{ticket.seat}}</td></tr>
-    <tr><td>Section</td>                <td id="section">{{ticket.section}}</td></tr>
-    <tr><td>Catégorie</td>              <td id="categoryId">{{ticket.categoryId}}</td></tr>
-    <tr><td>Équipe Hôte</td>            <td id="homeTeamName">{{event.homeTeam.name}}</td></tr>
-    <tr><td>Équipe Visiteur</td>        <td id="visitorTeamName">{{event.visitorTeam.name}}</td></tr>
-    <tr><td>Prix</td>                   <td id="price">{{event.categories[ticket.categoryId].price}}$</td></tr>
-    <tr><td>Type</td>                   <td id="categoryType">{{event.categories[ticket.categoryId].type | categoryType}}</td></tr>
+        <tr><td>Siège</td>                  <td id="seat">{{ticket.seat}}</td></tr>
+        <tr><td>Section</td>                <td id="section">{{ticket.section}}</td></tr>
+        <tr><td>Catégorie</td>              <td id="categoryId">{{ticket.categoryId}}</td></tr>
+        <tr><td>Équipe Hôte</td>            <td id="homeTeamName">{{event.homeTeam.name}}</td></tr>
+        <tr><td>Équipe Visiteur</td>        <td id="visitorTeamName">{{event.visitorTeam.name}}</td></tr>
+        <tr><td>Prix</td>                   <td id="price">{{event.categories[ticket.categoryId].price}}$</td></tr>
+        <tr><td>Type</td>                   <td id="categoryType">{{event.categories[ticket.categoryId].type | categoryType}}</td></tr>
     </tbody>
 </table>

@@ -4,8 +4,8 @@ package ca.ulaval.glo4003.acceptances.pages;
 import org.openqa.selenium.WebDriver;
 
 public class TicketPage extends BaseFluentPage {
-    private long ticketId = -1;
-    private long eventId = -1;
+    private long ticketId;
+    private long eventId;
 
     public TicketPage(WebDriver driver, long ticketId, long eventId) {
         super(driver);
@@ -24,7 +24,7 @@ public class TicketPage extends BaseFluentPage {
 
     @Override
     public void isAt() {
-        await().atMost(TIMEOUT).until("#eventDetails").hasAttribute("href", getEventUrl());
+        await().atMost(TIMEOUT).until("#event-" + eventId).hasAttribute("href", getEventUrl());
     }
 
     public void setTicketId(long id){

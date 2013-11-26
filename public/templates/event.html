@@ -33,7 +33,7 @@
                             ng-change="apiCall()"
                             ng-model="sectionsByCategories[category.id].selectedValue"
                             ng-options="s for s in sectionsByCategories[category.id].options">
-                        <option class="{{sectionsByCategories[category.id].name}}_option" value="">Section...</option>
+                        <option class="option" value="">Section...</option>
                     </select>
                 </span>
                 <span ng-switch-when="GENERAL_ADMISSION">
@@ -52,7 +52,7 @@
                             class="form-control ticketSeatsCombo"
                             ng-model="ticketsByCategories[category.id].selectedValue">
                         <option value="">Siège disponible...</option>
-                        <option class="{{ticketsByCategories[category.id].name}}_option" value="{{ticket.id}}"
+                        <option class="option" value="{{ticket.id}}"
                                 ng-repeat="ticket in ticketsByCategories[category.id].options">{{ticket.seat}}</option>
                     </select>
                 </span>
