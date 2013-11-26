@@ -62,11 +62,7 @@ public class EventsPage extends BaseFluentPage {
                 (numberOfTickets));
     }
 
-    public void clickOnButton(String clazz) {
-        find(clazz).click();
-    }
-
     public void clickOnFirstEventButtonDetails() {
-        clickOnButton(".seeEvent1");
+        findFirst(".event").findFirst(".btn-see-event-info").click();
     }
 }
