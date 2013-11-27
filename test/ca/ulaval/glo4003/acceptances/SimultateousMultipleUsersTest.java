@@ -132,7 +132,5 @@ public class SimultateousMultipleUsersTest extends FluentTest {
         eventPage2.go();
         eventPage1.isAt();
         eventPage2.isAt();
-        eventPage1.waitUntilCategoriesHasSize(2);
-        eventPage2.waitUntilCategoriesHasSize(2);
     }
 }

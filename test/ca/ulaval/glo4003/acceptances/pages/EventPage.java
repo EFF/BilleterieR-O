@@ -25,11 +25,7 @@ public class EventPage extends BaseFluentPage {
 
     @Override
     public void isAt() {
-        await().atMost(TIMEOUT).until(".table").isPresent();
-    }
-
-    public void waitUntilCategoriesHasSize(int count) {
-        await().atMost(TIMEOUT).until(".category").hasSize(count);
+        await().atMost(TIMEOUT).until(".category").hasSize().greaterThan(0);
     }
 
     public boolean categoryHas(int i, String expectedPrice, Integer expectedNumberOfTickets) {

@@ -29,8 +29,6 @@ public class EventTest extends FluentTest {
                 eventPage.go();
                 eventPage.isAt();
 
-                eventPage.waitUntilCategoriesHasSize(2);
-
                 assertTrue(eventPage.categoryHas(0, "12$", 120));
                 assertTrue(eventPage.categoryHas(1, "8$", 1200));
             }
@@ -48,9 +46,6 @@ public class EventTest extends FluentTest {
                 eventPage.go();
                 eventPage.isAt();
 
-                //TODO : Rename/replace
-                eventPage.waitUntilCategoriesHasSize(2);
-
                 eventPage.selectSectionInSectionListForCategory(A_CATEGORY_ID, A_SECTION_NAME);
                 eventPage.waitUntilTicketsListIsPopulated(A_CATEGORY_ID);
                 eventPage.selectSeatInTicketsListForCategory(A_CATEGORY_ID, ticketSeatToSelect);
@@ -59,8 +54,6 @@ public class EventTest extends FluentTest {
 
                 eventPage.clickOnDetailsButton();
                 ticketPage.isAt();
-
-                assertEquals(ticketPage.getUrl(), browser.url());
             }
         });
     }
@@ -73,7 +66,6 @@ public class EventTest extends FluentTest {
 
                 eventPage.go();
                 eventPage.isAt();
-                eventPage.waitUntilCategoriesHasSize(2);
 
                 eventPage.selectSectionInSectionListForCategory(A_CATEGORY_ID, A_SECTION_NAME);
                 eventPage.waitUntilTicketsListIsPopulated(A_CATEGORY_ID);

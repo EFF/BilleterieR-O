@@ -319,7 +319,6 @@ public class CartTest extends FluentTest {
                 eventPage.clickLogoutButton();
                 loginPage.isLoggedOut();
                 eventPage.waitUntilCartHasSize(0);
-
             }
         });
     }
@@ -333,7 +332,6 @@ public class CartTest extends FluentTest {
     private void goToEventPage(EventPage eventPage) {
         eventPage.go();
         eventPage.isAt();
-        eventPage.waitUntilCategoriesHasSize(2);
     }
 
     private void goToLoginPage(LoginPage loginPage) {
