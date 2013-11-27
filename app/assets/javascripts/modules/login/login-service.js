@@ -1,5 +1,5 @@
 define(['./module'], function (LoginModule) {
-    LoginModule.factory('LoginService', ['$http', '$rootScope', '$q', function ($http, $rootScope, $q) {
+    LoginModule.factory('LoginService', ['$http', 'Cart', '$q', function ($http, Cart, $q) {
         var loginService = {
             username: null
         };
@@ -31,7 +31,7 @@ define(['./module'], function (LoginModule) {
 
             var onLogoutSuccess = function () {
                 setCredentials(null);
-                $rootScope.$broadcast('logoutEvent');
+                Cart.removeAllItem();
                 deferred.resolve();
             };
 

@@ -1,52 +1,46 @@
 define(['./module'], function (EventModule) {
-    EventModule.controller('EventsController', ['$scope', '$http', 'FlashMessage', function ($scope, $http, FlashMessage) {
-        $scope.events = null;
-        $scope.filters = {};
-        $scope.isLoading = false;
-
-        //TODO facet service
-        $http.get('/api/facets').success(function (facets) {
-            $scope.facets = facets;
-        });
-
-        var apiCallSuccessCallback = function (results) {
-            $scope.events = results;
+    EventModule.controller('EventsController', ['$scope', 'FlashMessage', 'EventService',
+        function ($scope, FlashMessage, EventService) {
+            $scope.events = null;
+            $scope.filters = {};
             $scope.isLoading = false;
-        };
 
-        var apiCallErrorCallback = function () {
-            //TODO un message plus parlant. Désolé j'ai encore aucune idée c'est quoi apiCall
-            FlashMessage.send('error', 'Une erreur est survenue.');
-            $scope.events = [];
-            $scope.isLoading = false;
-        };
 
-        //TODO rename this one ...
-        var apiCall = function () {
-            $scope.isLoading = true;
-            var url = '/api/events';
-            var nbFilters = 0;
+            var initPageData = function () {
+                var onGetFacetsSuccess = function (facets) {
+                    $scope.facets = facets;
+                };
 
-            for (var filterName in $scope.filters) {
-                var filter = $scope.filters[filterName];
+                var onGetFacetsError = function () {
+                    FlashMessage.send('error', 'Une erreur est survenue.');
+                };
 
-                if (filter) {
-                    url += (nbFilters == 0) ? '?' : '&';
-                    url += filterName + '=' + filter;
-                    nbFilters++;
-                }
-            }
+                EventService.getFacets().then(onGetFacetsSuccess, onGetFacetsError);
 
-            //TODO this should be in event service and using params
-            $http.get(url)
-                .success(apiCallSuccessCallback)
-                .error(apiCallErrorCallback);
-        };
+                getEvents();
+            };
 
-        $scope.$watch('filters', function () {
-            apiCall();
-        }, true);
+            var getEvents = function () {
+                var onGetEventsSuccess = function (events) {
+                    $scope.events = events;
+                    $scope.isLoading = false;
+                };
 
-        apiCall();
-    }]);
+                var onGetEventsError = function () {
+                    FlashMessage.send('error', 'Une erreur est survenue.');
+                    $scope.events = [];
+                    $scope.isLoading = false;
+                };
+
+                $scope.isLoading = true;
+
+                EventService.getEvents($scope.filters).then(onGetEventsSuccess, onGetEventsError);
+            };
+
+            $scope.$watch('filters', function () {
+                getEvents();
+            }, true);
+
+            initPageData();
+        }]);
 });
