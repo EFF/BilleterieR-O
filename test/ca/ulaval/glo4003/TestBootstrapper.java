@@ -16,7 +16,7 @@ public class TestBootstrapper implements BootstrapperInteractor {
     public static final double ANOTHER_PRICE = 8.0;
     public static final int ANOTHER_CATEGORY_ID = 1;
     private final EventDao eventDao;
-    private final SportDao sportDao;
+    private final DataAccessObject<Sport> sportDao;
     private final UserDao userDao;
     private final TicketDao ticketDao;
     private final TransactionDao transactionDao;

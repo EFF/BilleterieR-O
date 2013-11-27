@@ -8,7 +8,6 @@ import ca.ulaval.glo4003.models.User;
 import com.google.inject.Inject;
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.node.ObjectNode;
-import org.jukito.JukitoModule;
 import org.jukito.JukitoRunner;
 import org.junit.Before;
 import org.junit.Test;
@@ -151,13 +150,5 @@ public class AuthenticationControllerTest extends BaseControllerTest {
         verify(mockedSession, never()).put(ConstantsManager.COOKIE_SESSION_FIELD_NAME, email);
 
         assertEquals(Http.Status.BAD_REQUEST, status(result));
-    }
-
-    public static class TestModule extends JukitoModule {
-
-        @Override
-        protected void configureTest() {
-            forceMock(UserDao.class);
-        }
     }
 }

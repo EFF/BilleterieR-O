@@ -23,7 +23,7 @@ public class StagingBootstrapInteractorTest {
 
     @Test
     public void initDataShouldAddItems(EventDao mockedEventDao, SportDao mockedSportDao, UserDao mockedUserDao,
-                                       TeamDao mockedTeamDao, TicketDao mockedTicketDao) {
+                                       TeamDao mockedTeamDao) {
         List<Sport> sports = new ArrayList<>();
         sports.add(mock(Sport.class));
         when(mockedSportDao.list()).thenReturn(sports);
@@ -62,12 +62,7 @@ public class StagingBootstrapInteractorTest {
 
         @Override
         protected void configureTest() {
-            forceMock(EventDao.class);
-            forceMock(SportDao.class);
-            forceMock(TicketDao.class);
-            forceMock(TeamDao.class);
             forceMock(UserDao.class);
-            forceMock(TransactionDao.class);
         }
     }
 }

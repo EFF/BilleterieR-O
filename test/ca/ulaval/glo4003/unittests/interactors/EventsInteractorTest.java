@@ -6,7 +6,6 @@ import ca.ulaval.glo4003.interactors.EventsInteractor;
 import ca.ulaval.glo4003.models.Event;
 import ca.ulaval.glo4003.models.EventSearchCriteria;
 import com.google.inject.Inject;
-import org.jukito.JukitoModule;
 import org.jukito.JukitoRunner;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -45,13 +44,5 @@ public class EventsInteractorTest {
         eventsInteractor.search(mockedEventSearchCriteria);
 
         verify(mockedEventDao).search(mockedEventSearchCriteria);
-    }
-
-    public static class TestModule extends JukitoModule {
-
-        @Override
-        protected void configureTest() {
-            forceMock(EventDao.class);
-        }
     }
 }

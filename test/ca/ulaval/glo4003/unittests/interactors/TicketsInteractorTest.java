@@ -8,7 +8,6 @@ import ca.ulaval.glo4003.models.Ticket;
 import ca.ulaval.glo4003.models.TicketSearchCriteria;
 import ca.ulaval.glo4003.models.TicketState;
 import com.google.inject.Inject;
-import org.jukito.JukitoModule;
 import org.jukito.JukitoRunner;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -194,13 +193,5 @@ public class TicketsInteractorTest {
         assertNull(argument.getValue().getSectionName());
         assertEquals(1, argument.getValue().getStates().size());
         assertEquals(TicketState.AVAILABLE, argument.getValue().getStates().get(0));
-    }
-
-    public static class TestModule extends JukitoModule {
-
-        @Override
-        protected void configureTest() {
-            forceMock(TicketDao.class);
-        }
     }
 }

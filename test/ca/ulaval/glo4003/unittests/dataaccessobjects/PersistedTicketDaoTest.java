@@ -1,6 +1,6 @@
 package ca.ulaval.glo4003.unittests.dataaccessobjects;
 
-import ca.ulaval.glo4003.dataaccessobjects.TicketDao;
+import ca.ulaval.glo4003.dataaccessobjects.PersistedTicketDao;
 import ca.ulaval.glo4003.dataaccessobjects.UniqueConstraintValidator;
 import ca.ulaval.glo4003.models.Ticket;
 import ca.ulaval.glo4003.models.TicketSearchCriteria;
@@ -16,10 +16,10 @@ import static junit.framework.Assert.assertNotNull;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
 
-public class TicketDaoTest {
+public class PersistedTicketDaoTest {
 
     private DaoPersistenceService daoPersistenceService;
-    private TicketDao ticketDao;
+    private PersistedTicketDao ticketDao;
     private Ticket ticket1;
     private Ticket ticket2;
     private Ticket ticket3;
@@ -29,7 +29,7 @@ public class TicketDaoTest {
     public void setUp() {
         daoPersistenceService = mock(DaoPersistenceService.class);
 
-        ticketDao = new TicketDao(daoPersistenceService, new UniqueConstraintValidator<Ticket>());
+        ticketDao = new PersistedTicketDao(daoPersistenceService, new UniqueConstraintValidator<Ticket>());
 
         ticket1 = new Ticket(1, 0, TicketState.SOLD, "Section 100", 10);
         ticket2 = new Ticket(1, 1, TicketState.AVAILABLE, "Section 200", 11);

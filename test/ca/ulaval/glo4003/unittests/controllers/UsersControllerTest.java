@@ -32,7 +32,6 @@ import static play.test.Helpers.status;
 public class UsersControllerTest extends BaseControllerTest {
 
     private static final String A_PASSWORD = "secret";
-    private static final String ANOTHER_PASSWORD = "secret2";
     private static final String NEW_PASSWORD = "secret2";
     private static final String AN_EMAIL = "email@test.com";
     private static final String INVALID_EMAIL = "invalid";
@@ -159,7 +158,6 @@ public class UsersControllerTest extends BaseControllerTest {
 
         @Override
         protected void configureTest() {
-            forceMock(UserDao.class);
             forceMock(UsersInteractor.class);
         }
     }
