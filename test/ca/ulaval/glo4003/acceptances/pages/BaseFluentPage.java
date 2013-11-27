@@ -52,9 +52,4 @@ public abstract class BaseFluentPage extends FluentPage {
     public void waitUntilCartHasSize(int size) {
         await().atMost(TIMEOUT).until(".cart-size").hasText(Integer.toString(size));
     }
-
-    public boolean isWarningMessageDisplayed() {
-        waitForWarningMessageToDisplay();
-        return find(".alertContainer .alert-warning").size() >= 1;
-    }
 }
