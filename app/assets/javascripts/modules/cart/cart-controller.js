@@ -48,6 +48,10 @@ define(['./module'], function (CartModule) {
                 }
             };
 
+            $scope.$on('logoutEvent', function(){
+                Cart.removeAllItem();
+            });
+
             var currentDate = new Date();
             var followingYears = 5;
             for (var i = 0; i < followingYears; i++) {

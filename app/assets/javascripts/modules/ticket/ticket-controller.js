@@ -1,13 +1,13 @@
 define(['./module'], function (TicketModule) {
-    TicketModule.controller('TicketController', ['$scope', '$routeParams', 'TicketService',
-        function ($scope, $routeParams, TicketService) {
+    TicketModule.controller('TicketController', ['$scope', '$routeParams', 'TicketService', 'EventService',
+        function ($scope, $routeParams, TicketService, EventService) {
             var ticketId = $routeParams.ticketId;
             $scope.ticket = null;
             $scope.event = null;
 
             var onGetTicketByIdSuccess = function (ticket) {
                 $scope.ticket = ticket;
-                TicketService.getEventInfoById(ticket.eventId).then(onGetEventByIdSuccess, onGetEventByIdError);
+                EventService.getById(ticket.eventId).then(onGetEventByIdSuccess, onGetEventByIdError);
             };
 
             var onGetTicketByIdError = function () {

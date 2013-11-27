@@ -1,13 +1,12 @@
 package ca.ulaval.glo4003.domain.boostrap;
 
-import ca.ulaval.glo4003.domain.event.TeamDao;
-import ca.ulaval.glo4003.domain.ticketing.TicketDao;
-import ca.ulaval.glo4003.domain.ticketing.TransactionDao;
-import ca.ulaval.glo4003.domain.user.UserDao;
 import ca.ulaval.glo4003.domain.event.*;
 import ca.ulaval.glo4003.domain.ticketing.Ticket;
+import ca.ulaval.glo4003.domain.ticketing.TicketDao;
 import ca.ulaval.glo4003.domain.ticketing.TicketFactory;
+import ca.ulaval.glo4003.domain.ticketing.TransactionDao;
 import ca.ulaval.glo4003.domain.user.User;
+import ca.ulaval.glo4003.domain.user.UserDao;
 import com.google.inject.Inject;
 import org.joda.time.LocalDateTime;
 
@@ -18,14 +17,13 @@ public class StagingBootstrapperInteractor implements BootstrapperInteractor {
 
     public static final String ROUGE_ET_OR = "Rouge et Or";
     public static final String VERT_ET_OR = "Vert et Or";
+    private static final int MAX_NUMBER_OF_EVENTS = 5;
     private final EventDao eventDao;
     private final SportDao sportDao;
     private final UserDao userDao;
     private final TicketDao ticketDao;
     private final TeamDao teamDao;
     private final TransactionDao transactionDao;
-
-    private final int MAX_NUMBER_OF_EVENTS = 5;
 
     @Inject
     public StagingBootstrapperInteractor(EventDao eventDao, SportDao sportDao, UserDao userDao, TicketDao ticketDao, TeamDao teamDao, TransactionDao transactionDao) {

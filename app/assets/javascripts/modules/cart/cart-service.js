@@ -1,5 +1,9 @@
 define(['./module'], function (CartModule) {
     CartModule.factory('Cart', ['$cookieStore', '$http', 'FlashMessage', function ($cookieStore, $http, FlashMessage) {
+        //TODO ne plus dépendre de FlashMessage
+        //TODO utiliser $q
+        //TODO utiliser TicketService
+
         var exports = {
             transactionId: null
         };
@@ -112,7 +116,7 @@ define(['./module'], function (CartModule) {
                 var errorCallback = function () {
                     FlashMessage.send('error', "L'item n'a pu être ajouté au panier. Une erreur est survenue.");
                 };
-                reserveTickets([ticket], successCallback, errorCallback)
+                reserveTickets([ticket], successCallback, errorCallback);
             }
         };
 
