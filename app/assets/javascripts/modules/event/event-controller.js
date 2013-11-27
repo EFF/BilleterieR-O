@@ -6,7 +6,7 @@ define(['./module'], function (EventModule) {
         $scope.ticketsByCategories = [];
         $scope.quantity = [];
 
-        //TODO ne devrait exister, nous avons l'info par les billets de l'event
+        //TODO ne devrait exister, nous avons l'info par les billets de l'event et btw error handling ?
         $http.get('/api/events/' + eventId + '/sections')
             .success(function (sections) {
                 for (var categoryId in sections) {
@@ -24,6 +24,7 @@ define(['./module'], function (EventModule) {
             //TODO split in 2 functions!!!
             if (ticketId) {
                 //TODO this should be in ticket service.. we need to fix cyclic dependency
+                //TODO error handling ?
                 var url = '/api/tickets/' + ticketId;
                 $http.get(url)
                     .success(function (ticket) {
@@ -34,7 +35,7 @@ define(['./module'], function (EventModule) {
                         Cart.addItem(ticket, category, $scope.event, successCallback);
                     });
             } else {
-                //TODO this should be in ticket service.. we need to fix cyclic dependency
+                //TODO this should be in ticket service.. we need to fix cyclic dependency and using params
                 var url = '/api/tickets?eventId=' + eventId + '&categoryId=' + category.id + '&states=AVAILABLE' + '&quantity=' + quantity;
                 $http.get(url)
                     .success(function (tickets) {
@@ -70,6 +71,7 @@ define(['./module'], function (EventModule) {
                 if (categoryId == null || ticket.categoryId != categoryId) {
                     categoryId = ticket.categoryId;
 
+                    //TODO why emptyTicketList on refresh?
                     var emptyTicketList = {
                         type: 'select',
                         name: 'ticketList' + categoryId,

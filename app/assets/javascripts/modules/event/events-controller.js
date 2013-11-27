@@ -1,5 +1,5 @@
 define(['./module'], function (EventModule) {
-    EventModule.controller('EventsController', ['$scope', '$http', function ($scope, $http) {
+    EventModule.controller('EventsController', ['$scope', '$http', 'FlashMessage', function ($scope, $http, FlashMessage) {
         $scope.events = null;
         $scope.filters = {};
         $scope.isLoading = false;
@@ -15,7 +15,8 @@ define(['./module'], function (EventModule) {
         };
 
         var apiCallErrorCallback = function () {
-            //TODO emit error with FlashMessage
+            //TODO un message plus parlant. Désolé j'ai encore aucune idée c'est quoi apiCall
+            FlashMessage.send('error', 'Une erreur est survenue.');
             $scope.events = [];
             $scope.isLoading = false;
         };
@@ -36,7 +37,7 @@ define(['./module'], function (EventModule) {
                 }
             }
 
-            //TODO this should be in event service
+            //TODO this should be in event service and using params
             $http.get(url)
                 .success(apiCallSuccessCallback)
                 .error(apiCallErrorCallback);
