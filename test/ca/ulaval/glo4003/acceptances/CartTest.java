@@ -11,7 +11,6 @@ import play.test.TestBrowser;
 
 import static org.fest.assertions.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 import static play.test.Helpers.*;
 
 public class CartTest {
@@ -230,7 +229,7 @@ public class CartTest {
                 goToCartPage(cartPage, 1);
                 cartPage.modifyNumberOfTicketsForItem(0, EXCEEDED_TICKET_QUANTITY);
 
-                assertTrue(cartPage.isWarningMessageDisplayed());
+                cartPage.waitForErrorMessageToDisplay();
             }
         });
     }
