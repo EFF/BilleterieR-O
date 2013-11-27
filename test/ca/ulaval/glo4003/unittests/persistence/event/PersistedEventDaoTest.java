@@ -1,12 +1,12 @@
 package ca.ulaval.glo4003.unittests.persistence.event;
 
-import ca.ulaval.glo4003.persistence.UniqueConstraintValidator;
-import ca.ulaval.glo4003.persistence.event.PersistedEventDao;
 import ca.ulaval.glo4003.domain.RecordNotFoundException;
 import ca.ulaval.glo4003.domain.event.Category;
 import ca.ulaval.glo4003.domain.event.Event;
 import ca.ulaval.glo4003.domain.event.EventSearchCriteria;
 import ca.ulaval.glo4003.persistence.InMemoryDaoPersistenceService;
+import ca.ulaval.glo4003.persistence.UniqueConstraintValidator;
+import ca.ulaval.glo4003.persistence.event.PersistedEventDao;
 import ca.ulaval.glo4003.unittests.api.event.EventsTestHelper;
 import org.fest.assertions.Assertions;
 import org.joda.time.LocalDateTime;
@@ -39,7 +39,6 @@ public class PersistedEventDaoTest {
 
         assertEquals(2, result.size());
     }
-
 
     @Test
     public void searchAllThenReturnsAllEvents() {

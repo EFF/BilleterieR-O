@@ -2,7 +2,9 @@ package ca.ulaval.glo4003.api.event;
 
 import ca.ulaval.glo4003.domain.event.Event;
 
-public class EventAndTicketCountDto {
+import java.io.Serializable;
+
+public class EventAndTicketCountDto implements Serializable {
 
     private Event event;
     private int ticketCount;

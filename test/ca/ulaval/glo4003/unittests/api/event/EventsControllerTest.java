@@ -8,6 +8,7 @@ import ca.ulaval.glo4003.domain.event.EventSearchCriteria;
 import ca.ulaval.glo4003.domain.event.EventsInteractor;
 import ca.ulaval.glo4003.domain.event.Gender;
 import ca.ulaval.glo4003.domain.ticketing.MaximumExceededException;
+import ca.ulaval.glo4003.domain.ticketing.TicketsInteractor;
 import ca.ulaval.glo4003.unittests.api.BaseControllerTest;
 import com.google.inject.Inject;
 import org.codehaus.jackson.JsonNode;
@@ -27,6 +28,7 @@ import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.anyLong;
 import static org.mockito.Matchers.refEq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -36,7 +38,7 @@ public class EventsControllerTest extends BaseControllerTest {
 
     private static final int FIRST_EVENT_ID = 1;
     private static final int SECOND_EVENT_ID = 2;
-
+    public static final int NUMBER_OF_TICKETS = 2;
     @Inject
     private EventsController eventsController;
     private EventSearchCriteria eventSearchCriteria;
@@ -44,16 +46,20 @@ public class EventsControllerTest extends BaseControllerTest {
     private Event firstEvent;
 
     @Before
-    public void setup(EventsInteractor mockedEventsInteractor) throws RecordNotFoundException,
+    public void setup(EventsInteractor mockedEventsInteractor,
+                      TicketsInteractor mockedTicketInteractor) throws RecordNotFoundException,
             MaximumExceededException {
         firstEvent = EventsTestHelper.createRandomEventWithCategoryGivenSport(EventsTestHelper.FIRST_RANDOM_SPORT);
-        Event secondEvent = EventsTestHelper.createRandomEventWithCategoryGivenSport(EventsTestHelper.SECOND_RANDOM_SPORT);
+        Event secondEvent = EventsTestHelper.createRandomEventWithCategoryGivenSport(EventsTestHelper
+                .SECOND_RANDOM_SPORT);
         firstEvent.setId(FIRST_EVENT_ID);
         secondEvent.setId(SECOND_EVENT_ID);
         tempEventsList = Arrays.asList(firstEvent, secondEvent);
 
         eventSearchCriteria = new EventSearchCriteria();
         when(mockedEventsInteractor.search(refEq(eventSearchCriteria))).thenReturn(tempEventsList);
+        when(mockedTicketInteractor.numberOfTicketAvailable(anyLong())).thenReturn(NUMBER_OF_TICKETS);
+
     }
 
     @Test
@@ -74,10 +80,12 @@ public class EventsControllerTest extends BaseControllerTest {
 
         assertEquals(tempEventsList.size(), jsonNode.size());
 
-        assertEquals(FIRST_EVENT_ID, event1.get("id").asLong());
+        assertEquals(NUMBER_OF_TICKETS, eventDto1.get("ticketCount").getIntValue());
+        assertEquals(FIRST_EVENT_ID, event1.get("id").getLongValue());
         assertEquals(EventsTestHelper.FIRST_RANDOM_SPORT, event1.get("sport").get("name").asText());
 
-        assertEquals(SECOND_EVENT_ID, event2.get("id").asLong());
+        assertEquals(NUMBER_OF_TICKETS, eventDto2.get("ticketCount").getIntValue());
+        assertEquals(SECOND_EVENT_ID, event2.get("id").getLongValue());
         assertEquals(EventsTestHelper.SECOND_RANDOM_SPORT, event2.get("sport").get("name").asText());
 
         verify(mockedEventsInteractor).search(refEq(eventSearchCriteria));
@@ -96,11 +104,15 @@ public class EventsControllerTest extends BaseControllerTest {
         eventSearchCriteria.setGender(Gender.MALE);
         when(mockedEventsInteractor.search(refEq(eventSearchCriteria))).thenReturn(tempFilteredListEvent);
 
-        when(mockedRequest.getQueryString(ConstantsManager.QUERY_STRING_SPORT_PARAM_NAME)).thenReturn(EventsTestHelper.FIRST_RANDOM_SPORT);
-        when(mockedRequest.getQueryString(ConstantsManager.QUERY_STRING_DATE_START_PARAM_NAME)).thenReturn(dateStart.toString());
-        when(mockedRequest.getQueryString(ConstantsManager.QUERY_STRING_DATE_END_PARAM_NAME)).thenReturn(dateEnd.toString());
+        when(mockedRequest.getQueryString(ConstantsManager.QUERY_STRING_SPORT_PARAM_NAME)).thenReturn
+                (EventsTestHelper.FIRST_RANDOM_SPORT);
+        when(mockedRequest.getQueryString(ConstantsManager.QUERY_STRING_DATE_START_PARAM_NAME)).thenReturn(dateStart
+                .toString());
+        when(mockedRequest.getQueryString(ConstantsManager.QUERY_STRING_DATE_END_PARAM_NAME)).thenReturn(dateEnd
+                .toString());
         when(mockedRequest.getQueryString(ConstantsManager.QUERY_STRING_TEAM_PARAM_NAME)).thenReturn(teamName);
-        when(mockedRequest.getQueryString(ConstantsManager.QUERY_STRING_GENDER_PARAM_NAME)).thenReturn(Gender.MALE.toString());
+        when(mockedRequest.getQueryString(ConstantsManager.QUERY_STRING_GENDER_PARAM_NAME)).thenReturn(Gender.MALE
+                .toString());
 
         Result result = eventsController.index();
 
@@ -128,10 +140,13 @@ public class EventsControllerTest extends BaseControllerTest {
         LocalDateTime dateStart = dateEnd.plusDays(1);
         eventSearchCriteria.setDateEnd(dateEnd);
         eventSearchCriteria.setDateStart(dateStart);
-        when(mockedEventsInteractor.search(refEq(eventSearchCriteria))).thenThrow(new InvalidParameterException("Test"));
+        when(mockedEventsInteractor.search(refEq(eventSearchCriteria))).thenThrow(new InvalidParameterException
+                ("Test"));
 
-        when(mockedRequest.getQueryString(ConstantsManager.QUERY_STRING_DATE_START_PARAM_NAME)).thenReturn(dateStart.toString());
-        when(mockedRequest.getQueryString(ConstantsManager.QUERY_STRING_DATE_END_PARAM_NAME)).thenReturn(dateEnd.toString());
+        when(mockedRequest.getQueryString(ConstantsManager.QUERY_STRING_DATE_START_PARAM_NAME)).thenReturn(dateStart
+                .toString());
+        when(mockedRequest.getQueryString(ConstantsManager.QUERY_STRING_DATE_END_PARAM_NAME)).thenReturn(dateEnd
+                .toString());
 
         Result result = eventsController.index();
 
@@ -157,7 +172,8 @@ public class EventsControllerTest extends BaseControllerTest {
     }
 
     @Test
-    public void showReturnNotFoundWhenRecordNotFoundExceptionIsCatched(EventsInteractor mockedEventsInteractor) throws RecordNotFoundException {
+    public void showReturnNotFoundWhenRecordNotFoundExceptionIsCatched(EventsInteractor mockedEventsInteractor)
+            throws RecordNotFoundException {
         when(mockedEventsInteractor.getById(firstEvent.getId())).thenThrow(new RecordNotFoundException());
 
         Result result = eventsController.show(firstEvent.getId());
@@ -172,6 +188,7 @@ public class EventsControllerTest extends BaseControllerTest {
         @Override
         protected void configureTest() {
             forceMock(EventsInteractor.class);
+            forceMock(TicketsInteractor.class);
         }
     }
 }

@@ -16,6 +16,10 @@ public class TestBootstrapperInteractor implements BootstrapperInteractor {
 
     private static final int NUMBER_OF_TICKETS = 1200;
     private static final int ANOTHER_NUMBER_OF_TICKETS = 120;
+    private static final double FIRST_CATEGORY_PRICE = 12.0;
+    private static final double SECOND_CATEGORY_PRICE = 8.0;
+    private static final int FIRST_CATEGORY_ID = 0;
+    private static final int SECOND_CATEGORY_ID = 1;
 
     private final EventDao eventDao;
     private final Dao<Sport> sportDao;
@@ -42,8 +46,8 @@ public class TestBootstrapperInteractor implements BootstrapperInteractor {
 
         Event event1 = new Event(soccer, Gender.MALE);
         event1.setDate(new LocalDateTime());
-        Category category1 = new Category(12.0, 0, CategoryType.GENERAL_ADMISSION);
-        Category category2 = new Category(8.0, 1, CategoryType.GENERAL_ADMISSION);
+        Category category1 = new Category(FIRST_CATEGORY_PRICE, FIRST_CATEGORY_ID, CategoryType.GENERAL_ADMISSION);
+        Category category2 = new Category(SECOND_CATEGORY_PRICE, SECOND_CATEGORY_ID, CategoryType.GENERAL_ADMISSION);
 
         event1.addCategory(category1);
         event1.addCategory(category2);
@@ -53,8 +57,8 @@ public class TestBootstrapperInteractor implements BootstrapperInteractor {
 
         Event event2 = new Event(soccer, Gender.FEMALE);
         event2.setDate(new LocalDateTime());
-        Category category3 = new Category(12.0, 0, CategoryType.GENERAL_ADMISSION);
-        Category category4 = new Category(8.0, 1, CategoryType.SEAT);
+        Category category3 = new Category(FIRST_CATEGORY_PRICE, FIRST_CATEGORY_ID, CategoryType.GENERAL_ADMISSION);
+        Category category4 = new Category(SECOND_CATEGORY_PRICE, SECOND_CATEGORY_ID, CategoryType.SEAT);
 
         event2.addCategory(category3);
         event2.addCategory(category4);
