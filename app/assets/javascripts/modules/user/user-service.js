@@ -8,6 +8,8 @@ define(['./module'], function (UserModule) {
                     password: newPassword
                 };
                 $http.post('/api/user/password', data).success(deferred.resolve).error(deferred.reject);
+
+                return deferred.promise;
             },
 
             updateEmail: function (email) {
@@ -16,6 +18,8 @@ define(['./module'], function (UserModule) {
                     username: email
                 };
                 $http.post('api/user/email', data).success(deferred.resolve).error(deferred.reject);
+
+                return deferred.promise;
             }
         };
     }]);

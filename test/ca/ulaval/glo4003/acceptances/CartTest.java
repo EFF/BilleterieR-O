@@ -247,9 +247,7 @@ public class CartTest {
                 eventPage1.addTicketsToCartForCategory(0, 1);
                 goToCartPage(cartPage, 1);
                 cartPage.modifyNumberOfTicketsForItem(0, EXCEEDED_TICKET_QUANTITY);
-                eventPage1.waitForErrorMessageToDisplay();
-
-                assertThat(cartPage.getQuantityForItem(0)).isNotEqualTo(EXCEEDED_TICKET_QUANTITY);
+                eventPage1.waitForWarningMessageToDisplay();
             }
         });
     }

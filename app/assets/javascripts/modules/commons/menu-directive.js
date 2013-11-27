@@ -1,5 +1,5 @@
 define(['./module'], function (CommonModule) {
-    CommonModule.directive('menu', ['Cart', 'Login', function (Cart, Login) {
+    CommonModule.directive('menu', ['Cart', 'LoginService', function (Cart, LoginService) {
         return {
             replace: true,
             templateUrl: 'assets/templates/directives/menu.html',
@@ -8,18 +8,18 @@ define(['./module'], function (CommonModule) {
                 $scope.getTotalQuantity = Cart.getTotalQuantity;
 
                 $scope.$watch(function () {
-                    return Login.isLoggedIn;
+                    return LoginService.isLoggedIn;
                 }, function (isLoggedIn) {
                     $scope.isLoggedIn = isLoggedIn;
                 });
 
                 $scope.$watch(function () {
-                    return Login.username;
+                    return LoginService.username;
                 }, function (username) {
                     $scope.username = username;
                 }, false);
 
-                $scope.logout = Login.logout;
+                $scope.logout = LoginService.logout;
             }
         };
     }]);

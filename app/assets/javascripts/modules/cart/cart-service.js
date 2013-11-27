@@ -7,7 +7,7 @@ define(['./module'], function (CartModule) {
         var cart = $cookieStore.get('cart');
         if (!cart) {
             cart = [];
-        };
+        }
 
         var updateTicketState = function (tickets, successCallback, errorCallback, url) {
             if (tickets.length <= 0) {
@@ -179,7 +179,7 @@ define(['./module'], function (CartModule) {
         };
 
         exports.isSelectionEmpty = function () {
-            for (key in cart) {
+            for (var key in cart) {
                 if (cart[key].selected) return false;
             }
             return true;
@@ -218,7 +218,7 @@ define(['./module'], function (CartModule) {
             var overrideSuccessCallback = function (data) {
                 removeAllSelectedItems(0, cart);
                 successCallback(data);
-            }
+            };
             var itemsToCheckout = getCheckoutList();
             var tickets = [];
             for (var i in itemsToCheckout) {
@@ -228,26 +228,34 @@ define(['./module'], function (CartModule) {
         };
 
         var reserveTicketsToItem = function (quantity, item) {
-            var url = '/api/tickets?eventId='
-                + item.event.id + '&categoryId='
-                + item.category.id + '&states=AVAILABLE'
-                + '&quantity=' + quantity;
-            $http.get(url)
-                .success(function (tickets) {
-                    var successCallback = function () {
-                        item.tickets.concat(tickets);
-                        item.reservedQuantity += tickets.length;
-                        item.desiredQuantity = item.reservedQuantity;
-                        updateCartCookie(cart);
-                    };
-                    var errorCallback = function () {
-                        FlashMessage.send('error', 'Le nombre de billets ajoutés au panier excède le nombre de billets restants.');
-                    };
-                    reserveTickets(tickets, successCallback, errorCallback);
-                })
-                .error(function () {
+            var config = {
+                url: '/api/tickets',
+                params: {
+                    eventId: item.event.id,
+                    categoryId: item.category.id,
+                    states: 'AVAILABLE',
+                    quantity: quantity
+                }
+            };
+
+            var onGetTicketsSuccess = function (tickets) {
+                var successCallback = function () {
+                    item.tickets.concat(tickets);
+                    item.reservedQuantity += tickets.length;
+                    item.desiredQuantity = item.reservedQuantity;
+                    updateCartCookie(cart);
+                };
+                var errorCallback = function () {
                     FlashMessage.send('error', 'Le nombre de billets ajoutés au panier excède le nombre de billets restants.');
-                });
+                };
+                reserveTickets(tickets, successCallback, errorCallback);
+            };
+
+            var onGetTicketsError = function () {
+                FlashMessage.send('error', 'Le nombre de billets ajoutés au panier excède le nombre de billets restants.');
+            };
+
+            $http.get(config).success(onGetTicketsSuccess).error(onGetTicketsError);
         };
 
         var freeTicketsFromItem = function (quantity, item) {
@@ -276,7 +284,6 @@ define(['./module'], function (CartModule) {
             var item = cart[index];
             if (deltaQuantity == 0) {
                 item.desiredQuantity = item.reservedQuantity;
-                return;
             } else if (deltaQuantity > 0) {
                 reserveTicketsToItem(deltaQuantity, item);
             } else {

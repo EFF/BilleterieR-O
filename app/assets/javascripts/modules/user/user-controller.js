@@ -1,8 +1,8 @@
 define(['./module'], function (UserModule) {
-    UserModule.controller('UserController', ['$scope', '$location', '$http', 'Login', 'FlashMessage', 'UserService',
-        function ($scope, $location, $http, Login, FlashMessage, UserService) {
-            if (Login.isLoggedIn) {
-                $scope.email = Login.username;
+    UserModule.controller('UserController', ['$scope', '$location', 'LoginService', 'FlashMessage', 'UserService',
+        function ($scope, $location, LoginService, FlashMessage, UserService) {
+            if (LoginService.isLoggedIn) {
+                $scope.email = LoginService.username;
             } else {
                 $location.path("/");
             }
@@ -31,7 +31,7 @@ define(['./module'], function (UserModule) {
             };
 
             var onUpdateEmailSuccess = function () {
-                Login.username = email;
+                LoginService.username = $scope.email;
                 FlashMessage.send("success", "Votre email a été modifié avec succès.");
             };
 

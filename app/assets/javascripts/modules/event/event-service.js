@@ -1,5 +1,5 @@
 define(['./module'], function (EventModule) {
-    EventModule.controller('EventService', [function () {
-        //TODO: the service
+    EventModule.factory('EventService', ['$http', '$q', function ($http, $q) {
+        return {}
     }]);
 });

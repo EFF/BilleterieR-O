@@ -6,6 +6,7 @@ define(['./module'], function (EventModule) {
         $scope.ticketsByCategories = [];
         $scope.quantity = [];
 
+        //TODO ne devrait exister, nous avons l'info par les billets de l'event
         $http.get('/api/events/' + eventId + '/sections')
             .success(function (sections) {
                 for (var categoryId in sections) {
@@ -20,7 +21,9 @@ define(['./module'], function (EventModule) {
             });
 
         $scope.addToCart = function (ticketId, category, quantity) {
+            //TODO split in 2 functions!!!
             if (ticketId) {
+                //TODO this should be in ticket service.. we need to fix cyclic dependency
                 var url = '/api/tickets/' + ticketId;
                 $http.get(url)
                     .success(function (ticket) {
@@ -31,6 +34,7 @@ define(['./module'], function (EventModule) {
                         Cart.addItem(ticket, category, $scope.event, successCallback);
                     });
             } else {
+                //TODO this should be in ticket service.. we need to fix cyclic dependency
                 var url = '/api/tickets?eventId=' + eventId + '&categoryId=' + category.id + '&states=AVAILABLE' + '&quantity=' + quantity;
                 $http.get(url)
                     .success(function (tickets) {
@@ -49,6 +53,7 @@ define(['./module'], function (EventModule) {
             var successCallback = function (count) {
                 $scope.ticketsByCategories[categoryId].numberOfTickets = count;
             };
+            //TODO this should be in ticket service.. we need to fix cyclic dependency
             $http.get('api/tickets/number-of-tickets', {
                 params: {
                     eventId: eventId,
@@ -81,7 +86,9 @@ define(['./module'], function (EventModule) {
             }
         };
 
+        //TODO rename ... Do you really refresh the call ?
         var refreshTicketsCall = function (eventId, categoryId, sectionName) {
+            //TODO Use params
             var url = '/api/tickets?eventId=' + eventId + '&categoryId=' + categoryId + '&states=AVAILABLE';
 
             if ($scope.ticketsByCategories[categoryId] == null) {
@@ -100,6 +107,7 @@ define(['./module'], function (EventModule) {
                 return;
             }
             url += '&sectionName=' + encodeURIComponent(sectionName);
+            //TODO this should be in ticket service.. we need to fix cyclic dependency
             $http.get(url)
                 .success(refreshTicketsSuccessCallback);
         };
@@ -117,6 +125,7 @@ define(['./module'], function (EventModule) {
             $scope.ticketsByCategories = [];
         };
 
+        //TODO rename I have no clue about the purpose of this one
         $scope.apiCall = function () {
             for (var categoryId in $scope.sectionsByCategories) {
                 var sectionName = $scope.sectionsByCategories[categoryId].selectedValue;

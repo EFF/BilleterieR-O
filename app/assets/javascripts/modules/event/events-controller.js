@@ -4,7 +4,8 @@ define(['./module'], function (EventModule) {
         $scope.filters = {};
         $scope.isLoading = false;
 
-        $http.get('api/facets').success(function (facets) {
+        //TODO facet service
+        $http.get('/api/facets').success(function (facets) {
             $scope.facets = facets;
         });
 
@@ -14,11 +15,12 @@ define(['./module'], function (EventModule) {
         };
 
         var apiCallErrorCallback = function () {
-            //TODO emit error event and handle it in a directive
+            //TODO emit error with FlashMessage
             $scope.events = [];
             $scope.isLoading = false;
         };
 
+        //TODO rename this one ...
         var apiCall = function () {
             $scope.isLoading = true;
             var url = '/api/events';
@@ -34,6 +36,7 @@ define(['./module'], function (EventModule) {
                 }
             }
 
+            //TODO this should be in event service
             $http.get(url)
                 .success(apiCallSuccessCallback)
                 .error(apiCallErrorCallback);

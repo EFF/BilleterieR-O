@@ -1,27 +1,40 @@
 define(['./module'], function (LoginModule) {
-    LoginModule.factory('Login', ['$http', 'Cart', function ($http, Cart) {
-        var exports = {};
+    LoginModule.factory('LoginService', ['$http', 'Cart', '$q', function ($http, Cart, $q) {
+        var loginService = {};
 
-        exports.isLoggedIn = false;
-        exports.username;
+        loginService.isLoggedIn = false;
+        loginService.username;
 
-        exports.login = function (username, password, successCallback, errorCallback) {
-            var data = {username: username, password: password};
+        loginService.login = function (username, password) {
+            var deferred = $q.defer();
 
-            $http.post('/login', data, {})
-                .success(function () {
-                    setCredentials(true, username);
-                    successCallback();
-                })
-                .error(errorCallback);
+            var data = {
+                username: username,
+                password: password
+            };
+
+            var onSuccess = function () {
+                setCredentials(true, username);
+                deferred.resolve();
+            };
+
+            $http.post('/login', data).success(onSuccess).error(deferred.reject);
+
+            return deferred.promise;
         };
 
-        exports.logout = function () {
-            $http.post('/logout', {}, {})
-                .success(function () {
-                    setCredentials(false, null);
-                    Cart.removeAllItem();
-                });
+        loginService.logout = function () {
+            var deferred = $q.defer();
+
+            var onSuccess = function () {
+                setCredentials(false, null);
+                Cart.removeAllItem();
+                deferred.resolve();
+            };
+
+            $http.post('/logout').success(onSuccess).error(deferred.reject);
+
+            return deferred.promise;
         };
 
         var checkAuthenticationState = function () {
@@ -32,12 +45,12 @@ define(['./module'], function (LoginModule) {
         };
 
         var setCredentials = function (isLoggedIn, authenticated) {
-            exports.isLoggedIn = isLoggedIn;
-            exports.username = authenticated;
+            loginService.isLoggedIn = isLoggedIn;
+            loginService.username = authenticated;
         };
 
         checkAuthenticationState();
 
-        return exports;
+        return loginService;
     }]);
 });
