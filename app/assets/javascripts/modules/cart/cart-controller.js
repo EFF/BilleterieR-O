@@ -40,7 +40,7 @@ define(['./module'], function (CartModule) {
                 if (Cart.isSelectionEmpty()) {
                     FlashMessage.send('warning', "La sélection d'achat est vide");
                 }
-                else if (!LoginService.isLoggedIn) {
+                else if (!LoginService.isLoggedIn()) {
                     notifyUserToLogin();
                 }
                 else if (window.confirm("Confirmez-vous le paiment de " + $scope.getTotalPrice() + "$ ?")) {

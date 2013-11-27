@@ -6,18 +6,14 @@ define(['./module'], function (CommonModule) {
             restrict: 'E',
             controller: function ($scope) {
                 $scope.getTotalQuantity = Cart.getTotalQuantity;
-
-                $scope.$watch(function () {
-                    return LoginService.isLoggedIn;
-                }, function (isLoggedIn) {
-                    $scope.isLoggedIn = isLoggedIn;
-                });
+                $scope.isLoggedIn = false;
 
                 $scope.$watch(function () {
                     return LoginService.username;
                 }, function (username) {
                     $scope.username = username;
-                }, false);
+                    $scope.isLoggedIn = LoginService.isLoggedIn();
+                });
 
                 $scope.logout = LoginService.logout;
             }

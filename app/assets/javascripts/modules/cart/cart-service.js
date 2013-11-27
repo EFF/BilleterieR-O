@@ -228,8 +228,8 @@ define(['./module'], function (CartModule) {
         };
 
         var reserveTicketsToItem = function (quantity, item) {
+            var url = '/api/tickets';
             var config = {
-                url: '/api/tickets',
                 params: {
                     eventId: item.event.id,
                     categoryId: item.category.id,
@@ -255,7 +255,7 @@ define(['./module'], function (CartModule) {
                 FlashMessage.send('error', 'Le nombre de billets ajoutés au panier excède le nombre de billets restants.');
             };
 
-            $http.get(config).success(onGetTicketsSuccess).error(onGetTicketsError);
+            $http.get(url, config).success(onGetTicketsSuccess).error(onGetTicketsError);
         };
 
         var freeTicketsFromItem = function (quantity, item) {

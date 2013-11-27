@@ -1,9 +1,12 @@
 define(['./module'], function (LoginModule) {
     LoginModule.factory('LoginService', ['$http', 'Cart', '$q', function ($http, Cart, $q) {
-        var loginService = {};
+        var loginService = {
+            username: null
+        };
 
-        loginService.isLoggedIn = false;
-        loginService.username;
+        loginService.isLoggedIn = function () {
+            return !!loginService.username;
+        };
 
         loginService.login = function (username, password) {
             var deferred = $q.defer();
@@ -13,12 +16,12 @@ define(['./module'], function (LoginModule) {
                 password: password
             };
 
-            var onSuccess = function () {
-                setCredentials(true, username);
+            var onLoginSuccess = function () {
+                setCredentials(username);
                 deferred.resolve();
             };
 
-            $http.post('/login', data).success(onSuccess).error(deferred.reject);
+            $http.post('/login', data).success(onLoginSuccess).error(deferred.reject);
 
             return deferred.promise;
         };
@@ -26,27 +29,31 @@ define(['./module'], function (LoginModule) {
         loginService.logout = function () {
             var deferred = $q.defer();
 
-            var onSuccess = function () {
-                setCredentials(false, null);
+            var onLogoutSuccess = function () {
+                setCredentials(null);
                 Cart.removeAllItem();
                 deferred.resolve();
             };
 
-            $http.post('/logout').success(onSuccess).error(deferred.reject);
+            $http.post('/logout').success(onLogoutSuccess).error(deferred.reject);
 
             return deferred.promise;
         };
 
         var checkAuthenticationState = function () {
-            $http.get('/login')
-                .success(function (data) {
-                    setCredentials(data.authenticated, data.username);
-                });
+            var onCheckAuthenticationStateSuccess = function (result) {
+                setCredentials(result.username);
+            };
+
+            var onCheckAuthenticationStateError = function () {
+                //Ignored
+            };
+
+            $http.get('/login').success(onCheckAuthenticationStateSuccess).error(onCheckAuthenticationStateError);
         };
 
-        var setCredentials = function (isLoggedIn, authenticated) {
-            loginService.isLoggedIn = isLoggedIn;
-            loginService.username = authenticated;
+        var setCredentials = function (username) {
+            loginService.username = username;
         };
 
         checkAuthenticationState();
