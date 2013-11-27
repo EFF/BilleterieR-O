@@ -1,4 +1,4 @@
-import ca.ulaval.glo4003.modules.StagingModule;
+import ca.ulaval.glo4003.StagingModule;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import play.Application;

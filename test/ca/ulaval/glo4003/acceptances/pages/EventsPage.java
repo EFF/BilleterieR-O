@@ -61,8 +61,4 @@ public class EventsPage extends BaseFluentPage {
         return (expectedSport.equals(sport) && expectedGender.equals(gender) && expectedNumberOfTickets.equals
                 (numberOfTickets));
     }
-
-    public FluentWebElement getLoadingAlert() {
-        return findFirst("#loadingAlert");
-    }
 }
