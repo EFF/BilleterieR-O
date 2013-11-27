@@ -10,7 +10,6 @@ define(['./module'], function (EventModule) {
             .success(function (sections) {
                 for (var categoryId in sections) {
                     $scope.sectionsSelectTagsByCategories.push({
-                        type: 'select',
                         name: 'sectionList' + categoryId,
                         selectedValue: null,
                         options: sections[categoryId]
@@ -66,7 +65,6 @@ define(['./module'], function (EventModule) {
                     categoryId = ticket.categoryId;
 
                     var emptyTicketList = {
-                        type: 'select',
                         name: 'ticketList' + categoryId,
                         selectedValue: '',
                         options: []
