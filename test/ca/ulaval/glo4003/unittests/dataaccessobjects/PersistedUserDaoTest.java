@@ -1,5 +1,6 @@
 package ca.ulaval.glo4003.unittests.dataaccessobjects;
 
+import ca.ulaval.glo4003.dataaccessobjects.PersistedUserDao;
 import ca.ulaval.glo4003.dataaccessobjects.UniqueConstraintValidator;
 import ca.ulaval.glo4003.dataaccessobjects.UserDao;
 import ca.ulaval.glo4003.exceptions.RecordNotFoundException;
@@ -16,7 +17,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.mockito.Mockito.mock;
 
 @RunWith(MockitoJUnitRunner.class)
-public class UserDaoTest {
+public class PersistedUserDaoTest {
 
     @Mock
     private UniqueConstraintValidator<User> uniqueConstraintValidator;
@@ -24,7 +25,7 @@ public class UserDaoTest {
 
     @Before
     public void setUp() {
-        userDao = new UserDao(mock(DaoPersistenceService.class), uniqueConstraintValidator);
+        userDao = new PersistedUserDao(mock(DaoPersistenceService.class), uniqueConstraintValidator);
     }
 
     @Test
