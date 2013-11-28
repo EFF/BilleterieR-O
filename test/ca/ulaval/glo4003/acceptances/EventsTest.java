@@ -3,7 +3,7 @@ package ca.ulaval.glo4003.acceptances;
 import ca.ulaval.glo4003.TestGlobal;
 import ca.ulaval.glo4003.acceptances.pages.EventPage;
 import ca.ulaval.glo4003.acceptances.pages.EventsPage;
-import ca.ulaval.glo4003.models.Gender;
+import ca.ulaval.glo4003.domain.event.Gender;
 import org.fluentlenium.adapter.FluentTest;
 import org.junit.Test;
 import play.libs.F;

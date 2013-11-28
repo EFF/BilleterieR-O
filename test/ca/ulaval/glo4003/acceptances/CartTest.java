@@ -9,7 +9,6 @@ import play.test.TestBrowser;
 
 import static org.fest.assertions.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 import static play.test.Helpers.*;
 
 public class CartTest extends FluentTest {
@@ -258,7 +257,7 @@ public class CartTest extends FluentTest {
                 goToCartPage(cartPage, 1);
                 cartPage.modifyNumberOfTicketsForItem(FIRST_CART_ITEM_INDEX, EXCEEDED_TICKET_QUANTITY);
 
-                assertTrue(cartPage.isWarningMessageDisplayed());
+                cartPage.waitForErrorMessageToDisplay();
             }
         });
     }
