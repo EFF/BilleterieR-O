@@ -31,7 +31,7 @@ public class CheckoutController extends Controller {
 
     @SecureAction
     public Result index() {
-        String userEmail = session().get(ConstantsManager.COOKIE_EMAIL_FIELD_NAME);
+        String userEmail = request().username();
         List<Long> ticketIds = extractTicketsIdsFromRequest();
 
         User user;

@@ -46,11 +46,11 @@ public class AuthenticationControllerTest extends BaseControllerTest {
 
     @Test
     public void indexWhenAuthenticated() {
-        when(mockedSession.get(ConstantsManager.COOKIE_EMAIL_FIELD_NAME)).thenReturn(email);
+        when(mockedRequest.username()).thenReturn(email);
 
         Result result = authenticationController.index();
 
-        verify(mockedSession, atLeast(1)).get(ConstantsManager.COOKIE_EMAIL_FIELD_NAME);
+        verify(mockedRequest, atLeast(1)).username();
 
         assertEquals(Http.Status.OK, status(result));
 
@@ -69,11 +69,11 @@ public class AuthenticationControllerTest extends BaseControllerTest {
 
     @Test
     public void indexWhenNotAuthenticated() {
-        when(mockedSession.get(ConstantsManager.COOKIE_EMAIL_FIELD_NAME)).thenReturn(null);
+        when(mockedRequest.username()).thenReturn(null);
 
         Result result = authenticationController.index();
 
-        verify(mockedSession, atLeast(1)).get(ConstantsManager.COOKIE_EMAIL_FIELD_NAME);
+        verify(mockedRequest, atLeast(1)).username();
 
         assertEquals(Http.Status.OK, status(result));
 

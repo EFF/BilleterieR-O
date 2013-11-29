@@ -37,7 +37,7 @@ public class UsersController extends Controller {
             return badRequest(EMAIL_EXPECTED);
         }
 
-        String actualEmail = session().get(ConstantsManager.COOKIE_EMAIL_FIELD_NAME);
+        String actualEmail = request().username();
         String newEmail = json.get(ConstantsManager.USERNAME_FIELD_NAME).asText();
 
         try {
@@ -61,7 +61,7 @@ public class UsersController extends Controller {
             return badRequest(ACTUAL_AND_NEW_PASSWORD_EXPECTED);
         }
 
-        String email = session().get(ConstantsManager.COOKIE_EMAIL_FIELD_NAME);
+        String email = request().username();
         String actualPassword = json.get(ConstantsManager.ACTUAL_PASSWORD_FIELD_NAME).asText();
         String newPassword = json.get(ConstantsManager.PASSWORD_FIELD_NAME).asText();
 

@@ -28,9 +28,8 @@ public class AuthenticationController extends Controller {
     public Result index() {
         ObjectNode result = Json.newObject();
 
-        result.put(ConstantsManager.USER_AUTHENTICATED_FIELD_NAME, session().get(ConstantsManager
-                .COOKIE_EMAIL_FIELD_NAME) != null);
-        result.put(ConstantsManager.USERNAME_FIELD_NAME, session().get(ConstantsManager.COOKIE_EMAIL_FIELD_NAME));
+        result.put(ConstantsManager.USER_AUTHENTICATED_FIELD_NAME, request().username() != null);
+        result.put(ConstantsManager.USERNAME_FIELD_NAME, request().username());
 
         return ok(result);
     }

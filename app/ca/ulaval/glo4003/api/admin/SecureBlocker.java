@@ -13,12 +13,21 @@ public class SecureBlocker implements MethodInterceptor {
         if(!isConnected() || (requiredAdmin(methodInvocation) && !isAdmin())) {
             return Controller.unauthorized();
         }
+
+        setUsernameInRequest();
+
         return methodInvocation.proceed();
     }
 
     private boolean requiredAdmin(MethodInvocation methodInvocation) {
         SecureAction annotation = methodInvocation.getMethod().getAnnotation(SecureAction.class);
         return annotation.admin();
+    }
+
+    private void setUsernameInRequest() {
+        Http.Session session = Controller.ctx().session();
+        String email = session.get(ConstantsManager.COOKIE_EMAIL_FIELD_NAME);
+        Controller.request().setUsername(email);
     }
 
     private boolean isConnected() {
