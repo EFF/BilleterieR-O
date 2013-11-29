@@ -1,4 +1,4 @@
-package ca.ulaval.glo4003.api.admin;
+package ca.ulaval.glo4003.api;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

@@ -1,7 +1,7 @@
 package ca.ulaval.glo4003.api.user;
 
 import ca.ulaval.glo4003.ConstantsManager;
-import ca.ulaval.glo4003.api.admin.SecureAction;
+import ca.ulaval.glo4003.api.SecureAction;
 import ca.ulaval.glo4003.domain.RecordNotFoundException;
 import ca.ulaval.glo4003.domain.user.InvalidActualPasswordException;
 import ca.ulaval.glo4003.domain.user.UsersInteractor;

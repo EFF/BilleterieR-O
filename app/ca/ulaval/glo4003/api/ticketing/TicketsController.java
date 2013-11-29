@@ -2,7 +2,7 @@ package ca.ulaval.glo4003.api.ticketing;
 
 
 import ca.ulaval.glo4003.ConstantsManager;
-import ca.ulaval.glo4003.api.admin.SecureAction;
+import ca.ulaval.glo4003.api.SecureAction;
 import ca.ulaval.glo4003.domain.RecordNotFoundException;
 import ca.ulaval.glo4003.domain.ticketing.UpdateTicketStateUnauthorizedException;
 import ca.ulaval.glo4003.domain.ticketing.TicketsInteractor;
