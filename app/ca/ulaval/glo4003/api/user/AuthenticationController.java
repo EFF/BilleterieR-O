@@ -48,6 +48,7 @@ public class AuthenticationController extends Controller {
             User user = authenticationInteractor.authenticate(credentials);
             session().clear();
             session().put(ConstantsManager.COOKIE_SESSION_FIELD_NAME, user.getEmail());
+            session().put(ConstantsManager.COOKIE_ADMIN_FIELD_NAME, user.isAdmin().toString());
             return ok(AUTHENTICATION_SUCCESS_MESSAGE);
         } catch (AuthenticationException ignored) {
             return unauthorized(BAD_CREDENTIALS_MESSAGE);

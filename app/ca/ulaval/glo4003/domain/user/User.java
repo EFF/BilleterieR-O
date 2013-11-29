@@ -12,6 +12,7 @@ public class User extends Record implements Serializable {
     @Constraints.Email
     private String email;
     private String password;
+    private Boolean isAdmin;
 
     public String getEmail() {
         return email;
@@ -27,5 +28,13 @@ public class User extends Record implements Serializable {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public Boolean isAdmin() {
+        return isAdmin;
+    }
+
+    public void setAdmin(Boolean admin) {
+        isAdmin = admin;
     }
 }
