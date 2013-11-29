@@ -1,19 +1,18 @@
 package ca.ulaval.glo4003.api.ticketing;
 
 import ca.ulaval.glo4003.ConstantsManager;
-import ca.ulaval.glo4003.api.SecureAction;
+import ca.ulaval.glo4003.api.admin.SecureAction;
 import ca.ulaval.glo4003.domain.RecordNotFoundException;
 import ca.ulaval.glo4003.domain.ticketing.CheckoutInteractor;
-import ca.ulaval.glo4003.domain.user.UsersInteractor;
 import ca.ulaval.glo4003.domain.ticketing.Transaction;
 import ca.ulaval.glo4003.domain.ticketing.TransactionState;
 import ca.ulaval.glo4003.domain.user.User;
+import ca.ulaval.glo4003.domain.user.UsersInteractor;
 import com.google.inject.Inject;
 import org.codehaus.jackson.JsonNode;
 import play.libs.Json;
 import play.mvc.Controller;
 import play.mvc.Result;
-import play.mvc.Security;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,9 +28,10 @@ public class CheckoutController extends Controller {
         this.usersInteractor = usersInteractor;
     }
 
-    @Security.Authenticated(SecureAction.class)
+
+    @SecureAction
     public Result index() {
-        String userEmail = request().username();
+        String userEmail = session().get(ConstantsManager.COOKIE_EMAIL_FIELD_NAME);
         List<Long> ticketIds = extractTicketsIdsFromRequest();
 
         User user;

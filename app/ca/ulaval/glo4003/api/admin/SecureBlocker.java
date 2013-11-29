@@ -23,7 +23,7 @@ public class SecureBlocker implements MethodInterceptor {
 
     private boolean isConnected() {
         Http.Session session = Controller.ctx().session();
-        String email = session.get(ConstantsManager.COOKIE_SESSION_FIELD_NAME);
+        String email = session.get(ConstantsManager.COOKIE_EMAIL_FIELD_NAME);
         return (email != null && !email.isEmpty());
     }
 

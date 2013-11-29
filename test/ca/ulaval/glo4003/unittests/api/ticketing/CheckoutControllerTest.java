@@ -148,8 +148,7 @@ public class CheckoutControllerTest extends BaseControllerTest {
     }
 
     private User getFakeUser() {
-        User fakeUser = new User();
-        fakeUser.setEmail("user@example.com");
+        User fakeUser = new User("user@example.com", "secret", false);
         return fakeUser;
     }
 

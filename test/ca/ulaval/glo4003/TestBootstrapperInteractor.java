@@ -71,16 +71,11 @@ public class TestBootstrapperInteractor implements BootstrapperInteractor {
 
     private void initUsers() {
         for (int i = 0; i < 5; i++) {
-            User user = new User();
-            user.setEmail("user" + i + "@example.com");
-            user.setPassword("secret");
+            User user = new User("user" + i + "@example.com", "secret", false);
             userDao.create(user);
         }
 
-        User user = new User();
-        user.setEmail("admin@example.com");
-        user.setPassword("secret");
-        user.setAdmin(true);
+        User user = new User("admin@example.com", "secret", true);
         userDao.create(user);
     }
 
