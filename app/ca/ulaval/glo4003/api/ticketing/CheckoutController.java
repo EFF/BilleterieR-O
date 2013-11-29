@@ -28,7 +28,6 @@ public class CheckoutController extends Controller {
         this.usersInteractor = usersInteractor;
     }
 
-
     @SecureAction
     public Result index() {
         String userEmail = request().username();

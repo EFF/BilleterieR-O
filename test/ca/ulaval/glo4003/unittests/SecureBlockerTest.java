@@ -105,6 +105,5 @@ public class SecureBlockerTest extends BaseControllerTest {
         @SecureAction
         public void connectedAction() {
         }
-
     }
 }
