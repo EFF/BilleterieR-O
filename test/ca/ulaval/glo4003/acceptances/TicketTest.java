@@ -37,7 +37,7 @@ public class TicketTest {
 
     @Test
     public void authorizeCreateTicketIfUseIsAnAdmin() {
-        running(testServer(3333, fakeApplication(new TestGlobal())), new Runnable() {
+        running(testServer(PORT, fakeApplication(new TestGlobal())), new Runnable() {
             @Override
             public void run() {
                 String cookie = getLoginSessionCookie(AN_ADMIN_EMAIL, PASSWORD);
