@@ -14,12 +14,13 @@ import org.joda.time.LocalDateTime;
 
 public class TestBootstrapperInteractor implements BootstrapperInteractor {
 
-    private static final int NUMBER_OF_TICKETS = 1200;
-    private static final int ANOTHER_NUMBER_OF_TICKETS = 120;
-    private static final double FIRST_CATEGORY_PRICE = 12.0;
-    private static final double SECOND_CATEGORY_PRICE = 8.0;
-    private static final int FIRST_CATEGORY_ID = 0;
-    private static final int SECOND_CATEGORY_ID = 1;
+    private final int NUMBER_OF_TICKETS_1 = 120;
+    private final int NUMBER_OF_TICKETS_2 = 1200;
+    private final int NUMBER_OF_TICKETS_3 = 20;
+    private final double FIRST_CATEGORY_PRICE = 12.0;
+    private final double SECOND_CATEGORY_PRICE = 8.0;
+    private final int FIRST_CATEGORY_ID = 0;
+    private final int SECOND_CATEGORY_ID = 1;
 
     private final EventDao eventDao;
     private final Dao<Sport> sportDao;
@@ -52,8 +53,8 @@ public class TestBootstrapperInteractor implements BootstrapperInteractor {
         event1.addCategory(category1);
         event1.addCategory(category2);
         eventDao.create(event1);
-        initTicketForCategory(category1, event1, ANOTHER_NUMBER_OF_TICKETS);
-        initTicketForCategory(category2, event1, NUMBER_OF_TICKETS);
+        initTicketForCategory(category1, event1, NUMBER_OF_TICKETS_1);
+        initTicketForCategory(category2, event1, NUMBER_OF_TICKETS_2);
 
         Event event2 = new Event(soccer, Gender.FEMALE);
         event2.setDate(new LocalDateTime());
@@ -63,8 +64,8 @@ public class TestBootstrapperInteractor implements BootstrapperInteractor {
         event2.addCategory(category3);
         event2.addCategory(category4);
         eventDao.create(event2);
-        initTicketForCategory(category3, event2, ANOTHER_NUMBER_OF_TICKETS);
-        initTicketForCategory(category4, event2, NUMBER_OF_TICKETS);
+        initTicketForCategory(category3, event2, NUMBER_OF_TICKETS_1);
+        initTicketForCategory(category4, event2, NUMBER_OF_TICKETS_3);
 
         for (int i = 0; i < 5; i++) {
             User user = new User();

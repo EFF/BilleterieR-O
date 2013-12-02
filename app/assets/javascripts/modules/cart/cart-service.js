@@ -41,9 +41,10 @@ define(['./module'], function (CartModule) {
         var getItemByTicketId = function (ticketId) {
             for (var index in cart) {
                 var item = cart[index];
-
-                if (item.ticket && item.ticket.id == ticketId) {
-                    return item;
+                for (var i in item.tickets) {
+                    if (item.tickets[i].id == ticketId) {
+                        return item;
+                    }
                 }
             }
             return null;
