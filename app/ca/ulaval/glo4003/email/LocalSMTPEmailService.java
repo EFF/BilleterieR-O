@@ -1,6 +1,7 @@
 package ca.ulaval.glo4003.email;
 
 import ca.ulaval.glo4003.domain.EmailService;
+import com.typesafe.config.ConfigFactory;
 
 import javax.mail.Message;
 import javax.mail.MessagingException;
@@ -15,6 +16,9 @@ public class LocalSMTPEmailService extends EmailService {
     @Override
     public void sendEmail(String to, String from, String message) {
         Properties props = new Properties();
+        props.put("mail.smtp.host", ConfigFactory.load().getString("smtp.host"));
+        props.put("mail.smtp.port", ConfigFactory.load().getString("smtp.port"));
+
         Session session = Session.getDefaultInstance(props, null);
 
         try {
