@@ -11,7 +11,7 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 import java.util.Properties;
 
-public class LocalSMTPEmailService extends EmailService {
+public class SMTPEmailService extends EmailService {
 
     @Override
     public void sendEmail(String to, String from, String message) {
