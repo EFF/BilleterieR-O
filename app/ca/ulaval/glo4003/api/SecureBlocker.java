@@ -3,7 +3,6 @@ package ca.ulaval.glo4003.api;
 import ca.ulaval.glo4003.ConstantsManager;
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
-import play.mvc.Controller;
 import play.mvc.Http;
 import play.mvc.Results;
 
@@ -28,7 +27,7 @@ public class SecureBlocker implements MethodInterceptor {
     private void setUsernameInRequest() {
         Http.Session session = Http.Context.current().session();
         String email = session.get(ConstantsManager.COOKIE_EMAIL_FIELD_NAME);
-        Controller.request().setUsername(email);
+        Http.Context.current().request().setUsername(email);
     }
 
     private boolean isConnected() {
