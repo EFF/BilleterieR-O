@@ -67,12 +67,17 @@ public class TestBootstrapperInteractor implements BootstrapperInteractor {
         initTicketForCategory(category3, event2, NUMBER_OF_TICKETS_1);
         initTicketForCategory(category4, event2, NUMBER_OF_TICKETS_3);
 
+        initUsers();
+    }
+
+    private void initUsers() {
         for (int i = 0; i < 5; i++) {
-            User user = new User();
-            user.setEmail("user" + i + "@example.com");
-            user.setPassword("secret");
+            User user = new User("user" + i + "@example.com", "secret", false);
             userDao.create(user);
         }
+
+        User user = new User("admin@example.com", "secret", true);
+        userDao.create(user);
     }
 
     @Override

@@ -1,7 +1,6 @@
 package ca.ulaval.glo4003;
 
 import ca.ulaval.glo4003.domain.boostrap.BootstrapperInteractor;
-import ca.ulaval.glo4003.modules.TestModule;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import play.Application;

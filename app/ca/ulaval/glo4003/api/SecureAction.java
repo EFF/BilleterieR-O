@@ -1,19 +1,12 @@
 package ca.ulaval.glo4003.api;
 
-import ca.ulaval.glo4003.ConstantsManager;
-import play.mvc.Http;
-import play.mvc.Result;
-import play.mvc.Security;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
-public class SecureAction extends Security.Authenticator {
-
-    @Override
-    public String getUsername(Http.Context ctx) {
-        return ctx.session().get(ConstantsManager.COOKIE_SESSION_FIELD_NAME);
-    }
-
-    @Override
-    public Result onUnauthorized(Http.Context ctx) {
-        return unauthorized();
-    }
+@Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.METHOD)
+public @interface SecureAction {
+    boolean admin() default false;
 }

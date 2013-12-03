@@ -19,6 +19,9 @@ import static org.mockito.Mockito.mock;
 @RunWith(MockitoJUnitRunner.class)
 public class PersistedUserDaoTest {
 
+    private static final String AN_EMAIL = "user@example.com";
+    private static final String A_PASSWORD = "secret";
+
     @Mock
     private UniqueConstraintValidator<User> uniqueConstraintValidator;
     private UserDao userDao;
@@ -30,7 +33,7 @@ public class PersistedUserDaoTest {
 
     @Test
     public void findUserByEmailReturnsTheUser() throws RecordNotFoundException {
-        User user = new User();
+        User user = new User(AN_EMAIL, A_PASSWORD, false);
         user.setEmail("user@example.com");
         userDao.create(user);
 
@@ -42,7 +45,7 @@ public class PersistedUserDaoTest {
 
     @Test(expected = RecordNotFoundException.class)
     public void findUserByEmailThrowsRecordNotFoundIfTheEmailIsWrong() throws RecordNotFoundException {
-        User user = new User();
+        User user = new User(AN_EMAIL, A_PASSWORD, false);
         user.setEmail("user@example.com");
         userDao.create(user);
 

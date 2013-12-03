@@ -2,16 +2,15 @@ package ca.ulaval.glo4003.api.user;
 
 import ca.ulaval.glo4003.ConstantsManager;
 import ca.ulaval.glo4003.api.SecureAction;
-import ca.ulaval.glo4003.persistence.UniqueValidationException;
-import ca.ulaval.glo4003.domain.user.InvalidActualPasswordException;
 import ca.ulaval.glo4003.domain.RecordNotFoundException;
+import ca.ulaval.glo4003.domain.user.InvalidActualPasswordException;
 import ca.ulaval.glo4003.domain.user.UsersInteractor;
+import ca.ulaval.glo4003.persistence.UniqueValidationException;
 import com.google.inject.Inject;
 import org.apache.commons.lang3.StringUtils;
 import org.codehaus.jackson.JsonNode;
 import play.mvc.Controller;
 import play.mvc.Result;
-import play.mvc.Security;
 
 import javax.validation.ConstraintViolationException;
 
@@ -30,7 +29,7 @@ public class UsersController extends Controller {
         this.usersInteractor = usersInteractor;
     }
 
-    @Security.Authenticated(SecureAction.class)
+    @SecureAction
     public Result updateEmail() {
         JsonNode json = request().body().asJson();
 
@@ -38,12 +37,12 @@ public class UsersController extends Controller {
             return badRequest(EMAIL_EXPECTED);
         }
 
-        String actualEmail = session().get(ConstantsManager.COOKIE_SESSION_FIELD_NAME);
+        String actualEmail = request().username();
         String newEmail = json.get(ConstantsManager.USERNAME_FIELD_NAME).asText();
 
         try {
             usersInteractor.updateEmail(actualEmail, newEmail);
-            session().put(ConstantsManager.COOKIE_SESSION_FIELD_NAME, newEmail);
+            session().put(ConstantsManager.COOKIE_EMAIL_FIELD_NAME, newEmail);
             return ok();
         } catch (RecordNotFoundException e) {
             return unauthorized(BAD_SESSION_WRONG_USERNAME);
@@ -54,7 +53,7 @@ public class UsersController extends Controller {
         }
     }
 
-    @Security.Authenticated(SecureAction.class)
+    @SecureAction
     public Result updatePassword() {
         JsonNode json = request().body().asJson();
 
@@ -62,7 +61,7 @@ public class UsersController extends Controller {
             return badRequest(ACTUAL_AND_NEW_PASSWORD_EXPECTED);
         }
 
-        String email = session().get(ConstantsManager.COOKIE_SESSION_FIELD_NAME);
+        String email = request().username();
         String actualPassword = json.get(ConstantsManager.ACTUAL_PASSWORD_FIELD_NAME).asText();
         String newPassword = json.get(ConstantsManager.PASSWORD_FIELD_NAME).asText();
 

@@ -28,9 +28,8 @@ public class AuthenticationController extends Controller {
     public Result index() {
         ObjectNode result = Json.newObject();
 
-        result.put(ConstantsManager.USER_AUTHENTICATED_FIELD_NAME, session().get(ConstantsManager
-                .COOKIE_SESSION_FIELD_NAME) != null);
-        result.put(ConstantsManager.USERNAME_FIELD_NAME, session().get(ConstantsManager.COOKIE_SESSION_FIELD_NAME));
+        result.put(ConstantsManager.USER_AUTHENTICATED_FIELD_NAME, request().username() != null);
+        result.put(ConstantsManager.USERNAME_FIELD_NAME, request().username());
 
         return ok(result);
     }
@@ -47,7 +46,8 @@ public class AuthenticationController extends Controller {
         try {
             User user = authenticationInteractor.authenticate(credentials);
             session().clear();
-            session().put(ConstantsManager.COOKIE_SESSION_FIELD_NAME, user.getEmail());
+            session().put(ConstantsManager.COOKIE_EMAIL_FIELD_NAME, user.getEmail());
+            session().put(ConstantsManager.COOKIE_ADMIN_FIELD_NAME, user.isAdmin().toString());
             return ok(AUTHENTICATION_SUCCESS_MESSAGE);
         } catch (AuthenticationException ignored) {
             return unauthorized(BAD_CREDENTIALS_MESSAGE);
