@@ -39,6 +39,9 @@ public class TicketsController extends Controller {
         try {
             TicketSearchCriteria ticketSearchCriteria = extractTicketSearchCriteriaFromRequest();
             List<Ticket> searchResults = ticketsInteractor.search(ticketSearchCriteria);
+            if (searchResults.isEmpty()) {
+                return notFound();
+            }
             return ok(Json.toJson(searchResults));
         } catch (InvalidParameterException ignored) {
             return badRequest();

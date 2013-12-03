@@ -3,6 +3,7 @@ package ca.ulaval.glo4003.acceptances;
 import ca.ulaval.glo4003.TestGlobal;
 import ca.ulaval.glo4003.acceptances.pages.EventsPage;
 import ca.ulaval.glo4003.acceptances.pages.LoginPage;
+import org.fluentlenium.adapter.FluentTest;
 import org.junit.Test;
 import play.libs.F;
 import play.test.TestBrowser;
@@ -11,10 +12,10 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static play.test.Helpers.*;
 
-public class AuthenticationTest {
+public class AuthenticationTest extends FluentTest {
 
-    private static final String EMAIL = "user1@example.com";
-    private static final String PASSWORD = "secret";
+    private final String EMAIL = "user1@example.com";
+    private final String PASSWORD = "secret";
 
     @Test
      public void MenuShowsLoginWhenLoggedOut() {
@@ -94,7 +95,6 @@ public class AuthenticationTest {
                 LoginPage loginPage = new LoginPage(browser.getDriver());
                 loginPage.go();
                 loginPage.isAt();
-
 
                 loginPage.fillUsername(EMAIL);
                 loginPage.fillPassword(PASSWORD);
