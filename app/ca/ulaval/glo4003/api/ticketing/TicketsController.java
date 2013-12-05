@@ -2,6 +2,7 @@ package ca.ulaval.glo4003.api.ticketing;
 
 
 import ca.ulaval.glo4003.ConstantsManager;
+import ca.ulaval.glo4003.api.SecureAction;
 import ca.ulaval.glo4003.domain.RecordNotFoundException;
 import ca.ulaval.glo4003.domain.ticketing.UpdateTicketStateUnauthorizedException;
 import ca.ulaval.glo4003.domain.ticketing.TicketsInteractor;
@@ -38,6 +39,9 @@ public class TicketsController extends Controller {
         try {
             TicketSearchCriteria ticketSearchCriteria = extractTicketSearchCriteriaFromRequest();
             List<Ticket> searchResults = ticketsInteractor.search(ticketSearchCriteria);
+            if (searchResults.isEmpty()) {
+                return notFound();
+            }
             return ok(Json.toJson(searchResults));
         } catch (InvalidParameterException ignored) {
             return badRequest();
@@ -123,6 +127,12 @@ public class TicketsController extends Controller {
             Collections.sort(sections.get(i));
         }
         return ok(Json.toJson(sections.asMap()));
+    }
+
+    @SecureAction(admin = true)
+    public Result create() {
+        // TODO: Next story: Create ticket
+        return ok(Json.toJson("Success"));
     }
 
     private List<Long> extractTicketsIdsFromRequest() throws IOException {

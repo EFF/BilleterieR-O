@@ -37,6 +37,9 @@ public class CheckoutControllerTest extends BaseControllerTest {
 
     private final static long TICKET_ID_1 = 1;
     private final static long TICKET_ID_2 = 123;
+    private final static String EMAIL = "user1@example.com";
+    private final static String PASSWORD = "secret";
+
     @Inject
     private CheckoutController checkoutController;
 
@@ -148,9 +151,7 @@ public class CheckoutControllerTest extends BaseControllerTest {
     }
 
     private User getFakeUser() {
-        User fakeUser = new User();
-        fakeUser.setEmail("user@example.com");
-        return fakeUser;
+        return new User(EMAIL, PASSWORD, false);
     }
 
     public static class TestModule extends JukitoModule {

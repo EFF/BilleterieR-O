@@ -61,4 +61,8 @@ public class EventsPage extends BaseFluentPage {
         return (expectedSport.equals(sport) && expectedGender.equals(gender) && expectedNumberOfTickets.equals
                 (numberOfTickets));
     }
+
+    public void clickOnFirstEventButtonDetails() {
+        findFirst(".event .btn-see-event-info").click();
+    }
 }

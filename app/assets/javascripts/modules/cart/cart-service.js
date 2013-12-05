@@ -30,9 +30,12 @@ define(['./module'], function (CartModule) {
                 for (var index in cart) {
                     if (cart.hasOwnProperty(index)) {
                         var item = cart[index];
-
-                        if (item.ticket && item.ticket.id == ticketId) {
-                            return item;
+                        for (var ticketIndex in item.tickets) {
+                            if (item.tickets.hasOwnProperty(ticketIndex)) {
+                                if (item.tickets[ticketIndex].id == ticketId) {
+                                    return item;
+                                }
+                            }
                         }
                     }
                 }

@@ -16,6 +16,7 @@ GET     /api/tickets/number-of-tickets          @ca.ulaval.glo4003.api.ticketing
 POST    /api/tickets/reserve                    @ca.ulaval.glo4003.api.ticketing.TicketsController.reserve()
 POST    /api/tickets/free                       @ca.ulaval.glo4003.api.ticketing.TicketsController.free()
 GET     /api/tickets                            @ca.ulaval.glo4003.api.ticketing.TicketsController.index()
+POST    /api/tickets                            @ca.ulaval.glo4003.api.ticketing.TicketsController.create()
 GET     /api/tickets/:id                        @ca.ulaval.glo4003.api.ticketing.TicketsController.show(id: Long)
 GET     /api/events/:eventId/sections           @ca.ulaval.glo4003.api.ticketing.TicketsController.showEventSections(eventId: Long)
 POST    /api/checkout                           @ca.ulaval.glo4003.api.ticketing.CheckoutController.index()

@@ -46,11 +46,11 @@ public class AuthenticationControllerTest extends BaseControllerTest {
 
     @Test
     public void indexWhenAuthenticated() {
-        when(mockedSession.get(ConstantsManager.COOKIE_SESSION_FIELD_NAME)).thenReturn(email);
+        when(mockedRequest.username()).thenReturn(email);
 
         Result result = authenticationController.index();
 
-        verify(mockedSession, atLeast(1)).get(ConstantsManager.COOKIE_SESSION_FIELD_NAME);
+        verify(mockedRequest, atLeast(1)).username();
 
         assertEquals(Http.Status.OK, status(result));
 
@@ -69,11 +69,11 @@ public class AuthenticationControllerTest extends BaseControllerTest {
 
     @Test
     public void indexWhenNotAuthenticated() {
-        when(mockedSession.get(ConstantsManager.COOKIE_SESSION_FIELD_NAME)).thenReturn(null);
+        when(mockedRequest.username()).thenReturn(null);
 
         Result result = authenticationController.index();
 
-        verify(mockedSession, atLeast(1)).get(ConstantsManager.COOKIE_SESSION_FIELD_NAME);
+        verify(mockedRequest, atLeast(1)).username();
 
         assertEquals(Http.Status.OK, status(result));
 
@@ -113,7 +113,7 @@ public class AuthenticationControllerTest extends BaseControllerTest {
 
         InOrder inOrder = inOrder(mockedSession);
         inOrder.verify(mockedSession).clear();
-        inOrder.verify(mockedSession).put(ConstantsManager.COOKIE_SESSION_FIELD_NAME, email);
+        inOrder.verify(mockedSession).put(ConstantsManager.COOKIE_EMAIL_FIELD_NAME, email);
 
         assertEquals(Http.Status.OK, status(result));
     }
@@ -131,7 +131,7 @@ public class AuthenticationControllerTest extends BaseControllerTest {
         verify(mockedUser, never()).getEmail();
 
         verify(mockedSession, never()).clear();
-        verify(mockedSession, never()).put(ConstantsManager.COOKIE_SESSION_FIELD_NAME, email);
+        verify(mockedSession, never()).put(ConstantsManager.COOKIE_EMAIL_FIELD_NAME, email);
 
         assertEquals(Http.Status.UNAUTHORIZED, status(result));
     }
@@ -148,7 +148,7 @@ public class AuthenticationControllerTest extends BaseControllerTest {
         verify(mockedUser, never()).getEmail();
 
         verify(mockedSession, never()).clear();
-        verify(mockedSession, never()).put(ConstantsManager.COOKIE_SESSION_FIELD_NAME, email);
+        verify(mockedSession, never()).put(ConstantsManager.COOKIE_EMAIL_FIELD_NAME, email);
 
         assertEquals(Http.Status.BAD_REQUEST, status(result));
     }

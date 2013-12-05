@@ -3,20 +3,21 @@ package ca.ulaval.glo4003.acceptances;
 import ca.ulaval.glo4003.TestGlobal;
 import ca.ulaval.glo4003.acceptances.pages.LoginPage;
 import ca.ulaval.glo4003.acceptances.pages.UserProfilePage;
+import org.fluentlenium.adapter.FluentTest;
 import org.junit.Test;
 import play.libs.F;
 import play.test.TestBrowser;
 
 import static play.test.Helpers.*;
 
-public class UserProfileTest {
+public class UserProfileTest extends FluentTest {
 
-    private static final String EMAIL = "user1@example.com";
-    private static final String NEW_EMAIL = "new@example.com";
-    private static final String DUPLICATE_EMAIL = "user2@example.com";
-    private static final String PASSWORD = "secret";
-    private static final String NEW_PASSWORD = "newsecret";
-    private static final String NOT_MY_ACTUAL_PASSWORD = "wrong";
+    private final String EMAIL = "user1@example.com";
+    private final String NEW_EMAIL = "new@example.com";
+    private final String DUPLICATE_EMAIL = "user2@example.com";
+    private final String PASSWORD = "secret";
+    private final String NEW_PASSWORD = "newsecret";
+    private final String NOT_MY_ACTUAL_PASSWORD = "wrong";
 
     @Test
     public void updateMyEmailWithValidNewEmail() {
