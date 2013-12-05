@@ -28,7 +28,7 @@ public class TicketValidatorTest {
 
     @Test(expected = RecordNotFoundException.class)
     public void validateTicketWhenNoEventShouldThrow(EventsInteractor mockedEventInteractor, TicketsInteractor mockedTicketInteractor)
-            throws RecordNotFoundException, NoSuchCategoryException, NoSuchTicketSectionExceptionDummy, AlreadyAssignedSeatExceptionDummy {
+            throws RecordNotFoundException, NoSuchCategoryException, NoSuchTicketSectionException, AlreadyAssignedSeatException {
 
         doThrow(new RecordNotFoundException()).when(mockedEventInteractor).getById(anyLong());
 
@@ -36,7 +36,7 @@ public class TicketValidatorTest {
     }
 
     @Test
-    public void validateTicketShouldSucceed(EventsInteractor mockedEventInteractor, TicketsInteractor mockedTicketInteractor) throws RecordNotFoundException, AlreadyAssignedSeatExceptionDummy, NoSuchCategoryException, NoSuchTicketSectionExceptionDummy {
+    public void validateTicketShouldSucceed(EventsInteractor mockedEventInteractor, TicketsInteractor mockedTicketInteractor) throws RecordNotFoundException, AlreadyAssignedSeatException, NoSuchCategoryException, NoSuchTicketSectionException {
         Event mockedEvent = mock(Event.class);
         Category mockedCategory = mock(Category.class);
         Ticket mockedTicket = mock(Ticket.class);
@@ -55,7 +55,7 @@ public class TicketValidatorTest {
     }
 
     @Test(expected = NoSuchCategoryException.class)
-    public void validateTicketWhenNoCategoryShouldThrow(EventsInteractor mockedEventInteractor) throws RecordNotFoundException, AlreadyAssignedSeatExceptionDummy, NoSuchCategoryException, NoSuchTicketSectionExceptionDummy {
+    public void validateTicketWhenNoCategoryShouldThrow(EventsInteractor mockedEventInteractor) throws RecordNotFoundException, AlreadyAssignedSeatException, NoSuchCategoryException, NoSuchTicketSectionException {
         Event mockedEvent = mock(Event.class);
         Category mockedCategory = mock(Category.class);
         List<Category> mockedCategoryList = new ArrayList<>();
@@ -68,8 +68,8 @@ public class TicketValidatorTest {
         ticketValidator.validate(AN_EVENT_ID, A_CATEGORY_ID, A_SECTION, A_SEAT);
     }
 
-    @Test(expected = NoSuchTicketSectionExceptionDummy.class)
-    public void validateTicketWhenNoSectionShouldThrow(EventsInteractor mockedEventInteractor, TicketsInteractor mockedTicketInteractor) throws RecordNotFoundException, AlreadyAssignedSeatExceptionDummy, NoSuchCategoryException, NoSuchTicketSectionExceptionDummy {
+    @Test(expected = NoSuchTicketSectionException.class)
+    public void validateTicketWhenNoSectionShouldThrow(EventsInteractor mockedEventInteractor, TicketsInteractor mockedTicketInteractor) throws RecordNotFoundException, AlreadyAssignedSeatException, NoSuchCategoryException, NoSuchTicketSectionException {
         Event mockedEvent = mock(Event.class);
         Category mockedCategory = mock(Category.class);
         List<Category> mockedCategoryList = new ArrayList<>();
@@ -84,8 +84,8 @@ public class TicketValidatorTest {
         ticketValidator.validate(AN_EVENT_ID, A_CATEGORY_ID, A_SECTION, A_SEAT);
     }
 
-    @Test(expected = AlreadyAssignedSeatExceptionDummy.class)
-    public void validateTicketWhenSeatIsAssignedShouldThrow(EventsInteractor mockedEventInteractor, TicketsInteractor mockedTicketInteractor) throws RecordNotFoundException, AlreadyAssignedSeatExceptionDummy, NoSuchCategoryException, NoSuchTicketSectionExceptionDummy {
+    @Test(expected = AlreadyAssignedSeatException.class)
+    public void validateTicketWhenSeatIsAssignedShouldThrow(EventsInteractor mockedEventInteractor, TicketsInteractor mockedTicketInteractor) throws RecordNotFoundException, AlreadyAssignedSeatException, NoSuchCategoryException, NoSuchTicketSectionException {
         Event mockedEvent = mock(Event.class);
         Ticket mockedTicket = mock(Ticket.class);
         Category mockedCategory = mock(Category.class);

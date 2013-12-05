@@ -20,7 +20,7 @@ public class TicketValidator {
     }
 
     public void validate(long eventId, long categoryId, String section, int seat)
-            throws NoSuchCategoryException, AlreadyAssignedSeatExceptionDummy, NoSuchTicketSectionExceptionDummy, RecordNotFoundException {
+            throws NoSuchCategoryException, AlreadyAssignedSeatException, NoSuchTicketSectionException, RecordNotFoundException {
 
         Event event = eventsInteractor.getById(eventId);
         validateCategory(event.getCategories(), categoryId);
@@ -28,7 +28,7 @@ public class TicketValidator {
     }
 
     private void validateTicketNotExists(long eventId, long categoryId, String section, int seat)
-            throws NoSuchTicketSectionExceptionDummy, AlreadyAssignedSeatExceptionDummy {
+            throws NoSuchTicketSectionException, AlreadyAssignedSeatException {
 
         TicketSearchCriteria ticketSearchCriteria = new TicketSearchCriteria();
         ticketSearchCriteria.setEventId(eventId);
@@ -36,10 +36,10 @@ public class TicketValidator {
         ticketSearchCriteria.setSectionName(section);
 
         List<Ticket> tickets = ticketsInteractor.search(ticketSearchCriteria);
-        if (tickets.size() == 0) throw new NoSuchTicketSectionExceptionDummy();
+        if (tickets.size() == 0) throw new NoSuchTicketSectionException();
 
         Ticket lastTicket = tickets.get(tickets.size() - 1);
-        if (lastTicket.getSeat() > seat) throw new AlreadyAssignedSeatExceptionDummy();
+        if (lastTicket.getSeat() > seat) throw new AlreadyAssignedSeatException();
     }
 
     private void validateCategory(List<Category> categories, long categoryId) throws NoSuchCategoryException {
