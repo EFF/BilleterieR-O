@@ -30,7 +30,7 @@
                 <span ng-switch-when="SEAT">
                     <select id="{{sectionsSelectTagsByCategories[category.id].name}}"
                             class="form-control"
-                            ng-change="apiCall()"
+                            ng-change="refreshPageData()"
                             ng-model="sectionsSelectTagsByCategories[category.id].selectedValue"
                             ng-options="s for s in sectionsSelectTagsByCategories[category.id].options">
                         <option value="">Section...</option>
