@@ -1,12 +1,8 @@
 package ca.ulaval.glo4003.unittests.domain.ticketing;
 
-import ca.ulaval.glo4003.domain.ticketing.TicketDao;
+import ca.ulaval.glo4003.ConstantsManager;
+import ca.ulaval.glo4003.domain.ticketing.*;
 import ca.ulaval.glo4003.domain.RecordNotFoundException;
-import ca.ulaval.glo4003.domain.ticketing.UpdateTicketStateUnauthorizedException;
-import ca.ulaval.glo4003.domain.ticketing.TicketsInteractor;
-import ca.ulaval.glo4003.domain.ticketing.Ticket;
-import ca.ulaval.glo4003.domain.ticketing.TicketSearchCriteria;
-import ca.ulaval.glo4003.domain.ticketing.TicketState;
 import com.google.inject.Inject;
 import org.jukito.JukitoRunner;
 import org.junit.Test;
@@ -27,6 +23,8 @@ public class TicketsInteractorTest {
     private static final long A_TICKET_ID = 1;
     private static final Long AN_EVENT_ID = 12L;
     private static final Long A_CATEGORY_ID = 123L;
+    private static final int A_SEAT = 2;
+    private static final String A_SECTION = "section";
 
     @Inject
     private TicketsInteractor ticketsInteractor;
@@ -194,4 +192,38 @@ public class TicketsInteractorTest {
         assertEquals(1, argument.getValue().getStates().size());
         assertEquals(TicketState.AVAILABLE, argument.getValue().getStates().get(0));
     }
+
+    @Test
+    public void addGeneralAdmissionTicketShouldCreateATicket(TicketDao mockedTicketDao){
+        when(mockedTicketDao.create(any(Ticket.class))).thenReturn(mock(Ticket.class));
+
+        ticketsInteractor.addGeneralAdmissionTickets(AN_EVENT_ID, A_CATEGORY_ID);
+
+        ArgumentCaptor<Ticket> argument = ArgumentCaptor.forClass(Ticket.class);
+        verify(mockedTicketDao, times(1)).create(argument.capture());
+
+        assertEquals(AN_EVENT_ID.longValue(), argument.getValue().getEventId());
+        assertEquals(A_CATEGORY_ID.longValue(), argument.getValue().getCategoryId());
+        assertEquals("", argument.getValue().getSection());
+        assertEquals(ConstantsManager.TICKET_INVALID_SEAT_NUMBER, argument.getValue().getSeat());
+        assertEquals(TicketState.AVAILABLE, argument.getValue().getState());
+    }
+
+    @Test
+    public void addSimgleSeatTicketShouldCreateATicketWithAValidSeat(TicketDao mockedTicketDao){
+        when(mockedTicketDao.create(any(Ticket.class))).thenReturn(mock(Ticket.class));
+
+        ticketsInteractor.addSingleSeatTicket(AN_EVENT_ID, A_CATEGORY_ID, A_SECTION, A_SEAT);
+
+        ArgumentCaptor<Ticket> argument = ArgumentCaptor.forClass(Ticket.class);
+        verify(mockedTicketDao, times(1)).create(argument.capture());
+        assertEquals(AN_EVENT_ID.longValue(), argument.getValue().getEventId());
+        assertEquals(A_CATEGORY_ID.longValue(), argument.getValue().getCategoryId());
+        assertEquals(A_SECTION, argument.getValue().getSection());
+        assertEquals(A_SEAT, argument.getValue().getSeat());
+        assertEquals(TicketState.AVAILABLE, argument.getValue().getState());
+    }
+//
+//    @Test
+//    public void addSig should fail !
 }
