@@ -8,21 +8,26 @@ import java.util.List;
 public class TicketsInteractor {
 
     private final TicketDao ticketDao;
+    private final TicketValidator ticketValidator;
 
     @Inject
-    public TicketsInteractor(TicketDao ticketDao) {
+    public TicketsInteractor(TicketDao ticketDao, TicketValidator ticketValidator) {
         this.ticketDao = ticketDao;
+        this.ticketValidator = ticketValidator;
     }
 
-    public void addGeneralAdmissionTickets(Long eventId, Long categoryId){
+    public void addGeneralAdmissionTickets(Long eventId, Long categoryId) {
         Ticket ticket = TicketFactory.createAvailableGeneralAdmissionTicket(eventId, categoryId);
         ticketDao.create(ticket);
     }
 
-    public void addSingleSeatTicket(long eventId, long categoryId, String section, int seat){
-        //TODO: add single ticket
-        //TODO: valider que le billet n'existe pas
-        //ticketDao.create(ticket);
+    public void addSingleSeatTicket(long eventId, long categoryId, String section, int seat)
+            throws NoSuchCategoryException, NoSuchTicketSectionException, AlreadyAssignedSeatException, RecordNotFoundException {
+
+        ticketValidator.validate(eventId, categoryId, section, seat);
+
+        Ticket ticket = TicketFactory.createAvailableSeatTicket(eventId, categoryId, section, seat);
+        ticketDao.create(ticket);
     }
 
     public List<Ticket> search(TicketSearchCriteria ticketSearchCriteria) {

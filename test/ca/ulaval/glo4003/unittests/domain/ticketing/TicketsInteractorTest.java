@@ -1,8 +1,8 @@
 package ca.ulaval.glo4003.unittests.domain.ticketing;
 
 import ca.ulaval.glo4003.ConstantsManager;
-import ca.ulaval.glo4003.domain.ticketing.*;
 import ca.ulaval.glo4003.domain.RecordNotFoundException;
+import ca.ulaval.glo4003.domain.ticketing.*;
 import com.google.inject.Inject;
 import org.jukito.JukitoRunner;
 import org.junit.Test;
@@ -194,13 +194,13 @@ public class TicketsInteractorTest {
     }
 
     @Test
-    public void addGeneralAdmissionTicketShouldCreateATicket(TicketDao mockedTicketDao){
+    public void addGeneralAdmissionTicketShouldCreateATicket(TicketDao mockedTicketDao) {
         when(mockedTicketDao.create(any(Ticket.class))).thenReturn(mock(Ticket.class));
 
         ticketsInteractor.addGeneralAdmissionTickets(AN_EVENT_ID, A_CATEGORY_ID);
 
         ArgumentCaptor<Ticket> argument = ArgumentCaptor.forClass(Ticket.class);
-        verify(mockedTicketDao, times(1)).create(argument.capture());
+        verify(mockedTicketDao).create(argument.capture());
 
         assertEquals(AN_EVENT_ID.longValue(), argument.getValue().getEventId());
         assertEquals(A_CATEGORY_ID.longValue(), argument.getValue().getCategoryId());
@@ -210,20 +210,57 @@ public class TicketsInteractorTest {
     }
 
     @Test
-    public void addSimgleSeatTicketShouldCreateATicketWithAValidSeat(TicketDao mockedTicketDao){
+    public void addSingleSeatTicketShouldCreateATicketWithAValidSeat(TicketDao mockedTicketDao) throws Exception {
         when(mockedTicketDao.create(any(Ticket.class))).thenReturn(mock(Ticket.class));
 
         ticketsInteractor.addSingleSeatTicket(AN_EVENT_ID, A_CATEGORY_ID, A_SECTION, A_SEAT);
 
         ArgumentCaptor<Ticket> argument = ArgumentCaptor.forClass(Ticket.class);
-        verify(mockedTicketDao, times(1)).create(argument.capture());
+        verify(mockedTicketDao).create(argument.capture());
         assertEquals(AN_EVENT_ID.longValue(), argument.getValue().getEventId());
         assertEquals(A_CATEGORY_ID.longValue(), argument.getValue().getCategoryId());
         assertEquals(A_SECTION, argument.getValue().getSection());
         assertEquals(A_SEAT, argument.getValue().getSeat());
         assertEquals(TicketState.AVAILABLE, argument.getValue().getState());
     }
-//
-//    @Test
-//    public void addSig should fail !
+
+    @Test(expected = AlreadyAssignedSeatException.class)
+    public void addAlreadyAssignedSeatShouldThrow(TicketDao mockedTicketDao, TicketValidator mockedTicketValidator)
+            throws NoSuchCategoryException, NoSuchTicketSectionException, AlreadyAssignedSeatException, RecordNotFoundException {
+
+        doThrow(new AlreadyAssignedSeatException()).when(mockedTicketValidator).validate(anyLong(), anyLong(), anyString(), anyInt());
+        verify(mockedTicketDao, never()).search(any(TicketSearchCriteria.class));
+
+        ticketsInteractor.addSingleSeatTicket(AN_EVENT_ID, A_CATEGORY_ID, A_SECTION, A_SEAT);
+    }
+
+    @Test(expected = RecordNotFoundException.class)
+    public void addTicketToNonExistingEventShouldThrow(TicketDao mockedTicketDao, TicketValidator mockedTicketValidator)
+            throws  NoSuchTicketSectionException, AlreadyAssignedSeatException, NoSuchCategoryException, RecordNotFoundException {
+
+        doThrow(new RecordNotFoundException()).when(mockedTicketValidator).validate(anyLong(), anyLong(), anyString(), anyInt());
+        verify(mockedTicketDao, never()).search(any(TicketSearchCriteria.class));
+
+        ticketsInteractor.addSingleSeatTicket(AN_EVENT_ID, A_CATEGORY_ID, A_SECTION, A_SEAT);
+    }
+
+    @Test(expected = NoSuchCategoryException.class)
+    public void addTicketWithWringCategoryShouldThrow(TicketDao mockedTicketDao, TicketValidator mockedTicketValidator)
+            throws NoSuchCategoryException, NoSuchTicketSectionException, AlreadyAssignedSeatException, RecordNotFoundException {
+
+        doThrow(new NoSuchCategoryException()).when(mockedTicketValidator).validate(anyLong(), anyLong(), anyString(), anyInt());
+        verify(mockedTicketDao, never()).search(any(TicketSearchCriteria.class));
+
+        ticketsInteractor.addSingleSeatTicket(AN_EVENT_ID, A_CATEGORY_ID, A_SECTION, A_SEAT);
+    }
+
+    @Test(expected = NoSuchTicketSectionException.class)
+    public void addTicketToNonExistingSectionShouldThrow(TicketDao mockedTicketDao, TicketValidator mockedTicketValidator)
+            throws NoSuchCategoryException, NoSuchTicketSectionException, AlreadyAssignedSeatException, RecordNotFoundException {
+
+        doThrow(new NoSuchTicketSectionException()).when(mockedTicketValidator).validate(anyLong(), anyLong(), anyString(), anyInt());
+        verify(mockedTicketDao, never()).search(any(TicketSearchCriteria.class));
+
+        ticketsInteractor.addSingleSeatTicket(AN_EVENT_ID, A_CATEGORY_ID, A_SECTION, A_SEAT);
+    }
 }
