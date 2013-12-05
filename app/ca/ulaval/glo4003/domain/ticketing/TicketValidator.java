@@ -20,15 +20,15 @@ public class TicketValidator {
     }
 
     public void validate(long eventId, long categoryId, String section, int seat)
-            throws NoSuchCategoryException, AlreadyAssignedSeatException, NoSuchTicketSectionException, RecordNotFoundException {
+            throws NoSuchCategoryException, AlreadyAssignedSeatExceptionDummy, NoSuchTicketSectionExceptionDummy, RecordNotFoundException {
 
-        Event event = eventsInteractor.getById(eventId); // coché /
+        Event event = eventsInteractor.getById(eventId);
         validateCategory(event.getCategories(), categoryId);
         validateTicketNotExists(eventId, categoryId, section, seat);
     }
 
     private void validateTicketNotExists(long eventId, long categoryId, String section, int seat)
-            throws NoSuchTicketSectionException, AlreadyAssignedSeatException {
+            throws NoSuchTicketSectionExceptionDummy, AlreadyAssignedSeatExceptionDummy {
 
         TicketSearchCriteria ticketSearchCriteria = new TicketSearchCriteria();
         ticketSearchCriteria.setEventId(eventId);
@@ -36,10 +36,10 @@ public class TicketValidator {
         ticketSearchCriteria.setSectionName(section);
 
         List<Ticket> tickets = ticketsInteractor.search(ticketSearchCriteria);
-        Ticket lastTicket = tickets.get(tickets.size() - 1);
+        if (tickets.size() == 0) throw new NoSuchTicketSectionExceptionDummy();
 
-        if (tickets.size() == 0) throw new NoSuchTicketSectionException();
-        if (lastTicket.getSeat() > seat) throw new AlreadyAssignedSeatException();
+        Ticket lastTicket = tickets.get(tickets.size() - 1);
+        if (lastTicket.getSeat() > seat) throw new AlreadyAssignedSeatExceptionDummy();
     }
 
     private void validateCategory(List<Category> categories, long categoryId) throws NoSuchCategoryException {
@@ -48,7 +48,7 @@ public class TicketValidator {
 
         while (iterator.hasNext()) {
             Category category = (Category) iterator.next();
-            categoryExists = category.getId() == categoryId;
+            categoryExists = (category.getId() == categoryId);
         }
         if (!categoryExists) throw new NoSuchCategoryException();
     }

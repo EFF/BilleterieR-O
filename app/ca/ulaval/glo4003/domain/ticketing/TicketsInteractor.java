@@ -22,7 +22,7 @@ public class TicketsInteractor {
     }
 
     public void addSingleSeatTicket(long eventId, long categoryId, String section, int seat)
-            throws NoSuchCategoryException, NoSuchTicketSectionException, AlreadyAssignedSeatException, RecordNotFoundException {
+            throws NoSuchCategoryException, NoSuchTicketSectionExceptionDummy, AlreadyAssignedSeatExceptionDummy, RecordNotFoundException {
 
         ticketValidator.validate(eventId, categoryId, section, seat);
 
