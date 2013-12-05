@@ -2,7 +2,7 @@ define(['./module'], function (EventModule) {
     EventModule.factory('EventService', ['$http', '$q', function ($http, $q) {
         var eventService = {};
 
-        eventService.getById = function(eventId){
+        eventService.getById = function (eventId) {
             var deferred = $q.defer();
 
             $http.get('/api/events/' + eventId).success(deferred.resolve).error(deferred.reject);
@@ -10,7 +10,7 @@ define(['./module'], function (EventModule) {
             return deferred.promise;
         };
 
-        eventService.getSectionsByEventId = function(eventId){
+        eventService.getSectionsByEventId = function (eventId) {
             var deferred = $q.defer();
             var url = '/api/events/' + eventId + '/sections';
 
@@ -19,7 +19,7 @@ define(['./module'], function (EventModule) {
             return deferred.promise;
         };
 
-        eventService.getEvents = function(filters){
+        eventService.getEvents = function (filters) {
             var deferred = $q.defer();
             var url = '/api/events';
 
@@ -32,7 +32,7 @@ define(['./module'], function (EventModule) {
             return deferred.promise;
         };
 
-        eventService.getFacets = function(){
+        eventService.getFacets = function () {
             var deferred = $q.defer();
             var url = '/api/facets';
 

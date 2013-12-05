@@ -66,7 +66,7 @@ define(['./module'], function (TicketModule) {
             }
 
             if (tickets.length <= 0) {
-                deferred.reject('you must have at least one ticket to update');
+                deferred.reject();
             }
             else if (url) {
                 var data = {
