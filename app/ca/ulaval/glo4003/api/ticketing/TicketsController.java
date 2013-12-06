@@ -4,11 +4,7 @@ package ca.ulaval.glo4003.api.ticketing;
 import ca.ulaval.glo4003.ConstantsManager;
 import ca.ulaval.glo4003.api.SecureAction;
 import ca.ulaval.glo4003.domain.RecordNotFoundException;
-import ca.ulaval.glo4003.domain.ticketing.UpdateTicketStateUnauthorizedException;
-import ca.ulaval.glo4003.domain.ticketing.TicketsInteractor;
-import ca.ulaval.glo4003.domain.ticketing.Ticket;
-import ca.ulaval.glo4003.domain.ticketing.TicketSearchCriteria;
-import ca.ulaval.glo4003.domain.ticketing.TicketState;
+import ca.ulaval.glo4003.domain.ticketing.*;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ListMultimap;
 import com.google.common.primitives.Ints;
@@ -29,10 +25,12 @@ import java.util.List;
 public class TicketsController extends Controller {
 
     private final TicketsInteractor ticketsInteractor;
+    private final TicketValidator ticketValidator;
 
     @Inject
-    public TicketsController(TicketsInteractor ticketsInteractor) {
+    public TicketsController(TicketsInteractor ticketsInteractor, TicketValidator ticketValidator) {
         this.ticketsInteractor = ticketsInteractor;
+        this.ticketValidator = ticketValidator;
     }
 
     public Result index() {
@@ -131,7 +129,37 @@ public class TicketsController extends Controller {
 
     @SecureAction(admin = true)
     public Result create() {
-        // TODO: Next story: Create ticket
+        long eventId = 0;
+        long categoryId = 0;
+        int seat = -1;
+
+        final String strEventId = request().getQueryString("eventId");
+        final String strCategoryId = request().getQueryString("categoryId");
+        final String strSeat = request().getQueryString("seat");
+        final String section = request().getQueryString("section");
+
+        if (strEventId != null) {
+            eventId = Longs.tryParse(strEventId);
+        }
+        if (strCategoryId != null) {
+            categoryId = Longs.tryParse(strCategoryId);
+        }
+        if (strSeat != null) {
+            seat = Integer.parseInt(strSeat);
+        }
+
+        try {
+            ticketValidator.validate(eventId, categoryId, section, seat);
+
+            if (seat > 1) {
+                ticketsInteractor.addGeneralAdmissionTickets(eventId, categoryId);
+            } else {
+                ticketsInteractor.addSingleSeatTicket(eventId, categoryId, section, seat);
+            }
+        } catch (NoSuchCategoryException | AlreadyAssignedSeatException | NoSuchTicketSectionException | RecordNotFoundException e) {
+            return badRequest(e.getMessage());
+        }
+
         return ok(Json.toJson("Success"));
     }
 

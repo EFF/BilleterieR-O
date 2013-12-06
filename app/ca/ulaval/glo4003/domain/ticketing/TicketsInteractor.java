@@ -8,12 +8,10 @@ import java.util.List;
 public class TicketsInteractor {
 
     private final TicketDao ticketDao;
-    private final TicketValidator ticketValidator;
 
     @Inject
-    public TicketsInteractor(TicketDao ticketDao, TicketValidator ticketValidator) {
+    public TicketsInteractor(TicketDao ticketDao) {
         this.ticketDao = ticketDao;
-        this.ticketValidator = ticketValidator;
     }
 
     public void addGeneralAdmissionTickets(Long eventId, Long categoryId) {
@@ -21,11 +19,7 @@ public class TicketsInteractor {
         ticketDao.create(ticket);
     }
 
-    public void addSingleSeatTicket(long eventId, long categoryId, String section, int seat)
-            throws NoSuchCategoryException, NoSuchTicketSectionException, AlreadyAssignedSeatException, RecordNotFoundException {
-
-        ticketValidator.validate(eventId, categoryId, section, seat);
-
+    public void addSingleSeatTicket(long eventId, long categoryId, String section, int seat) {
         Ticket ticket = TicketFactory.createAvailableSeatTicket(eventId, categoryId, section, seat);
         ticketDao.create(ticket);
     }
