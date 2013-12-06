@@ -1,6 +1,6 @@
 define(['./module'], function (CartModule) {
-    CartModule.controller('CartController', ['$scope', 'FlashMessage', 'Cart', '$location', 'Login',
-        function ($scope, FlashMessage, Cart, $location, Login) {
+    CartModule.controller('CartController', ['$scope', 'FlashMessage', 'Cart', '$location', 'LoginService',
+        function ($scope, FlashMessage, Cart, $location, LoginService) {
             $scope.selectAll = true;
             $scope.cart = Cart.getItems();
             $scope.getTotalSelectedQuantity = Cart.getTotalSelectedQuantity;
@@ -40,7 +40,7 @@ define(['./module'], function (CartModule) {
                 if (Cart.isSelectionEmpty()) {
                     FlashMessage.send('warning', "La sélection d'achat est vide");
                 }
-                else if (!Login.isLoggedIn) {
+                else if (!LoginService.isLoggedIn()) {
                     notifyUserToLogin();
                 }
                 else if (window.confirm("Confirmez-vous le paiment de " + $scope.getTotalPrice() + "$ ?")) {
