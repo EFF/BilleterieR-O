@@ -1,28 +1,51 @@
 define(['./module'], function (TicketModule) {
-    TicketModule.controller('AddTicketController', ['$scope', '$routeParams', 'TicketService', 'EventService',
-        function ($scope, $routeParams, TicketService, EventService) {
+    TicketModule.controller('AddTicketController', ['$scope', '$routeParams', 'TicketService', 'EventService', 'FlashMessage',
+        function ($scope, $routeParams, TicketService, EventService, FlashMessage) {
             $scope.ticketToAdd = {};
             $scope.categoryTypes = ["SEAT", "GENERAL_ADMISSION"];
             $scope.eventId = $routeParams.eventId;
+            $scope.addTicket = TicketService.addTicket;
 
-            
-            //TODO: set le type de catégorie au billet to add, set le nombre de billet si admin général, set la section et le seat sinon
-            //TODO: ajouter dans le ticket service un POST
-            //TODO : done !
+            $scope.updateTicketToAdd = function (category) {
+                $scope.ticketToAdd.categoryId = category.id;
+                $scope.ticketToAdd.categoryType = category.type;
 
+                delete $scope.ticketToAdd.section;
+                delete $scope.ticketToAdd.seat;
+                delete $scope.ticketToAdd.quantity;
+            };
 
-            var onGetEventSuccess = function(event){
+            $scope.addTicket = function () {
+                var onAddTicketSuccess = function () {
+                    FlashMessage.send('success', "L'ajout de billet s'est fait avec succès. Vous pouvez en ajouter d'autre pour cet événement");
+                    ticketToAdd = {};
+                };
+
+                var onAddTicketFail = function (error) {
+                    //TODO: display a more explicit message
+                    console.log(error);
+                    FlashMessage.send('error', "Une erreure est survenue lors de l'ajout de billet")
+                };
+
+                TicketService.addTicket($scope.ticketToAdd).then(onAddTicketSuccess, onAddTicketFail);
+            };
+
+            var onInitDataError = function (error) {
+                FlashMessage.send('error', 'Une erreure est survenue')
+            };
+
+            var onGetEventSuccess = function (event) {
                 $scope.event = event;
                 $scope.ticketToAdd.eventId = $scope.eventId;
             };
 
-            var onGetEventSectionsSuccess = function(sections){
+            var onGetEventSectionsSuccess = function (sections) {
                 $scope.eventSections = sections;
             };
 
-            var initData = function(){
-                EventService.getById($scope.eventId).then(onGetEventSuccess);
-                EventService.getSectionsByEventId($scope.eventId).then(onGetEventSectionsSuccess);
+            var initData = function () {
+                EventService.getById($scope.eventId).then(onGetEventSuccess, onInitDataError);
+                EventService.getSectionsByEventId($scope.eventId).then(onGetEventSectionsSuccess, onInitDataError);
             };
 
             initData();
