@@ -2,6 +2,12 @@
 
 <form role="form" name="login_form" novalidate ng-submit="addTicket()">
     <div class="form-group">
+        <label for="categoriesInput">Email address</label>
+        <select ng-model="ticketToAdd.category" class="form-control" id="categoriesInput">
+            <option ng-repeat="category in event.categories">{{category.id}}</option>
+        </select>
+    </div>
+    <div class="form-group">
         <button type="submit" id="login-button" ng-disabled="login_form.$invalid" class="btn btn-success">
             Ajouter
         </button>

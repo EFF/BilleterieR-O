@@ -1,11 +1,30 @@
 define(['./module'], function (TicketModule) {
     TicketModule.controller('AddTicketController', ['$scope', '$routeParams', 'TicketService', 'EventService',
         function ($scope, $routeParams, TicketService, EventService) {
-            //TODO : protéger la route si le user n'est pas admin !
+            $scope.ticketToAdd = {};
+            $scope.categoryTypes = ["SEAT", "GENERAL_ADMISSION"];
+            $scope.eventId = $routeParams.eventId;
+
+            
+            //TODO: set le type de catégorie au billet to add, set le nombre de billet si admin général, set la section et le seat sinon
+            //TODO: ajouter dans le ticket service un POST
+            //TODO : done !
+
+
             var onGetEventSuccess = function(event){
-                $scope.event = event
+                $scope.event = event;
+                $scope.ticketToAdd.eventId = $scope.eventId;
             };
 
-            EventService.getById($routeParams.eventId).then(onGetEventSuccess);
+            var onGetEventSectionsSuccess = function(sections){
+                $scope.eventSections = sections;
+            };
+
+            var initData = function(){
+                EventService.getById($scope.eventId).then(onGetEventSuccess);
+                EventService.getSectionsByEventId($scope.eventId).then(onGetEventSectionsSuccess);
+            };
+
+            initData();
         }]);
 });
