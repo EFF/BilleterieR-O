@@ -36,7 +36,7 @@
                 <th>Sport</th>
                 <th>Genre</th>
                 <th>Billets disponibles</th>
-                <th>Actions</th>
+                <th colspan="2">Actions</th>
             </tr>
             </thead>
             <tbody>
@@ -50,6 +50,11 @@
                 </td>
                 <td>
                     <a class="btn btn-info btn-xs btn-see-event-info" href="/#!/events/{{eventDto.event.id}}">Voir</a>
+                </td>
+                <td>
+                    <a class="btn btn-primary btn-xs" href="/#!/events/{{eventDto.event.id}}/addTicket">
+                        <i class="glyphicon glyphicon-pencil"></i>
+                    </a>
                 </td>
             </tr>
             </tbody>

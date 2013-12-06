@@ -1,4 +1,5 @@
 define([
     './ticket-service',
-    './ticket-controller'
+    './ticket-controller',
+    './add-ticket-controller'
 ], function () {});
