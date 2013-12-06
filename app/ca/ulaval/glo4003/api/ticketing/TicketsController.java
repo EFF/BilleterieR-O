@@ -25,12 +25,12 @@ import java.util.List;
 public class TicketsController extends Controller {
 
     private final TicketsInteractor ticketsInteractor;
-    private final TicketValidator ticketValidator;
+    private final TicketConstraintValidator ticketConstraintValidator;
 
     @Inject
-    public TicketsController(TicketsInteractor ticketsInteractor, TicketValidator ticketValidator) {
+    public TicketsController(TicketsInteractor ticketsInteractor, TicketConstraintValidator ticketConstraintValidator) {
         this.ticketsInteractor = ticketsInteractor;
-        this.ticketValidator = ticketValidator;
+        this.ticketConstraintValidator = ticketConstraintValidator;
     }
 
     public Result index() {
@@ -132,28 +132,34 @@ public class TicketsController extends Controller {
         long eventId = 0;
         long categoryId = 0;
         int seat = -1;
-
-        final String strEventId = request().getQueryString("eventId");
-        final String strCategoryId = request().getQueryString("categoryId");
-        final String strSeat = request().getQueryString("seat");
-        final String section = request().getQueryString("section");
-
-        if (strEventId != null) {
-            eventId = Longs.tryParse(strEventId);
-        }
-        if (strCategoryId != null) {
-            categoryId = Longs.tryParse(strCategoryId);
-        }
-        if (strSeat != null) {
-            seat = Integer.parseInt(strSeat);
-        }
+        int quantity = 0;
 
         try {
-            ticketValidator.validate(eventId, categoryId, section, seat);
+            final String strEventId = request().getQueryString("eventId");
+            final String strCategoryId = request().getQueryString("categoryId");
+            final String strSeat = request().getQueryString("seat");
+            final String strQuantity = request().getQueryString("quantity");
+            final String section = request().getQueryString("section");
+
+            if (strEventId != null) {
+                eventId = Longs.tryParse(strEventId);
+            }
+            if (strCategoryId != null) {
+                categoryId = Longs.tryParse(strCategoryId);
+            }
+            if (strSeat != null) {
+                seat = Integer.parseInt(strSeat);
+            }
+            if (strQuantity != null) {
+                quantity = Integer.parseInt(strQuantity);
+            }
+
 
             if (seat > 1) {
-                ticketsInteractor.addGeneralAdmissionTickets(eventId, categoryId);
+                ticketConstraintValidator.validateForGeneral(eventId, categoryId);
+                ticketsInteractor.addGeneralAdmissionTickets(eventId, categoryId, quantity);
             } else {
+                ticketConstraintValidator.validateForSeat(eventId, categoryId, section, seat);
                 ticketsInteractor.addSingleSeatTicket(eventId, categoryId, section, seat);
             }
         } catch (NoSuchCategoryException | AlreadyAssignedSeatException | NoSuchTicketSectionException | RecordNotFoundException e) {
