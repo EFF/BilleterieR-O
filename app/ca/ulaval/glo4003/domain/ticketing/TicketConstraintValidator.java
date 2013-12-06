@@ -9,17 +9,22 @@ import com.google.inject.Inject;
 import java.util.Iterator;
 import java.util.List;
 
-public class TicketValidator {
+public class TicketConstraintValidator {
     private final TicketsInteractor ticketsInteractor;
     private final EventsInteractor eventsInteractor;
 
     @Inject
-    public TicketValidator(TicketsInteractor ticketsInteractor, EventsInteractor eventsInteractor) {
+    public TicketConstraintValidator(TicketsInteractor ticketsInteractor, EventsInteractor eventsInteractor) {
         this.ticketsInteractor = ticketsInteractor;
         this.eventsInteractor = eventsInteractor;
     }
 
-    public void validate(long eventId, long categoryId, String section, int seat)
+    public void validateForGeneral(long eventId, long categoryId) throws NoSuchCategoryException, RecordNotFoundException {
+        Event event = eventsInteractor.getById(eventId);
+        validateCategory(event.getCategories(), categoryId);
+    }
+
+    public void validateForSeat(long eventId, long categoryId, String section, int seat)
             throws NoSuchCategoryException, AlreadyAssignedSeatException, NoSuchTicketSectionException, RecordNotFoundException {
 
         Event event = eventsInteractor.getById(eventId);
