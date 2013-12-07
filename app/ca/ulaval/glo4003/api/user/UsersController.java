@@ -1,6 +1,5 @@
 package ca.ulaval.glo4003.api.user;
 
-import ca.ulaval.glo4003.ConstantsManager;
 import ca.ulaval.glo4003.api.SecureAction;
 import ca.ulaval.glo4003.domain.RecordNotFoundException;
 import ca.ulaval.glo4003.domain.user.InvalidActualPasswordException;
@@ -38,11 +37,11 @@ public class UsersController extends Controller {
         }
 
         String actualEmail = request().username();
-        String newEmail = json.get(ConstantsManager.USERNAME_FIELD_NAME).asText();
+        String newEmail = json.get(ApiUserConstantsManager.USERNAME_FIELD_NAME).asText();
 
         try {
             usersInteractor.updateEmail(actualEmail, newEmail);
-            session().put(ConstantsManager.COOKIE_EMAIL_FIELD_NAME, newEmail);
+            session().put(ApiUserConstantsManager.COOKIE_EMAIL_FIELD_NAME, newEmail);
             return ok();
         } catch (RecordNotFoundException e) {
             return unauthorized(BAD_SESSION_WRONG_USERNAME);
@@ -62,8 +61,8 @@ public class UsersController extends Controller {
         }
 
         String email = request().username();
-        String actualPassword = json.get(ConstantsManager.ACTUAL_PASSWORD_FIELD_NAME).asText();
-        String newPassword = json.get(ConstantsManager.PASSWORD_FIELD_NAME).asText();
+        String actualPassword = json.get(ApiUserConstantsManager.ACTUAL_PASSWORD_FIELD_NAME).asText();
+        String newPassword = json.get(ApiUserConstantsManager.PASSWORD_FIELD_NAME).asText();
 
         try {
             usersInteractor.updatePassword(email, actualPassword, newPassword);
@@ -76,12 +75,12 @@ public class UsersController extends Controller {
     }
 
     private boolean validateUpdateEmailParameters(JsonNode json) {
-        return isNotBlank(json, ConstantsManager.USERNAME_FIELD_NAME);
+        return isNotBlank(json, ApiUserConstantsManager.USERNAME_FIELD_NAME);
     }
 
     private boolean validateUpdatePasswordParameters(JsonNode json) {
-        return isNotBlank(json, ConstantsManager.ACTUAL_PASSWORD_FIELD_NAME) && isNotBlank(json,
-                ConstantsManager.PASSWORD_FIELD_NAME);
+        return isNotBlank(json, ApiUserConstantsManager.ACTUAL_PASSWORD_FIELD_NAME) && isNotBlank(json,
+                ApiUserConstantsManager.PASSWORD_FIELD_NAME);
     }
 
     private boolean isNotBlank(JsonNode json, String fieldName) {

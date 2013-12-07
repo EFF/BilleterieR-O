@@ -1,8 +1,8 @@
 package ca.ulaval.glo4003.unittests;
 
-import ca.ulaval.glo4003.ConstantsManager;
 import ca.ulaval.glo4003.api.SecureAction;
 import ca.ulaval.glo4003.api.SecureBlocker;
+import ca.ulaval.glo4003.api.user.ApiUserConstantsManager;
 import ca.ulaval.glo4003.unittests.api.BaseControllerTest;
 import org.aopalliance.intercept.MethodInvocation;
 import org.junit.Before;
@@ -92,8 +92,8 @@ public class SecureBlockerTest extends BaseControllerTest {
 
     private void setCredentials(boolean isConnected, boolean isAdmin) {
         String email = (isConnected) ? A_USER_EMAIL : null;
-        when(mockedSession.get(ConstantsManager.COOKIE_EMAIL_FIELD_NAME)).thenReturn(email);
-        when(mockedSession.get(ConstantsManager.COOKIE_ADMIN_FIELD_NAME)).thenReturn(Boolean.toString(isAdmin));
+        when(mockedSession.get(ApiUserConstantsManager.COOKIE_EMAIL_FIELD_NAME)).thenReturn(email);
+        when(mockedSession.get(ApiUserConstantsManager.COOKIE_ADMIN_FIELD_NAME)).thenReturn(Boolean.toString(isAdmin));
     }
 
     private static class SecureTest {

@@ -1,7 +1,6 @@
 package ca.ulaval.glo4003.api.ticketing;
 
 
-import ca.ulaval.glo4003.ConstantsManager;
 import ca.ulaval.glo4003.api.SecureAction;
 import ca.ulaval.glo4003.domain.RecordNotFoundException;
 import ca.ulaval.glo4003.domain.ticketing.UpdateTicketStateUnauthorizedException;
@@ -90,8 +89,8 @@ public class TicketsController extends Controller {
     }
 
     public Result numberOfTickets() {
-        String strEventId = request().getQueryString(ConstantsManager.EVENT_ID_FIELD_NAME);
-        String strCategoryId = request().getQueryString(ConstantsManager.CATEGORY_ID_FIELD_NAME);
+        String strEventId = request().getQueryString(ApiTicketingConstantsManager.EVENT_ID_FIELD_NAME);
+        String strCategoryId = request().getQueryString(ApiTicketingConstantsManager.CATEGORY_ID_FIELD_NAME);
         int numberOfTickets;
         long eventId;
 
@@ -137,7 +136,7 @@ public class TicketsController extends Controller {
 
     private List<Long> extractTicketsIdsFromRequest() throws IOException {
         JsonNode json = request().body().asJson();
-        JsonNode node = json.get(ConstantsManager.TICKET_IDS_FIELD_NAME);
+        JsonNode node = json.get(ApiTicketingConstantsManager.TICKET_IDS_FIELD_NAME);
 
         ObjectMapper mapper = new ObjectMapper();
         TypeReference<List<Long>> typeRef = new TypeReference<List<Long>>() {

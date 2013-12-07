@@ -1,6 +1,6 @@
 package ca.ulaval.glo4003.unittests.api.user;
 
-import ca.ulaval.glo4003.ConstantsManager;
+import ca.ulaval.glo4003.api.user.ApiUserConstantsManager;
 import ca.ulaval.glo4003.api.user.UsersController;
 import ca.ulaval.glo4003.persistence.UniqueValidationException;
 import ca.ulaval.glo4003.domain.user.UserDao;
@@ -144,14 +144,14 @@ public class UsersControllerTest extends BaseControllerTest {
 
     private void addPasswordBody(String actualPassword, String newPassword) {
         ObjectNode json = Json.newObject();
-        json.put(ConstantsManager.ACTUAL_PASSWORD_FIELD_NAME, actualPassword);
-        json.put(ConstantsManager.PASSWORD_FIELD_NAME, newPassword);
+        json.put(ApiUserConstantsManager.ACTUAL_PASSWORD_FIELD_NAME, actualPassword);
+        json.put(ApiUserConstantsManager.PASSWORD_FIELD_NAME, newPassword);
         when(mockedBody.asJson()).thenReturn(json);
     }
 
     private void addEmailBody(String email) {
         ObjectNode json = Json.newObject();
-        json.put(ConstantsManager.USERNAME_FIELD_NAME, email);
+        json.put(ApiUserConstantsManager.USERNAME_FIELD_NAME, email);
         when(mockedBody.asJson()).thenReturn(json);
     }
 

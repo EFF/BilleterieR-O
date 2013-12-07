@@ -32,7 +32,7 @@ public class PersistedEventDao extends PersistedDao<Event> implements EventDao {
 
         if (criteria.getDateStart() != null && criteria.getDateEnd() != null) {
             if (criteria.getDateEnd().isBefore(criteria.getDateStart())) {
-                String errorFormat = "End Date %s can't be before Start Date %s";
+                String errorFormat = ConstantsManager.END_DATE_CANNOT_BE_BEFORE_START_DATE_ERROR_MESSAGE_FORMAT;
                 String error = String.format(errorFormat, criteria.getDateEnd().toString(),
                         criteria.getDateStart().toString());
                 throw new InvalidParameterException(error);
@@ -63,6 +63,7 @@ public class PersistedEventDao extends PersistedDao<Event> implements EventDao {
         return results.filter(new Predicate<Event>() {
             @Override
             public boolean apply(@Nullable Event event) {
+                assert event != null;
                 return dateStart == null || event.getDate().isAfter(dateStart) || event.getDate().isEqual(dateStart);
             }
         });
@@ -72,6 +73,7 @@ public class PersistedEventDao extends PersistedDao<Event> implements EventDao {
         return results.filter(new Predicate<Event>() {
             @Override
             public boolean apply(@Nullable Event event) {
+                assert event != null;
                 return dateEnd == null || event.getDate().isBefore(dateEnd) || event.getDate().isEqual(dateEnd);
             }
         });

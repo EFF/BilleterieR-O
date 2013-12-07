@@ -60,8 +60,8 @@ public class PersistedTicketDaoTest {
 
         assertNotNull(results);
         assertEquals(2, results.size());
-        for (int i = 0; i < results.size(); i++) {
-            assertEquals(eventId, results.get(i).getEventId());
+        for (Ticket result : results) {
+            assertEquals(eventId, result.getEventId());
         }
     }
 
@@ -87,8 +87,8 @@ public class PersistedTicketDaoTest {
 
         assertNotNull(results);
         assertEquals(2, results.size());
-        for (int i = 0; i < results.size(); i++) {
-            assertEquals(categoryId, results.get(i).getCategoryId());
+        for (Ticket result : results) {
+            assertEquals(categoryId, result.getCategoryId());
         }
     }
 
@@ -114,8 +114,8 @@ public class PersistedTicketDaoTest {
 
         assertNotNull(results);
         assertEquals(2, results.size());
-        for (int i = 0; i < results.size(); i++) {
-            assertEquals(section, results.get(i).getSection());
+        for (Ticket result : results) {
+            assertEquals(section, result.getSection());
         }
     }
 
@@ -131,9 +131,9 @@ public class PersistedTicketDaoTest {
 
         assertNotNull(results);
         assertEquals(2, results.size());
-        for (int i = 0; i < results.size(); i++) {
-            assertEquals(section, results.get(i).getSection());
-            assertEquals(categoryId, results.get(i).getCategoryId());
+        for (Ticket result : results) {
+            assertEquals(section, result.getSection());
+            assertEquals(categoryId, result.getCategoryId());
         }
     }
 
