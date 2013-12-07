@@ -193,6 +193,11 @@ public class TicketsControllerTest extends BaseControllerTest {
         assertEquals("application/json", Helpers.contentType(result));
     }
 
+    @Test
+    public void createTicketShouldReturnOkWhenValid(TicketsInteractor mockedTicketsInteractor){
+        //TODO
+    }
+
     private Ticket createFakeTicket() {
         return new Ticket(1, 1, TicketState.AVAILABLE, "Section A", 100000);
     }

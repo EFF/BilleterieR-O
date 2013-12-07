@@ -2,8 +2,8 @@ package ca.ulaval.glo4003.api.ticketing;
 
 
 import ca.ulaval.glo4003.ConstantsManager;
-import ca.ulaval.glo4003.api.SecureAction;
 import ca.ulaval.glo4003.domain.RecordNotFoundException;
+import ca.ulaval.glo4003.domain.event.CategoryType;
 import ca.ulaval.glo4003.domain.ticketing.*;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ListMultimap;
@@ -127,45 +127,30 @@ public class TicketsController extends Controller {
         return ok(Json.toJson(sections.asMap()));
     }
 
-    @SecureAction(admin = true)
+//    @SecureAction(admin = true)
     public Result create() {
-        long eventId = 0;
-        long categoryId = 0;
-        int seat = -1;
-        int quantity = 0;
+            JsonNode body = request().body().asJson();
+            final long eventId = body.get(ConstantsManager.EVENT_ID_FIELD_NAME).asLong();
+            final long categoryId = body.get(ConstantsManager.CATEGORY_ID_FIELD_NAME).asLong();
 
         try {
-            final String strEventId = request().getQueryString("eventId");
-            final String strCategoryId = request().getQueryString("categoryId");
-            final String strSeat = request().getQueryString("seat");
-            final String strQuantity = request().getQueryString("quantity");
-            final String section = request().getQueryString("section");
+            String categoryType = body.get(ConstantsManager.CATEGORY_TYPE_FIELD_NAME).asText();
 
-            if (strEventId != null) {
-                eventId = Longs.tryParse(strEventId);
-            }
-            if (strCategoryId != null) {
-                categoryId = Longs.tryParse(strCategoryId);
-            }
-            if (strSeat != null) {
-                seat = Integer.parseInt(strSeat);
-            }
-            if (strQuantity != null) {
-                quantity = Integer.parseInt(strQuantity);
-            }
+            if(categoryType.equals(CategoryType.GENERAL_ADMISSION.toString())){
+                int quantity = body.get(ConstantsManager.QUANTITY_FIELD_NAME).asInt();
 
-
-            if (seat > 1) {
-                ticketConstraintValidator.validateForGeneral(eventId, categoryId);
+                ticketConstraintValidator.validateGeneralAdmission(eventId, categoryId);
                 ticketsInteractor.addGeneralAdmissionTickets(eventId, categoryId, quantity);
             } else {
-                ticketConstraintValidator.validateForSeat(eventId, categoryId, section, seat);
+                String section = body.get(ConstantsManager.SECTION_FIELD_NAME).asText();
+                int seat = body.get(ConstantsManager.SEAT_FIELD_NAME).asInt();
+
+                ticketConstraintValidator.validateSeatedTicket(eventId, categoryId, section, seat);
                 ticketsInteractor.addSingleSeatTicket(eventId, categoryId, section, seat);
             }
         } catch (NoSuchCategoryException | AlreadyAssignedSeatException | NoSuchTicketSectionException | RecordNotFoundException e) {
             return badRequest(e.getMessage());
         }
-
         return ok(Json.toJson("Success"));
     }
 
@@ -181,11 +166,11 @@ public class TicketsController extends Controller {
     }
 
     private TicketSearchCriteria extractTicketSearchCriteriaFromRequest() {
-        final String strEventId = request().getQueryString("eventId");
-        final String sectionName = request().getQueryString("sectionName");
-        final String strCategoryId = request().getQueryString("categoryId");
-        final String stringStates = request().getQueryString("states");
-        final String strQuantity = request().getQueryString("quantity");
+        final String strEventId = request().getQueryString(ConstantsManager.EVENT_ID_FIELD_NAME);
+        final String sectionName = request().getQueryString(ConstantsManager.SECTION_FIELD_NAME);
+        final String strCategoryId = request().getQueryString(ConstantsManager.CATEGORY_ID_FIELD_NAME);
+        final String stringStates = request().getQueryString(ConstantsManager.QUERY_STRING_STATE_PARAM_NAME);
+        final String strQuantity = request().getQueryString(ConstantsManager.QUANTITY_FIELD_NAME);
 
         Long eventId = null;
         Long categoryId = null;

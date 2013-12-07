@@ -32,7 +32,7 @@ public class TicketConstraintValidatorTest {
 
         doThrow(new RecordNotFoundException()).when(mockedEventInteractor).getById(anyLong());
 
-        ticketConstraintValidator.validateForSeat(AN_EVENT_ID, A_CATEGORY_ID, A_SECTION, A_SEAT);
+        ticketConstraintValidator.validateSeatedTicket(AN_EVENT_ID, A_CATEGORY_ID, A_SECTION, A_SEAT);
     }
 
     @Test
@@ -51,7 +51,7 @@ public class TicketConstraintValidatorTest {
         when(mockedEventInteractor.getById(AN_EVENT_ID)).thenReturn(mockedEvent);
         when(mockedCategory.getId()).thenReturn(A_CATEGORY_ID);
 
-        ticketConstraintValidator.validateForSeat(AN_EVENT_ID, A_CATEGORY_ID, A_SECTION, A_SEAT);
+        ticketConstraintValidator.validateSeatedTicket(AN_EVENT_ID, A_CATEGORY_ID, A_SECTION, A_SEAT);
     }
 
     @Test
@@ -70,7 +70,7 @@ public class TicketConstraintValidatorTest {
         when(mockedEventInteractor.getById(AN_EVENT_ID)).thenReturn(mockedEvent);
         when(mockedCategory.getId()).thenReturn(A_CATEGORY_ID);
 
-        ticketConstraintValidator.validateForGeneral(AN_EVENT_ID, A_CATEGORY_ID);
+        ticketConstraintValidator.validateGeneralAdmission(AN_EVENT_ID, A_CATEGORY_ID);
     }
 
     @Test(expected = NoSuchCategoryException.class)
@@ -84,7 +84,7 @@ public class TicketConstraintValidatorTest {
         when(mockedEvent.getCategories()).thenReturn(mockedCategoryList);
         when(mockedCategory.getId()).thenReturn(A_CATEGORY_ID + 1);
 
-        ticketConstraintValidator.validateForSeat(AN_EVENT_ID, A_CATEGORY_ID, A_SECTION, A_SEAT);
+        ticketConstraintValidator.validateSeatedTicket(AN_EVENT_ID, A_CATEGORY_ID, A_SECTION, A_SEAT);
     }
 
     @Test(expected = NoSuchTicketSectionException.class)
@@ -100,7 +100,7 @@ public class TicketConstraintValidatorTest {
         when(mockedCategory.getId()).thenReturn(A_CATEGORY_ID);
         when(mockedTicketInteractor.search(any(TicketSearchCriteria.class))).thenReturn(mockedTicketList);
 
-        ticketConstraintValidator.validateForSeat(AN_EVENT_ID, A_CATEGORY_ID, A_SECTION, A_SEAT);
+        ticketConstraintValidator.validateSeatedTicket(AN_EVENT_ID, A_CATEGORY_ID, A_SECTION, A_SEAT);
     }
 
     @Test(expected = AlreadyAssignedSeatException.class)
@@ -119,7 +119,7 @@ public class TicketConstraintValidatorTest {
         when(mockedTicketInteractor.search(any(TicketSearchCriteria.class))).thenReturn(mockedTicketList);
         when(mockedTicket.getSeat()).thenReturn(A_SEAT + 1);
 
-        ticketConstraintValidator.validateForSeat(AN_EVENT_ID, A_CATEGORY_ID, A_SECTION, A_SEAT);
+        ticketConstraintValidator.validateSeatedTicket(AN_EVENT_ID, A_CATEGORY_ID, A_SECTION, A_SEAT);
     }
 
     public static class TestModule extends JukitoModule {

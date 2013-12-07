@@ -1,5 +1,5 @@
 <h1>Ajouter des billets</h1>
-
+<h4>{{event.sport.name}} {{event.gender | gender}} - {{event.dateAsString | date:shortDate}}</h4>
 <form role="form" name="add_ticket_form" novalidate ng-submit="addTicket(ticketToAdd)">
     <div class="form-group">
         <label for="categoriesInput">catégorie</label>
@@ -19,7 +19,7 @@
             <div  class="form-group">
                 <label for="sectionInput">section</label>
                 <select required class="form-control" id="sectionInput"
-                        ng-model="ticketToAdd.section"
+                        ng-model="ticketToAdd.sectionName"
                         ng-options="section for section in eventSections[ticketToAdd.categoryId]"
                         ng-value="section">
                 </select>

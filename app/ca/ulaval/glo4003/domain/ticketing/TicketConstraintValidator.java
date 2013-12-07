@@ -19,12 +19,12 @@ public class TicketConstraintValidator {
         this.eventsInteractor = eventsInteractor;
     }
 
-    public void validateForGeneral(long eventId, long categoryId) throws NoSuchCategoryException, RecordNotFoundException {
+    public void validateGeneralAdmission(long eventId, long categoryId) throws NoSuchCategoryException, RecordNotFoundException {
         Event event = eventsInteractor.getById(eventId);
         validateCategory(event.getCategories(), categoryId);
     }
 
-    public void validateForSeat(long eventId, long categoryId, String section, int seat)
+    public void validateSeatedTicket(long eventId, long categoryId, String section, int seat)
             throws NoSuchCategoryException, AlreadyAssignedSeatException, NoSuchTicketSectionException, RecordNotFoundException {
 
         Event event = eventsInteractor.getById(eventId);
@@ -51,7 +51,7 @@ public class TicketConstraintValidator {
         Iterator iterator = categories.iterator();
         boolean categoryExists = false;
 
-        while (iterator.hasNext()) {
+        while (iterator.hasNext() && !categoryExists) {
             Category category = (Category) iterator.next();
             categoryExists = (category.getId() == categoryId);
         }

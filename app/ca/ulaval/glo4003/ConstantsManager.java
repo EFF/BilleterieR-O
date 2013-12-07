@@ -33,4 +33,8 @@ public class ConstantsManager {
     public final static String CHECKOUT_CONFIRMATION_EMAIL = "Votre transaction c'est bien effectuée sur le système." +
             " Votre numéro de confirmation est le: ";
     public final static int SERVICE_OPERATION_TIMEOUT = 5000;
+    public static final String CATEGORY_TYPE_FIELD_NAME = "categoryType";
+    public static final String QUANTITY_FIELD_NAME = "quantity";
+    public static final String SECTION_FIELD_NAME = "sectionName";
+    public static final String SEAT_FIELD_NAME = "seat";
 }

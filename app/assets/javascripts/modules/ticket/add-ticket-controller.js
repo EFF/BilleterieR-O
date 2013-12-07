@@ -10,7 +10,7 @@ define(['./module'], function (TicketModule) {
                 $scope.ticketToAdd.categoryId = category.id;
                 $scope.ticketToAdd.categoryType = category.type;
 
-                delete $scope.ticketToAdd.section;
+                delete $scope.ticketToAdd.sectionName;
                 delete $scope.ticketToAdd.seat;
                 delete $scope.ticketToAdd.quantity;
             };
@@ -18,12 +18,11 @@ define(['./module'], function (TicketModule) {
             $scope.addTicket = function () {
                 var onAddTicketSuccess = function () {
                     FlashMessage.send('success', "L'ajout de billet s'est fait avec succès. Vous pouvez en ajouter d'autre pour cet événement");
-                    ticketToAdd = {};
+                    $scope.ticketToAdd = {eventId: $scope.eventId};
                 };
 
                 var onAddTicketFail = function (error) {
                     //TODO: display a more explicit message
-                    console.log(error);
                     FlashMessage.send('error', "Une erreure est survenue lors de l'ajout de billet")
                 };
 
