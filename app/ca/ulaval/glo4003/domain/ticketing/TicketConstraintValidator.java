@@ -19,20 +19,24 @@ public class TicketConstraintValidator {
         this.eventsInteractor = eventsInteractor;
     }
 
-    public void validateGeneralAdmission(long eventId, long categoryId) throws NoSuchCategoryException, RecordNotFoundException {
-        Event event = eventsInteractor.getById(eventId);
-        validateCategory(event.getCategories(), categoryId);
+    public void validateGeneralAdmission(long eventId, long categoryId)
+            throws NoSuchCategoryException, RecordNotFoundException {
+        validateEventAndCategory(eventId, categoryId);
     }
 
     public void validateSeatedTicket(long eventId, long categoryId, String section, int seat)
             throws NoSuchCategoryException, AlreadyAssignedSeatException, NoSuchTicketSectionException, RecordNotFoundException {
 
-        Event event = eventsInteractor.getById(eventId);
-        validateCategory(event.getCategories(), categoryId);
-        validateTicketNotExists(eventId, categoryId, section, seat);
+        validateEventAndCategory(eventId, categoryId);
+        validateTicketDoesNotExists(eventId, categoryId, section, seat);
     }
 
-    private void validateTicketNotExists(long eventId, long categoryId, String section, int seat)
+    private void validateEventAndCategory(long eventId, long categoryId) throws RecordNotFoundException, NoSuchCategoryException {
+        Event event = eventsInteractor.getById(eventId);
+        validateCategory(event.getCategories(), categoryId);
+    }
+
+    private void validateTicketDoesNotExists(long eventId, long categoryId, String section, int seat)
             throws NoSuchTicketSectionException, AlreadyAssignedSeatException {
 
         TicketSearchCriteria ticketSearchCriteria = new TicketSearchCriteria();

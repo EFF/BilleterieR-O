@@ -1,7 +1,7 @@
 package ca.ulaval.glo4003.api.ticketing;
 
-
 import ca.ulaval.glo4003.ConstantsManager;
+import ca.ulaval.glo4003.api.SecureAction;
 import ca.ulaval.glo4003.domain.RecordNotFoundException;
 import ca.ulaval.glo4003.domain.event.CategoryType;
 import ca.ulaval.glo4003.domain.ticketing.*;
@@ -127,16 +127,19 @@ public class TicketsController extends Controller {
         return ok(Json.toJson(sections.asMap()));
     }
 
-//    @SecureAction(admin = true)
+    @SecureAction(admin = true)
     public Result create() {
-            JsonNode body = request().body().asJson();
-            final long eventId = body.get(ConstantsManager.EVENT_ID_FIELD_NAME).asLong();
-            final long categoryId = body.get(ConstantsManager.CATEGORY_ID_FIELD_NAME).asLong();
+        JsonNode body = request().body().asJson();
+        if (fieldIsBlank(body, ConstantsManager.EVENT_ID_FIELD_NAME) || fieldIsBlank(body, ConstantsManager.CATEGORY_ID_FIELD_NAME) || fieldIsBlank(body, ConstantsManager.CATEGORY_TYPE_FIELD_NAME)) {
+            return badRequest("One or more parameters are missing");
+        }
 
+        final long eventId = body.get(ConstantsManager.EVENT_ID_FIELD_NAME).asLong();
+        final long categoryId = body.get(ConstantsManager.CATEGORY_ID_FIELD_NAME).asLong();
+        String categoryType = body.get(ConstantsManager.CATEGORY_TYPE_FIELD_NAME).asText();
         try {
-            String categoryType = body.get(ConstantsManager.CATEGORY_TYPE_FIELD_NAME).asText();
 
-            if(categoryType.equals(CategoryType.GENERAL_ADMISSION.toString())){
+            if (categoryType.equals(CategoryType.GENERAL_ADMISSION.toString())) {
                 int quantity = body.get(ConstantsManager.QUANTITY_FIELD_NAME).asInt();
 
                 ticketConstraintValidator.validateGeneralAdmission(eventId, categoryId);
@@ -148,10 +151,15 @@ public class TicketsController extends Controller {
                 ticketConstraintValidator.validateSeatedTicket(eventId, categoryId, section, seat);
                 ticketsInteractor.addSingleSeatTicket(eventId, categoryId, section, seat);
             }
-        } catch (NoSuchCategoryException | AlreadyAssignedSeatException | NoSuchTicketSectionException | RecordNotFoundException e) {
-            return badRequest(e.getMessage());
+        } catch (RecordNotFoundException | NoSuchCategoryException | NoSuchTicketSectionException | AlreadyAssignedSeatException e) {
+            return badRequest();
         }
-        return ok(Json.toJson("Success"));
+
+        return ok();
+    }
+
+    private boolean fieldIsBlank(JsonNode json, String fieldName) {
+        return !(json.has(fieldName));
     }
 
     private List<Long> extractTicketsIdsFromRequest() throws IOException {

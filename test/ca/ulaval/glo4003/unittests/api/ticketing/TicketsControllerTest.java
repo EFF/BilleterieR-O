@@ -2,13 +2,9 @@ package ca.ulaval.glo4003.unittests.api.ticketing;
 
 import ca.ulaval.glo4003.ConstantsManager;
 import ca.ulaval.glo4003.api.ticketing.TicketsController;
-import ca.ulaval.glo4003.domain.ticketing.MaximumExceededException;
 import ca.ulaval.glo4003.domain.RecordNotFoundException;
-import ca.ulaval.glo4003.domain.ticketing.UpdateTicketStateUnauthorizedException;
-import ca.ulaval.glo4003.domain.ticketing.TicketsInteractor;
-import ca.ulaval.glo4003.domain.ticketing.Ticket;
-import ca.ulaval.glo4003.domain.ticketing.TicketSearchCriteria;
-import ca.ulaval.glo4003.domain.ticketing.TicketState;
+import ca.ulaval.glo4003.domain.event.CategoryType;
+import ca.ulaval.glo4003.domain.ticketing.*;
 import ca.ulaval.glo4003.unittests.api.BaseControllerTest;
 import com.google.inject.Inject;
 import org.codehaus.jackson.JsonNode;
@@ -35,6 +31,9 @@ import static org.mockito.Mockito.*;
 public class TicketsControllerTest extends BaseControllerTest {
     private static final long AN_EVENT_ID = 1;
     private static final long A_CATEGORY_ID = 1;
+    private static final int A_QUANTITY = 25;
+    private static final String A_SECTION = "section";
+    private static final int A_SEAT = 118;
     @Inject
     private TicketsController ticketsController = null;
 
@@ -194,8 +193,99 @@ public class TicketsControllerTest extends BaseControllerTest {
     }
 
     @Test
-    public void createTicketShouldReturnOkWhenValid(TicketsInteractor mockedTicketsInteractor){
-        //TODO
+    public void createTicketShouldReturnCreatedWhenValidGeneralAdmission(TicketsInteractor mockedTicketsInteractor, TicketConstraintValidator mockedTicketConstraintValidator)
+            throws RecordNotFoundException, NoSuchCategoryException {
+        doNothing().when(mockedTicketConstraintValidator).validateGeneralAdmission(AN_EVENT_ID, A_CATEGORY_ID);
+        doNothing().when(mockedTicketsInteractor).addGeneralAdmissionTickets(AN_EVENT_ID, AN_EVENT_ID, A_QUANTITY);
+
+        Result result = TicketsController.created();
+
+        assertEquals(Helpers.CREATED, Helpers.status(result));
+    }
+
+    @Test
+    public void createTicketShouldReturnCreatedWhenValidSeated(TicketsInteractor mockedTicketsInteractor, TicketConstraintValidator mockedTicketConstraintValidator)
+            throws RecordNotFoundException, AlreadyAssignedSeatException, NoSuchCategoryException, NoSuchTicketSectionException {
+        createMockedSeatedTicketBody();
+        doNothing().when(mockedTicketConstraintValidator).validateSeatedTicket(AN_EVENT_ID, A_CATEGORY_ID, A_SECTION, A_SEAT);
+        doNothing().when(mockedTicketsInteractor).addSingleSeatTicket(AN_EVENT_ID, A_CATEGORY_ID, A_SECTION, A_SEAT);
+
+        Result result = TicketsController.created();
+
+        assertEquals(Helpers.CREATED, Helpers.status(result));
+    }
+
+    @Test
+    public void createShouldReturnBadRequestWhenEventNotExisting(TicketsInteractor mockedTicketInteractor, TicketConstraintValidator mockedTicketConstraintValidator)
+            throws RecordNotFoundException, NoSuchCategoryException {
+        createMockedGeneralTicketBody();
+
+        doThrow(new RecordNotFoundException()).when(mockedTicketConstraintValidator).validateGeneralAdmission(AN_EVENT_ID, A_CATEGORY_ID);
+        verify(mockedTicketInteractor, never()).addGeneralAdmissionTickets(anyLong(), anyLong(), anyInt());
+
+        Result result = ticketsController.create();
+
+        assertEquals(Helpers.BAD_REQUEST, Helpers.status(result));
+    }
+
+    @Test
+    public void createShouldReturnBadRequestWhenCategoryNotExisting(TicketsInteractor mockedTicketInteractor, TicketConstraintValidator mockedTicketConstraintValidator)
+            throws RecordNotFoundException, NoSuchCategoryException {
+        createMockedGeneralTicketBody();
+
+        doThrow(new NoSuchCategoryException()).when(mockedTicketConstraintValidator).validateGeneralAdmission(AN_EVENT_ID, A_CATEGORY_ID);
+        verify(mockedTicketInteractor, never()).addGeneralAdmissionTickets(anyLong(), anyLong(), anyInt());
+
+        Result result = ticketsController.create();
+
+        assertEquals(Helpers.BAD_REQUEST, Helpers.status(result));
+    }
+
+    @Test
+    public void createShouldReturnBadRequestWhenSectionNotExisting(TicketsInteractor mockedTicketInteractor, TicketConstraintValidator mockedTicketConstraintValidator)
+            throws NoSuchCategoryException, NoSuchTicketSectionException, AlreadyAssignedSeatException, RecordNotFoundException {
+        createMockedSeatedTicketBody();
+
+        doThrow(new NoSuchTicketSectionException()).when(mockedTicketConstraintValidator).validateSeatedTicket(AN_EVENT_ID, A_CATEGORY_ID, A_SECTION,A_SEAT);
+        verify(mockedTicketInteractor, never()).addSingleSeatTicket(anyLong(), anyLong(), anyString(), anyInt());
+
+        Result result = ticketsController.create();
+
+        assertEquals(Helpers.BAD_REQUEST, Helpers.status(result));
+    }
+
+    @Test
+    public void createShouldReturnBadRequestWhenAlreadyAssigned(TicketsInteractor mockedTicketInteractor, TicketConstraintValidator mockedTicketConstraintValidator)
+           throws NoSuchCategoryException, NoSuchTicketSectionException, AlreadyAssignedSeatException, RecordNotFoundException {
+        createMockedSeatedTicketBody();
+
+        doThrow(new AlreadyAssignedSeatException()).when(mockedTicketConstraintValidator).validateSeatedTicket(AN_EVENT_ID, A_CATEGORY_ID, A_SECTION, A_SEAT);
+        verify(mockedTicketInteractor, never()).addSingleSeatTicket(anyLong(), anyLong(), anyString(), anyInt());
+
+        Result result = ticketsController.create();
+
+        assertEquals(Helpers.BAD_REQUEST, Helpers.status(result));
+    }
+
+    private void createMockedGeneralTicketBody() {
+        ObjectNode json = Json.newObject();
+        json.put(ConstantsManager.EVENT_ID_FIELD_NAME, AN_EVENT_ID);
+        json.put(ConstantsManager.CATEGORY_ID_FIELD_NAME, A_CATEGORY_ID);
+        json.put(ConstantsManager.CATEGORY_TYPE_FIELD_NAME, CategoryType.GENERAL_ADMISSION.toString());
+        json.put(ConstantsManager.QUANTITY_FIELD_NAME, A_QUANTITY);
+
+        when(mockedBody.asJson()).thenReturn(json);
+    }
+
+    private void createMockedSeatedTicketBody() {
+        ObjectNode json = Json.newObject();
+        json.put(ConstantsManager.EVENT_ID_FIELD_NAME, AN_EVENT_ID);
+        json.put(ConstantsManager.CATEGORY_ID_FIELD_NAME, A_CATEGORY_ID);
+        json.put(ConstantsManager.CATEGORY_TYPE_FIELD_NAME, CategoryType.SEAT.toString());
+        json.put(ConstantsManager.SECTION_FIELD_NAME, A_SECTION);
+        json.put(ConstantsManager.SEAT_FIELD_NAME, A_SEAT);
+
+        when(mockedBody.asJson()).thenReturn(json);
     }
 
     private Ticket createFakeTicket() {
@@ -207,6 +297,7 @@ public class TicketsControllerTest extends BaseControllerTest {
         @Override
         protected void configureTest() {
             forceMock(TicketsInteractor.class);
+            forceMock(TicketConstraintValidator.class);
         }
     }
 }
