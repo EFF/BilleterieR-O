@@ -48,9 +48,9 @@ public class TicketsControllerTest extends BaseControllerTest {
         tempFilteredTicketList.add(createFakeTicket());
         when(mockedTicketsInteractor.search(refEq(ticketSearchCriteria))).thenReturn(tempFilteredTicketList);
 
-        when(mockedRequest.getQueryString(ApiTicketingConstantsManager.EVENT_ID_FIELD_NAME)).thenReturn(String.valueOf(AN_EVENT_ID));
-        when(mockedRequest.getQueryString(ApiTicketingConstantsManager.CATEGORY_ID_FIELD_NAME)).thenReturn(String.valueOf(A_CATEGORY_ID));
-        when(mockedRequest.getQueryString(ApiTicketingConstantsManager.TICKET_STATE_FIELD_NAME)).thenReturn(String.valueOf(TicketState.AVAILABLE));
+        when(mockedRequest.getQueryString(ApiTicketingConstantsManager.QUERY_STRING_EVENT_ID_PARAM_NAME)).thenReturn(String.valueOf(AN_EVENT_ID));
+        when(mockedRequest.getQueryString(ApiTicketingConstantsManager.QUERY_STRING_CATEGORY_ID_PARAM_NAME)).thenReturn(String.valueOf(A_CATEGORY_ID));
+        when(mockedRequest.getQueryString(ApiTicketingConstantsManager.QUERY_STRING_TICKET_STATE_PARAM_NAME)).thenReturn(String.valueOf(TicketState.AVAILABLE));
         when(mockedRequest.getQueryString(ApiTicketingConstantsManager.QUERY_STRING_STATE_PARAM_NAME)).thenReturn(TicketState.AVAILABLE.toString());
         Result result = ticketsController.index();
 
@@ -76,8 +76,8 @@ public class TicketsControllerTest extends BaseControllerTest {
         ticketSearchCriteria.setCategoryId(A_CATEGORY_ID);
         when(mockedTicketsInteractor.search(refEq(ticketSearchCriteria))).thenThrow(new InvalidParameterException("Test"));
 
-        when(mockedRequest.getQueryString(ApiTicketingConstantsManager.EVENT_ID_FIELD_NAME)).thenReturn(String.valueOf(AN_EVENT_ID));
-        when(mockedRequest.getQueryString(ApiTicketingConstantsManager.CATEGORY_ID_FIELD_NAME)).thenReturn(String.valueOf(A_CATEGORY_ID));
+        when(mockedRequest.getQueryString(ApiTicketingConstantsManager.QUERY_STRING_EVENT_ID_PARAM_NAME)).thenReturn(String.valueOf(AN_EVENT_ID));
+        when(mockedRequest.getQueryString(ApiTicketingConstantsManager.QUERY_STRING_CATEGORY_ID_PARAM_NAME)).thenReturn(String.valueOf(A_CATEGORY_ID));
 
         Result result = ticketsController.index();
 

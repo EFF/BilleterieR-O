@@ -50,7 +50,7 @@ public class UsersControllerTest extends BaseControllerTest {
         Result result = usersController.updateEmail();
 
         assertEquals(Http.Status.UNAUTHORIZED, status(result));
-        assertEquals(UsersController.BAD_SESSION_WRONG_USERNAME, contentAsString(result));
+        assertEquals(ApiUserConstantsManager.BAD_SESSION_WRONG_USERNAME, contentAsString(result));
     }
 
     @Test
@@ -71,7 +71,7 @@ public class UsersControllerTest extends BaseControllerTest {
         Result result = usersController.updateEmail();
 
         assertEquals(Http.Status.UNAUTHORIZED, status(result));
-        assertEquals(UsersController.EMAIL_SHOULD_BE_UNIQUE, contentAsString(result));
+        assertEquals(ApiUserConstantsManager.EMAIL_SHOULD_BE_UNIQUE, contentAsString(result));
     }
 
     @Test
@@ -84,7 +84,7 @@ public class UsersControllerTest extends BaseControllerTest {
         Result result = usersController.updateEmail();
 
         assertEquals(Http.Status.UNAUTHORIZED, status(result));
-        assertEquals(UsersController.EMAIL_IS_INVALID, contentAsString(result));
+        assertEquals(ApiUserConstantsManager.EMAIL_IS_INVALID, contentAsString(result));
     }
 
     @Test
@@ -94,7 +94,7 @@ public class UsersControllerTest extends BaseControllerTest {
         Result result = usersController.updateEmail();
 
         assertEquals(Http.Status.BAD_REQUEST, status(result));
-        assertEquals(UsersController.EMAIL_EXPECTED, contentAsString(result));
+        assertEquals(ApiUserConstantsManager.EMAIL_EXPECTED, contentAsString(result));
     }
 
     @Test
@@ -106,7 +106,7 @@ public class UsersControllerTest extends BaseControllerTest {
         Result result = usersController.updatePassword();
 
         assertEquals(Http.Status.UNAUTHORIZED, status(result));
-        assertEquals(UsersController.BAD_SESSION_WRONG_USERNAME, contentAsString(result));
+        assertEquals(ApiUserConstantsManager.BAD_SESSION_WRONG_USERNAME, contentAsString(result));
     }
 
     @Test
@@ -128,7 +128,7 @@ public class UsersControllerTest extends BaseControllerTest {
         Result result = usersController.updatePassword();
 
         assertEquals(Http.Status.UNAUTHORIZED, status(result));
-        assertEquals(UsersController.WRONG_ACTUAL_PASSWORD, contentAsString(result));
+        assertEquals(ApiUserConstantsManager.WRONG_ACTUAL_PASSWORD, contentAsString(result));
     }
 
     @Test
@@ -138,7 +138,7 @@ public class UsersControllerTest extends BaseControllerTest {
         Result result = usersController.updatePassword();
 
         assertEquals(Http.Status.BAD_REQUEST, status(result));
-        assertEquals(UsersController.ACTUAL_AND_NEW_PASSWORD_EXPECTED, contentAsString(result));
+        assertEquals(ApiUserConstantsManager.ACTUAL_AND_NEW_PASSWORD_EXPECTED, contentAsString(result));
         verify(mockedUserDao, never()).update(any(User.class));
     }
 

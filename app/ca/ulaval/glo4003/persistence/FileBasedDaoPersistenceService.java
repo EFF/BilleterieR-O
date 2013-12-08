@@ -40,10 +40,10 @@ public class FileBasedDaoPersistenceService implements DaoPersistenceService {
 
     public <T extends Dao> File getDaoPersistencePath(T dao) {
         try {
-            File baseDir = getOrCreateDir(new File(new File("").getAbsolutePath()), ca.ulaval.glo4003.persistence.ConstantsManager.PERSISTENCE_DIRECTORY);
+            File baseDir = getOrCreateDir(new File(new File("").getAbsolutePath()), PersistenceConstantsManager.PERSISTENCE_DIRECTORY);
             File profileDir = getOrCreateDir(baseDir, this.profile);
 
-            return new File(profileDir, dao.getClass().getSimpleName() + ca.ulaval.glo4003.persistence.ConstantsManager.PERSISTENCE_FILE_EXTENSION);
+            return new File(profileDir, dao.getClass().getSimpleName() + PersistenceConstantsManager.PERSISTENCE_FILE_EXTENSION);
         } catch (Exception e) {
             System.err.println(String.format("ERROR: Output path for DAO %s doesn't exist and could not be created." +
                     " Inner exception: %s", dao.getClass().getName(), e.getMessage()));

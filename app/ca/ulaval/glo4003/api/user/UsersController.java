@@ -15,12 +15,6 @@ import javax.validation.ConstraintViolationException;
 
 public class UsersController extends Controller {
 
-    public static final String EMAIL_SHOULD_BE_UNIQUE = "Email should be unique";
-    public static final String BAD_SESSION_WRONG_USERNAME = "Bad session, wrong username";
-    public static final String EMAIL_EXPECTED = "Email expected";
-    public static final String ACTUAL_AND_NEW_PASSWORD_EXPECTED = "Actual and new password expected";
-    public static final String WRONG_ACTUAL_PASSWORD = "Wrong actual password";
-    public static final String EMAIL_IS_INVALID = "Invalid email";
     private final UsersInteractor usersInteractor;
 
     @Inject
@@ -33,7 +27,7 @@ public class UsersController extends Controller {
         JsonNode json = request().body().asJson();
 
         if (!validateUpdateEmailParameters(json)) {
-            return badRequest(EMAIL_EXPECTED);
+            return badRequest(ApiUserConstantsManager.EMAIL_EXPECTED);
         }
 
         String actualEmail = request().username();
@@ -44,11 +38,11 @@ public class UsersController extends Controller {
             session().put(ApiUserConstantsManager.COOKIE_EMAIL_FIELD_NAME, newEmail);
             return ok();
         } catch (RecordNotFoundException e) {
-            return unauthorized(BAD_SESSION_WRONG_USERNAME);
+            return unauthorized(ApiUserConstantsManager.BAD_SESSION_WRONG_USERNAME);
         } catch (UniqueValidationException e) {
-            return unauthorized(EMAIL_SHOULD_BE_UNIQUE);
+            return unauthorized(ApiUserConstantsManager.EMAIL_SHOULD_BE_UNIQUE);
         } catch (ConstraintViolationException e) {
-            return unauthorized(EMAIL_IS_INVALID);
+            return unauthorized(ApiUserConstantsManager.EMAIL_IS_INVALID);
         }
     }
 
@@ -57,7 +51,7 @@ public class UsersController extends Controller {
         JsonNode json = request().body().asJson();
 
         if (!validateUpdatePasswordParameters(json)) {
-            return badRequest(ACTUAL_AND_NEW_PASSWORD_EXPECTED);
+            return badRequest(ApiUserConstantsManager.ACTUAL_AND_NEW_PASSWORD_EXPECTED);
         }
 
         String email = request().username();
@@ -68,9 +62,9 @@ public class UsersController extends Controller {
             usersInteractor.updatePassword(email, actualPassword, newPassword);
             return ok();
         } catch (RecordNotFoundException e) {
-            return unauthorized(BAD_SESSION_WRONG_USERNAME);
+            return unauthorized(ApiUserConstantsManager.BAD_SESSION_WRONG_USERNAME);
         } catch (InvalidActualPasswordException e) {
-            return unauthorized(WRONG_ACTUAL_PASSWORD);
+            return unauthorized(ApiUserConstantsManager.WRONG_ACTUAL_PASSWORD);
         }
     }
 

@@ -14,9 +14,6 @@ import play.mvc.Result;
 
 public class AuthenticationController extends Controller {
 
-    public final static String BAD_CREDENTIALS_MESSAGE = "Mauvaise combinaison email/mot de passe";
-    public final static String AUTHENTICATION_SUCCESS_MESSAGE = "Authentification réussitte";
-    public final static String WRONG_AUTHENTIFICATION_PARAMETERS = "Expected username and password";
     private final AuthenticationInteractor authenticationInteractor;
 
     @Inject
@@ -37,7 +34,7 @@ public class AuthenticationController extends Controller {
         JsonNode jsonBody = request().body().asJson();
 
         if (jsonBody != null && !validateLoginParameters(jsonBody)) {
-            return badRequest(WRONG_AUTHENTIFICATION_PARAMETERS);
+            return badRequest(ApiUserConstantsManager.WRONG_AUTHENTIFICATION_PARAMETERS);
         }
 
         Credentials credentials = extractCredentialsFromRequest(jsonBody);
@@ -47,9 +44,9 @@ public class AuthenticationController extends Controller {
             session().clear();
             session().put(ApiUserConstantsManager.COOKIE_EMAIL_FIELD_NAME, user.getEmail());
             session().put(ApiUserConstantsManager.COOKIE_ADMIN_FIELD_NAME, user.isAdmin().toString());
-            return ok(AUTHENTICATION_SUCCESS_MESSAGE);
+            return ok(ApiUserConstantsManager.AUTHENTICATION_SUCCESS_MESSAGE);
         } catch (AuthenticationException ignored) {
-            return unauthorized(BAD_CREDENTIALS_MESSAGE);
+            return unauthorized(ApiUserConstantsManager.BAD_CREDENTIALS_MESSAGE);
         }
     }
 

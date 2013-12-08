@@ -89,8 +89,8 @@ public class TicketsController extends Controller {
     }
 
     public Result numberOfTickets() {
-        String strEventId = request().getQueryString(ApiTicketingConstantsManager.EVENT_ID_FIELD_NAME);
-        String strCategoryId = request().getQueryString(ApiTicketingConstantsManager.CATEGORY_ID_FIELD_NAME);
+        String strEventId = request().getQueryString(ApiTicketingConstantsManager.QUERY_STRING_EVENT_ID_PARAM_NAME);
+        String strCategoryId = request().getQueryString(ApiTicketingConstantsManager.QUERY_STRING_CATEGORY_ID_PARAM_NAME);
         int numberOfTickets;
         long eventId;
 
@@ -146,11 +146,11 @@ public class TicketsController extends Controller {
     }
 
     private TicketSearchCriteria extractTicketSearchCriteriaFromRequest() {
-        final String strEventId = request().getQueryString("eventId");
-        final String sectionName = request().getQueryString("sectionName");
-        final String strCategoryId = request().getQueryString("categoryId");
-        final String stringStates = request().getQueryString("states");
-        final String strQuantity = request().getQueryString("quantity");
+        final String strEventId = request().getQueryString(ApiTicketingConstantsManager.QUERY_STRING_EVENT_ID_PARAM_NAME);
+        final String sectionName = request().getQueryString(ApiTicketingConstantsManager.QUERY_STRING_SECTION_NAME_PARAM_NAME);
+        final String strCategoryId = request().getQueryString(ApiTicketingConstantsManager.QUERY_STRING_CATEGORY_ID_PARAM_NAME);
+        final String stringStates = request().getQueryString(ApiTicketingConstantsManager.QUERY_STRING_STATE_PARAM_NAME);
+        final String strQuantity = request().getQueryString(ApiTicketingConstantsManager.QUERY_STRING_QUANTITY_PARAM_NAME);
 
         Long eventId = null;
         Long categoryId = null;
@@ -178,7 +178,7 @@ public class TicketsController extends Controller {
         ticketSearchCriteria.setSectionName(sectionName);
 
         if (stringStates != null) {
-            String states[] = stringStates.split(",");
+            String states[] = stringStates.split(ApiTicketingConstantsManager.STATES_SEPARATOR);
             for (String stringState : states) {
                 TicketState state = TicketState.valueOf(stringState);
                 if (state != null) {
