@@ -1,6 +1,5 @@
 package ca.ulaval.glo4003.api.event;
 
-import ca.ulaval.glo4003.ConstantsManager;
 import ca.ulaval.glo4003.domain.event.FacetsInteractor;
 import play.libs.Json;
 import play.mvc.Controller;
@@ -23,8 +22,8 @@ public class FacetsController extends Controller {
     public Result index() {
         Map<String, List> facets = new HashMap<>();
 
-        facets.put(ConstantsManager.FACET_SPORT, facetsInteractor.sports());
-        facets.put(ConstantsManager.FACET_GENDER, facetsInteractor.genders());
+        facets.put(ApiEventConstantsManager.FACET_SPORT, facetsInteractor.sports());
+        facets.put(ApiEventConstantsManager.FACET_GENDER, facetsInteractor.genders());
 
         return ok(Json.toJson(facets));
     }

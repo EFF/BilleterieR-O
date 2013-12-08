@@ -1,14 +1,10 @@
 package ca.ulaval.glo4003.persistence.event;
 
+import ca.ulaval.glo4003.domain.RecordNotFoundException;
+import ca.ulaval.glo4003.domain.event.*;
+import ca.ulaval.glo4003.persistence.DaoPersistenceService;
 import ca.ulaval.glo4003.persistence.PersistedDao;
 import ca.ulaval.glo4003.persistence.UniqueConstraintValidator;
-import ca.ulaval.glo4003.domain.RecordNotFoundException;
-import ca.ulaval.glo4003.domain.event.EventDao;
-import ca.ulaval.glo4003.domain.event.Category;
-import ca.ulaval.glo4003.domain.event.Event;
-import ca.ulaval.glo4003.domain.event.EventSearchCriteria;
-import ca.ulaval.glo4003.domain.event.Gender;
-import ca.ulaval.glo4003.persistence.DaoPersistenceService;
 import com.google.common.base.Predicate;
 import com.google.common.collect.FluentIterable;
 import com.google.inject.Inject;
@@ -32,7 +28,7 @@ public class PersistedEventDao extends PersistedDao<Event> implements EventDao {
 
         if (criteria.getDateStart() != null && criteria.getDateEnd() != null) {
             if (criteria.getDateEnd().isBefore(criteria.getDateStart())) {
-                String errorFormat = "End Date %s can't be before Start Date %s";
+                String errorFormat = PersitenceEventConstantsManager.END_DATE_CANNOT_BE_BEFORE_START_DATE_ERROR_MESSAGE_FORMAT;
                 String error = String.format(errorFormat, criteria.getDateEnd().toString(),
                         criteria.getDateStart().toString());
                 throw new InvalidParameterException(error);
@@ -63,7 +59,8 @@ public class PersistedEventDao extends PersistedDao<Event> implements EventDao {
         return results.filter(new Predicate<Event>() {
             @Override
             public boolean apply(@Nullable Event event) {
-                return dateStart == null || event.getDate().isAfter(dateStart) || event.getDate().isEqual(dateStart);
+                return event != null && (dateStart == null || event.getDate().isAfter(dateStart)
+                        || event.getDate().isEqual(dateStart));
             }
         });
     }
@@ -72,7 +69,8 @@ public class PersistedEventDao extends PersistedDao<Event> implements EventDao {
         return results.filter(new Predicate<Event>() {
             @Override
             public boolean apply(@Nullable Event event) {
-                return dateEnd == null || event.getDate().isBefore(dateEnd) || event.getDate().isEqual(dateEnd);
+                return event != null && (dateEnd == null || event.getDate().isBefore(dateEnd)
+                        || event.getDate().isEqual(dateEnd));
             }
         });
     }

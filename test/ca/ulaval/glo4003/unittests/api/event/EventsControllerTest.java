@@ -1,6 +1,6 @@
 package ca.ulaval.glo4003.unittests.api.event;
 
-import ca.ulaval.glo4003.ConstantsManager;
+import ca.ulaval.glo4003.api.event.ApiEventConstantsManager;
 import ca.ulaval.glo4003.api.event.EventsController;
 import ca.ulaval.glo4003.domain.RecordNotFoundException;
 import ca.ulaval.glo4003.domain.event.Event;
@@ -104,14 +104,14 @@ public class EventsControllerTest extends BaseControllerTest {
         eventSearchCriteria.setGender(Gender.MALE);
         when(mockedEventsInteractor.search(refEq(eventSearchCriteria))).thenReturn(tempFilteredListEvent);
 
-        when(mockedRequest.getQueryString(ConstantsManager.QUERY_STRING_SPORT_PARAM_NAME)).thenReturn
+        when(mockedRequest.getQueryString(ApiEventConstantsManager.QUERY_STRING_SPORT_PARAM_NAME)).thenReturn
                 (EventsTestHelper.FIRST_RANDOM_SPORT);
-        when(mockedRequest.getQueryString(ConstantsManager.QUERY_STRING_DATE_START_PARAM_NAME)).thenReturn(dateStart
+        when(mockedRequest.getQueryString(ApiEventConstantsManager.QUERY_STRING_DATE_START_PARAM_NAME)).thenReturn(dateStart
                 .toString());
-        when(mockedRequest.getQueryString(ConstantsManager.QUERY_STRING_DATE_END_PARAM_NAME)).thenReturn(dateEnd
+        when(mockedRequest.getQueryString(ApiEventConstantsManager.QUERY_STRING_DATE_END_PARAM_NAME)).thenReturn(dateEnd
                 .toString());
-        when(mockedRequest.getQueryString(ConstantsManager.QUERY_STRING_TEAM_PARAM_NAME)).thenReturn(teamName);
-        when(mockedRequest.getQueryString(ConstantsManager.QUERY_STRING_GENDER_PARAM_NAME)).thenReturn(Gender.MALE
+        when(mockedRequest.getQueryString(ApiEventConstantsManager.QUERY_STRING_TEAM_PARAM_NAME)).thenReturn(teamName);
+        when(mockedRequest.getQueryString(ApiEventConstantsManager.QUERY_STRING_GENDER_PARAM_NAME)).thenReturn(Gender.MALE
                 .toString());
 
         Result result = eventsController.index();
@@ -143,9 +143,9 @@ public class EventsControllerTest extends BaseControllerTest {
         when(mockedEventsInteractor.search(refEq(eventSearchCriteria))).thenThrow(new InvalidParameterException
                 ("Test"));
 
-        when(mockedRequest.getQueryString(ConstantsManager.QUERY_STRING_DATE_START_PARAM_NAME)).thenReturn(dateStart
+        when(mockedRequest.getQueryString(ApiEventConstantsManager.QUERY_STRING_DATE_START_PARAM_NAME)).thenReturn(dateStart
                 .toString());
-        when(mockedRequest.getQueryString(ConstantsManager.QUERY_STRING_DATE_END_PARAM_NAME)).thenReturn(dateEnd
+        when(mockedRequest.getQueryString(ApiEventConstantsManager.QUERY_STRING_DATE_END_PARAM_NAME)).thenReturn(dateEnd
                 .toString());
 
         Result result = eventsController.index();

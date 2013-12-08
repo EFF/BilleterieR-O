@@ -6,6 +6,7 @@ import ca.ulaval.glo4003.domain.Record;
 import java.io.Serializable;
 
 public class Ticket extends Record implements Serializable {
+
     private long categoryId;
     private long eventId;
     private String section;

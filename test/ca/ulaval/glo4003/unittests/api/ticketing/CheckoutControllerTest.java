@@ -1,6 +1,6 @@
 package ca.ulaval.glo4003.unittests.api.ticketing;
 
-import ca.ulaval.glo4003.ConstantsManager;
+import ca.ulaval.glo4003.api.ticketing.ApiTicketingConstantsManager;
 import ca.ulaval.glo4003.api.ticketing.CheckoutController;
 import ca.ulaval.glo4003.domain.RecordNotFoundException;
 import ca.ulaval.glo4003.domain.ticketing.CheckoutInteractor;
@@ -146,7 +146,7 @@ public class CheckoutControllerTest extends BaseControllerTest {
         ArrayNode ids = JsonNodeFactory.instance.arrayNode();
         ids.add(id1);
         ids.add(id2);
-        jsonBody.put(ConstantsManager.TICKET_IDS_FIELD_NAME, ids);
+        jsonBody.put(ApiTicketingConstantsManager.TICKET_IDS_FIELD_NAME, ids);
         when(mockedBody.asJson()).thenReturn(jsonBody);
     }
 
