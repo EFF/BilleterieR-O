@@ -1,7 +1,10 @@
 package ca.ulaval.glo4003.acceptances;
 
 import ca.ulaval.glo4003.TestGlobal;
-import ca.ulaval.glo4003.acceptances.pages.*;
+import ca.ulaval.glo4003.acceptances.pages.CartPage;
+import ca.ulaval.glo4003.acceptances.pages.EventPage;
+import ca.ulaval.glo4003.acceptances.pages.LoginPage;
+import ca.ulaval.glo4003.acceptances.pages.PaymentResultPage;
 import org.fluentlenium.adapter.FluentTest;
 import org.junit.Test;
 import play.libs.F;
@@ -318,6 +321,23 @@ public class CartTest extends FluentTest {
                 eventPage.clickLogoutButton();
                 loginPage.isLoggedOut();
                 eventPage.waitUntilCartHasSize(0);
+            }
+        });
+    }
+
+    @Test
+    public void ensureThatLogoutWithEmptyCartWorks() {
+        running(testServer(3333, fakeApplication(new TestGlobal())), FIREFOX, new F.Callback<TestBrowser>() {
+            @Override
+            public void invoke(TestBrowser browser) {
+                LoginPage loginPage = new LoginPage(browser.getDriver());
+
+                goToLoginPage(loginPage);
+                loginPage.performLogin(EMAIL, PASSWORD);
+
+                loginPage.clickLogoutButton();
+                loginPage.isLoggedOut();
+                assertEquals(0, loginPage.getErrorMessages().size());
             }
         });
     }

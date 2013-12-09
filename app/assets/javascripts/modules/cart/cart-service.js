@@ -168,7 +168,10 @@ define(['./module'], function (CartModule) {
                 for (var i in cart) {
                     tickets = tickets.concat(cart[i].tickets)
                 }
-                freeTickets(tickets, successCallback, errorCallback);
+
+                if (tickets.length > 0) {
+                    freeTickets(tickets, successCallback, errorCallback);
+                }
             };
 
             exports.getItems = function () {
