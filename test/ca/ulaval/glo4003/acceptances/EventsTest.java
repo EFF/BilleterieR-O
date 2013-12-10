@@ -15,15 +15,16 @@ import static play.test.Helpers.*;
 
 public class EventsTest extends FluentTest {
 
-    private final int EXPECTED_NUMBER_OF_TICKETS_ON_FIRST_EVENT = 1320;
-    private final int EXPECTED_NUMBER_OF_TICKETS_ON_SECOND_EVENT = 140;
-    private final int AN_EVENT_ID = 1;
-    private final String SOCCER_SPORT = "Soccer";
-    private final String GOLF_SPORT = "Golf";
-    private final String GENDER_MALE = "Masculin";
-    private final String GENDER_FEMALE = "Féminin";
-    private final int FIRST_EVENT_INDEX = 0;
-    private final int SECOND_EVENT_INDEX = 1;
+    private static final int EXPECTED_NUMBER_OF_TICKETS_ON_FIRST_EVENT = 1320;
+    private static final int EXPECTED_NUMBER_OF_TICKETS_ON_SECOND_EVENT = 140;
+    private static final int AN_EVENT_ID = 1;
+    private static final String SOCCER_SPORT = "Soccer";
+    private static final String GOLF_SPORT = "Golf";
+    private static final String GENDER_MALE = "Masculin";
+    private static final String GENDER_FEMALE = "Féminin";
+    private static final String NO_SELECTION = "";
+    private static final int FIRST_EVENT_INDEX = 0;
+    private static final int SECOND_EVENT_INDEX = 1;
 
     @Test
     public void filtersEventsList() {
@@ -59,6 +60,11 @@ public class EventsTest extends FluentTest {
                 eventsPage.waitUntilEventsHasSize(1);
                 assertThat(eventsPage.getEmptyAlert()).isNotDisplayed();
                 assertTrue(eventsPage.eventHas(FIRST_EVENT_INDEX, SOCCER_SPORT, GENDER_MALE, EXPECTED_NUMBER_OF_TICKETS_ON_FIRST_EVENT));
+
+                // Remove sport and gender filters
+                eventsPage.selectSport(NO_SELECTION);
+                eventsPage.selectGender(NO_SELECTION);
+                eventsPage.waitUntilEventsHasSize(2);
             }
         });
     }
@@ -100,6 +106,11 @@ public class EventsTest extends FluentTest {
                 eventsPage.waitUntilEventsHasSize(2);
                 assertTrue(eventsPage.eventHas(FIRST_EVENT_INDEX, SOCCER_SPORT, GENDER_MALE, EXPECTED_NUMBER_OF_TICKETS_ON_FIRST_EVENT));
                 assertTrue(eventsPage.eventHas(SECOND_EVENT_INDEX, SOCCER_SPORT, GENDER_FEMALE, EXPECTED_NUMBER_OF_TICKETS_ON_SECOND_EVENT));
+
+                // Remove date filters
+                eventsPage.selectDateStart(NO_SELECTION);
+                eventsPage.selectDateEnd(NO_SELECTION);
+                eventsPage.waitUntilEventsHasSize(2);
             }
         });
     }

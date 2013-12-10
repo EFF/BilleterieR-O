@@ -7,6 +7,7 @@ import ca.ulaval.glo4003.domain.event.EventsInteractor;
 import ca.ulaval.glo4003.domain.event.Gender;
 import ca.ulaval.glo4003.domain.ticketing.TicketsInteractor;
 import com.google.inject.Inject;
+import org.apache.commons.lang3.StringUtils;
 import org.joda.time.LocalDateTime;
 import play.libs.Json;
 import play.mvc.Controller;
@@ -61,9 +62,9 @@ public class EventsController extends Controller {
         final String team = request().getQueryString(ApiEventConstantsManager.QUERY_STRING_TEAM_PARAM_NAME);
         final String genderString = request().getQueryString(ApiEventConstantsManager.QUERY_STRING_GENDER_PARAM_NAME);
 
-        LocalDateTime start = dateStart == null ? null : LocalDateTime.parse(dateStart);
-        LocalDateTime end = dateEnd == null ? null : LocalDateTime.parse(dateEnd);
-        Gender gender = genderString == null ? null : Gender.valueOf(genderString);
+        LocalDateTime start = StringUtils.isNotBlank(dateStart) ? LocalDateTime.parse(dateStart): null;
+        LocalDateTime end = StringUtils.isNotBlank(dateEnd) ? LocalDateTime.parse(dateEnd): null;
+        Gender gender = StringUtils.isNotBlank(genderString) ? Gender.valueOf(genderString) : null;
 
         EventSearchCriteria eventSearchCriteria = new EventSearchCriteria();
         eventSearchCriteria.setSportName(sport);
