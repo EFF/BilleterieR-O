@@ -1,6 +1,5 @@
 package ca.ulaval.glo4003.api.user;
 
-import ca.ulaval.glo4003.ConstantsManager;
 import ca.ulaval.glo4003.domain.user.AuthenticationException;
 import ca.ulaval.glo4003.domain.user.AuthenticationInteractor;
 import ca.ulaval.glo4003.domain.user.Credentials;
@@ -15,9 +14,6 @@ import play.mvc.Result;
 
 public class AuthenticationController extends Controller {
 
-    public final static String BAD_CREDENTIALS_MESSAGE = "Mauvaise combinaison email/mot de passe";
-    public final static String AUTHENTICATION_SUCCESS_MESSAGE = "Authentification réussitte";
-    public final static String WRONG_AUTHENTIFICATION_PARAMETERS = "Expected username and password";
     private final AuthenticationInteractor authenticationInteractor;
 
     @Inject
@@ -28,9 +24,8 @@ public class AuthenticationController extends Controller {
     public Result index() {
         ObjectNode result = Json.newObject();
 
-        result.put(ConstantsManager.USER_AUTHENTICATED_FIELD_NAME, session().get(ConstantsManager
-                .COOKIE_SESSION_FIELD_NAME) != null);
-        result.put(ConstantsManager.USERNAME_FIELD_NAME, session().get(ConstantsManager.COOKIE_SESSION_FIELD_NAME));
+        result.put(ApiUserConstantsManager.USER_AUTHENTICATED_FIELD_NAME, request().username() != null);
+        result.put(ApiUserConstantsManager.USERNAME_FIELD_NAME, request().username());
 
         return ok(result);
     }
@@ -39,7 +34,7 @@ public class AuthenticationController extends Controller {
         JsonNode jsonBody = request().body().asJson();
 
         if (jsonBody != null && !validateLoginParameters(jsonBody)) {
-            return badRequest(WRONG_AUTHENTIFICATION_PARAMETERS);
+            return badRequest(ApiUserConstantsManager.WRONG_AUTHENTIFICATION_PARAMETERS);
         }
 
         Credentials credentials = extractCredentialsFromRequest(jsonBody);
@@ -47,16 +42,17 @@ public class AuthenticationController extends Controller {
         try {
             User user = authenticationInteractor.authenticate(credentials);
             session().clear();
-            session().put(ConstantsManager.COOKIE_SESSION_FIELD_NAME, user.getEmail());
-            return ok(AUTHENTICATION_SUCCESS_MESSAGE);
+            session().put(ApiUserConstantsManager.COOKIE_EMAIL_FIELD_NAME, user.getEmail());
+            session().put(ApiUserConstantsManager.COOKIE_ADMIN_FIELD_NAME, user.isAdmin().toString());
+            return ok(ApiUserConstantsManager.AUTHENTICATION_SUCCESS_MESSAGE);
         } catch (AuthenticationException ignored) {
-            return unauthorized(BAD_CREDENTIALS_MESSAGE);
+            return unauthorized(ApiUserConstantsManager.BAD_CREDENTIALS_MESSAGE);
         }
     }
 
     private Credentials extractCredentialsFromRequest(JsonNode jsonBody) {
-        String username = jsonBody.get(ConstantsManager.USERNAME_FIELD_NAME).asText();
-        String password = jsonBody.get(ConstantsManager.PASSWORD_FIELD_NAME).asText();
+        String username = jsonBody.get(ApiUserConstantsManager.USERNAME_FIELD_NAME).asText();
+        String password = jsonBody.get(ApiUserConstantsManager.PASSWORD_FIELD_NAME).asText();
 
         Credentials credentials = new Credentials();
         credentials.setEmail(username);
@@ -70,9 +66,9 @@ public class AuthenticationController extends Controller {
     }
 
     private boolean validateLoginParameters(JsonNode json) {
-        return json.has(ConstantsManager.USERNAME_FIELD_NAME) &&
-                StringUtils.isNotBlank(json.get(ConstantsManager.USERNAME_FIELD_NAME).asText()) &&
-                json.has(ConstantsManager.PASSWORD_FIELD_NAME) &&
-                StringUtils.isNotBlank(json.get(ConstantsManager.PASSWORD_FIELD_NAME).asText());
+        return json.has(ApiUserConstantsManager.USERNAME_FIELD_NAME) &&
+                StringUtils.isNotBlank(json.get(ApiUserConstantsManager.USERNAME_FIELD_NAME).asText()) &&
+                json.has(ApiUserConstantsManager.PASSWORD_FIELD_NAME) &&
+                StringUtils.isNotBlank(json.get(ApiUserConstantsManager.PASSWORD_FIELD_NAME).asText());
     }
 }

@@ -1,6 +1,5 @@
 package ca.ulaval.glo4003.domain.ticketing;
 
-import ca.ulaval.glo4003.ConstantsManager;
 import ca.ulaval.glo4003.domain.RecordNotFoundException;
 import ca.ulaval.glo4003.domain.user.User;
 import ca.ulaval.glo4003.domain.EmailService;
@@ -35,7 +34,7 @@ public class CheckoutInteractor {
             transaction.fulfill();
             transactionDao.update(transaction);
             emailService.sendSystemEmail(transaction.getUser().getEmail(),
-                    ConstantsManager.CHECKOUT_CONFIRMATION_EMAIL + transaction.getId());
+                    TicketingConstantsManager.CHECKOUT_CONFIRMATION_EMAIL + transaction.getId());
         } catch (RecordNotFoundException | UpdateTicketStateUnauthorizedException ignored) {
             transaction.fail();
         }

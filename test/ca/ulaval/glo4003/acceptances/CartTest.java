@@ -5,6 +5,7 @@ import ca.ulaval.glo4003.acceptances.pages.CartPage;
 import ca.ulaval.glo4003.acceptances.pages.EventPage;
 import ca.ulaval.glo4003.acceptances.pages.LoginPage;
 import ca.ulaval.glo4003.acceptances.pages.PaymentResultPage;
+import org.fluentlenium.adapter.FluentTest;
 import org.junit.Test;
 import play.libs.F;
 import play.test.TestBrowser;
@@ -13,36 +14,40 @@ import static org.fest.assertions.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static play.test.Helpers.*;
 
-public class CartTest {
+public class CartTest extends FluentTest {
 
-    private static final int VALID_TICKET_QUANTITY = 10;
-    private static final int EXCEEDED_TICKET_QUANTITY = 30000;
-    private static final String EMAIL = "user1@example.com";
-    private static final String PASSWORD = "secret";
-    private static final int FIRST_ITEM_INDEX = 0;
-    private static final int FIRST_EVENT = 1;
+    private final int FIRST_CART_ITEM_INDEX = 0;
+    private final int VALID_TICKET_QUANTITY = 10;
+    private final int EXCEEDED_TICKET_QUANTITY = 30000;
+    private final String EMAIL = "user1@example.com";
+    private final String PASSWORD = "secret";
+    private final int FIRST_ITEM_INDEX = 0;
+    private final int FIRST_EVENT_ID = 1;
+    private final int SECOND_EVENT_ID = 2;
+    private final int FIRST_CATEGORY_INDEX = 0;
+    private final int SECOND_CATEGORY_INDEX = 1;
 
     @Test
     public void putManyItemsFromManyEventsIntoTheCartAndRemoveThem() {
         running(testServer(3333, fakeApplication(new TestGlobal())), FIREFOX, new F.Callback<TestBrowser>() {
             @Override
             public void invoke(TestBrowser browser) {
-                EventPage eventPage1 = new EventPage(browser.getDriver(), FIRST_EVENT);
-                EventPage eventPage2 = new EventPage(browser.getDriver(), FIRST_EVENT + 1);
+                EventPage eventPage1 = new EventPage(browser.getDriver(), FIRST_EVENT_ID);
+                EventPage eventPage2 = new EventPage(browser.getDriver(), SECOND_EVENT_ID);
                 CartPage cartPage = new CartPage(browser.getDriver());
 
                 goToEventPage(eventPage1);
 
-                eventPage1.addTicketsToCartForCategory(0, 2);
+                eventPage1.addGeneralAdmissionsToCartForCategory(FIRST_CATEGORY_INDEX, 2);
                 eventPage1.waitUntilCartHasSize(2);
                 assertEquals(2, eventPage1.getCartSize());
 
-                eventPage1.addTicketsToCartForCategory(1, 5);
+                eventPage1.addGeneralAdmissionsToCartForCategory(SECOND_CATEGORY_INDEX, 5);
                 eventPage1.waitUntilCartHasSize(7);
                 assertEquals(7, eventPage1.getCartSize());
 
                 goToEventPage(eventPage2);
-                eventPage2.addTicketsToCartForCategory(0, 1);
+                eventPage2.addGeneralAdmissionsToCartForCategory(FIRST_CATEGORY_INDEX, 1);
                 eventPage2.waitUntilCartHasSize(8);
                 assertEquals(8, eventPage2.getCartSize());
 
@@ -66,17 +71,17 @@ public class CartTest {
         running(testServer(3333, fakeApplication(new TestGlobal())), FIREFOX, new F.Callback<TestBrowser>() {
             @Override
             public void invoke(TestBrowser browser) {
-                EventPage eventPage = new EventPage(browser.getDriver(), FIRST_EVENT);
+                EventPage eventPage = new EventPage(browser.getDriver(), FIRST_EVENT_ID);
                 CartPage cartPage = new CartPage(browser.getDriver());
                 goToEventPage(eventPage);
 
-                eventPage.addTicketsToCartForCategory(0, 1);
-                eventPage.addTicketsToCartForCategory(0, 2);
+                eventPage.addGeneralAdmissionsToCartForCategory(FIRST_CATEGORY_INDEX, 1);
+                eventPage.addGeneralAdmissionsToCartForCategory(FIRST_CATEGORY_INDEX, 2);
                 goToCartPage(cartPage, 1);
 
                 // Should have one item with quantity equals to 3
                 assertThat(cartPage.getNumberOfItems()).isEqualTo(1);
-                assertThat(cartPage.getQuantityForItem(0)).isEqualTo(3);
+                assertThat(cartPage.getQuantityForItem(FIRST_CART_ITEM_INDEX)).isEqualTo(3);
             }
         });
     }
@@ -87,7 +92,7 @@ public class CartTest {
             @Override
             public void invoke(TestBrowser browser) {
                 LoginPage loginPage = new LoginPage(browser.getDriver());
-                EventPage eventPage1 = new EventPage(browser.getDriver(), FIRST_EVENT);
+                EventPage eventPage1 = new EventPage(browser.getDriver(), FIRST_EVENT_ID);
                 CartPage cartPage = new CartPage(browser.getDriver());
                 PaymentResultPage resultPage = new PaymentResultPage(browser.getDriver());
 
@@ -97,21 +102,21 @@ public class CartTest {
 
                 goToEventPage(eventPage1);
 
-                int firstCategoryTicketCount = eventPage1.getTicketNumberForCategory(0);
+                int firstCategoryTicketCount = eventPage1.getTicketNumberForCategory(FIRST_CATEGORY_INDEX);
 
-                eventPage1.addTicketsToCartForCategory(0, 2);
+                eventPage1.addGeneralAdmissionsToCartForCategory(FIRST_CATEGORY_INDEX, 2);
                 eventPage1.waitUntilCartHasSize(2);
                 assertEquals(2, eventPage1.getCartSize());
 
                 goToCartPage(cartPage, 1);
 
-                cartPage.selectItem(0);
+                cartPage.selectItem(FIRST_CART_ITEM_INDEX);
                 cartPage.payWithCreditCard();
                 cartPage.confirm(browser.getDriver());
                 resultPage.isAt();
 
                 goToEventPage(eventPage1);
-                assertEquals(firstCategoryTicketCount - 2, eventPage1.getTicketNumberForCategory(0));
+                assertEquals(firstCategoryTicketCount - 2, eventPage1.getTicketNumberForCategory(FIRST_CATEGORY_INDEX));
             }
         });
     }
@@ -121,7 +126,7 @@ public class CartTest {
         running(testServer(3333, fakeApplication(new TestGlobal())), FIREFOX, new F.Callback<TestBrowser>() {
             @Override
             public void invoke(TestBrowser browser) {
-                EventPage eventPage1 = new EventPage(browser.getDriver(), FIRST_EVENT);
+                EventPage eventPage1 = new EventPage(browser.getDriver(), FIRST_EVENT_ID);
                 CartPage cartPage = new CartPage(browser.getDriver());
                 LoginPage loginPage = new LoginPage(browser.getDriver());
                 PaymentResultPage resultPage = new PaymentResultPage(browser.getDriver());
@@ -135,8 +140,8 @@ public class CartTest {
                 int cart1TicketNumber = eventPage1.getTicketNumberForCategory(0);
                 int cart2TicketNumber = eventPage1.getTicketNumberForCategory(1);
 
-                eventPage1.addTicketsToCartForCategory(0, 1);
-                eventPage1.addTicketsToCartForCategory(1, 1);
+                eventPage1.addGeneralAdmissionsToCartForCategory(FIRST_CATEGORY_INDEX, 1);
+                eventPage1.addGeneralAdmissionsToCartForCategory(SECOND_CATEGORY_INDEX, 1);
                 eventPage1.waitUntilCartHasSize(2);
                 assertEquals(2, eventPage1.getCartSize());
 
@@ -147,8 +152,34 @@ public class CartTest {
                 resultPage.isAt();
 
                 goToEventPage(eventPage1);
-                assertEquals(cart1TicketNumber - 1, eventPage1.getTicketNumberForCategory(0));
-                assertEquals(cart2TicketNumber - 1, eventPage1.getTicketNumberForCategory(1));
+                assertEquals(cart1TicketNumber - 1, eventPage1.getTicketNumberForCategory(FIRST_CATEGORY_INDEX));
+                assertEquals(cart2TicketNumber - 1, eventPage1.getTicketNumberForCategory(SECOND_CATEGORY_INDEX));
+            }
+        });
+    }
+
+    @Test
+    public void confirmPerformsTheTransaction() {
+        running(testServer(3333, fakeApplication(new TestGlobal())), FIREFOX, new F.Callback<TestBrowser>() {
+            @Override
+            public void invoke(TestBrowser browser) {
+                LoginPage loginPage = new LoginPage(browser.getDriver());
+                EventPage eventPage1 = new EventPage(browser.getDriver(), FIRST_EVENT_ID);
+                CartPage cartPage = new CartPage(browser.getDriver());
+                PaymentResultPage resultPage = new PaymentResultPage(browser.getDriver());
+
+                goToLoginPage(loginPage);
+
+                loginPage.performLogin(EMAIL, PASSWORD);
+
+                goToEventPage(eventPage1);
+                eventPage1.addGeneralAdmissionsToCartForCategory(FIRST_CATEGORY_INDEX, 1);
+
+                goToCartPage(cartPage, 1);
+                cartPage.payWithCreditCard();
+                cartPage.confirm(browser.getDriver());
+                cartPage.waitUntilCartHasSize(0);
+                assertEquals(0, resultPage.getCartSize());
             }
         });
     }
@@ -159,7 +190,7 @@ public class CartTest {
             @Override
             public void invoke(TestBrowser browser) {
                 LoginPage loginPage = new LoginPage(browser.getDriver());
-                EventPage eventPage1 = new EventPage(browser.getDriver(), FIRST_EVENT);
+                EventPage eventPage1 = new EventPage(browser.getDriver(), FIRST_EVENT_ID);
                 CartPage cartPage = new CartPage(browser.getDriver());
                 PaymentResultPage resultPage = new PaymentResultPage(browser.getDriver());
 
@@ -168,7 +199,7 @@ public class CartTest {
                 loginPage.performLogin(EMAIL, PASSWORD);
 
                 goToEventPage(eventPage1);
-                eventPage1.addTicketsToCartForCategory(0, 1);
+                eventPage1.addGeneralAdmissionsToCartForCategory(FIRST_CATEGORY_INDEX, 1);
 
                 goToCartPage(cartPage, 1);
                 cartPage.payWithCreditCard();
@@ -184,11 +215,11 @@ public class CartTest {
         running(testServer(3333, fakeApplication(new TestGlobal())), FIREFOX, new F.Callback<TestBrowser>() {
             @Override
             public void invoke(TestBrowser browser) {
-                EventPage eventPage1 = new EventPage(browser.getDriver(), FIRST_EVENT);
+                EventPage eventPage1 = new EventPage(browser.getDriver(), FIRST_EVENT_ID);
                 CartPage cartPage = new CartPage(browser.getDriver());
 
                 goToEventPage(eventPage1);
-                eventPage1.addTicketsToCartForCategory(0, 1);
+                eventPage1.addGeneralAdmissionsToCartForCategory(FIRST_CATEGORY_INDEX, 1);
 
                 goToCartPage(cartPage, 1);
                 cartPage.payWithCreditCard();
@@ -202,16 +233,16 @@ public class CartTest {
         running(testServer(3333, fakeApplication(new TestGlobal())), FIREFOX, new F.Callback<TestBrowser>() {
             @Override
             public void invoke(TestBrowser browser) {
-                EventPage eventPage1 = new EventPage(browser.getDriver(), FIRST_EVENT);
+                EventPage eventPage1 = new EventPage(browser.getDriver(), FIRST_EVENT_ID);
                 CartPage cartPage = new CartPage(browser.getDriver());
                 goToEventPage(eventPage1);
 
-                eventPage1.addTicketsToCartForCategory(0, 1);
+                eventPage1.addGeneralAdmissionsToCartForCategory(FIRST_CATEGORY_INDEX, 1);
                 goToCartPage(cartPage, 1);
-                cartPage.modifyNumberOfTicketsForItem(0, VALID_TICKET_QUANTITY);
+                cartPage.modifyNumberOfTicketsForItem(FIRST_CART_ITEM_INDEX, VALID_TICKET_QUANTITY);
 
                 cartPage.waitUntilItemsHasSize(1);
-                assertEquals(cartPage.getQuantityForItem(0), VALID_TICKET_QUANTITY);
+                assertEquals(cartPage.getQuantityForItem(FIRST_CART_ITEM_INDEX), VALID_TICKET_QUANTITY);
             }
         });
     }
@@ -221,13 +252,13 @@ public class CartTest {
         running(testServer(3333, fakeApplication(new TestGlobal())), FIREFOX, new F.Callback<TestBrowser>() {
             @Override
             public void invoke(TestBrowser browser) {
-                EventPage eventPage1 = new EventPage(browser.getDriver(), FIRST_EVENT);
+                EventPage eventPage1 = new EventPage(browser.getDriver(), FIRST_EVENT_ID);
                 CartPage cartPage = new CartPage(browser.getDriver());
                 goToEventPage(eventPage1);
 
-                eventPage1.addTicketsToCartForCategory(0, 1);
+                eventPage1.addGeneralAdmissionsToCartForCategory(FIRST_CATEGORY_INDEX, 1);
                 goToCartPage(cartPage, 1);
-                cartPage.modifyNumberOfTicketsForItem(0, EXCEEDED_TICKET_QUANTITY);
+                cartPage.modifyNumberOfTicketsForItem(FIRST_CART_ITEM_INDEX, EXCEEDED_TICKET_QUANTITY);
 
                 cartPage.waitForErrorMessageToDisplay();
             }
@@ -239,16 +270,16 @@ public class CartTest {
         running(testServer(3333, fakeApplication(new TestGlobal())), FIREFOX, new F.Callback<TestBrowser>() {
             @Override
             public void invoke(TestBrowser browser) {
-                EventPage eventPage1 = new EventPage(browser.getDriver(), FIRST_EVENT);
+                EventPage eventPage1 = new EventPage(browser.getDriver(), FIRST_EVENT_ID);
                 CartPage cartPage = new CartPage(browser.getDriver());
                 goToEventPage(eventPage1);
 
-                eventPage1.addTicketsToCartForCategory(0, 1);
+                eventPage1.addGeneralAdmissionsToCartForCategory(FIRST_CATEGORY_INDEX, 1);
                 goToCartPage(cartPage, 1);
-                cartPage.modifyNumberOfTicketsForItem(0, EXCEEDED_TICKET_QUANTITY);
+                cartPage.modifyNumberOfTicketsForItem(FIRST_CART_ITEM_INDEX, EXCEEDED_TICKET_QUANTITY);
                 eventPage1.waitForErrorMessageToDisplay();
 
-                assertThat(cartPage.getQuantityForItem(0)).isNotEqualTo(EXCEEDED_TICKET_QUANTITY);
+                assertThat(cartPage.getQuantityForItem(FIRST_CART_ITEM_INDEX)).isNotEqualTo(EXCEEDED_TICKET_QUANTITY);
             }
         });
     }
@@ -258,13 +289,13 @@ public class CartTest {
         running(testServer(3333, fakeApplication(new TestGlobal())), FIREFOX, new F.Callback<TestBrowser>() {
             @Override
             public void invoke(TestBrowser browser) {
-                EventPage eventPage1 = new EventPage(browser.getDriver(), FIRST_EVENT);
+                EventPage eventPage1 = new EventPage(browser.getDriver(), FIRST_EVENT_ID);
                 CartPage cartPage = new CartPage(browser.getDriver());
                 goToEventPage(eventPage1);
 
-                eventPage1.addTicketsToCartForCategory(0, 1);
+                eventPage1.addGeneralAdmissionsToCartForCategory(FIRST_CATEGORY_INDEX, 1);
                 goToCartPage(cartPage, 1);
-                cartPage.modifyNumberOfTicketsForItem(0, 0);
+                cartPage.modifyNumberOfTicketsForItem(FIRST_CART_ITEM_INDEX, 0);
                 cartPage.waitUntilItemsHasSize(0);
 
                 assertThat(cartPage.getNumberOfItems()).isEqualTo(0);
@@ -277,20 +308,36 @@ public class CartTest {
         running(testServer(3333, fakeApplication(new TestGlobal())), FIREFOX, new F.Callback<TestBrowser>() {
             @Override
             public void invoke(TestBrowser browser) {
-                EventPage eventPage = new EventPage(browser.getDriver(), FIRST_EVENT);
+                EventPage eventPage = new EventPage(browser.getDriver(), FIRST_EVENT_ID);
                 LoginPage loginPage = new LoginPage(browser.getDriver());
 
                 goToLoginPage(loginPage);
                 loginPage.performLogin(EMAIL, PASSWORD);
 
                 goToEventPage(eventPage);
-                eventPage.addTicketsToCartForCategory(0, 1);
+                eventPage.addGeneralAdmissionsToCartForCategory(FIRST_CATEGORY_INDEX, 1);
                 eventPage.waitUntilCartHasSize(1);
 
                 eventPage.clickLogoutButton();
                 loginPage.isLoggedOut();
                 eventPage.waitUntilCartHasSize(0);
+            }
+        });
+    }
 
+    @Test
+    public void ensureThatLogoutWithEmptyCartWorks() {
+        running(testServer(3333, fakeApplication(new TestGlobal())), FIREFOX, new F.Callback<TestBrowser>() {
+            @Override
+            public void invoke(TestBrowser browser) {
+                LoginPage loginPage = new LoginPage(browser.getDriver());
+
+                goToLoginPage(loginPage);
+                loginPage.performLogin(EMAIL, PASSWORD);
+
+                loginPage.clickLogoutButton();
+                loginPage.isLoggedOut();
+                assertEquals(0, loginPage.getErrorMessages().size());
             }
         });
     }
@@ -304,7 +351,6 @@ public class CartTest {
     private void goToEventPage(EventPage eventPage) {
         eventPage.go();
         eventPage.isAt();
-        eventPage.waitUntilCategoriesHasSize(2);
     }
 
     private void goToLoginPage(LoginPage loginPage) {

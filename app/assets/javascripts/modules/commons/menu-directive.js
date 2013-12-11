@@ -1,25 +1,21 @@
 define(['./module'], function (CommonModule) {
-    CommonModule.directive('menu', ['Cart', 'Login', function (Cart, Login) {
+    CommonModule.directive('menu', ['Cart', 'LoginService', function (Cart, LoginService) {
         return {
             replace: true,
             templateUrl: 'assets/templates/directives/menu.html',
             restrict: 'E',
             controller: function ($scope) {
                 $scope.getTotalQuantity = Cart.getTotalQuantity;
+                $scope.isLoggedIn = false;
 
                 $scope.$watch(function () {
-                    return Login.isLoggedIn;
-                }, function (isLoggedIn) {
-                    $scope.isLoggedIn = isLoggedIn;
-                });
-
-                $scope.$watch(function () {
-                    return Login.username;
+                    return LoginService.username;
                 }, function (username) {
                     $scope.username = username;
-                }, false);
+                    $scope.isLoggedIn = LoginService.isLoggedIn();
+                });
 
-                $scope.logout = Login.logout;
+                $scope.logout = LoginService.logout;
             }
         };
     }]);

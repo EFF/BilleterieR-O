@@ -1,6 +1,6 @@
 package ca.ulaval.glo4003.unittests.api.user;
 
-import ca.ulaval.glo4003.ConstantsManager;
+import ca.ulaval.glo4003.api.user.ApiUserConstantsManager;
 import ca.ulaval.glo4003.api.user.AuthenticationController;
 import ca.ulaval.glo4003.domain.user.UserDao;
 import ca.ulaval.glo4003.domain.RecordNotFoundException;
@@ -38,19 +38,19 @@ public class AuthenticationControllerTest extends BaseControllerTest {
         when(mockedUser.getPassword()).thenReturn(password);
 
         ObjectNode json = Json.newObject();
-        json.put(ConstantsManager.USERNAME_FIELD_NAME, email);
-        json.put(ConstantsManager.PASSWORD_FIELD_NAME, password);
+        json.put(ApiUserConstantsManager.USERNAME_FIELD_NAME, email);
+        json.put(ApiUserConstantsManager.PASSWORD_FIELD_NAME, password);
 
         when(mockedBody.asJson()).thenReturn(json);
     }
 
     @Test
     public void indexWhenAuthenticated() {
-        when(mockedSession.get(ConstantsManager.COOKIE_SESSION_FIELD_NAME)).thenReturn(email);
+        when(mockedRequest.username()).thenReturn(email);
 
         Result result = authenticationController.index();
 
-        verify(mockedSession, atLeast(1)).get(ConstantsManager.COOKIE_SESSION_FIELD_NAME);
+        verify(mockedRequest, atLeast(1)).username();
 
         assertEquals(Http.Status.OK, status(result));
 
@@ -69,11 +69,11 @@ public class AuthenticationControllerTest extends BaseControllerTest {
 
     @Test
     public void indexWhenNotAuthenticated() {
-        when(mockedSession.get(ConstantsManager.COOKIE_SESSION_FIELD_NAME)).thenReturn(null);
+        when(mockedRequest.username()).thenReturn(null);
 
         Result result = authenticationController.index();
 
-        verify(mockedSession, atLeast(1)).get(ConstantsManager.COOKIE_SESSION_FIELD_NAME);
+        verify(mockedRequest, atLeast(1)).username();
 
         assertEquals(Http.Status.OK, status(result));
 
@@ -83,8 +83,8 @@ public class AuthenticationControllerTest extends BaseControllerTest {
         JsonNode jsonNode = Json.parse(json);
 
         assertTrue(jsonNode.isContainerNode());
-        JsonNode authenticatedValue = jsonNode.get(ConstantsManager.USER_AUTHENTICATED_FIELD_NAME);
-        JsonNode username1 = jsonNode.get(ConstantsManager.USERNAME_FIELD_NAME);
+        JsonNode authenticatedValue = jsonNode.get(ApiUserConstantsManager.USER_AUTHENTICATED_FIELD_NAME);
+        JsonNode username1 = jsonNode.get(ApiUserConstantsManager.USERNAME_FIELD_NAME);
 
         assertFalse(authenticatedValue.asBoolean());
         assertTrue(username1.isNull());
@@ -113,7 +113,7 @@ public class AuthenticationControllerTest extends BaseControllerTest {
 
         InOrder inOrder = inOrder(mockedSession);
         inOrder.verify(mockedSession).clear();
-        inOrder.verify(mockedSession).put(ConstantsManager.COOKIE_SESSION_FIELD_NAME, email);
+        inOrder.verify(mockedSession).put(ApiUserConstantsManager.COOKIE_EMAIL_FIELD_NAME, email);
 
         assertEquals(Http.Status.OK, status(result));
     }
@@ -131,7 +131,7 @@ public class AuthenticationControllerTest extends BaseControllerTest {
         verify(mockedUser, never()).getEmail();
 
         verify(mockedSession, never()).clear();
-        verify(mockedSession, never()).put(ConstantsManager.COOKIE_SESSION_FIELD_NAME, email);
+        verify(mockedSession, never()).put(ApiUserConstantsManager.COOKIE_EMAIL_FIELD_NAME, email);
 
         assertEquals(Http.Status.UNAUTHORIZED, status(result));
     }
@@ -148,7 +148,7 @@ public class AuthenticationControllerTest extends BaseControllerTest {
         verify(mockedUser, never()).getEmail();
 
         verify(mockedSession, never()).clear();
-        verify(mockedSession, never()).put(ConstantsManager.COOKIE_SESSION_FIELD_NAME, email);
+        verify(mockedSession, never()).put(ApiUserConstantsManager.COOKIE_EMAIL_FIELD_NAME, email);
 
         assertEquals(Http.Status.BAD_REQUEST, status(result));
     }

@@ -1,7 +1,5 @@
 package ca.ulaval.glo4003.domain;
 
-import ca.ulaval.glo4003.domain.RecordNotFoundException;
-
 import java.util.List;
 
 public interface Dao<T> {

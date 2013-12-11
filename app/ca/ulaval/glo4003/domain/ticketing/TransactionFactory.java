@@ -7,5 +7,4 @@ public class TransactionFactory {
     public Transaction createTransaction(User user) {
         return new Transaction(user);
     }
-
 }

@@ -1,43 +1,63 @@
 define(['./module'], function (LoginModule) {
-    LoginModule.factory('Login', ['$http', 'Cart', function ($http, Cart) {
-        var exports = {};
-
-        exports.isLoggedIn = false;
-        exports.username;
-
-        exports.login = function (username, password, successCallback, errorCallback) {
-            var data = {username: username, password: password};
-
-            $http.post('/login', data, {})
-                .success(function () {
-                    setCredentials(true, username);
-                    successCallback();
-                })
-                .error(errorCallback);
+    LoginModule.factory('LoginService', ['$http', 'Cart', '$q', function ($http, Cart, $q) {
+        var loginService = {
+            username: null
         };
 
-        exports.logout = function () {
-            $http.post('/logout', {}, {})
-                .success(function () {
-                    setCredentials(false, null);
-                    Cart.removeAllItem();
-                });
+        loginService.isLoggedIn = function () {
+            return !!loginService.username;
+        };
+
+        loginService.login = function (username, password) {
+            var deferred = $q.defer();
+
+            var data = {
+                username: username,
+                password: password
+            };
+
+            var onLoginSuccess = function () {
+                setCredentials(username);
+                deferred.resolve();
+            };
+
+            $http.post('/login', data).success(onLoginSuccess).error(deferred.reject);
+
+            return deferred.promise;
+        };
+
+        loginService.logout = function () {
+            var deferred = $q.defer();
+
+            var onLogoutSuccess = function () {
+                setCredentials(null);
+                Cart.removeAllItem();
+                deferred.resolve();
+            };
+
+            $http.post('/logout').success(onLogoutSuccess).error(deferred.reject);
+
+            return deferred.promise;
         };
 
         var checkAuthenticationState = function () {
-            $http.get('/login')
-                .success(function (data) {
-                    setCredentials(data.authenticated, data.username);
-                });
+            var onCheckAuthenticationStateSuccess = function (result) {
+                setCredentials(result.username);
+            };
+
+            var onCheckAuthenticationStateError = function () {
+                //Ignored
+            };
+
+            $http.get('/login').success(onCheckAuthenticationStateSuccess).error(onCheckAuthenticationStateError);
         };
 
-        var setCredentials = function (isLoggedIn, authenticated) {
-            exports.isLoggedIn = isLoggedIn;
-            exports.username = authenticated;
+        var setCredentials = function (username) {
+            loginService.username = username;
         };
 
         checkAuthenticationState();
 
-        return exports;
+        return loginService;
     }]);
 });

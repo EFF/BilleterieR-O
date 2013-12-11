@@ -1,6 +1,6 @@
 <ol class="breadcrumb">
     <li><a href="/#!/events">Événements</a></li>
-    <li class="active">Détail de l'événement</li>
+    <li class="active">Détails de l'événement</li>
 </ol>
 
 <h1>{{ event.sport.name }} {{event.gender | gender}}</h1>
@@ -21,18 +21,18 @@
     <tbody>
     <tr class="category" ng-repeat="category in event.categories">
         <td class="price">{{category.price}}$</td>
-        <td class="numberOfTickets">{{ticketsByCategories[category.id].numberOfTickets}}</td>
+        <td class="numberOfTickets">{{ticketsSelectTagsByCategories[category.id].numberOfTickets}}</td>
         <td>
             <p>{{category.type | categoryType}}</p>
         </td>
         <td>
             <div ng-switch="category.type">
                 <span ng-switch-when="SEAT">
-                    <select id="{{sectionsByCategories[category.id].name}}"
+                    <select id="{{sectionsSelectTagsByCategories[category.id].name}}"
                             class="form-control"
-                            ng-change="apiCall()"
-                            ng-model="sectionsByCategories[category.id].selectedValue"
-                            ng-options="s for s in sectionsByCategories[category.id].options">
+                            ng-change="refreshPageData()"
+                            ng-model="sectionsSelectTagsByCategories[category.id].selectedValue"
+                            ng-options="s for s in sectionsSelectTagsByCategories[category.id].options">
                         <option value="">Section...</option>
                     </select>
                 </span>
@@ -48,12 +48,13 @@
         <td>
             <div ng-switch="category.type">
                 <span ng-switch-when="SEAT">
-                    <select id="{{ticketsByCategories[category.id].name}}"
+                    <select id="{{ticketsSelectTagsByCategories[category.id].name}}"
                             class="form-control ticketSeatsCombo"
-                            ng-model="ticketsByCategories[category.id].selectedValue">
+                            ng-model="ticketsSelectTagsByCategories[category.id].selectedValue">
                         <option value="">Siège disponible...</option>
                         <option value="{{ticket.id}}"
-                                ng-repeat="ticket in ticketsByCategories[category.id].options">{{ticket.seat}}</option>
+                                ng-repeat="ticket in ticketsSelectTagsByCategories[category.id].options">{{ticket.seat}}
+                        </option>
                     </select>
                 </span>
                 <span ng-switch-when="GENERAL_ADMISSION">
@@ -69,25 +70,25 @@
             <div ng-switch="category.type">
                 <span ng-switch-when="GENERAL_ADMISSION">
                     <input type="number" step="1" ng-model="quantity[category.id]" ng-init="quantity[category.id]=1"
-                           class="form-control category-quantity" min="1" max="{{category.numberOfTickets}}"
-                           ng-disabled="category.numberOfTickets == 0">
+                           class="form-control category-quantity" min="1"
+                           max="{{ticketsSelectTagsByCategories[category.id].numberOfTickets}}"
+                           ng-disabled="ticketsSelectTagsByCategories[category.id].numberOfTickets == 0">
                 </span>
                 <span ng-switch-when="SEAT">
                     <input type="number"
-                           class="form-control category-quantity" value="1" disabled=true />
+                           class="form-control category-quantity" value="1" disabled=true/>
                 </span>
                 <span ng-switch-default>---</span>
             </div>
         </td>
         <td>
             <button class="btn btn-success category-add"
-                    ng-click="addToCart(ticketsByCategories[category.id].selectedValue, category, quantity[category.id])"
-                    ng-hide="category.numberOfTickets == 0"
-                    ng-disabled="!ticketsByCategories[category.id].selectedValue && category.type == 'SEAT'">
+                    ng-click="addToCart(ticketsSelectTagsByCategories[category.id].selectedValue, category, quantity[category.id])"
+                    ng-disabled="(!ticketsSelectTagsByCategories[category.id].selectedValue && category.type == 'SEAT') || (ticketsSelectTagsByCategories[category.id].numberOfTickets == 0 && category.type == 'GENERAL_ADMISSION')">
                 Ajouter au panier
             </button>
-            <a href="/#!/tickets/{{ticketsByCategories[category.id].selectedValue}}"
-               ng-disabled="!ticketsByCategories[category.id].selectedValue && category.type == 'SEAT'"
+            <a href="/#!/tickets/{{ticketsSelectTagsByCategories[category.id].selectedValue}}"
+               ng-disabled="!ticketsSelectTagsByCategories[category.id].selectedValue && category.type == 'SEAT'"
                ng-hide="category.type == 'GENERAL_ADMISSION'"
                class="btn btn-info btn-details{{category.id}}">
                 Détails

@@ -1,4 +1,4 @@
-package ca.ulaval.glo4003.modules;
+package ca.ulaval.glo4003;
 
 import ca.ulaval.glo4003.ApplicationModule;
 import ca.ulaval.glo4003.TestBootstrapperInteractor;

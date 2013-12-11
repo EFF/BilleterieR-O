@@ -1,6 +1,6 @@
 package ca.ulaval.glo4003.unittests.api.ticketing;
 
-import ca.ulaval.glo4003.ConstantsManager;
+import ca.ulaval.glo4003.api.ticketing.ApiTicketingConstantsManager;
 import ca.ulaval.glo4003.api.ticketing.TicketsController;
 import ca.ulaval.glo4003.domain.ticketing.MaximumExceededException;
 import ca.ulaval.glo4003.domain.RecordNotFoundException;
@@ -48,10 +48,10 @@ public class TicketsControllerTest extends BaseControllerTest {
         tempFilteredTicketList.add(createFakeTicket());
         when(mockedTicketsInteractor.search(refEq(ticketSearchCriteria))).thenReturn(tempFilteredTicketList);
 
-        when(mockedRequest.getQueryString(ConstantsManager.EVENT_ID_FIELD_NAME)).thenReturn(String.valueOf(AN_EVENT_ID));
-        when(mockedRequest.getQueryString(ConstantsManager.CATEGORY_ID_FIELD_NAME)).thenReturn(String.valueOf(A_CATEGORY_ID));
-        when(mockedRequest.getQueryString(ConstantsManager.TICKET_STATE_FIELD_NAME)).thenReturn(String.valueOf(TicketState.AVAILABLE));
-        when(mockedRequest.getQueryString(ConstantsManager.QUERY_STRING_STATE_PARAM_NAME)).thenReturn(TicketState.AVAILABLE.toString());
+        when(mockedRequest.getQueryString(ApiTicketingConstantsManager.QUERY_STRING_EVENT_ID_PARAM_NAME)).thenReturn(String.valueOf(AN_EVENT_ID));
+        when(mockedRequest.getQueryString(ApiTicketingConstantsManager.QUERY_STRING_CATEGORY_ID_PARAM_NAME)).thenReturn(String.valueOf(A_CATEGORY_ID));
+        when(mockedRequest.getQueryString(ApiTicketingConstantsManager.QUERY_STRING_TICKET_STATE_PARAM_NAME)).thenReturn(String.valueOf(TicketState.AVAILABLE));
+        when(mockedRequest.getQueryString(ApiTicketingConstantsManager.QUERY_STRING_STATE_PARAM_NAME)).thenReturn(TicketState.AVAILABLE.toString());
         Result result = ticketsController.index();
 
         assertEquals(Helpers.OK, Helpers.status(result));
@@ -76,8 +76,8 @@ public class TicketsControllerTest extends BaseControllerTest {
         ticketSearchCriteria.setCategoryId(A_CATEGORY_ID);
         when(mockedTicketsInteractor.search(refEq(ticketSearchCriteria))).thenThrow(new InvalidParameterException("Test"));
 
-        when(mockedRequest.getQueryString(ConstantsManager.EVENT_ID_FIELD_NAME)).thenReturn(String.valueOf(AN_EVENT_ID));
-        when(mockedRequest.getQueryString(ConstantsManager.CATEGORY_ID_FIELD_NAME)).thenReturn(String.valueOf(A_CATEGORY_ID));
+        when(mockedRequest.getQueryString(ApiTicketingConstantsManager.QUERY_STRING_EVENT_ID_PARAM_NAME)).thenReturn(String.valueOf(AN_EVENT_ID));
+        when(mockedRequest.getQueryString(ApiTicketingConstantsManager.QUERY_STRING_CATEGORY_ID_PARAM_NAME)).thenReturn(String.valueOf(A_CATEGORY_ID));
 
         Result result = ticketsController.index();
 
@@ -116,7 +116,7 @@ public class TicketsControllerTest extends BaseControllerTest {
     public void freeTicketWhenExists(TicketsInteractor mockedTicketsInteractor) throws RecordNotFoundException, UpdateTicketStateUnauthorizedException {
         long ticketId = 1;
         ObjectNode json = Json.newObject();
-        ArrayNode node = json.putArray(ConstantsManager.TICKET_IDS_FIELD_NAME);
+        ArrayNode node = json.putArray(ApiTicketingConstantsManager.TICKET_IDS_FIELD_NAME);
         node.add(ticketId);
         when(mockedBody.asJson()).thenReturn(json);
 
@@ -133,7 +133,7 @@ public class TicketsControllerTest extends BaseControllerTest {
         doThrow(new RecordNotFoundException()).when(mockedTicketsInteractor).freeATicket(ticketId);
 
         ObjectNode json = Json.newObject();
-        ArrayNode node = json.putArray(ConstantsManager.TICKET_IDS_FIELD_NAME);
+        ArrayNode node = json.putArray(ApiTicketingConstantsManager.TICKET_IDS_FIELD_NAME);
         node.add(ticketId);
         when(mockedBody.asJson()).thenReturn(json);
 
@@ -146,7 +146,7 @@ public class TicketsControllerTest extends BaseControllerTest {
     public void reserveTicketWhenExists(TicketsInteractor mockedTicketsInteractor) throws RecordNotFoundException, MaximumExceededException, UpdateTicketStateUnauthorizedException {
         long ticketId = 1;
         ObjectNode json = Json.newObject();
-        ArrayNode node = json.putArray(ConstantsManager.TICKET_IDS_FIELD_NAME);
+        ArrayNode node = json.putArray(ApiTicketingConstantsManager.TICKET_IDS_FIELD_NAME);
         node.add(ticketId);
         when(mockedBody.asJson()).thenReturn(json);
 
@@ -162,7 +162,7 @@ public class TicketsControllerTest extends BaseControllerTest {
         doThrow(new RecordNotFoundException()).when(mockedTicketsInteractor).reserveATicket(ticketId);
 
         ObjectNode json = Json.newObject();
-        ArrayNode node = json.putArray(ConstantsManager.TICKET_IDS_FIELD_NAME);
+        ArrayNode node = json.putArray(ApiTicketingConstantsManager.TICKET_IDS_FIELD_NAME);
         node.add(ticketId);
         when(mockedBody.asJson()).thenReturn(json);
 

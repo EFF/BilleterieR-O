@@ -3,14 +3,15 @@ package ca.ulaval.glo4003.acceptances.pages;
 
 import org.openqa.selenium.WebDriver;
 
-import static org.fluentlenium.core.filter.FilterConstructor.withText;
-
 public class TicketPage extends BaseFluentPage {
-    private long ticketId = 0;
 
-    public TicketPage(WebDriver driver, Long id) {
+    private long ticketId;
+    private long eventId;
+
+    public TicketPage(WebDriver driver, long ticketId, long eventId) {
         super(driver);
-        ticketId = id;
+        this.ticketId = ticketId;
+        this.eventId = eventId;
     }
 
     @Override
@@ -18,16 +19,38 @@ public class TicketPage extends BaseFluentPage {
         return BASE_URL + "tickets/" + ticketId;
     }
 
-//    @Override
-//    public void isAt() {
-//        await().atMost(TIMEOUT).untilPage().isAt();
-//    }
-
-    public boolean isTdValueExists(String value) {
-        return find("td", withText().contains(value)).size() > 0;
+    public String getEventUrl() {
+        return BASE_URL + "events/" + eventId;
     }
 
-    public void setTicketId(int id){
+    @Override
+    public void isAt() {
+        await().atMost(TIMEOUT).until("#event-" + eventId).hasAttribute("href", getEventUrl());
+    }
+
+    public void setTicketId(long id){
         this.ticketId = id;
+    }
+
+    public boolean isSeat(String seat) {
+        return findFirst("#seat").getText().equals(seat);
+    }
+
+    public boolean isSection(String section) {
+        return findFirst("#section").getText().equals(section);
+    }
+
+    public boolean requiredInfoAreDisplayed() {
+        return findFirst("#seat").isDisplayed()
+                && findFirst("#section").isDisplayed()
+                && findFirst("#categoryId").isDisplayed()
+                && findFirst("#homeTeamName").isDisplayed()
+                && findFirst("#visitorTeamName").isDisplayed()
+                && findFirst("#price").isDisplayed()
+                && findFirst("#categoryType").isDisplayed();
+    }
+
+    public void clickEventDetailsButton() {
+        findFirst("#event-" + eventId).click();
     }
 }
