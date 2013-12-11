@@ -12,7 +12,7 @@ public class SMTPEmailServiceTest {
 
     @Test
     public void doesNotThrow() {
-        EmailService emailSvc = new SMTPEmailService();
+        EmailService emailSvc = new SMTPEmailService("", "");
 
         emailSvc.sendEmail(EMAIL_TO, EMAIL_FROM, EMAIL_MESSAGE);
     }

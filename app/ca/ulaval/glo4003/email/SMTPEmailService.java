@@ -3,6 +3,7 @@ package ca.ulaval.glo4003.email;
 import ca.ulaval.glo4003.domain.EmailService;
 import com.typesafe.config.ConfigFactory;
 
+import javax.inject.Named;
 import javax.mail.Message;
 import javax.mail.MessagingException;
 import javax.mail.Session;
@@ -13,11 +14,19 @@ import java.util.Properties;
 
 public class SMTPEmailService extends EmailService {
 
+    private String smtpHost;
+    private String smtpPort;
+
+    public SMTPEmailService(@Named("SmtpHost") String smtpHost, @Named("SmtpPort") String smtpPort) {
+        this.smtpHost = smtpHost;
+        this.smtpPort = smtpPort;
+    }
+
     @Override
     public void sendEmail(String to, String from, String message) {
         Properties props = new Properties();
-        props.put("mail.smtp.host", ConfigFactory.load().getString("smtp.host"));
-        props.put("mail.smtp.port", ConfigFactory.load().getString("smtp.port"));
+        props.put("mail.smtp.host", smtpHost);
+        props.put("mail.smtp.port", smtpPort);
 
         Session session = Session.getDefaultInstance(props, null);
 
