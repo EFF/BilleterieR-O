@@ -1,6 +1,6 @@
 package ca.ulaval.glo4003.unittests.api.event;
 
-import ca.ulaval.glo4003.ConstantsManager;
+import ca.ulaval.glo4003.api.event.ApiEventConstantsManager;
 import ca.ulaval.glo4003.api.event.FacetsController;
 import ca.ulaval.glo4003.domain.event.FacetsInteractor;
 import ca.ulaval.glo4003.domain.event.Gender;
@@ -55,15 +55,15 @@ public class FacetsControllerTest extends BaseControllerTest {
         assertEquals(Helpers.OK, Helpers.status(result));
         assertEquals("application/json", Helpers.contentType(result));
 
-        assertTrue(jsonNode.get(ConstantsManager.FACET_GENDER).isArray());
-        assertNotSame(Gender.values(), jsonNode.get(ConstantsManager.FACET_GENDER));
-        assertEquals(2, jsonNode.get(ConstantsManager.FACET_GENDER).size());
+        assertTrue(jsonNode.get(ApiEventConstantsManager.FACET_GENDER).isArray());
+        assertNotSame(Gender.values(), jsonNode.get(ApiEventConstantsManager.FACET_GENDER));
+        assertEquals(2, jsonNode.get(ApiEventConstantsManager.FACET_GENDER).size());
 
-        assertTrue(jsonNode.get(ConstantsManager.FACET_SPORT).isArray());
+        assertTrue(jsonNode.get(ApiEventConstantsManager.FACET_SPORT).isArray());
 
         //Json.toJson always create new Objects.
-        assertNotSame(tempList, jsonNode.get(ConstantsManager.FACET_SPORT));
-        assertEquals(tempList.size(), jsonNode.get(ConstantsManager.FACET_SPORT).size());
+        assertNotSame(tempList, jsonNode.get(ApiEventConstantsManager.FACET_SPORT));
+        assertEquals(tempList.size(), jsonNode.get(ApiEventConstantsManager.FACET_SPORT).size());
 
         verify(mockedFacetsInteractor).sports();
         verify(mockedFacetsInteractor).genders();

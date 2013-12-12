@@ -1,7 +1,8 @@
 package ca.ulaval.glo4003.api.ticketing;
 
-import ca.ulaval.glo4003.ConstantsManager;
+
 import ca.ulaval.glo4003.api.SecureAction;
+import ca.ulaval.glo4003.api.event.ApiEventConstantsManager;
 import ca.ulaval.glo4003.domain.RecordNotFoundException;
 import ca.ulaval.glo4003.domain.event.CategoryType;
 import ca.ulaval.glo4003.domain.ticketing.*;
@@ -88,8 +89,8 @@ public class TicketsController extends Controller {
     }
 
     public Result numberOfTickets() {
-        String strEventId = request().getQueryString(ConstantsManager.EVENT_ID_FIELD_NAME);
-        String strCategoryId = request().getQueryString(ConstantsManager.CATEGORY_ID_FIELD_NAME);
+        String strEventId = request().getQueryString(ApiTicketingConstantsManager.QUERY_STRING_EVENT_ID_PARAM_NAME);
+        String strCategoryId = request().getQueryString(ApiTicketingConstantsManager.QUERY_STRING_CATEGORY_ID_PARAM_NAME);
         int numberOfTickets;
         long eventId;
 
@@ -132,19 +133,19 @@ public class TicketsController extends Controller {
 
         if(body == null) return badRequest();
 
-        if (fieldIsBlank(body, ConstantsManager.EVENT_ID_FIELD_NAME) || fieldIsBlank(body, ConstantsManager.CATEGORY_ID_FIELD_NAME) || fieldIsBlank(body, ConstantsManager.CATEGORY_TYPE_FIELD_NAME)) {
+        if (fieldIsBlank(body, ApiEventConstantsManager.EVENT_ID_FIELD_NAME) || fieldIsBlank(body, ApiEventConstantsManager.CATEGORY_ID_FIELD_NAME) || fieldIsBlank(body, ApiEventConstantsManager.CATEGORY_TYPE_FIELD_NAME)) {
             return badRequest("One or more parameters are missing");
         }
 
-        final long eventId = body.get(ConstantsManager.EVENT_ID_FIELD_NAME).asLong();
-        final long categoryId = body.get(ConstantsManager.CATEGORY_ID_FIELD_NAME).asLong();
-        String categoryType = body.get(ConstantsManager.CATEGORY_TYPE_FIELD_NAME).asText();
+        final long eventId = body.get(ApiEventConstantsManager.EVENT_ID_FIELD_NAME).asLong();
+        final long categoryId = body.get(ApiEventConstantsManager.CATEGORY_ID_FIELD_NAME).asLong();
+        String categoryType = body.get(ApiEventConstantsManager.CATEGORY_TYPE_FIELD_NAME).asText();
         try {
 
             if (categoryType.equals(CategoryType.GENERAL_ADMISSION.toString())) {
                 int quantity ;
-                if(body.get(ConstantsManager.QUANTITY_FIELD_NAME) != null){
-                    quantity = body.get(ConstantsManager.QUANTITY_FIELD_NAME).asInt();
+                if(body.get(ApiEventConstantsManager.QUANTITY_FIELD_NAME) != null){
+                    quantity = body.get(ApiEventConstantsManager.QUANTITY_FIELD_NAME).asInt();
                 }
                 else{
                     return badRequest("Quantity parameter is missing");
@@ -152,8 +153,8 @@ public class TicketsController extends Controller {
                 ticketConstraintValidator.validateGeneralAdmission(eventId, categoryId);
                 ticketsInteractor.addGeneralAdmissionTickets(eventId, categoryId, quantity);
             } else {
-                String section = body.get(ConstantsManager.SECTION_FIELD_NAME).asText();
-                int seat = body.get(ConstantsManager.SEAT_FIELD_NAME).asInt();
+                String section = body.get(ApiTicketingConstantsManager.QUERY_STRING_SECTION_NAME_PARAM_NAME).asText();
+                int seat = body.get(ApiTicketingConstantsManager.SEAT_FIELD_NAME).asInt();
 
                 ticketConstraintValidator.validateSeatedTicket(eventId, categoryId, section, seat);
                 ticketsInteractor.addSingleSeatTicket(eventId, categoryId, section, seat);
@@ -171,7 +172,7 @@ public class TicketsController extends Controller {
 
     private List<Long> extractTicketsIdsFromRequest() throws IOException {
         JsonNode json = request().body().asJson();
-        JsonNode node = json.get(ConstantsManager.TICKET_IDS_FIELD_NAME);
+        JsonNode node = json.get(ApiTicketingConstantsManager.TICKET_IDS_FIELD_NAME);
 
         ObjectMapper mapper = new ObjectMapper();
         TypeReference<List<Long>> typeRef = new TypeReference<List<Long>>() {
@@ -181,11 +182,11 @@ public class TicketsController extends Controller {
     }
 
     private TicketSearchCriteria extractTicketSearchCriteriaFromRequest() {
-        final String strEventId = request().getQueryString(ConstantsManager.EVENT_ID_FIELD_NAME);
-        final String sectionName = request().getQueryString(ConstantsManager.SECTION_FIELD_NAME);
-        final String strCategoryId = request().getQueryString(ConstantsManager.CATEGORY_ID_FIELD_NAME);
-        final String stringStates = request().getQueryString(ConstantsManager.QUERY_STRING_STATE_PARAM_NAME);
-        final String strQuantity = request().getQueryString(ConstantsManager.QUANTITY_FIELD_NAME);
+        final String strEventId = request().getQueryString(ApiTicketingConstantsManager.QUERY_STRING_EVENT_ID_PARAM_NAME);
+        final String sectionName = request().getQueryString(ApiTicketingConstantsManager.QUERY_STRING_SECTION_NAME_PARAM_NAME);
+        final String strCategoryId = request().getQueryString(ApiTicketingConstantsManager.QUERY_STRING_CATEGORY_ID_PARAM_NAME);
+        final String stringStates = request().getQueryString(ApiTicketingConstantsManager.QUERY_STRING_STATE_PARAM_NAME);
+        final String strQuantity = request().getQueryString(ApiTicketingConstantsManager.QUERY_STRING_QUANTITY_PARAM_NAME);
 
         Long eventId = null;
         Long categoryId = null;
@@ -213,7 +214,7 @@ public class TicketsController extends Controller {
         ticketSearchCriteria.setSectionName(sectionName);
 
         if (stringStates != null) {
-            String states[] = stringStates.split(",");
+            String states[] = stringStates.split(ApiTicketingConstantsManager.STATES_SEPARATOR);
             for (String stringState : states) {
                 TicketState state = TicketState.valueOf(stringState);
                 if (state != null) {

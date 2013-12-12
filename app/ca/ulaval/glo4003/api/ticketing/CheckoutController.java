@@ -1,6 +1,5 @@
 package ca.ulaval.glo4003.api.ticketing;
 
-import ca.ulaval.glo4003.ConstantsManager;
 import ca.ulaval.glo4003.api.SecureAction;
 import ca.ulaval.glo4003.domain.RecordNotFoundException;
 import ca.ulaval.glo4003.domain.ticketing.CheckoutInteractor;
@@ -42,17 +41,16 @@ public class CheckoutController extends Controller {
 
         Transaction transaction = checkoutInteractor.executeTransaction(user, ticketIds);
 
-        if(transaction.getState() == TransactionState.Fulfilled || transaction.getState() == TransactionState.Failed){
+        if (transaction.getState() == TransactionState.Fulfilled || transaction.getState() == TransactionState.Failed) {
             return ok(Json.toJson(transaction));
-        }
-        else{
+        } else {
             return internalServerError();
         }
     }
 
     private List<Long> extractTicketsIdsFromRequest() {
         JsonNode json = request().body().asJson();
-        JsonNode node = json.get(ConstantsManager.TICKET_IDS_FIELD_NAME);
+        JsonNode node = json.get(ApiTicketingConstantsManager.TICKET_IDS_FIELD_NAME);
 
         List<Long> ids = new ArrayList<>();
         if (node.isArray()) {

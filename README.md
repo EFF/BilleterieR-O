@@ -29,3 +29,7 @@ Nous avons opté pour un projet suivant le style "slim API & fat client".
 
 ## Utiliser Netbeans
 `play netbeans`
+
+## Configurer le serveur SMTP
+Ouvrir ./conf/application.conf et modifier les configurations "smtp.host" et "smtp.port" par le
+host et port du serveur local ou distant de votre choix.

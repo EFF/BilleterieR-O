@@ -1,11 +1,9 @@
 package ca.ulaval.glo4003.unittests.domain.ticketing;
 
-import ca.ulaval.glo4003.ConstantsManager;
+import ca.ulaval.glo4003.api.ticketing.ApiTicketingConstantsManager;
 import ca.ulaval.glo4003.domain.RecordNotFoundException;
-import ca.ulaval.glo4003.domain.event.EventsInteractor;
 import ca.ulaval.glo4003.domain.ticketing.*;
 import com.google.inject.Inject;
-import org.jukito.JukitoModule;
 import org.jukito.JukitoRunner;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -207,7 +205,7 @@ public class TicketsInteractorTest {
         assertEquals(AN_EVENT_ID.longValue(), argument.getValue().getEventId());
         assertEquals(A_CATEGORY_ID.longValue(), argument.getValue().getCategoryId());
         assertEquals("", argument.getValue().getSection());
-        assertEquals(ConstantsManager.TICKET_INVALID_SEAT_NUMBER, argument.getValue().getSeat());
+        assertEquals(ApiTicketingConstantsManager.TICKET_INVALID_SEAT_NUMBER, argument.getValue().getSeat());
         assertEquals(TicketState.AVAILABLE, argument.getValue().getState());
     }
 
@@ -223,7 +221,7 @@ public class TicketsInteractorTest {
         assertEquals(AN_EVENT_ID.longValue(), argument.getValue().getEventId());
         assertEquals(A_CATEGORY_ID.longValue(), argument.getValue().getCategoryId());
         assertEquals("", argument.getValue().getSection());
-        assertEquals(ConstantsManager.TICKET_INVALID_SEAT_NUMBER, argument.getValue().getSeat());
+        assertEquals(ApiTicketingConstantsManager.TICKET_INVALID_SEAT_NUMBER, argument.getValue().getSeat());
         assertEquals(TicketState.AVAILABLE, argument.getValue().getState());
     }
 

@@ -41,9 +41,8 @@ public class EventPage extends BaseFluentPage {
     }
 
     public void addGeneralAdmissionsToCartForCategory(Integer categoryIndex, Integer quantity) {
-        FluentWebElement categoryLine = getCategories().get(categoryIndex);
-        categoryLine.find(".category-quantity").text(quantity.toString());
-        categoryLine.find(".category-add").click();
+        getCategoryQuantityElement(categoryIndex).text(quantity.toString());
+        getCategoryAddButtonElement(categoryIndex).click();
     }
 
     public int getTicketNumberForCategory(int categoryIndex) {
@@ -62,6 +61,14 @@ public class EventPage extends BaseFluentPage {
 
     public void clickOnDetailsButton() {
         clickOnButton(".btn-details1");
+    }
+
+    public FluentWebElement getCategoryQuantityElement(Integer categoryIndex) {
+        return find(".category-quantity").get(categoryIndex);
+    }
+
+    public FluentWebElement getCategoryAddButtonElement(Integer categoryIndex) {
+        return find(".category-add").get(categoryIndex);
     }
 
     public void selectSectionInSectionListForCategory(int categoryId, String value) {

@@ -1,8 +1,9 @@
 package ca.ulaval.glo4003.acceptances;
 
-import ca.ulaval.glo4003.ConstantsManager;
 import ca.ulaval.glo4003.TestGlobal;
 import ca.ulaval.glo4003.acceptances.pages.*;
+import ca.ulaval.glo4003.api.event.ApiEventConstantsManager;
+import ca.ulaval.glo4003.api.user.ApiUserConstantsManager;
 import org.codehaus.jackson.node.JsonNodeFactory;
 import org.codehaus.jackson.node.ObjectNode;
 import org.fluentlenium.adapter.FluentTest;
@@ -157,7 +158,7 @@ public class TicketTest extends FluentTest {
     }
 
     @Test
-    public void addTicketWithoutAdminAccountShouldShowErrorMessage(){
+    public void addTicketWithoutAdminAccountShouldShowErrorMessage() {
         running(testServer(PORT, fakeApplication(new TestGlobal())), FIREFOX, new F.Callback<TestBrowser>() {
             public void invoke(TestBrowser browser) {
                 EventsPage eventsPage = new EventsPage(browser.getDriver());
@@ -179,8 +180,8 @@ public class TicketTest extends FluentTest {
 
     private String getLoginSessionCookie(String username, String password) {
         ObjectNode jsonBody = JsonNodeFactory.instance.objectNode();
-        jsonBody.put(ConstantsManager.USERNAME_FIELD_NAME, username);
-        jsonBody.put(ConstantsManager.PASSWORD_FIELD_NAME, password);
+        jsonBody.put(ApiUserConstantsManager.USERNAME_FIELD_NAME, username);
+        jsonBody.put(ApiUserConstantsManager.PASSWORD_FIELD_NAME, password);
 
         WS.Response loginResponse = WS.url("http://localhost:" + PORT + "/login").post(jsonBody).get();
 
@@ -195,10 +196,10 @@ public class TicketTest extends FluentTest {
 
     private ObjectNode getATicketJsonBody() {
         ObjectNode jsonBody = JsonNodeFactory.instance.objectNode();
-        jsonBody.put(ConstantsManager.EVENT_ID_FIELD_NAME, AN_EVENT_ID);
-        jsonBody.put(ConstantsManager.CATEGORY_ID_FIELD_NAME, A_CATEGORY_ID);
-        jsonBody.put(ConstantsManager.CATEGORY_TYPE_FIELD_NAME, GENERAL_ADMISSION.toString());
-        jsonBody.put(ConstantsManager.QUANTITY_FIELD_NAME, A_QUANTITY);
+        jsonBody.put(ApiEventConstantsManager.EVENT_ID_FIELD_NAME, AN_EVENT_ID);
+        jsonBody.put(ApiEventConstantsManager.CATEGORY_ID_FIELD_NAME, A_CATEGORY_ID);
+        jsonBody.put(ApiEventConstantsManager.CATEGORY_TYPE_FIELD_NAME, GENERAL_ADMISSION.toString());
+        jsonBody.put(ApiEventConstantsManager.QUANTITY_FIELD_NAME, A_QUANTITY);
         return jsonBody;
     }
 }
