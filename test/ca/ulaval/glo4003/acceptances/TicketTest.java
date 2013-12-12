@@ -58,7 +58,7 @@ public class TicketTest extends FluentTest {
 
                 WS.Response createTicketResponse = ticketsRequest.post(getATicketJsonBody()).get();
 
-                assertEquals(OK, createTicketResponse.getStatus());
+                assertEquals(CREATED, createTicketResponse.getStatus());
             }
         });
     }
