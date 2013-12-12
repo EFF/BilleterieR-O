@@ -40,7 +40,6 @@
             </tr>
             </thead>
             <tbody>
-            <!-- TODO: Rename "events" in controller for "eventDtos" after jack client-side refactoring -->
             <tr class="event" ng-repeat="eventDto in events">
                 <td class="date">{{eventDto.event.dateAsString | date:'dd-MM-yyyy HH:mm'}}</td>
                 <td class="sport">{{eventDto.event.sport.name}}</td>
@@ -51,8 +50,9 @@
                 <td>
                     <a class="btn btn-info btn-xs btn-see-event-info" href="/#!/events/{{eventDto.event.id}}">Voir</a>
                 </td>
-                <!--ng-show only if the current user is logged in and is administrator-->
-                <td>
+
+                <!-- DUMMY ng-show for test purpose only! -->
+                <td ng-show="username.indexOf('admin') > -1">
                     <a class="btn btn-primary btn-xs" href="/#!/events/{{eventDto.event.id}}/addTicket">
                         <i class="glyphicon glyphicon-pencil"></i>
                     </a>

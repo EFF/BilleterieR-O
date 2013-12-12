@@ -74,4 +74,8 @@ public class EventsPage extends BaseFluentPage {
         await().atMost(TIMEOUT).until(".btn-primary.btn-xs").isPresent();
         find(".btn-primary.btn-xs", index).click();
     }
+
+    public int getEventAdminButtonSize() {
+        return find(".btn-primary.btn-xs").size();
+    }
 }

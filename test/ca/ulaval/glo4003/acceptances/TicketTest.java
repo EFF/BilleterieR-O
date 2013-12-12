@@ -33,6 +33,7 @@ public class TicketTest extends FluentTest {
     private static final int FIRST_EVENT_INDEX = 1;
     private static final int SEAT_CATEGORY_INDEX = 1;
     private static final int GENERAL_CATEGORY_INDEX = 0;
+    private static final int NO_ADMIN_BUTTON = 0;
 
     @Test
     public void dontAuthorizeCreateTicketIfConnectedButNotAnAdmin() {
@@ -161,22 +162,15 @@ public class TicketTest extends FluentTest {
     }
 
     @Test
-    public void addTicketWithoutAdminAccountShouldShowErrorMessage() {
+    public void addTicketWithoutAdminAccountShouldNotBeAble() {
         running(testServer(PORT, fakeApplication(new TestGlobal())), FIREFOX, new F.Callback<TestBrowser>() {
             public void invoke(TestBrowser browser) {
                 EventsPage eventsPage = new EventsPage(browser.getDriver());
 
                 eventsPage.go();
                 eventsPage.isAt();
-                eventsPage.clickOnFirstEventAdminButton();
-                int eventId = Integer.parseInt(browser.getDriver().getCurrentUrl().split("/")[5]);
 
-                AddTicketPage addTicketPage = new AddTicketPage(browser.getDriver(), eventId);
-                addTicketPage.go();
-                addTicketPage.isAt();
-                addTicketPage.createGeneralTickets(A_QUANTITY);
-
-                addTicketPage.waitForErrorMessage();
+                assertTrue(eventsPage.getEventAdminButtonSize() == NO_ADMIN_BUTTON);
             }
         });
     }
