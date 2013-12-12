@@ -2,12 +2,10 @@ package ca.ulaval.glo4003.api.ticketing;
 
 
 import ca.ulaval.glo4003.api.SecureAction;
+import ca.ulaval.glo4003.api.event.ApiEventConstantsManager;
 import ca.ulaval.glo4003.domain.RecordNotFoundException;
-import ca.ulaval.glo4003.domain.ticketing.UpdateTicketStateUnauthorizedException;
-import ca.ulaval.glo4003.domain.ticketing.TicketsInteractor;
-import ca.ulaval.glo4003.domain.ticketing.Ticket;
-import ca.ulaval.glo4003.domain.ticketing.TicketSearchCriteria;
-import ca.ulaval.glo4003.domain.ticketing.TicketState;
+import ca.ulaval.glo4003.domain.event.CategoryType;
+import ca.ulaval.glo4003.domain.ticketing.*;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ListMultimap;
 import com.google.common.primitives.Ints;
@@ -28,10 +26,12 @@ import java.util.List;
 public class TicketsController extends Controller {
 
     private final TicketsInteractor ticketsInteractor;
+    private final TicketConstraintValidator ticketConstraintValidator;
 
     @Inject
-    public TicketsController(TicketsInteractor ticketsInteractor) {
+    public TicketsController(TicketsInteractor ticketsInteractor, TicketConstraintValidator ticketConstraintValidator) {
         this.ticketsInteractor = ticketsInteractor;
+        this.ticketConstraintValidator = ticketConstraintValidator;
     }
 
     public Result index() {
@@ -110,7 +110,6 @@ public class TicketsController extends Controller {
         return ok(Json.toJson(numberOfTickets));
     }
 
-    //TODO should this be a facet?
     public Result showEventSections(long eventId) {
         TicketSearchCriteria ticketSearchCriteria = new TicketSearchCriteria();
         ticketSearchCriteria.setEventId(eventId);
@@ -130,8 +129,45 @@ public class TicketsController extends Controller {
 
     @SecureAction(admin = true)
     public Result create() {
-        // TODO: Next story: Create ticket
-        return ok(Json.toJson("Success"));
+        JsonNode body = request().body().asJson();
+
+        if(body == null) return badRequest();
+
+        if (fieldIsBlank(body, ApiEventConstantsManager.EVENT_ID_FIELD_NAME) || fieldIsBlank(body, ApiEventConstantsManager.CATEGORY_ID_FIELD_NAME) || fieldIsBlank(body, ApiEventConstantsManager.CATEGORY_TYPE_FIELD_NAME)) {
+            return badRequest("One or more parameters are missing");
+        }
+
+        final long eventId = body.get(ApiEventConstantsManager.EVENT_ID_FIELD_NAME).asLong();
+        final long categoryId = body.get(ApiEventConstantsManager.CATEGORY_ID_FIELD_NAME).asLong();
+        String categoryType = body.get(ApiEventConstantsManager.CATEGORY_TYPE_FIELD_NAME).asText();
+        try {
+
+            if (categoryType.equals(CategoryType.GENERAL_ADMISSION.toString())) {
+                int quantity ;
+                if(body.get(ApiEventConstantsManager.QUANTITY_FIELD_NAME) != null){
+                    quantity = body.get(ApiEventConstantsManager.QUANTITY_FIELD_NAME).asInt();
+                }
+                else{
+                    return badRequest("Quantity parameter is missing");
+                }
+                ticketConstraintValidator.validateGeneralAdmission(eventId, categoryId);
+                ticketsInteractor.addGeneralAdmissionTickets(eventId, categoryId, quantity);
+            } else {
+                String section = body.get(ApiTicketingConstantsManager.QUERY_STRING_SECTION_NAME_PARAM_NAME).asText();
+                int seat = body.get(ApiTicketingConstantsManager.SEAT_FIELD_NAME).asInt();
+
+                ticketConstraintValidator.validateSeatedTicket(eventId, categoryId, section, seat);
+                ticketsInteractor.addSingleSeatTicket(eventId, categoryId, section, seat);
+            }
+        } catch (RecordNotFoundException | NoSuchCategoryException | NoSuchTicketSectionException | AlreadyAssignedSeatException e) {
+            return badRequest();
+        }
+
+        return created();
+    }
+
+    private boolean fieldIsBlank(JsonNode json, String fieldName) {
+        return !(json.has(fieldName));
     }
 
     private List<Long> extractTicketsIdsFromRequest() throws IOException {

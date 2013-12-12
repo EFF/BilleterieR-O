@@ -9,4 +9,8 @@ public class ApiEventConstantsManager {
     public final static String QUERY_STRING_GENDER_PARAM_NAME = "gender";
     public final static String FACET_SPORT = "sport";
     public final static String FACET_GENDER = "gender";
+    public final static String EVENT_ID_FIELD_NAME = "eventId";
+    public final static String CATEGORY_ID_FIELD_NAME = "categoryId";
+    public final static String CATEGORY_TYPE_FIELD_NAME = "categoryType";
+    public final static String QUANTITY_FIELD_NAME = "quantity";
 }

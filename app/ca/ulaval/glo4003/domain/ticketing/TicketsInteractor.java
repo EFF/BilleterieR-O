@@ -14,6 +14,18 @@ public class TicketsInteractor {
         this.ticketDao = ticketDao;
     }
 
+    public void addGeneralAdmissionTickets(Long eventId, Long categoryId, int quantity) {
+        for (int i = 0; i < quantity; i++) {
+            Ticket ticket = TicketFactory.createAvailableGeneralAdmissionTicket(eventId, categoryId);
+            ticketDao.create(ticket);
+        }
+    }
+
+    public void addSingleSeatTicket(long eventId, long categoryId, String section, int seat) {
+        Ticket ticket = TicketFactory.createAvailableSeatTicket(eventId, categoryId, section, seat);
+        ticketDao.create(ticket);
+    }
+
     public List<Ticket> search(TicketSearchCriteria ticketSearchCriteria) {
         return ticketDao.search(ticketSearchCriteria);
     }

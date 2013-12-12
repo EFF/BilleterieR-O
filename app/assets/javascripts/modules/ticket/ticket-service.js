@@ -7,7 +7,7 @@ define(['./module'], function (TicketModule) {
             $http.get('/api/tickets/' + ticketId).success(deferred.resolve).error(deferred.reject);
 
             return deferred.promise;
-        }
+        };
 
         ticketService.getTickets = function (options) {
             var deferred = $q.defer();
@@ -31,6 +31,15 @@ define(['./module'], function (TicketModule) {
             };
 
             $http.get(url, config).success(deferred.resolve).error(deferred.reject);
+
+            return deferred.promise;
+        };
+
+        ticketService.addTicket = function(ticketToAdd){
+            var deferred = $q.defer();
+
+            var url = '/api/tickets';
+            $http.post(url, ticketToAdd).success(deferred.resolve).error(deferred.reject);
 
             return deferred.promise;
         };

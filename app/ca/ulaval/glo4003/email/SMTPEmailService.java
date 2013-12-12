@@ -1,6 +1,7 @@
 package ca.ulaval.glo4003.email;
 
 import ca.ulaval.glo4003.domain.EmailService;
+import com.google.inject.Inject;
 import com.typesafe.config.ConfigFactory;
 
 import javax.inject.Named;
@@ -17,6 +18,7 @@ public class SMTPEmailService extends EmailService {
     private String smtpHost;
     private String smtpPort;
 
+    @Inject
     public SMTPEmailService(@Named("SmtpHost") String smtpHost, @Named("SmtpPort") String smtpPort) {
         this.smtpHost = smtpHost;
         this.smtpPort = smtpPort;

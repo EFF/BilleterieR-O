@@ -10,4 +10,6 @@ public class ApiTicketingConstantsManager {
     public static final String QUERY_STRING_QUANTITY_PARAM_NAME = "quantity";
     public static final String TICKET_IDS_FIELD_NAME = "ticketIds";
     public static final String STATES_SEPARATOR = ",";
+    public static final String SEAT_FIELD_NAME = "seat";
+    public static final int TICKET_INVALID_SEAT_NUMBER = -1;
 }

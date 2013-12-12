@@ -65,4 +65,17 @@ public class EventsPage extends BaseFluentPage {
     public void clickOnFirstEventButtonDetails() {
         findFirst(".event .btn-see-event-info").click();
     }
+
+    public void clickOnFirstEventAdminButton() {
+        clickOnEventAdminButton(0);
+    }
+
+    public void clickOnEventAdminButton(int index) {
+        await().atMost(TIMEOUT).until(".btn-primary.btn-xs").isPresent();
+        find(".btn-primary.btn-xs", index).click();
+    }
+
+    public int getEventAdminButtonSize() {
+        return find(".btn-primary.btn-xs").size();
+    }
 }

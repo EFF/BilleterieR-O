@@ -1,8 +1,8 @@
 package ca.ulaval.glo4003.acceptances;
 
 import ca.ulaval.glo4003.TestGlobal;
-import ca.ulaval.glo4003.acceptances.pages.EventPage;
-import ca.ulaval.glo4003.acceptances.pages.TicketPage;
+import ca.ulaval.glo4003.acceptances.pages.*;
+import ca.ulaval.glo4003.api.event.ApiEventConstantsManager;
 import ca.ulaval.glo4003.api.user.ApiUserConstantsManager;
 import org.codehaus.jackson.node.JsonNodeFactory;
 import org.codehaus.jackson.node.ObjectNode;
@@ -12,6 +12,7 @@ import play.libs.F;
 import play.libs.WS;
 import play.test.TestBrowser;
 
+import static ca.ulaval.glo4003.domain.event.CategoryType.GENERAL_ADMISSION;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static play.test.Helpers.*;
@@ -19,25 +20,31 @@ import static play.test.Helpers.*;
 public class TicketTest extends FluentTest {
 
     private static final String PLAY_FRAMEWORK_COOKIE = "Cookie";
-    private static final String EMPTY_BODY = "";
     private static final String A_USER_EMAIL = "user1@example.com";
     private static final String AN_ADMIN_EMAIL = "admin@example.com";
-    private static final String PASSWORD = "secret";
+    private static final String AN_ADMIN_PASSWORD = "secret";
     private static final int PORT = 3333;
     private static final int A_TICKET_TYPE_SEAT_ID = 1450;
     private static final int ANOTHER_TICKET_TYPE_SEAT_ID = 1445;
     private static final int AN_EVENT_ID = 2;
+    private static final String A_CATEGORY_ID = "1";
+    private static final int A_QUANTITY = 3;
+    private static final int A_SEAT_NUMBER = 99;
+    private static final int FIRST_EVENT_INDEX = 1;
+    private static final int SEAT_CATEGORY_INDEX = 1;
+    private static final int GENERAL_CATEGORY_INDEX = 0;
+    private static final int NO_ADMIN_BUTTON = 0;
 
     @Test
     public void dontAuthorizeCreateTicketIfConnectedButNotAnAdmin() {
         running(testServer(PORT, fakeApplication(new TestGlobal())), new Runnable() {
             @Override
             public void run() {
-                String cookie = getLoginSessionCookie(A_USER_EMAIL, PASSWORD);
+                String cookie = getLoginSessionCookie(A_USER_EMAIL, AN_ADMIN_PASSWORD);
                 WS.WSRequestHolder ticketsRequest = WS.url(getTicketsUrl());
                 ticketsRequest.setHeader(PLAY_FRAMEWORK_COOKIE, cookie);
 
-                WS.Response createTicketResponse = ticketsRequest.post(EMPTY_BODY).get();
+                WS.Response createTicketResponse = ticketsRequest.post(getATicketJsonBody()).get();
 
                 assertEquals(UNAUTHORIZED, createTicketResponse.getStatus());
             }
@@ -45,17 +52,18 @@ public class TicketTest extends FluentTest {
     }
 
     @Test
-    public void authorizeCreateTicketIfUseIsAnAdmin() {
+    public void authorizeCreateTicketIfUserIsAnAdmin() {
         running(testServer(PORT, fakeApplication(new TestGlobal())), new Runnable() {
             @Override
             public void run() {
-                String cookie = getLoginSessionCookie(AN_ADMIN_EMAIL, PASSWORD);
+                String cookie = getLoginSessionCookie(AN_ADMIN_EMAIL, AN_ADMIN_PASSWORD);
+
                 WS.WSRequestHolder ticketsRequest = WS.url(getTicketsUrl());
                 ticketsRequest.setHeader(PLAY_FRAMEWORK_COOKIE, cookie);
 
-                WS.Response createTicketResponse = ticketsRequest.post(EMPTY_BODY).get();
+                WS.Response createTicketResponse = ticketsRequest.post(getATicketJsonBody()).get();
 
-                assertEquals(OK, createTicketResponse.getStatus());
+                assertEquals(CREATED, createTicketResponse.getStatus());
             }
         });
     }
@@ -89,6 +97,84 @@ public class TicketTest extends FluentTest {
         });
     }
 
+    @Test
+    public void createGeneralTicketsShouldIncrementTicketCount() {
+        running(testServer(PORT, fakeApplication(new TestGlobal())), FIREFOX, new F.Callback<TestBrowser>() {
+            public void invoke(TestBrowser browser) {
+                LoginPage loginPage = new LoginPage(browser.getDriver());
+                EventsPage eventsPage = new EventsPage(browser.getDriver());
+
+                loginPage.go();
+                loginPage.isAt();
+                loginPage.performLogin(AN_ADMIN_EMAIL, AN_ADMIN_PASSWORD);
+
+                eventsPage.go();
+                eventsPage.isAt();
+                eventsPage.clickOnFirstEventAdminButton();
+                int eventId = Integer.parseInt(browser.getDriver().getCurrentUrl().split("/")[5]);
+
+                EventPage eventPage = new EventPage(browser.getDriver(), eventId);
+                eventPage.go();
+                eventPage.isAt();
+                int ticketNumber = eventPage.getTicketNumberForCategory(GENERAL_CATEGORY_INDEX);
+                AddTicketPage addTicketPage = new AddTicketPage(browser.getDriver(), eventId);
+                addTicketPage.go();
+                addTicketPage.isAt();
+                addTicketPage.createGeneralTickets(A_QUANTITY);
+
+                eventPage.go();
+                eventPage.isAt();
+                assertEquals(ticketNumber + A_QUANTITY, eventPage.getTicketNumberForCategory(GENERAL_CATEGORY_INDEX));
+            }
+        });
+    }
+
+    @Test
+    public void createSeatTicketsShouldIncrementTicketCount() {
+        running(testServer(PORT, fakeApplication(new TestGlobal())), FIREFOX, new F.Callback<TestBrowser>() {
+            public void invoke(TestBrowser browser) {
+                LoginPage loginPage = new LoginPage(browser.getDriver());
+                EventsPage eventsPage = new EventsPage(browser.getDriver());
+
+                loginPage.go();
+                loginPage.isAt();
+                loginPage.performLogin(AN_ADMIN_EMAIL, AN_ADMIN_PASSWORD);
+
+                eventsPage.go();
+                eventsPage.isAt();
+                eventsPage.clickOnEventAdminButton(FIRST_EVENT_INDEX);
+                int eventId = Integer.parseInt(browser.getDriver().getCurrentUrl().split("/")[5]);
+
+                EventPage eventPage = new EventPage(browser.getDriver(), eventId);
+                eventPage.go();
+                eventPage.isAt();
+                int ticketNumber = eventPage.getTicketNumberForCategory(SEAT_CATEGORY_INDEX);
+                AddTicketPage addTicketPage = new AddTicketPage(browser.getDriver(), eventId);
+                addTicketPage.go();
+                addTicketPage.isAt();
+                addTicketPage.createSeatTickets(A_SEAT_NUMBER);
+
+                eventPage.go();
+                eventPage.isAt();
+                assertEquals(ticketNumber + FIRST_EVENT_INDEX, eventPage.getTicketNumberForCategory(1));
+            }
+        });
+    }
+
+    @Test
+    public void addTicketWithoutAdminAccountShouldNotBeAble() {
+        running(testServer(PORT, fakeApplication(new TestGlobal())), FIREFOX, new F.Callback<TestBrowser>() {
+            public void invoke(TestBrowser browser) {
+                EventsPage eventsPage = new EventsPage(browser.getDriver());
+
+                eventsPage.go();
+                eventsPage.isAt();
+
+                assertTrue(eventsPage.getEventAdminButtonSize() == NO_ADMIN_BUTTON);
+            }
+        });
+    }
+
     private String getLoginSessionCookie(String username, String password) {
         ObjectNode jsonBody = JsonNodeFactory.instance.objectNode();
         jsonBody.put(ApiUserConstantsManager.USERNAME_FIELD_NAME, username);
@@ -103,5 +189,14 @@ public class TicketTest extends FluentTest {
 
     private String getTicketsUrl() {
         return "http://localhost:" + PORT + "/api/tickets";
+    }
+
+    private ObjectNode getATicketJsonBody() {
+        ObjectNode jsonBody = JsonNodeFactory.instance.objectNode();
+        jsonBody.put(ApiEventConstantsManager.EVENT_ID_FIELD_NAME, AN_EVENT_ID);
+        jsonBody.put(ApiEventConstantsManager.CATEGORY_ID_FIELD_NAME, A_CATEGORY_ID);
+        jsonBody.put(ApiEventConstantsManager.CATEGORY_TYPE_FIELD_NAME, GENERAL_ADMISSION.toString());
+        jsonBody.put(ApiEventConstantsManager.QUANTITY_FIELD_NAME, A_QUANTITY);
+        return jsonBody;
     }
 }
