@@ -8,6 +8,7 @@
                 ng-value="category"
                 ng-change="updateTicketToAdd(selectedCategory)"
                 ng-model="selectedCategory">
+            <option value=""></option>
         </select>
     </div>
     <div ng-show="ticketToAdd.categoryId != null" ng-switch="ticketToAdd.categoryType">

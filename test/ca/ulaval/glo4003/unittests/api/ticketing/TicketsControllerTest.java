@@ -198,7 +198,7 @@ public class TicketsControllerTest extends BaseControllerTest {
         doNothing().when(mockedTicketConstraintValidator).validateGeneralAdmission(AN_EVENT_ID, A_CATEGORY_ID);
         doNothing().when(mockedTicketsInteractor).addGeneralAdmissionTickets(AN_EVENT_ID, AN_EVENT_ID, A_QUANTITY);
 
-        Result result = TicketsController.created();
+        Result result = ticketsController.create();
 
         assertEquals(Helpers.CREATED, Helpers.status(result));
     }
@@ -210,7 +210,7 @@ public class TicketsControllerTest extends BaseControllerTest {
         doNothing().when(mockedTicketConstraintValidator).validateSeatedTicket(AN_EVENT_ID, A_CATEGORY_ID, A_SECTION, A_SEAT);
         doNothing().when(mockedTicketsInteractor).addSingleSeatTicket(AN_EVENT_ID, A_CATEGORY_ID, A_SECTION, A_SEAT);
 
-        Result result = TicketsController.created();
+        Result result = ticketsController.create();
 
         assertEquals(Helpers.CREATED, Helpers.status(result));
     }

@@ -18,7 +18,9 @@ define(['./module'], function (TicketModule) {
             $scope.addTicket = function () {
                 var onAddTicketSuccess = function () {
                     FlashMessage.send('success', "L'ajout de billet s'est fait avec succès. Vous pouvez en ajouter d'autre pour cet événement");
-                    $scope.ticketToAdd = {eventId: $scope.eventId};
+                    $scope.ticketToAdd = {eventId: $scope.eventId,
+                        categoryId: $scope.ticketToAdd.categoryId,
+                        categoryType: $scope.ticketToAdd.categoryType };
                 };
 
                 var onAddTicketFail = function (error) {

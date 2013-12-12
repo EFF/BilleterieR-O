@@ -109,7 +109,6 @@ public class TicketsController extends Controller {
         return ok(Json.toJson(numberOfTickets));
     }
 
-    //TODO should this be a facet?
     public Result showEventSections(long eventId) {
         TicketSearchCriteria ticketSearchCriteria = new TicketSearchCriteria();
         ticketSearchCriteria.setEventId(eventId);
@@ -129,7 +128,13 @@ public class TicketsController extends Controller {
 
     @SecureAction(admin = true)
     public Result create() {
+
         JsonNode body = request().body().asJson();
+        if(body == null){
+            System.out.println("nope");
+            return badRequest();
+        }
+
         if (fieldIsBlank(body, ConstantsManager.EVENT_ID_FIELD_NAME) || fieldIsBlank(body, ConstantsManager.CATEGORY_ID_FIELD_NAME) || fieldIsBlank(body, ConstantsManager.CATEGORY_TYPE_FIELD_NAME)) {
             return badRequest("One or more parameters are missing");
         }
@@ -140,8 +145,13 @@ public class TicketsController extends Controller {
         try {
 
             if (categoryType.equals(CategoryType.GENERAL_ADMISSION.toString())) {
-                int quantity = body.get(ConstantsManager.QUANTITY_FIELD_NAME).asInt();
-
+                int quantity = 0;
+                if(body.get(ConstantsManager.QUANTITY_FIELD_NAME) != null){
+                    quantity = body.get(ConstantsManager.QUANTITY_FIELD_NAME).asInt();
+                }
+                else{
+                    return badRequest("Quantity parameter is missing");
+                }
                 ticketConstraintValidator.validateGeneralAdmission(eventId, categoryId);
                 ticketsInteractor.addGeneralAdmissionTickets(eventId, categoryId, quantity);
             } else {
