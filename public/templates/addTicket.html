@@ -1,5 +1,11 @@
+<ol class="breadcrumb">
+    <li><a href="/#!/events">Événements</a></li>
+    <li class="active">Création des billets</li>
+</ol>
+
 <h1>Ajouter des billets</h1>
 <h4>{{event.sport.name}} {{event.gender | gender}} - {{event.dateAsString | date:shortDate}}</h4>
+
 <form role="form" name="add_ticket_form" novalidate ng-submit="addTicket(ticketToAdd)">
     <div class="form-group">
         <label for="categoriesInput">catégorie</label>

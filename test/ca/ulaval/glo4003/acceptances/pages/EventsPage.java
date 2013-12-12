@@ -67,8 +67,6 @@ public class EventsPage extends BaseFluentPage {
     }
 
     public void clickOnFirstEventAdminButton() {
-//        await().atMost(TIMEOUT).until(".btn-primary.btn-xs").isPresent();
-//        findFirst(".btn-primary.btn-xs").click();
         clickOnEventAdminButton(0);
     }
 

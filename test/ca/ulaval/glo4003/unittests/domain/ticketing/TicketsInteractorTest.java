@@ -197,10 +197,10 @@ public class TicketsInteractorTest {
     public void addGeneralAdmissionTicketShouldCreateATicket(TicketDao mockedTicketDao) {
         when(mockedTicketDao.create(any(Ticket.class))).thenReturn(mock(Ticket.class));
 
-        ticketsInteractor.addGeneralAdmissionTickets(AN_EVENT_ID, A_CATEGORY_ID, 1);
+        ticketsInteractor.addGeneralAdmissionTickets(AN_EVENT_ID, A_CATEGORY_ID, A_QUANTITY);
 
         ArgumentCaptor<Ticket> argument = ArgumentCaptor.forClass(Ticket.class);
-        verify(mockedTicketDao).create(argument.capture());
+        verify(mockedTicketDao, times(A_QUANTITY)).create(argument.capture());
 
         assertEquals(AN_EVENT_ID.longValue(), argument.getValue().getEventId());
         assertEquals(A_CATEGORY_ID.longValue(), argument.getValue().getCategoryId());

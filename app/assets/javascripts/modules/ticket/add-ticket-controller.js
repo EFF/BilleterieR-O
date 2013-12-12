@@ -24,7 +24,6 @@ define(['./module'], function (TicketModule) {
                 };
 
                 var onAddTicketFail = function (error) {
-                    //TODO: display a more explicit message
                     FlashMessage.send('error', "Une erreure est survenue lors de l'ajout de billet")
                 };
 

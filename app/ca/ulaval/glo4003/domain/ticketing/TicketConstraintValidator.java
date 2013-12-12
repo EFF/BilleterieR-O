@@ -10,6 +10,7 @@ import java.util.Iterator;
 import java.util.List;
 
 public class TicketConstraintValidator {
+
     private final TicketsInteractor ticketsInteractor;
     private final EventsInteractor eventsInteractor;
 

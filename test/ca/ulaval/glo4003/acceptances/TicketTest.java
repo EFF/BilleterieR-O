@@ -30,6 +30,9 @@ public class TicketTest extends FluentTest {
     private static final String A_CATEGORY_ID = "1";
     private static final int A_QUANTITY = 3;
     private static final int A_SEAT_NUMBER = 99;
+    private static final int FIRST_EVENT_INDEX = 1;
+    private static final int SEAT_CATEGORY_INDEX = 1;
+    private static final int GENERAL_CATEGORY_INDEX = 0;
 
     @Test
     public void dontAuthorizeCreateTicketIfConnectedButNotAnAdmin() {
@@ -112,7 +115,7 @@ public class TicketTest extends FluentTest {
                 EventPage eventPage = new EventPage(browser.getDriver(), eventId);
                 eventPage.go();
                 eventPage.isAt();
-                int ticketNumber = eventPage.getTicketNumberForCategory(0);
+                int ticketNumber = eventPage.getTicketNumberForCategory(GENERAL_CATEGORY_INDEX);
                 AddTicketPage addTicketPage = new AddTicketPage(browser.getDriver(), eventId);
                 addTicketPage.go();
                 addTicketPage.isAt();
@@ -120,7 +123,7 @@ public class TicketTest extends FluentTest {
 
                 eventPage.go();
                 eventPage.isAt();
-                assertEquals(ticketNumber + A_QUANTITY, eventPage.getTicketNumberForCategory(0));
+                assertEquals(ticketNumber + A_QUANTITY, eventPage.getTicketNumberForCategory(GENERAL_CATEGORY_INDEX));
             }
         });
     }
@@ -138,13 +141,13 @@ public class TicketTest extends FluentTest {
 
                 eventsPage.go();
                 eventsPage.isAt();
-                eventsPage.clickOnEventAdminButton(1);
+                eventsPage.clickOnEventAdminButton(FIRST_EVENT_INDEX);
                 int eventId = Integer.parseInt(browser.getDriver().getCurrentUrl().split("/")[5]);
 
                 EventPage eventPage = new EventPage(browser.getDriver(), eventId);
                 eventPage.go();
                 eventPage.isAt();
-                int ticketNumber = eventPage.getTicketNumberForCategory(1);
+                int ticketNumber = eventPage.getTicketNumberForCategory(SEAT_CATEGORY_INDEX);
                 AddTicketPage addTicketPage = new AddTicketPage(browser.getDriver(), eventId);
                 addTicketPage.go();
                 addTicketPage.isAt();
@@ -152,7 +155,7 @@ public class TicketTest extends FluentTest {
 
                 eventPage.go();
                 eventPage.isAt();
-                assertEquals(ticketNumber + 1, eventPage.getTicketNumberForCategory(1));
+                assertEquals(ticketNumber + FIRST_EVENT_INDEX, eventPage.getTicketNumberForCategory(1));
             }
         });
     }
