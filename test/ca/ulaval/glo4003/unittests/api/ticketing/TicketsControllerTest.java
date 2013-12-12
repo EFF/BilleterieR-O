@@ -193,8 +193,9 @@ public class TicketsControllerTest extends BaseControllerTest {
     }
 
     @Test
-    public void createTicketShouldReturnCreatedWhenValidGeneralAdmission(TicketsInteractor mockedTicketsInteractor, TicketConstraintValidator mockedTicketConstraintValidator)
+    public void createTicketShouldReturnCreatedWhenValidGeneralAdmissionParameters(TicketsInteractor mockedTicketsInteractor, TicketConstraintValidator mockedTicketConstraintValidator)
             throws RecordNotFoundException, NoSuchCategoryException {
+        createMockedGeneralTicketBody();
         doNothing().when(mockedTicketConstraintValidator).validateGeneralAdmission(AN_EVENT_ID, A_CATEGORY_ID);
         doNothing().when(mockedTicketsInteractor).addGeneralAdmissionTickets(AN_EVENT_ID, AN_EVENT_ID, A_QUANTITY);
 
@@ -204,7 +205,7 @@ public class TicketsControllerTest extends BaseControllerTest {
     }
 
     @Test
-    public void createTicketShouldReturnCreatedWhenValidSeated(TicketsInteractor mockedTicketsInteractor, TicketConstraintValidator mockedTicketConstraintValidator)
+    public void createTicketShouldReturnCreatedWhenValidSeatedParameters(TicketsInteractor mockedTicketsInteractor, TicketConstraintValidator mockedTicketConstraintValidator)
             throws RecordNotFoundException, AlreadyAssignedSeatException, NoSuchCategoryException, NoSuchTicketSectionException {
         createMockedSeatedTicketBody();
         doNothing().when(mockedTicketConstraintValidator).validateSeatedTicket(AN_EVENT_ID, A_CATEGORY_ID, A_SECTION, A_SEAT);
@@ -274,7 +275,7 @@ public class TicketsControllerTest extends BaseControllerTest {
         json.put(ConstantsManager.CATEGORY_TYPE_FIELD_NAME, CategoryType.GENERAL_ADMISSION.toString());
         json.put(ConstantsManager.QUANTITY_FIELD_NAME, A_QUANTITY);
 
-        when(mockedBody.asJson()).thenReturn(json);
+        when(mockedRequest.body().asJson()).thenReturn(json);
     }
 
     private void createMockedSeatedTicketBody() {
@@ -285,7 +286,7 @@ public class TicketsControllerTest extends BaseControllerTest {
         json.put(ConstantsManager.SECTION_FIELD_NAME, A_SECTION);
         json.put(ConstantsManager.SEAT_FIELD_NAME, A_SEAT);
 
-        when(mockedBody.asJson()).thenReturn(json);
+        when(mockedRequest.body().asJson()).thenReturn(json);
     }
 
     private Ticket createFakeTicket() {

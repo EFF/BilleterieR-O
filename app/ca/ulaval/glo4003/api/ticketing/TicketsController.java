@@ -128,12 +128,9 @@ public class TicketsController extends Controller {
 
     @SecureAction(admin = true)
     public Result create() {
-
         JsonNode body = request().body().asJson();
-        if(body == null){
-            System.out.println("nope");
-            return badRequest();
-        }
+
+        if(body == null) return badRequest();
 
         if (fieldIsBlank(body, ConstantsManager.EVENT_ID_FIELD_NAME) || fieldIsBlank(body, ConstantsManager.CATEGORY_ID_FIELD_NAME) || fieldIsBlank(body, ConstantsManager.CATEGORY_TYPE_FIELD_NAME)) {
             return badRequest("One or more parameters are missing");
@@ -145,7 +142,7 @@ public class TicketsController extends Controller {
         try {
 
             if (categoryType.equals(CategoryType.GENERAL_ADMISSION.toString())) {
-                int quantity = 0;
+                int quantity ;
                 if(body.get(ConstantsManager.QUANTITY_FIELD_NAME) != null){
                     quantity = body.get(ConstantsManager.QUANTITY_FIELD_NAME).asInt();
                 }
@@ -165,7 +162,7 @@ public class TicketsController extends Controller {
             return badRequest();
         }
 
-        return ok();
+        return created();
     }
 
     private boolean fieldIsBlank(JsonNode json, String fieldName) {
